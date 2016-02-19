@@ -1,3 +1,6 @@
 [submodule "oni-ingest"]
 	path = oni-ingest
 	url = https://github.com/OpenNetworkInsight/oni-ingest
+[submodule "oni-setup"]
+	path = oni-setup
+	url = https://github.com/OpenNetworkInsight/oni-setup
