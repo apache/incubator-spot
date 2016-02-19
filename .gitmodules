@@ -10,3 +10,6 @@
 [submodule "oni-oa"]
 	path = oni-oa
 	url = https://github.com/Open-Network-Insight/oni-oa
+[submodule "oni-nfdump"]
+	path = oni-nfdump
+	url = https://github.com/Open-Network-Insight/oni-nfdump
