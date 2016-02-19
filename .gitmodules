@@ -4,3 +4,6 @@
 [submodule "oni-setup"]
 	path = oni-setup
 	url = https://github.com/OpenNetworkInsight/oni-setup
+[submodule "oni-ml"]
+	path = oni-ml
+	url = https://github.com/OpenNetworkInsight/oni-ml
