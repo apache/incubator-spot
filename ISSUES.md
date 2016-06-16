@@ -13,7 +13,7 @@ To create an issue please go to [ONI Issues](https://github.com/Open-Network-Ins
 ![Issue type](docs/label-issue-type.bmp)
 
 * **Bug:** Something that is not working properly according the functional spec.
-* **Enhancement:** Add new functionality or Improve existing functionality.
+* **Enhancement:** Add new functionality or improve existing functionality.
 * **Discussion:** Open a discussion related to any topic about ONI solution.
 
 ## **Add repo label**
