@@ -1,4 +1,4 @@
-# **Open Network Insight** <sup><sup><sub>_ The business of network security - the "port perspective"_</sub></sup></sup>
+# **Open Network Insight**   <sup><sup><sub>_The business of network security - the "port perspective"_</sub></sup></sup>
 
 Open Network Insight is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their compute environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale.
 
@@ -74,7 +74,7 @@ ONI functionality is divided into different repositories, go to each repository 
 
 Our Central repository for our Open Network Insight solution is found here. If you find a bug, have question or something to discuss please contact us:
 
-* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). if you need more details about how to create an issue in ONI please go to: [How to create and Issue](https://github.com/EverLoSa/open-network-insight/blob/master/ISSUES.md)
+* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). if you need more details about how to create an issue in ONI please go to: [How to create and Issue](ISSUES.md)
 * [Go to our Slack channel](https://opennetworkinsights.slack.com/messages/general/). 
 
 ## **Contributing to ONI**
@@ -105,7 +105,7 @@ at least 3 "LGTM" from maintainers are required to approve the merge. If you hav
 
 ## **Licensing**
 
-ONI is licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/Open-Network-Insight/open-network-insight/blob/master/LICENSE) for the full license text.
+ONI is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
 
 * oni-nfdump [License](https://github.com/Open-Network-Insight/oni-nfdump/blob/master/BSD-license.txt)
 * oni-lda-c [License](https://github.com/Open-Network-Insight/oni-lda-c/blob/1.0.1/license.txt)
