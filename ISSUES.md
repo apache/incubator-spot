@@ -1,23 +1,23 @@
 # **How to create an issue for ONI**
 
-Please help us to improve ONI!.. Create your issues found following the next steps:
+Please help us to improve ONI! Create your issues found following the next steps:
 
 
 ## **Create an Issue**
 
 To create an issue please go to [ONI Issues](https://github.com/Open-Network-Insight/open-network-insight/issues), review current open issues for any matches.
- If there is a match, please feel free to go to the issue and add comments, if you dont find a match please continue creating your issue.
+ If there is a match, please feel free to go to the issue and add comments, if you don't find a match please continue creating your issue.
 
 ## **Add issue type label**
 
 ![Issue type](docs/label-issue-type.bmp)
 
 * **Bug:** Something that is not working properly according the functional spec.
-* **Enhancement:** Add extra functionality or Improve an existing functionality.
+* **Enhancement:** Add new functionality or Improve existing functionality.
 * **Discussion:** Open a discussion related to any topic about ONI solution.
 
 ## **Add repo label**
-Once that an issue is created, repo tag needs to be added to identify the module that needs to be tracked.
+Once an issue is created, repo tag needs to be added to identify the module that needs to be tracked.
  
 ![oni repos](docs/label-repos.bmp "ONI Repos")
 

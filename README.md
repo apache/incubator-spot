@@ -34,7 +34,7 @@ While inspecting specific, unique flows of data that may be important for indivi
 ### **Parallel Ingest Framework**
 * Open source decoders.
 * Load data in Hadoop.
-* Data Transformation.
+* Data transformation.
 
 
 ### **Machine Learning**
@@ -79,21 +79,21 @@ Our Central repository for our Open Network Insight solution is found here. If y
 
 ## **Contributing to ONI**
 
-Help us to improve ONI!
+Help us improve ONI!
 
 ONI is Apache 2.0 licensed and accepts contribuitions via GitHub pull requests. Please follow the next steps
 and join our comunity.
 
 ### **Contribuiting to ONI code**
 
-* Fork it, Indentify the module that you want to contribuite and for the corresponding repo.
+* Fork the repo of the module that you wish to commit to.
 * Create a Branch, we use [topic branches](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches) for our commits. 
 * Push your commit(s) to your repository.
 * Create a pull request to the original repo in ONI organization.
 
 ### **Commit Guidelines**
 
-* If you are doing bug fixing, it should be a single commit.
+* Bug fixes should be a single commit.
 * Please be clear with the commit messages about what you are fixing or adding to the code base. If you code is addressing an open issue please add the reference to the issue in the comments with: Fix: Issue's URL. 
 
 
