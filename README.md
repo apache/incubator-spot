@@ -57,7 +57,7 @@ ONI can be installed by following our installation manual. To get started, [chec
 
 ## **Roadmap**
 
-TBD by RITU
+TBD
 
 ## **Documentation (Developer Guide)**
 
