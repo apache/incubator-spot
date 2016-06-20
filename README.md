@@ -52,7 +52,7 @@ While inspecting specific, unique flows of data that may be important for indivi
 ONI can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](https://github.com/Open-Network-Insight/open-network-insight/wiki).
 
 
-## If you want to get all the ONI code at one just clone it !
+## If you want all of the ONI code at once, just clone it!
         git clone --recursive https://github.com/Open-Network-Insight/open-network-insight.git
 
 ## **Roadmap**
@@ -74,7 +74,7 @@ ONI functionality is divided into different repositories, go to each repository 
 
 Our Central repository for our Open Network Insight solution is found here. If you find a bug, have question or something to discuss please contact us:
 
-* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). if you need more details about how to create an issue in ONI please go to: [How to create and Issue](ISSUES.md)
+* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for ONI please go to: [How to create an Issue](ISSUES.md)
 * [Go to our Slack channel](https://opennetworkinsights.slack.com/messages/general/). 
 
 ## **Contributing to ONI**

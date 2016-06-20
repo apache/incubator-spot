@@ -5,8 +5,10 @@ Please help us to improve ONI! Create your issues found following the next steps
 
 ## **Create an Issue**
 
-To create an issue please go to [ONI Issues](https://github.com/Open-Network-Insight/open-network-insight/issues), review current open issues for any matches.
- If there is a match, please feel free to go to the issue and add comments, if you don't find a match please continue creating your issue.
+To create an issue please go to [ONI Issues](https://github.com/Open-Network-Insight/open-network-insight/issues), 
+* Review current open issues for any matches.
+* If there is a match, please feel free to comment on the issue.
+* If you don't find a match, please continue creating your own issue.
 
 ## **Add issue type label**
 
@@ -17,7 +19,7 @@ To create an issue please go to [ONI Issues](https://github.com/Open-Network-Ins
 * **Discussion:** Open a discussion related to any topic about ONI solution.
 
 ## **Add repo label**
-Once an issue is created, repo tag needs to be added to identify the module that needs to be tracked.
+Once an issue is created, add a repo tag to identify the module that needs to be tracked.
  
 ![oni repos](docs/label-repos.bmp "ONI Repos")
 
