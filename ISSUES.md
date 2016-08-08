@@ -35,6 +35,7 @@ ONI team will add a label that will be used to add context and status of the iss
 * **Invalid:** Expected ONI functionality based in the functional spec.
 * **Help wanted:** More details are required to understand the reported issue.
 
+![oni Design](docs/labels-design-tracking.bmp)
 
 * **Design Review:** After a Design Spec has been submitted, this label will be applied to notify the contributor this design is under review and pending approval.
 The Maintainers of ONI recommend submitting a Design Spec prior to coding feature enhancements or major changes to the code base.
