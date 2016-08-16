@@ -51,6 +51,10 @@ While inspecting specific, unique flows of data that may be important for indivi
 
 ONI can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](https://github.com/Open-Network-Insight/open-network-insight/wiki).
 
+### Try the ONI UI with example data:
+[oni-demo container](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on docker hub
+
+pull the code from [oni-demo repo](https://github.com/Open-Network-Insight/oni-demo) and install it yourself
 
 ## If you want all of the ONI code at once, just clone it!
         git clone --recursive https://github.com/Open-Network-Insight/open-network-insight.git
