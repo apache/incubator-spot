@@ -46,15 +46,23 @@ While inspecting specific, unique flows of data that may be important for indivi
 * Attack heuristics.
 * Noise filter.
 
+## Try the ONI UI with example data:
+
+*Running Demo on Docker*
+
+1. [Install Docker](https://docs.docker.com/engine/installation/) for your platform 
+2. Run the container: `docker run -it -p 8889:8889 opennetworkinsight/oni-demo`
+3. visit [http://localhost:8889/files/ui/flow/suspicious.html#date=2016-07-08](http://localhost:8889/files/ui/proxy/suspicious.html#date=2016-07-08) in your browser to get started
+
+For the full instructions visit the [opennetworkinsight](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on Docker hub
+
+*Running the standalone demo*
+
+pull the code from [oni-demo repo](https://github.com/Open-Network-Insight/oni-demo) and install it yourself
 
 ## **Getting Started**
 
 ONI can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](https://github.com/Open-Network-Insight/open-network-insight/wiki).
-
-### Try the ONI UI with example data:
-[oni-demo container](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on docker hub
-
-pull the code from [oni-demo repo](https://github.com/Open-Network-Insight/oni-demo) and install it yourself
 
 ## If you want all of the ONI code at once, just clone it!
         git clone --recursive https://github.com/Open-Network-Insight/open-network-insight.git
