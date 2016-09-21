@@ -30,6 +30,7 @@ While inspecting specific, unique flows of data that may be important for indivi
 ### **Telemetry**
 * Flows.
 * DNS (pcaps).
+* Proxy.
 
 ### **Parallel Ingest Framework**
 * Open source decoders.
