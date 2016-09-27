@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Cybersecurity &#8211; Apache Spot</title>
+	<atom:link href="http://spot.incubator.apache.org/category/cybersecurity/feed/" rel="self" type="application/rss+xml" />
+	<link>http://spot.incubator.apache.org</link>
+	<description></description>
+	<lastBuildDate>Tue, 27 Sep 2016 18:37:15 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	
+	<item>
+		<title>Apache Spot and Cybersecurity — Using NetFlows to Detect Threats to  Critical Infrastructure</title>
+		<link>http://spot.incubator.apache.org/open-network-insight-oni-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/</link>
+		<comments>http://spot.incubator.apache.org/open-network-insight-oni-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/#respond</comments>
+		<pubDate>Mon, 08 Aug 2016 08:00:32 +0000</pubDate>
+		<dc:creator><![CDATA[oni-admin]]></dc:creator>
+				<category><![CDATA[Cybersecurity]]></category>
+
+		<guid isPermaLink="false">http://spot.incubator.apache.org/?p=117</guid>
+		<description><![CDATA[The “first” documented cybersecurity case was the worm replication, which was initiated by Robert T. Morris on November 2, 1988. Wow! Here we are in 2016, 28 years later, with viruses and worms giving way to Trojan horses and polymorphic code. Nowadays, we are also fighting against DDoS, phishing, spear phishing attacks, command and controls...  <a class="excerpt-read-more" href="http://spot.incubator.apache.org/open-network-insight-oni-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/" title="Read Apache Spot and Cybersecurity — Using NetFlows to Detect Threats to  Critical Infrastructure">Read more &#187;</a>]]></description>
+				<content:encoded><![CDATA[<p>The “first” documented cybersecurity case was the worm replication, which was initiated by Robert T. Morris on November 2, 1988. Wow! Here we are in 2016, 28 years later, with viruses and worms giving way to Trojan horses and polymorphic code. Nowadays, we are also fighting against DDoS, phishing, spear phishing attacks, command and controls along with APTs such as Aurora, Zeus, Red October and Stuxnet. What happened with our security controls on each attack?</p>
+<p>Despite heroic efforts, internal and external security controls, no matter if they are preventive, detective or corrective, can be bypassed by different situations or misconfigurations. Capabilities to detect bugs or vulnerabilities in code, protocol, etc. are still limited. When we consider how to close these gaps, we have two options:</p>
+<ol>
+<li>Collect information from each device that is part of the environment.</li>
+<li>Collect information from the critical infrastructure that is used for most, if not all, of the systems.</li>
+</ol>
+<p>This blog will describe the second approach.</p>
+<p>Critical infrastructure, including nationally significant infrastructure, can be broadly defined as the systems, assets, facilities and networks that provide essential services. For nations, this means protecting the national security, economic security and prosperity as well as the health and safety of their citizenry. If we extrapolate this definition on the IT enterprise environments, we can define the critical infrastructure as the service, or services, that need to be up and running properly 99.99999% of the time, most of the time to support other critical infrastructure, such as databases, HR systems, manufacturing systems, etc.</p>
+<p>Effectively protecting critical infrastructure means that millions, if not billions, of different scenarios must be identified and monitored. To do this, the cybersecurity problem must be broken into small pieces.</p>
+<p>Let’s consider DNS — your communications to the Web. How can you know which communications are being established by your critical servers? And, what if you want to do it for most of your infrastructure?</p>
+<p>First idea: Use NetFlow, which is a network protocol that helps us collect IP traffic information and monitor network traffic. NetFlow has the details on the communications of all of your network traffic. However, the normal data on an enterprise environment includes billions of NetFlow events per day. To use this data to identify issues, it must be stored and analyzed. Storage alone is costly. Analyzing what amount Big Data stores is an entire other challenge.</p>
+<p>Apache Spot offers a solution. It was designed to gather, store and analyze Big Data. In fact, Apache Spot is an ideal solution for this cybersecurity challenge. Apache Spot can integrate many different data sources in a data lake then add operational context to the data by linking configuration, inventory, service databases and other data stores. This helps you to prioritize the actions to take under different attack, malware, APT and hacking scenarios. With Apache Spot, attacks that bypass our external or internal security controls can be identified. By delivering risk-prioritized, actionable insights, Apache Spot can support the growing need for security analytics.</p>
+<p>Not only can Apache Spot collect, store and analyze billions of NetFlow packets, but it can also be adapted to meet the unique requirements of your organization. How? Apache Spot is an open-source project.</p>
+<p><strong>But Wait, There’s More</strong></p>
+<p>Check out “<a href="http://spot.incubator.apache.org/how-open-network-insight-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/"><u>How Apache Spot Helps Create Well-Stocked Data Lakes and Catch Powerful Insights</u></a>” to learn more about the underlying Apache Spot architecture.</p>
+<p>This is the first of a series of blogs that we will be writing about cybersecurity, so check back to read more.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://spot.incubator.apache.org/open-network-insight-oni-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+	</channel>
+</rss>
