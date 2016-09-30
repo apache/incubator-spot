@@ -6,9 +6,8 @@ Here you will find instructions to get ONI UI up and running. For more informati
 
 ## Requirements
 
-- IPython with notebook module enabled (== 3.2.1) [link](https://ipython.org/ipython-doc/3/index.html)
+- IPython with notebook module enabled (== 3.2.0) [link](https://ipython.org/ipython-doc/3/index.html)
 - NPM - Node Package Manager [link](https://www.npmjs.com/)
-- Pandas [link](http://pandas.pydata.org/)
 - oni-oa output
 > ONI UI takes any output from [oni-oa backend](/Open-Network-Insight/oni-oa/tree/master/oa/), as input for the visualization tools provided. Please make sure there are files available under PATH_TO_ONI/ui/data/${PIPELINE}/${DATE}/
 

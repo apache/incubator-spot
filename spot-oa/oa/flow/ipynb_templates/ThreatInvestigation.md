@@ -20,9 +20,9 @@ The following python modules will have to be imported for the notebook to work c
 
 
 ##Pre-requisites  
-- Execution of the oni-oa process for Flow
+- Execution of the spot-oa process for Flow
 - Score a set connections at the Edge Investigation Notebook 
-- Correct setup the duxbay.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
+- Correct setup the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
 - Include a comma separated network context file. **Optional** [Schema](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/README.md#network-context-nc)
 - Include a geolocation database file. [Schema](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/README.md#geoloc)   
 

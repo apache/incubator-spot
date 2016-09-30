@@ -1,6 +1,6 @@
 # Operational Analytics Components 
 
-This document will explain the necessary steps to configure the oni-oa components.
+This document will explain the necessary steps to configure the spot-oa components.
 
 ## Folder Structure
 
@@ -29,8 +29,8 @@ This document will explain the necessary steps to configure the oni-oa component
 ###Data
 _Data source module._
 
-This module needs to be configured correctly to avoid errors during the oni-oa execution. Here you need to select the correct database engine to obtain the correct results while creating additional details files.
-Currently oni-oa is prepared to work with Impala, but you can always configure any other database engine and make the corresponding updates in the code.
+This module needs to be configured correctly to avoid errors during the spot-oa execution. Here you need to select the correct database engine to obtain the correct results while creating additional details files.
+Currently spot-oa is prepared to work with Impala, but you can always configure any other database engine and make the corresponding updates in the code.
 
 **Configuration**
 
@@ -64,7 +64,7 @@ Example:
 ###Reputation
 _Reputation check module._
 
-This module is called during oni-oa execution to check the reputation for any given IP, DNS name or URI (depending on the pipeline). The reputation module makes use of two third-party services, McAfee GTI and Facebook ThreatExchange. 
+This module is called during spot-oa execution to check the reputation for any given IP, DNS name or URI (depending on the pipeline). The reputation module makes use of two third-party services, McAfee GTI and Facebook ThreatExchange. 
 Each of these services are represented by a sub-module in this project, McAfee GTI is implemented by sub-module gti and Facebook ThreatExchange by sub-module fb. For more information see Folder Structure section.
 
 **Pre-requisites**
@@ -81,7 +81,7 @@ To add a different reputation service, you can read all about it [here](https://
 
 **Configuration**
 
-- reputation_config.json: Stores a list of reputation services to call during oni-oa execution. Also it contains a list of columns to check
+- reputation_config.json: Stores a list of reputation services to call during spot-oa execution. Also it contains a list of columns to check
  reputation. gti_config.json looks like this:
 
         {
@@ -108,7 +108,7 @@ To add a different reputation service, you can read all about it [here](https://
 
         Do not remove, replace or modify the label ###QUERY###, it's a special placeholder and is required for
         reputation.py to work.
-        - prn: you can give a name to your Oni instance like "CompanyX-Oni" or you can just leave as is.
+        - prn: you can give a name to your Spot instance like "CompanyX-Spot" or you can just leave as is.
         - refclient: absolute path for restclient, which will be provided by McAfee upon contracting the GTI service. It should be the path where the *restclient* file is
         located without ending backslash i.e.
 
@@ -129,7 +129,7 @@ _Internet Assigned Numbers Authority codes translation module._
 
 **Configuration**
 
-- iana_config.json:  Stores the location of codes translation files. By default, oni-oa iana module comes with 4 csv files
+- iana_config.json:  Stores the location of codes translation files. By default, spot-oa iana module comes with 4 csv files
 with different code types for DNS and HTTP queries and usually they will be located in oa/components/iana/. These files can be
 moved to any preferred location.
 
@@ -138,10 +138,10 @@ default location, your configuration file should look like this:
 
 		{
 		    "IANA": {
-	             "dns_qry_class":"/home/solution-user/oni-oa/oa/components/iana/dns-qclass.csv",
-	             "dns_qry_type":"/home/solution-user/oni-oa/oa/components/iana/dns-qtype.csv",
-	              dns_qry_rcode":"/home/solution-user/oni-oa/oa/components/iana/dns-rcode.csv",
-	              http_qry_rcode":"/home/solution-user/oni-oa/oa/components/iana/http-rcode.csv"
+	             "dns_qry_class":"/home/solution-user/spot-oa/oa/components/iana/dns-qclass.csv",
+	             "dns_qry_type":"/home/solution-user/spot-oa/oa/components/iana/dns-qtype.csv",
+	              dns_qry_rcode":"/home/solution-user/spot-oa/oa/components/iana/dns-rcode.csv",
+	              http_qry_rcode":"/home/solution-user/spot-oa/oa/components/iana/http-rcode.csv"
 	          }
 		 }
 
@@ -153,7 +153,7 @@ _Network Context module._
 
 Before start working with network context module, it is required to have a comma separated network context file.
 
-This file can be placed anywhere in the system running oni-oa, although we suggest you place it inside the _context_ folder to keep uniformity.
+This file can be placed anywhere in the system running spot-oa, although we suggest you place it inside the _context_ folder to keep uniformity.
 The following schema is expected:
 -   IP: string
 -   Description: String
@@ -170,7 +170,7 @@ configuration file should look like this:
 
 		{
 		    NC" : {
-                        "network_context_dns" : "/home/solution-user/oni-oa/context/networkcontext.csv"
+                        "network_context_dns" : "/home/solution-user/spot-oa/context/networkcontext.csv"
 			   }
 		 }
 
@@ -187,8 +187,8 @@ to the  [_context_](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/c
 
  
 **Configuration**
-Oni-oa is preconfigured to look for the geolocation file at the _~/context/_ path.
+Spot-oa is preconfigured to look for the geolocation file at the _~/context/_ path.
 
 Example:
 
-        /home/solution-user/oni-oa/context/iploc.csv
+        /home/solution-user/spot-oa/context/iploc.csv

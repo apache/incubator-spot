@@ -22,8 +22,8 @@ The following python modules will be imported for the notebook to work correctly
 
 
 ###Pre-requisites
-- Execution of the oni-oa process for Flow
-- Correct setup the duxbay.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration)
+- Execution of the spot-oa process for Flow
+- Correct setup the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration)
 - Have a public key created between the current UI node and the ML node. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Configure%20User%20Accounts#configure-user-accounts)
 
 
@@ -91,5 +91,5 @@ to then print only those IP's that connect to more than 20 other different IP's.
 This function also reorders the _flow_scores.csv_ file by moving all scored connections to the end of the file and sorting the remaining connections by `lda_score` column.    
 Finally, removes the widget panel and reloads it again to update the results, removing the need of a manual refresh, and calls the `ml_feedback():` function.    
 
-`ml_feedback():` - A shell script is executed, transferring thru secure copy the _flow_scores_fb.csv_ file into ML Master node, where the destination path is defined at the duxbay.conf file.
+`ml_feedback():` - A shell script is executed, transferring thru secure copy the _flow_scores_fb.csv_ file into ML Master node, where the destination path is defined at the spot.conf file.
    

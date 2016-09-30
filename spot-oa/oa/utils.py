@@ -36,9 +36,9 @@ class Util(object):
 		return  log
 
 	@classmethod
-	def get_oni_conf(cls):
+	def get_spot_conf(cls):
 		
-		conf_file = "/etc/duxbay.conf"
+		conf_file = "/etc/spot.conf"
 		config = ConfigParser.ConfigParser()
 		config.readfp(SecHead(open(conf_file)))	
 

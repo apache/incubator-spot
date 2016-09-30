@@ -27,7 +27,7 @@ This section describes the functionality of the current reputation service modul
 		}
 3. Create file structure for new sub-module.
 
-        [solution-user@edge-server]$ cd ~/oni-oa/components/reputation/
+        [solution-user@edge-server]$ cd ~/spot-oa/components/reputation/
         [solution-user@edge-server]$ mkdir mynewreputationservice
         [solution-user@edge-server]$ cd mynewreputationservice
 

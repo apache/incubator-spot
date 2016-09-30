@@ -1,11 +1,11 @@
 # **Flow OA**
  
-Flow sub-module extracts and transforms Flow data already ranked by oni-ml and will load into csv files for presentation layer.
+Flow sub-module extracts and transforms Flow data already ranked by spot-ml and will load into csv files for presentation layer.
 
 ## **Flow OA Components**
 
 ### flow_oa.py
-Flow oni-oa main script executes the following steps:
+Flow spot-oa main script executes the following steps:
 
     1. Creates required folder structure if does not exist for output files. This is: 
 		
@@ -13,7 +13,7 @@ Flow oni-oa main script executes the following steps:
                 ipython Notebooks: ipynb/flow/<date>/
 
     2. Creates a copy of iPython notebooks out of templates in ipynb_templates folder into output folder.
-    3. Reads Flow oni-ml results for a given date and loads only the requested limit.
+    3. Reads Flow spot-ml results for a given date and loads only the requested limit.
     4. Add network context to source and destination IPs.
     5. Add geolocation to source and destination IPs.
     6. Saves transformed data into a new csv file, this file is called flow_scores.csv.
@@ -103,7 +103,7 @@ Before running Flow OA users need to configure components for the first time. It
         
 ### flow_config.json
 
-Flow oni-oa configuration. Contains columns name and index for input and output files.
+Flow spot-oa configuration. Contains columns name and index for input and output files.
 This Json file contains 3 main arrays:
    
     - flow_results_fields: list of column name and index of ML flow_results.csv file. Flow OA uses this mapping to reference columns by name.

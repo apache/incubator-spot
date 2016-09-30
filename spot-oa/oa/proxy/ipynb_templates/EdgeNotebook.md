@@ -19,8 +19,8 @@ The following python modules will be imported for the notebook to work correctly
 
 
 ###Pre-requisites
-- Execution of the oni-oa process for Proxy
-- Correct setup the duxbay.conf file [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration)
+- Execution of the spot-oa process for Proxy
+- Correct setup the spot.conf file [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration)
 - Have a public key created between the current UI node and the ML node. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Configure%20User%20Accounts#configure-user-accounts)
 
 
@@ -70,5 +70,5 @@ refresh the listbox removing all scored URIs.
 A javascript function is also executed to refresh the other panels in the suspicious connects page removing the need of a manual refresh.
 Afterwards the `ml_feedback()` function will be invoqued. 
 
-`ml_feedback():` - A shell script is executed, transferring thru secure copy the _proxy_scores_fb.csv_ file into ML Master node, where the destination path is defined at the duxbay.conf file.
+`ml_feedback():` - A shell script is executed, transferring thru secure copy the _proxy_scores_fb.csv_ file into ML Master node, where the destination path is defined at the spot.conf file.
    

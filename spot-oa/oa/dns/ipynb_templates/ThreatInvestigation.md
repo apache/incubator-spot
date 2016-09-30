@@ -20,9 +20,9 @@ The following python modules will have to be imported for the notebook to work c
         from IPython.display import display, Javascript, clear_output
 
 ##Pre-requisites  
-- Execution of the oni-oa process for DNS 
+- Execution of the spot-oa process for DNS 
 - Score a set connections in the Edge Investigation Notebook
-- Correct setup of the duxbay.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
+- Correct setup of the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
 
 
 ##Additional Configuration  

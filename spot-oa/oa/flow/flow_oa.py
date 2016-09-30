@@ -42,14 +42,14 @@ class OA(object):
         self._results_delimiter = '\t'
 
         # get app configuration.
-        self._oni_conf = Util.get_oni_conf()  
+        self._spot_conf = Util.get_spot_conf()
 
         # get scores fields conf
         conf_file = "{0}/flow_conf.json".format(self._scrtip_path)
         self._conf = json.loads(open (conf_file).read(),object_pairs_hook=OrderedDict)     
  
         # initialize data engine
-        self._db = self._oni_conf.get('conf','DBNAME').replace("'","").replace('"','') 
+        self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
         self._engine = Data(self._db, self._table_name,self._logger)
               
     def start(self):       
@@ -97,7 +97,7 @@ class OA(object):
         flow_results = "{0}/flow_results.csv".format(self._data_path)
 
         # get hdfs path from conf file 
-        HUSER = self._oni_conf.get('conf','HUSER').replace("'","").replace('"','')   
+        HUSER = self._spot_conf.get('conf', 'HUSER').replace("'", "").replace('"', '')
         hdfs_path = "{0}/flow/scored_results/{1}/scores/flow_results.csv".format(HUSER,self._date)
                
         # get results file from hdfs
@@ -164,7 +164,7 @@ class OA(object):
             dst_ip_index = self._conf["flow_score_fields"]["dstIP"]              
             
             # add networkcontext per connection.
-            ip_internal_ranges = filter(None,nc_ranges[0])    
+            ip_internal_ranges = filter(None,nc_ranges)     
             self._logger.info("Adding networkcontext to suspicious connections.")
             self._flow_scores = [ conn + [ self._is_ip_internal(conn[src_ip_index],ip_internal_ranges)]+[ self._is_ip_internal(conn[dst_ip_index],ip_internal_ranges)] for conn in flow_scores]
            
@@ -176,10 +176,14 @@ class OA(object):
         self._flow_scores.insert(0,flow_headers)
 
     def _is_ip_internal(self,ip, ranges):
+        result = 0
+        for row in ranges:
+            if Util.ip_to_int(ip) >= row[0] and Util.ip_to_int(ip) <= row[1]: 
+                result = 1
+                break
+        return result
 
-        if Util.ip_to_int(ip) >= ranges[0] and Util.ip_to_int(ip) <= ranges[1]: return 1
-        return 0
-
+        
     def _add_geo_localization(self):
 
         # use ipranges to see if the IPs are internals.         

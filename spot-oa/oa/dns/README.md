@@ -1,12 +1,12 @@
 # DNS
 
-DNS sub-module extracts and transforms DNS (Domain Name Service) data already ranked by oni-ml and will load into csv files for presentation layer.
+DNS sub-module extracts and transforms DNS (Domain Name Service) data already ranked by spot-ml and will load into csv files for presentation layer.
 
 ## DNS Components
 
 ###dns_oa.py
 
-DNS oni-oa main script executes the following steps:
+DNS spot-oa main script executes the following steps:
 
 
 		1. Creates the right folder structure to store the data and the ipython notebooks. This is: 

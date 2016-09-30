@@ -41,14 +41,14 @@ class OA(object):
         self._results_delimiter = '\t'
 
         # get app configuration.
-        self._oni_conf = Util.get_oni_conf()
+        self._spot_conf = Util.get_spot_conf()
 
         # get scores fields conf
         conf_file = "{0}/dns_conf.json".format(self._scrtip_path)
         self._conf = json.loads(open (conf_file).read(),object_pairs_hook=OrderedDict)
 
         # initialize data engine
-        self._db = self._oni_conf.get('conf','DBNAME').replace("'","").replace('"','') 
+        self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
         self._engine = Data(self._db,self._table_name ,self._logger)
 
 
@@ -99,7 +99,7 @@ class OA(object):
         dns_results = "{0}/dns_results.csv".format(self._data_path)
 
         # get hdfs path from conf file.
-        HUSER = self._oni_conf.get('conf','HUSER').replace("'","").replace('"','')   
+        HUSER = self._spot_conf.get('conf', 'HUSER').replace("'", "").replace('"', '')
         hdfs_path = "{0}/dns/scored_results/{1}/scores/dns_results.csv".format(HUSER,self._date)
 
         # get results file from hdfs.
