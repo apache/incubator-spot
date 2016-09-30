@@ -1,0 +1,26 @@
+{
+  "name": "oni_ui_flow",
+  "version": "1.1.0",
+  "description": "Open Network Insight :: UI :: Netflow",
+  "scripts": {
+    "watch-suspicious": "watchify js/suspicious.js -o js/suspicious.bundle.min.js -v -d",
+    "watch-threat-investigation": "watchify js/threat-investigation.js -o js/threat-investigation.bundle.min.js -v -d",
+    "watch-storyboard": "watchify js/storyboard.js -o js/storyboard.bundle.min.js -v -d",
+    "watch-ingest-summary": "watchify js/ingest-summary.js -o js/ingest-summary.bundle.min.js -v -d",
+    "build-all": "npm run build-suspicious && npm run build-threat-investigation && npm run build-ingest-summary && npm run build-storyboard",
+    "build-suspicious": "browserify js/suspicious.js | uglifyjs -cm > js/suspicious.bundle.min.js",
+    "build-threat-investigation": "browserify js/threat-investigation.js | uglifyjs -cm > js/threat-investigation.bundle.min.js",
+    "build-storyboard": "browserify js/storyboard.js | uglifyjs -cm > js/storyboard.bundle.min.js",
+    "build-ingest-summary": "browserify js/ingest-summary.js | uglifyjs -cm > js/ingest-summary.bundle.min.js"
+  },
+  "browserify": {
+    "transform": [
+      ["babelify", {"presets": ["es2015", "react"]}],
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "global:$",
+    "d3": "global:d3"
+  }
+}

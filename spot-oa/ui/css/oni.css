@@ -1,0 +1,299 @@
+/* All devices */
+.oni-maximized {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.oni-minimized {
+    position: absolute;
+    top: -1000000px;
+    left: -1000000px;
+}
+
+.row.oni-row {
+    margin: 0;
+}
+
+.oni-frame > .oni-frame-content > .panel > .panel-heading {
+    height: 35px;
+}
+
+.oni-frame > .oni-frame-content > .panel > .panel-heading .panel-toolbar {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.oni-frame > .oni-frame-content > .panel > .panel-heading .panel-toolbar li {
+    display: inline-block;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.oni-frame > .oni-frame-content > .panel > .panel-body {
+    padding: 0;
+}
+
+.oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container.container-box {
+    overflow: hidden !important;
+}
+
+.oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container.container-box > .inner-container-box {
+    max-height: 100%;
+    overflow: auto;
+}
+
+.oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.oni-frame .panel-body-container.container-box > * {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+/* Extra small devices (phones, less than 768px) */
+
+/* Small devices (tablets, 768px and up) */
+@media (max-width: 991px) {
+    .oni-row {
+        min-height: 400px;
+    }
+
+    .oni-frame,
+    .oni-frame > .oni-frame-content,
+    .oni-frame > .oni-frame-content > .panel,
+    .oni-frame > .oni-frame-content > .panel > .panel-body,
+    .oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container,
+    .oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container.container-box > *
+    {
+        min-height: inherit;
+    }
+}
+
+/* Medium devices (desktops, 992px and up, two columns) */
+@media (min-width: 992px) {
+    html, body {
+        height: 100%;
+        overflow-x: hidden;
+    }
+
+    #oni-nav {
+        position: fixed;
+        z-index: 3;
+        width: 100%;
+        height: 94px;
+    }
+
+    #oni-content, #oni-content-wrapper {
+        height: 100%;
+        width: 100%;
+    }
+
+    #oni-content-wrapper {
+        padding: 94px 0 0 0;
+    }
+
+    #oni-content > .oni-row {
+        margin: 0;
+    }
+
+    .oni-frame {
+        height: 100%;
+        padding: 0;
+    }
+
+    .oni-frame > .oni-frame-content {
+        height: 100%;
+        padding: 10px;
+    }
+
+    .oni-frame > .oni-frame-content > .panel {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        position: relative;
+    }
+
+    .oni-frame > .oni-frame-content > .panel > .panel-heading {
+        width: 100%;
+        position: absolute;
+        z-index: 2;
+    }
+
+    .oni-frame > .oni-frame-content > .panel > .panel-body {
+        height: 100%;
+        width: 100%;
+        padding: 35px 0 0 0;
+        overflow: hidden;
+    }
+
+    .oni-frame > .oni-frame-content > .panel.no-heading > .panel-body {
+        width: 100%;
+        padding-top: 0px;
+    }
+
+    .oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container {
+        height: 100%;
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+
+/*******************************
+ **           ONI             **
+ *******************************/
+
+
+/*******************************
+ **       STORYBOARD          **
+ *******************************/
+/*
+prevent the active panel from collapsing
+ */
+#oni-executive-threat-briefing.panel-group [aria-expanded=true] {
+    /*
+    http://caniuse.com/#feat=pointer-events
+    Works for MOST modern browsers. (- Opera Mobile)
+    */
+    pointer-events: none;
+}
+
+#oni-executive-threat-briefing.panel-group a[aria-expanded=true] {
+    text-decoration: underline;
+}
+
+.storyboard #incident_list, .storyboard .comment_summary  {
+    list-style: none;
+    text-align: left;
+}
+
+/**    IMPACT ANALYSIS     **/
+.sb_impact rect.background {
+    fill: none;
+    pointer-events: all;
+}
+
+.sb_impact .axis {
+    shape-rendering: crispEdges;
+}
+
+.sb_impact .axis path, .sb_impact .axis line {
+    fill: none;
+    stroke: #000;
+    stroke-width: .5px;
+}
+
+.sb_impact svg{
+    font: 10px sans-serif;
+}
+
+/**         MAP VIEW       **/
+.sb_globe_view .land {
+    fill: #939598;
+    stroke-opacity: 1;
+}
+
+.sb_globe_view .graticule {
+    fill: none;
+    stroke: black;
+    stroke-width: .5;
+    opacity: .2;
+}
+
+.sb_globe_view .labels {
+    font: 8px sans-serif;
+    fill: black;
+    opacity: .5;
+    display: none;
+}
+
+.sb_globe_view .noclicks {
+    pointer-events: none;
+}
+
+.sb_globe_view .point {
+    opacity: .6;
+}
+
+.sb_globe_view .arcs {
+    opacity: .1;
+    stroke: #939598;
+    stroke-width: 3;
+}
+
+.sb_globe_view .flyers {
+    stroke-width: 3;
+    opacity: 1.0;
+    stroke: #A31C24;
+}
+
+.sb_globe_view .arc, .sb_globe_view .flyer {
+    stroke-linejoin: round;
+    fill: none;
+}
+
+.sb_globe_view .arc {
+}
+
+.sb_globe_view .flyer {
+}
+
+.sb_globe_view .flyer:hover {
+}
+
+/**       TIMELINE         **/
+.sb_timeline svg, .sb_timeline #legend{
+    font: 10px sans-serif;
+}
+
+.sb_timeline .zoom {
+    fill: transparent;
+    cursor: pointer;
+}
+
+.sb_timeline .y-axis path,
+.sb_timeline .y-axis line,
+.sb_timeline .x-axis path,
+.sb_timeline .x-axis line,
+{
+path,
+line {
+    stroke: black;
+    fill: none;
+    stroke-width: 1px;
+}
+}
+
+.sb_timeline .y-axis g line {
+    stroke: grey;
+    fill: none;
+    stroke-width: 1px;
+}
+
+.sb_timeline .graph-body .line circle {
+    opacity: 0.4;
+}
+
+.oni-tooltip .tooltip-inner {
+    word-wrap: break-word;
+}
+
+.oni-text-wrapper {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 12em;
+}
+
+.oni-text-wrapper.oni-text-sm {
+    width: 6em;
+}
+
+.oni-text-wrapper.oni-text-lg {
+    width: 18em;
+}

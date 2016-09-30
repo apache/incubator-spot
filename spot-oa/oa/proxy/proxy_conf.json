@@ -1,0 +1,57 @@
+{
+    "proxy_results_fields":{
+        "p_date":0
+        , "p_time":1
+        , "clientip":2 
+        , "host":3
+        , "reqmethod":4
+        , "useragent":5
+        , "resconttype":6
+        , "duration":7
+        , "username":8        
+        , "webcat":9
+        , "referer":10
+        , "respcode":11        
+        , "uriport":12
+        , "uripath":13
+        , "uriquery":14        
+        , "serverip":15
+        , "scbytes" : 16
+        , "csbytes" : 17        
+        , "fulluri":18        
+        , "word":19
+        , "score":20
+    }, 
+    "proxy_score_fields": 
+    {
+        "p_date":0
+        , "p_time":1
+        , "clientip":2 
+        , "host":3
+        , "reqmethod":4
+        , "useragent":5
+        , "resconttype":6
+        , "duration":7
+        , "username":8
+        , "webcat":9
+        , "referer":10
+        , "respcode":11
+        , "uriport":12
+        , "uripath":13
+        , "uriquery":14
+        , "serverip":15
+        , "scbytes":16
+        , "csbytes":17
+        , "fulluri":18
+        , "word":19
+        , "score":20
+        , "uri_rep":21
+        , "uri_sev":22
+        , "respcode_name":23
+        , "network_context":24
+        , "hash":25
+    },
+    "add_reputation":{
+        "fulluri":18   
+    }
+}

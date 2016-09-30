@@ -1,0 +1,305 @@
+body {
+  font-size: 14px;
+}
+
+.navbar {
+    margin-bottom: 0px;
+    border-radius: 0px;
+    border: 0px none transparent;
+}
+
+#oni-nav {
+    background-color:#0071C5;
+}
+
+#oni-nav .navbar-brand {
+    color: #ffffff;
+}
+#oni-nav .navbar-nav>li>a {
+    color: #ffffff;
+}
+
+.navbar #search-box {
+  background-color: #edeff0;
+  padding: 5px 0;
+  min-height: 44px;
+}
+
+.navbar #nav_form label {
+  margin: 0 10px;
+}
+
+.oni-frame-content > .panel {
+    border-color: #0071C5;
+}
+
+.oni-frame-content > .panel > .panel-heading {
+    color: #fff;
+    background-color: #0071C5;
+    border-color: #0071C5;
+}
+
+.oni_loader
+{
+    text-align: center;
+    margin-top: 20px;
+}
+
+.oni_loader .spinner
+{
+    display: inline-block;
+    width: 16px;
+    height: 11px;
+    margin-left: 5px;
+    background-image: url(../images/ajax-loader.gif);
+}
+
+.oni-grid-panel > table > thead th {
+    vertical-align: middle;
+}
+
+.d3-tip {
+    line-height: 1;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.d3-tip .d3-tip-label {
+    color: #888888;
+    font-weight: bold;
+}
+
+.d3-tip .d3-tip-label strong {
+    color: white;
+}
+
+.d3-tip .d3-tip-message {
+    font-size: 12px;
+    text-align: left;
+    word-break: break-all;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    pointer-events: none;
+}
+
+/* Northward tooltips */
+.d3-tip.n:after {
+    content: "\25BC";
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+    text-align: center;
+}
+
+/* Eastward tooltips */
+.d3-tip.e:after {
+    content: "\25C0";
+    margin: -4px 0 0 0;
+    top: 50%;
+    left: -8px;
+}
+
+/* Southward tooltips */
+.d3-tip.s:after {
+    content: "\25B2";
+    margin: 0 0 1px 0;
+    top: -8px;
+    left: 0;
+    text-align: center;
+}
+
+/* Westward tooltips */
+.d3-tip.w:after {
+    content: "\25B6";
+    margin: -4px 0 0 -1px;
+    top: 50%;
+    left: 100%;
+}
+
+/* Northwestward tooltips */
+.d3-tip.nw:after {
+    content: "\25E2";
+    margin: -5px 0 0 -5px;
+    top: 100%;
+    left: 100%;
+}
+
+/* Northestward tooltips */
+.d3-tip.ne:after {
+    content: "\25E3";
+    margin: -5px 0 0 0;
+    top: 100%;
+    left: -4px;
+}
+
+/* Southestward tooltips */
+.d3-tip.se:after {
+    content: "\25E4";
+    top: -4px;
+    left: -4px;
+}
+
+/* Southwestward tooltips */
+.d3-tip.sw:after {
+    content: "\25E5";
+    margin: 0 0 0 -5px;
+    top: -4px;
+    left: 100%;
+}
+
+/*****************************************
+ **           Network View              **
+ *****************************************/
+.edge {
+    stroke-width: 3px;
+    transition: stroke .5s linear;
+}
+
+.edge-highlight {
+    stroke-width: 3px;
+}
+
+.edge-faded {
+    stroke-opacity: 0.2 !important;
+}
+
+.node-faded, .faded {
+    fill-opacity: 0.2 !important;
+    stroke-opacity: 0.2 !important;
+}
+
+.node {
+    stroke: hsl(0,60%,100%);
+    stroke-width: 2.5px;
+    fill: hsl(0,601,40%);
+}
+
+.node-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    visibility: hidden;
+    background: white;
+    border-style: solid;
+    border-color: black;
+    border-radius: 10px;
+    font-family: verdana, san-serif;
+    padding: 10px;
+}
+
+.active {
+    stroke-opacity: 1;
+    transition: background-color 1.0s linear;
+}
+
+/*-------------------------- Flashing/ blinker Animation----------------------*/
+.blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1.5s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1.5s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    animation-name: blinker;
+    animation-duration: 1.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.proxy-force .edge.blink_me {
+    stroke: #FDB813;
+}
+
+@-moz-keyframes blinker {
+    0% {
+        stroke-opacity: 1.0;
+        fill-opacity: 1.0;
+    }
+
+    50% {
+        stroke-opacity: 0.3;
+        fill-opacity: 0.3;
+    }
+
+    100% {
+        stroke-opacity: 1.0;
+        fill-opacity: 1.0;
+    }
+}
+
+@-webkit-keyframes blinker {
+    0% {
+        stroke-opacity: 1.0;
+        fill-opacity: 1.0;
+    }
+
+    50% {
+        stroke-opacity: 0.3;
+        fill-opacity: 0.3;
+    }
+
+    100% {
+        stroke-opacity: 1.0;
+        fill-opacity: 1.0;
+    }
+}
+
+@keyframes blinker {
+    0% {
+        stroke-opacity: 1.0;
+        fill-opacity: 1.0;
+    }
+
+    50% {
+        stroke-opacity: 0.3;
+        fill-opacity: 0.3;
+    }
+
+    100% {
+        stroke-opacity: 1.0;
+        fill-opacity: 1.0;
+    }
+}
+
+/*************************************
+ **         Chords Diagram          **
+ *************************************/
+.chord path {
+    fill-opacity: .67;
+    stroke: #000;
+    stroke-width: .5px;
+}
+
+/*************************************
+ **         Ingest Summary          **
+ *************************************/
+
+
+.x.axis path {
+    stroke: #000;
+}
+
+.y.axis path {
+    stroke: #000;
+}
+
+path.line {
+    fill: none;
+    stroke: #000;
+    stroke-width: .5px;
+}

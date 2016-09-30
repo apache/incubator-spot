@@ -1,0 +1,9 @@
+{
+    "IANA": {
+                        "dns_qry_class":"dns-qclass.csv",
+                        "dns_qry_type":"dns-qtype.csv",
+                        "dns_qry_rcode":"dns-rcode.csv",
+                        "proxy_http_rcode":"http-rcode.csv"
+                }
+}
+

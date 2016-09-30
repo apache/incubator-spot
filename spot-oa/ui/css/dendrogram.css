@@ -1,0 +1,23 @@
+    .dendrogram {
+      overflow-y: auto;
+      overflow-x: auto;
+      height: 100%;
+    }
+
+    .dendrogram .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
+
+    .dendrogram .node {
+      font: 10px sans-serif;
+      stroke: hsl(0, 0%, 0%);
+      stroke-width: 0;
+    }
+
+    .dendrogram .link {
+      fill: none;
+      stroke: hsl(0, 0%, 80%);
+      stroke-width: 1.5px;
+    }

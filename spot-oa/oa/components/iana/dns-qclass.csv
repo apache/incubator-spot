@@ -1,0 +1,10 @@
+Decimal,Hexadecimal,Name,Reference
+0,0x00000000,Reserved,[RFC6895]
+1,0x00000001,Internet (IN),[RFC1035]
+2,0x00000002,Unassigned,
+3,0x00000003,Chaos (CH),"[D. Moon, ""Chaosnet"", A.I. Memo 628, Massachusetts Institute of
+Technology Artificial Intelligence Laboratory, June 1981.]"
+4,0x00000004,Hesiod (HS),"[Dyer, S., and F. Hsu, ""Hesiod"", Project Athena Technical
+Plan - Name Service, April 1987.]"
+254,0x000000FE,QCLASS NONE,[RFC2136]
+255,0x000000FF,QCLASS * (ANY),[RFC1035]

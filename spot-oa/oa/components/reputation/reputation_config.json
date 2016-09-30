@@ -1,0 +1,14 @@
+{
+    "gti":{
+            "server" : "<server>",
+            "user" : "<user>",
+            "password" : "<password>",
+            "ci" : "{\"ci\":{\"cliid\":\"<cliid>\", \"prn\":\"<prn>\", \"sdkv\":\"1.0\", \"pv\":\"1.0.0\", \"pev\":1, \"rid\":1, \"affid\":\"0\"},\"q\":[###QUERY###]}",
+            "refclient" : "<refclient location>",
+            "category_file":"<gti_catcodes file location>"
+        },
+    "fb":{
+        "app_id" : "<app_id>",
+        "app_secret" : "<app_secret>"
+    }
+}
