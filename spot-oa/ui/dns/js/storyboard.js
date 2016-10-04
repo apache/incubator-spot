@@ -1,8 +1,8 @@
 var React = require('react');
 
-var OniActions = require('../../js/actions/OniActions');
-var OniConstants = require('../../js/constants/OniConstants');
-var OniUtils = require('../../js/utils/OniUtils');
+var SpotActions = require('../../js/actions/SpotActions');
+var SpotConstants = require('../../js/constants/SpotConstants');
+var SpotUtils = require('../../js/utils/SpotUtils');
 var DateInput = require('../../js/components/DateInput.react');
 var StoryboardActions = require('../../js/actions/StoryboardActions');
 
@@ -32,25 +32,25 @@ var IncidentProgressionPanel = require('./components/IncidentProgressionPanel.re
 var CommentsStore = require('./stores/CommentsStore');
 
 React.render(
-  <div id="oni-content">
+  <div id="spot-content">
     <PanelRow>
-      <Panel title={OniConstants.COMMENTS_PANEL} expandable>
+      <Panel title={SpotConstants.COMMENTS_PANEL} expandable>
         <ExecutiveThreatBriefingPanel store={CommentsStore} />
       </Panel>
-      <Panel title={OniConstants.INCIDENT_PANEL} expandable>
+      <Panel title={SpotConstants.INCIDENT_PANEL} expandable>
         <IncidentProgressionPanel />
       </Panel>
     </PanelRow>
   </div>,
-  document.getElementById('oni-content-wrapper')
+  document.getElementById('spot-content-wrapper')
 );
 
 // Set search criteria
 var date;
 
-date = OniUtils.getCurrentDate();
+date = SpotUtils.getCurrentDate();
 
-OniActions.setDate(date);
+SpotActions.setDate(date);
 
 // Make inital load
 StoryboardActions.reloadComments();

@@ -1,54 +1,54 @@
 /* All devices */
-.oni-maximized {
+.spot-maximized {
     width: 100% !important;
     height: 100% !important;
 }
 
-.oni-minimized {
+.spot-minimized {
     position: absolute;
     top: -1000000px;
     left: -1000000px;
 }
 
-.row.oni-row {
+.row.spot-row {
     margin: 0;
 }
 
-.oni-frame > .oni-frame-content > .panel > .panel-heading {
+.spot-frame > .spot-frame-content > .panel > .panel-heading {
     height: 35px;
 }
 
-.oni-frame > .oni-frame-content > .panel > .panel-heading .panel-toolbar {
+.spot-frame > .spot-frame-content > .panel > .panel-heading .panel-toolbar {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.oni-frame > .oni-frame-content > .panel > .panel-heading .panel-toolbar li {
+.spot-frame > .spot-frame-content > .panel > .panel-heading .panel-toolbar li {
     display: inline-block;
     padding-left: 5px;
     cursor: pointer;
 }
 
-.oni-frame > .oni-frame-content > .panel > .panel-body {
+.spot-frame > .spot-frame-content > .panel > .panel-body {
     padding: 0;
 }
 
-.oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container.container-box {
+.spot-frame > .spot-frame-content > .panel > .panel-body > .panel-body-container.container-box {
     overflow: hidden !important;
 }
 
-.oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container.container-box > .inner-container-box {
+.spot-frame > .spot-frame-content > .panel > .panel-body > .panel-body-container.container-box > .inner-container-box {
     max-height: 100%;
     overflow: auto;
 }
 
-.oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container {
+.spot-frame > .spot-frame-content > .panel > .panel-body > .panel-body-container {
     width: 100%;
     overflow-x: auto;
 }
 
-.oni-frame .panel-body-container.container-box > * {
+.spot-frame .panel-body-container.container-box > * {
     height: 100%;
     width: 100%;
     padding: 0;
@@ -60,16 +60,16 @@
 
 /* Small devices (tablets, 768px and up) */
 @media (max-width: 991px) {
-    .oni-row {
+    .spot-row {
         min-height: 400px;
     }
 
-    .oni-frame,
-    .oni-frame > .oni-frame-content,
-    .oni-frame > .oni-frame-content > .panel,
-    .oni-frame > .oni-frame-content > .panel > .panel-body,
-    .oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container,
-    .oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container.container-box > *
+    .spot-frame,
+    .spot-frame > .spot-frame-content,
+    .spot-frame > .spot-frame-content > .panel,
+    .spot-frame > .spot-frame-content > .panel > .panel-body,
+    .spot-frame > .spot-frame-content > .panel > .panel-body > .panel-body-container,
+    .spot-frame > .spot-frame-content > .panel > .panel-body > .panel-body-container.container-box > *
     {
         min-height: inherit;
     }
@@ -82,62 +82,62 @@
         overflow-x: hidden;
     }
 
-    #oni-nav {
+    #spot-nav {
         position: fixed;
         z-index: 3;
         width: 100%;
         height: 94px;
     }
 
-    #oni-content, #oni-content-wrapper {
+    #spot-content, #spot-content-wrapper {
         height: 100%;
         width: 100%;
     }
 
-    #oni-content-wrapper {
+    #spot-content-wrapper {
         padding: 94px 0 0 0;
     }
 
-    #oni-content > .oni-row {
+    #spot-content > .spot-row {
         margin: 0;
     }
 
-    .oni-frame {
+    .spot-frame {
         height: 100%;
         padding: 0;
     }
 
-    .oni-frame > .oni-frame-content {
+    .spot-frame > .spot-frame-content {
         height: 100%;
         padding: 10px;
     }
 
-    .oni-frame > .oni-frame-content > .panel {
+    .spot-frame > .spot-frame-content > .panel {
         width: 100%;
         height: 100%;
         margin: 0;
         position: relative;
     }
 
-    .oni-frame > .oni-frame-content > .panel > .panel-heading {
+    .spot-frame > .spot-frame-content > .panel > .panel-heading {
         width: 100%;
         position: absolute;
         z-index: 2;
     }
 
-    .oni-frame > .oni-frame-content > .panel > .panel-body {
+    .spot-frame > .spot-frame-content > .panel > .panel-body {
         height: 100%;
         width: 100%;
         padding: 35px 0 0 0;
         overflow: hidden;
     }
 
-    .oni-frame > .oni-frame-content > .panel.no-heading > .panel-body {
+    .spot-frame > .spot-frame-content > .panel.no-heading > .panel-body {
         width: 100%;
         padding-top: 0px;
     }
 
-    .oni-frame > .oni-frame-content > .panel > .panel-body > .panel-body-container {
+    .spot-frame > .spot-frame-content > .panel > .panel-body > .panel-body-container {
         height: 100%;
     }
 }
@@ -145,7 +145,7 @@
 /* Large devices (large desktops, 1200px and up) */
 
 /*******************************
- **           ONI             **
+ **           Spot             **
  *******************************/
 
 
@@ -155,7 +155,7 @@
 /*
 prevent the active panel from collapsing
  */
-#oni-executive-threat-briefing.panel-group [aria-expanded=true] {
+#spot-executive-threat-briefing.panel-group [aria-expanded=true] {
     /*
     http://caniuse.com/#feat=pointer-events
     Works for MOST modern browsers. (- Opera Mobile)
@@ -163,7 +163,7 @@ prevent the active panel from collapsing
     pointer-events: none;
 }
 
-#oni-executive-threat-briefing.panel-group a[aria-expanded=true] {
+#spot-executive-threat-briefing.panel-group a[aria-expanded=true] {
     text-decoration: underline;
 }
 
@@ -279,21 +279,21 @@ line {
     opacity: 0.4;
 }
 
-.oni-tooltip .tooltip-inner {
+.spot-tooltip .tooltip-inner {
     word-wrap: break-word;
 }
 
-.oni-text-wrapper {
+.spot-text-wrapper {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 12em;
 }
 
-.oni-text-wrapper.oni-text-sm {
+.spot-text-wrapper.spot-text-sm {
     width: 6em;
 }
 
-.oni-text-wrapper.oni-text-lg {
+.spot-text-wrapper.spot-text-lg {
     width: 18em;
 }

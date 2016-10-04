@@ -1,8 +1,8 @@
 var d3 = require('d3');
 var assign = require('object-assign');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var NetflowConstants = require('../constants/NetflowConstants');
 var RestStore = require('../../../js/stores/RestStore');
 
@@ -49,20 +49,20 @@ var DetailsStore = assign(new RestStore(NetflowConstants.API_DETAILS), {
   }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
   switch (action.actionType) {
-    case OniConstants.UPDATE_DATE:
+    case SpotConstants.UPDATE_DATE:
       DetailsStore.setDate(action.date);
       break;
-    case OniConstants.SELECT_THREAT:
+    case SpotConstants.SELECT_THREAT:
       DetailsStore.setSrcIp(action.threat.srcIP);
       DetailsStore.setDstIp(action.threat.dstIP);
       DetailsStore.setTime(action.threat.tstart);
       break;
-    case OniConstants.RELOAD_SUSPICIOUS:
+    case SpotConstants.RELOAD_SUSPICIOUS:
       DetailsStore.resetData();
       break;
-    case OniConstants.RELOAD_DETAILS:
+    case SpotConstants.RELOAD_DETAILS:
       DetailsStore.reload();
       break;
   }

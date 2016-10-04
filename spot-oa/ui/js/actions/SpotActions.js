@@ -1,15 +1,15 @@
 var $ = require('jquery');
 
-var OniDispatcher = require('../dispatchers/OniDispatcher');
-var OniConstants = require('../constants/OniConstants');
-var OniUtils = require('../utils/OniUtils');
+var SpotDispatcher = require('../dispatchers/SpotDispatcher');
+var SpotConstants = require('../constants/SpotConstants');
+var SpotUtils = require('../utils/SpotUtils');
 
-var OniActions = {
+var SpotActions = {
     setDate: function (date, name) {
         var regex;
 
         name = name || 'date';
-        OniUtils.setUrlParam(name, date);
+        SpotUtils.setUrlParam(name, date);
 
         // Update links to match date
 
@@ -22,36 +22,36 @@ var OniActions = {
             }
         });
 
-        OniDispatcher.dispatch({
-            actionType: OniConstants.UPDATE_FILTER,
+        SpotDispatcher.dispatch({
+            actionType: SpotConstants.UPDATE_FILTER,
             filter: ''
         });
 
-        OniDispatcher.dispatch({
-            actionType: OniConstants.UPDATE_DATE,
+        SpotDispatcher.dispatch({
+            actionType: SpotConstants.UPDATE_DATE,
             date: date,
             name: name
         });
     },
     expandPanel: function (panel) {
-        OniDispatcher.dispatch({
-            actionType: OniConstants.EXPAND_PANEL,
+        SpotDispatcher.dispatch({
+            actionType: SpotConstants.EXPAND_PANEL,
             panel: panel
         });
     },
     restorePanel: function (panel) {
-        OniDispatcher.dispatch({
-            actionType: OniConstants.RESTORE_PANEL,
+        SpotDispatcher.dispatch({
+            actionType: SpotConstants.RESTORE_PANEL,
             panel: panel
         });
     },
     toggleMode: function (panel, mode) {
-        OniDispatcher.dispatch({
-            actionType: OniConstants.TOGGLE_MODE_PANEL,
+        SpotDispatcher.dispatch({
+            actionType: SpotConstants.TOGGLE_MODE_PANEL,
             panel: panel,
             mode: mode
         });
     }
 };
 
-module.exports = OniActions;
+module.exports = SpotActions;

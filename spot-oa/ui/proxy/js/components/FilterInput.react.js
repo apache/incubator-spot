@@ -2,7 +2,6 @@ var React = require('react');
 
 var EdInActions = require('../../../js/actions/EdInActions');
 var SuspiciousStore = require('../stores/SuspiciousStore');
-var OniUtils = require('../../../js/utils/OniUtils');
 
 var FilterInput = React.createClass({
   getInitialState: function ()

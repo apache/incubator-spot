@@ -1,7 +1,7 @@
 var assign = require('object-assign');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var JsonStore = require('../../../js/stores/JsonStore');
 
 var ProxyConstants = require('../constants/ProxyConstants');
@@ -18,17 +18,17 @@ var IncidentProgressionStore = assign(new JsonStore(ProxyConstants.API_INCIDENT_
     }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
     switch (action.actionType) {
-        case OniConstants.UPDATE_DATE:
+        case SpotConstants.UPDATE_DATE:
             IncidentProgressionStore.setDate(action.date);
 
             break;
-        case OniConstants.RELOAD_COMMENTS:
+        case SpotConstants.RELOAD_COMMENTS:
             IncidentProgressionStore.removeRestFilter('hash');
             IncidentProgressionStore.resetData();
             break;
-        case OniConstants.SELECT_COMMENT:
+        case SpotConstants.SELECT_COMMENT:
             IncidentProgressionStore.setHash(action.comment.hash);
             IncidentProgressionStore.reload();
 
@@ -37,4 +37,3 @@ OniDispatcher.register(function (action) {
 });
 
 module.exports = IncidentProgressionStore;
-

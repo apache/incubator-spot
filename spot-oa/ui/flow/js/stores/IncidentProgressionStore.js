@@ -1,7 +1,7 @@
 var assign = require('object-assign');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var FlowConstants = require('../constants/NetflowConstants');
 var RestStore = require('../../../js/stores/JsonStore');
 
@@ -35,12 +35,12 @@ var IncidentProgressionStore = assign(new RestStore(FlowConstants.API_INCIDENT_P
     }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
     switch (action.actionType) {
-        case OniConstants.UPDATE_DATE:
+        case SpotConstants.UPDATE_DATE:
             IncidentProgressionStore.setDate(action.date);
             break;
-        case OniConstants.SELECT_COMMENT:
+        case SpotConstants.SELECT_COMMENT:
             var comment, filterParts, key;
 
             IncidentProgressionStore.clearFilter();
@@ -69,4 +69,3 @@ OniDispatcher.register(function (action) {
 });
 
 module.exports = IncidentProgressionStore;
-

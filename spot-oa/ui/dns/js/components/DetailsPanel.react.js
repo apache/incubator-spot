@@ -1,8 +1,8 @@
 var React = require('react');
 
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 
-var OniStore = require('../../../js/stores/OniStore');
+var SpotStore = require('../../../js/stores/SpotStore');
 
 var DetailsTablePanel = require('./DetailsTablePanel.react');
 var DetailsDendrogramPanel = require('./DetailsDendrogramPanel.react');
@@ -17,15 +17,15 @@ var DetailsPanel = React.createClass({
   },
   componentDidMount: function ()
   {
-    OniStore.addPanelToggleModeListener(this._onToggleMode);
+    SpotStore.addPanelToggleModeListener(this._onToggleMode);
   },
   componentWillUnmount: function ()
   {
-    OniStore.removePanelToggleModeListener(this._onToggleMode);
+    SpotStore.removePanelToggleModeListener(this._onToggleMode);
   },
   render: function ()
   {
-    if (this.state.mode === OniConstants.VISUAL_DETAILS_MODE)
+    if (this.state.mode === SpotConstants.VISUAL_DETAILS_MODE)
     {
       return (
         <DetailsDendrogramPanel />

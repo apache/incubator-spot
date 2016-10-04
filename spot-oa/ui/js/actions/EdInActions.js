@@ -1,58 +1,58 @@
-var OniDispatcher = require('../dispatchers/OniDispatcher');
-var OniActions = require('./OniActions');
-var OniConstants = require('../constants/OniConstants');
-var OniUtils = require('../utils/OniUtils');
+var SpotDispatcher = require('../dispatchers/SpotDispatcher');
+var SpotActions = require('./SpotActions');
+var SpotConstants = require('../constants/SpotConstants');
+var SpotUtils = require('../utils/SpotUtils');
 
 var EdInActions = {
   setFilter: function (filter)
   {
-    OniUtils.setUrlParam('filter', filter);
+    SpotUtils.setUrlParam('filter', filter);
 
-    OniDispatcher.dispatch({
-      actionType: OniConstants.UPDATE_FILTER,
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.UPDATE_FILTER,
       filter: filter
     });
   },
   reloadSuspicious: function () {
-    OniActions.toggleMode(OniConstants.DETAILS_PANEL, OniConstants.DETAILS_MODE);
-    OniDispatcher.dispatch({
-      actionType: OniConstants.RELOAD_SUSPICIOUS
+    SpotActions.toggleMode(SpotConstants.DETAILS_PANEL, SpotConstants.DETAILS_MODE);
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.RELOAD_SUSPICIOUS
     });
   },
   reloadDetails: function () {
-    OniDispatcher.dispatch({
-      actionType: OniConstants.RELOAD_DETAILS
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.RELOAD_DETAILS
     });
   },
   reloadVisualDetails: function () {
-    OniDispatcher.dispatch({
-      actionType: OniConstants.RELOAD_DETAILS_VISUAL
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.RELOAD_DETAILS_VISUAL
     });
   },
   highlightThreat: function (id)
   {
-    OniDispatcher.dispatch({
-      actionType: OniConstants.HIGHLIGHT_THREAT,
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.HIGHLIGHT_THREAT,
       threat: id
     });
   },
   unhighlightThreat: function ()
   {
-    OniDispatcher.dispatch({
-      actionType: OniConstants.UNHIGHLIGHT_THREAT
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.UNHIGHLIGHT_THREAT
     });
   },
   selectThreat: function (threat)
   {
-    OniDispatcher.dispatch({
-      actionType: OniConstants.SELECT_THREAT,
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.SELECT_THREAT,
       threat: threat
     });
   },
   selectIp: function (ip)
   {
-    OniDispatcher.dispatch({
-      actionType: OniConstants.SELECT_IP,
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.SELECT_IP,
       ip: ip
     });
   },

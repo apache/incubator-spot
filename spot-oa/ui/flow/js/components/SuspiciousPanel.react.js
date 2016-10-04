@@ -2,7 +2,7 @@ var React = require('react');
 
 var GridPanelMixin = require('../../../js/components/GridPanelMixin.react');
 var SuspiciousGridMixin = require('../../../js/components/SuspiciousGridMixin.react.js');
-var OniUtils = require('../../../js/utils/OniUtils.js');
+var SpotUtils = require('../../../js/utils/SpotUtils.js');
 var SuspiciousStore = require('../stores/SuspiciousStore');
 
 var SuspiciousPanel = React.createClass({
@@ -47,13 +47,13 @@ var SuspiciousPanel = React.createClass({
     _render_srcIP_cell: function (srcIp, item, idx) {
         var reps, highestRep, srcIpContent;
 
-        reps = OniUtils.parseReputation(item.srcIP_rep);
-        highestRep = OniUtils.getHighestReputation(reps);
+        reps = SpotUtils.parseReputation(item.srcIP_rep);
+        highestRep = SpotUtils.getHighestReputation(reps);
 
         srcIpContent = this._renderIpCell('src_' + idx, item.srcIP, +item.srcIpInternal);
 
         return (
-            <p key={'srcIP_' + idx} className={'srcIP text-' + OniUtils.CSS_RISK_CLASSES[highestRep]}>
+            <p key={'srcIP_' + idx} className={'srcIP text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
                 {srcIpContent}
             </p>
         );
@@ -70,13 +70,13 @@ var SuspiciousPanel = React.createClass({
     _render_dstIP_cell: function (dstIp, item, idx) {
         var reps, highestRep, dstIpContent;
 
-        reps = OniUtils.parseReputation(item.dstIP_rep);
-        highestRep = OniUtils.getHighestReputation(reps);
+        reps = SpotUtils.parseReputation(item.dstIP_rep);
+        highestRep = SpotUtils.getHighestReputation(reps);
 
         dstIpContent = this._renderIpCell('dst_' + idx, item.dstIP, +item.destIpInternal);
 
         return (
-            <p key={'dstIP_' + idx} className={'srcIP text-' + OniUtils.CSS_RISK_CLASSES[highestRep]}>
+            <p key={'dstIP_' + idx} className={'srcIP text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
                 {dstIpContent}
             </p>
         );
@@ -103,13 +103,13 @@ var SuspiciousPanel = React.createClass({
     _render_srcIP_rep_cell: function (srcIP_rep, item, idx) {
         var reps, highestRep, content;
 
-        reps = OniUtils.parseReputation(srcIP_rep);
-        highestRep = OniUtils.getHighestReputation(reps);
+        reps = SpotUtils.parseReputation(srcIP_rep);
+        highestRep = SpotUtils.getHighestReputation(reps);
 
         content = this._renderInfoCell('src_info' + idx, +item.srcIpInternal, item.srcGeo, item.srcDomain, reps);
 
         return (
-            <p key={'src_info_' + idx} className={'srcIP text-' + OniUtils.CSS_RISK_CLASSES[highestRep]}>
+            <p key={'src_info_' + idx} className={'srcIP text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
                 {content}
             </p>
         );
@@ -128,13 +128,13 @@ var SuspiciousPanel = React.createClass({
     _render_dstIP_rep_cell: function (dstIP_rep, item, idx) {
         var reps, highestRep, content;
 
-        reps = OniUtils.parseReputation(dstIP_rep);
-        highestRep = OniUtils.getHighestReputation(reps);
+        reps = SpotUtils.parseReputation(dstIP_rep);
+        highestRep = SpotUtils.getHighestReputation(reps);
 
         content = this._renderInfoCell('dst_info' + idx, +item.dstIpInternal, item.dstGeo, item.dstDomain, reps);
 
         return (
-            <p key={'dst_info_' + idx} className={'dstIP text-' + OniUtils.CSS_RISK_CLASSES[highestRep]}>
+            <p key={'dst_info_' + idx} className={'dstIP text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
                 {content}
             </p>
         );

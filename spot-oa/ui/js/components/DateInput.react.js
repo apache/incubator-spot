@@ -1,8 +1,8 @@
 var $ = require('jquery');
 var React = require('react');
 
-var OniActions = require('../actions/OniActions');
-var OniUtils = require('../utils/OniUtils');
+var SpotActions = require('../actions/SpotActions');
+var SpotUtils = require('../utils/SpotUtils');
 
 var DateInput = React.createClass({
     propTypes: {
@@ -18,7 +18,7 @@ var DateInput = React.createClass({
         }
     },
     getInitialState: function () {
-        return {date: this.props.value || OniUtils.getCurrentDate(this.props.name)};
+        return {date: this.props.value || SpotUtils.getCurrentDate(this.props.name)};
     },
     componentDidMount: function () {
         $(this.getDOMNode()).datepicker({
@@ -39,7 +39,7 @@ var DateInput = React.createClass({
     _onChange: function (e) {
         var date = e.date;
 
-        OniActions.setDate(OniUtils.getDateString(date), this.props.name);
+        SpotActions.setDate(SpotUtils.getDateString(date), this.props.name);
         this.props.onChange && this.props.onChange.call(this, e);
     }
 });

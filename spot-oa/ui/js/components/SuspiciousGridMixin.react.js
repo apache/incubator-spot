@@ -1,10 +1,9 @@
 var $ = require('jquery');
 var React = require('react');
 
-var OniActions = require('../actions/OniActions');
+var SpotActions = require('../actions/SpotActions');
 var EdInActions = require('../actions/EdInActions');
-var OniConstants = require('../constants/OniConstants');
-var OniUtils = require('../utils/OniUtils');
+var SpotConstants = require('../constants/SpotConstants');
 
 var SuspiciousGridMixin = {
     emptySetMessage: 'There is no data available for selected date',
@@ -67,7 +66,7 @@ var SuspiciousGridMixin = {
         // Select elements on Network and Details view
         EdInActions.selectThreat(item);
         EdInActions.reloadDetails();
-        OniActions.toggleMode(OniConstants.DETAILS_PANEL, OniConstants.DETAILS_MODE);
+        SpotActions.toggleMode(SpotConstants.DETAILS_PANEL, SpotConstants.DETAILS_MODE);
     },
     _onMouseEnterRow: function (item) {
         EdInActions.highlightThreat(item);

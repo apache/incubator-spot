@@ -2,11 +2,10 @@ var d3 = require('d3');
 var d3Interpolate = require('d3-interpolate');
 var React = require('react');
 
-var OniActions = require('../../../js/actions/OniActions');
+var SpotActions = require('../../../js/actions/SpotActions');
 var EdInActions = require('../../../js/actions/EdInActions');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var SuspiciousStore = require('../stores/SuspiciousStore');
-var OniUtils = require('../../../js/utils/OniUtils')
 
 var topLevelDomains;
 
@@ -328,7 +327,7 @@ function filterDataAndBuildGraph()
 function nodeclick (d)
 {
   EdInActions.selectIp(d.name);
-  OniActions.toggleMode(OniConstants.DETAILS_PANEL, OniConstants.VISUAL_DETAILS_MODE);
+  SpotActions.toggleMode(SpotConstants.DETAILS_PANEL, SpotConstants.VISUAL_DETAILS_MODE);
   EdInActions.reloadVisualDetails();
 }
 
@@ -469,7 +468,7 @@ var NetworkPanel = React.createClass({
     else if (this.state.loading)
     {
       content = (
-        <div className="oni_loader">
+        <div className="spot-loader">
             Loading <span className="spinner"></span>
         </div>
       );

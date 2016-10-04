@@ -1,9 +1,9 @@
 var React = require('react');
 
-var OniConstants = require('../../js/constants/OniConstants');
-var OniActions = require('../../js/actions/OniActions');
+var SpotConstants = require('../../js/constants/SpotConstants');
+var SpotActions = require('../../js/actions/SpotActions');
 var EdInActions = require('../../js/actions/EdInActions');
-var OniUtils = require('../../js/utils/OniUtils');
+var SpotUtils = require('../../js/utils/SpotUtils');
 
 // Build and Render Toolbar
 var FilterInput = require('./components/FilterInput.react');
@@ -54,34 +54,34 @@ var NetworkPanel = require('./components/NetworkPanel.react');
 var IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
 var DetailsPanel = require('./components/DetailsPanel.react');
 
-var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure(OniConstants.NOTEBOOK_PANEL);
+var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure(SpotConstants.NOTEBOOK_PANEL);
 
 React.render(
-  <div id="oni-content">
+  <div id="spot-content">
     <PanelRow>
-      <Panel title={OniConstants.SUSPICIOUS_PANEL} expandable reloadable onReload={EdInActions.reloadSuspicious}>
+      <Panel title={SpotConstants.SUSPICIOUS_PANEL} expandable reloadable onReload={EdInActions.reloadSuspicious}>
         <SuspiciousPanel />
       </Panel>
-      <Panel title={OniConstants.NETVIEW_PANEL} container expandable reloadable onReload={EdInActions.reloadSuspicious}>
+      <Panel title={SpotConstants.NETVIEW_PANEL} container expandable reloadable onReload={EdInActions.reloadSuspicious}>
         <NetworkPanel />
       </Panel>
     </PanelRow>
     <PanelRow>
       <Panel title={ipynbClosure.getTitle()} container extraButtons={ipynbClosure.getButtons}>
-        <IPythonNotebookPanel title={ipynbClosure.getTitle()} date={OniUtils.getCurrentDate()} ipynb="dns/${date}/Edge_Investigation.ipynb" />
+        <IPythonNotebookPanel title={ipynbClosure.getTitle()} date={SpotUtils.getCurrentDate()} ipynb="dns/${date}/Edge_Investigation.ipynb" />
       </Panel>
-      <Panel title={OniConstants.DETAILS_PANEL} container expandable>
-        <DetailsPanel title={OniConstants.DETAILS_PANEL} />
+      <Panel title={SpotConstants.DETAILS_PANEL} container expandable>
+        <DetailsPanel title={SpotConstants.DETAILS_PANEL} />
       </Panel>
     </PanelRow>
   </div>,
-  document.getElementById('oni-content-wrapper')
+  document.getElementById('spot-content-wrapper')
 );
 
-var initial_filter = OniUtils.getCurrentFilter();
+var initial_filter = SpotUtils.getCurrentFilter();
 
 // Set search criteria
-OniActions.setDate(OniUtils.getCurrentDate());
+SpotActions.setDate(SpotUtils.getCurrentDate());
 initial_filter && EdInActions.setFilter(initial_filter);
 
 // Load data

@@ -4,8 +4,8 @@ var d3 = require('d3');
 var React = require('react');
 
 var EdInActions = require('../../../js/actions/EdInActions');
-var OniConstants = require('../../../js/constants/OniConstants');
-var OniUtils = require('../../../js/utils/OniUtils');
+var SpotConstants = require('../../../js/constants/SpotConstants');
+var SpotUtils = require('../../../js/utils/SpotUtils');
 var SuspiciousStore = require('../stores/SuspiciousStore');
 
 var NetworkViewPanel = React.createClass({
@@ -28,7 +28,7 @@ var NetworkViewPanel = React.createClass({
         else if (this.state.loading)
         {
             content = (
-                <div className="oni_loader">
+                <div className="spot-loader">
                     Loading <span className="spinner"></span>
                 </div>
             );
@@ -112,7 +112,7 @@ var NetworkViewPanel = React.createClass({
 
         svg.attr('width', width).attr('height', height);
 
-        this.sizeScale = d3.scale.linear().domain([0, OniConstants.MAX_SUSPICIOUS_ROWS]).range([4.5, width/10]);
+        this.sizeScale = d3.scale.linear().domain([0, SpotConstants.MAX_SUSPICIOUS_ROWS]).range([4.5, width/10]);
 
         this.draw();
     },
@@ -170,7 +170,7 @@ var NetworkViewPanel = React.createClass({
                                                 .text('\u002a');
 
         nodeEnter
-            .attr('class', d => OniUtils.CSS_RISK_CLASSES[d.rep])
+            .attr('class', d => SpotUtils.CSS_RISK_CLASSES[d.rep])
             .classed('node', d => !d.root)
             .classed('proxy_node', d => d.root)
             .classed('blink_me', d => ids.indexOf(d.id)>-1)
@@ -297,7 +297,7 @@ var NetworkViewPanel = React.createClass({
         if (!state.loading)
         {
             data = {
-                id: 'oni_proxy',
+                id: 'spot_proxy',
                 name: 'Proxy',
                 type: 'Root',
                 tooltip: 'Double click to toggle child nodes',
@@ -317,7 +317,7 @@ var NetworkViewPanel = React.createClass({
                     return;
                 }
 
-                rep = OniUtils.getHighestReputation(item.uri_rep);
+                rep = SpotUtils.getHighestReputation(item.uri_rep);
                 data.rep = Math.max(data.rep, rep);
                 methodKey = item.reqmethod;
                 if (refs[methodKey]===undefined) {

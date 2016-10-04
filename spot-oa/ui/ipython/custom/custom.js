@@ -22,24 +22,24 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
     // jQuery must be available for easy mode to woark properly
     if ($===undefined) {
-        if (/#oni_jquery_retry=[015-9]/.test(window.location.hash)) {
+        if (/#spot_jquery_retry=[015-9]/.test(window.location.hash)) {
             alert('Notebook was not able to load jQuery after 5 attempts. Please try again later, this is a known issue.');
             console.warn('Bootstrap\'s tooltip was not loaded.');
         }
         else {
             confirm('Notebook failed to load jQuery, easy mode would not work properly without it. Would you you like to try again?')
-            && retry('oni_jquery_retry');
+            && retry('spot_jquery_retry');
         }
 
         return;
     }
 
     if ($.fn.tooltip===undefined) {
-        if (/#oni_bootstrap_retry=\d/.test(window.location.hash)) {
+        if (/#spot_bootstrap_retry=\d/.test(window.location.hash)) {
             alert('Notebook was not able to load bootstrap\'s tooltip plugin. You can still work withuot this feature.');
         } else {
             confirm('Notebook was not able to load bootstrap\'s tooltip plugin. You can still work withuot this feature. Would you like to try again?')
-            && retry('oni_bootstrap_retry');
+            && retry('spot_bootstrap_retry');
         }
     }
 
@@ -65,7 +65,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
      */
     function showEasyMode()
     {
-        $(document.body).addClass('oni_easy_mode').removeClass('oni_ninja_mode');
+        $(document.body).addClass('spot_easy_mode').removeClass('spot_ninja_mode');
     }
 
     /**
@@ -75,15 +75,15 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
      */
     function hideEasyMode()
     {
-        $(document.body).addClass('oni_ninja_mode').removeClass('oni_easy_mode');
+        $(document.body).addClass('spot_ninja_mode').removeClass('spot_easy_mode');
     }
 
     function insertProgressIndicator()
     {
         $(document.body).append(
-            '<div id="oni_easy_mode_loader">' +
-                '<span id="oni_easy_mode_loader_details"></span>' +
-                '<span id="oni_easy_mode_loader_spinner"></span>' +
+            '<div id="spot_easy_mode_loader">' +
+                '<span id="spot_easy_mode_loader_details"></span>' +
+                '<span id="spot_easy_mode_loader_spinner"></span>' +
             '</div>'
         );
     }
@@ -93,9 +93,9 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
      */
     function removeProgressIndicator()
     {
-        $(document.body).removeClass('oni_easy_mode_loading');
+        $(document.body).removeClass('spot_easy_mode_loading');
 
-        $('#oni_easy_mode_loader').remove();
+        $('#spot_easy_mode_loader').remove();
     }
 
     /**
@@ -103,7 +103,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
      */
     function updateProgressIndicator(content)
     {
-        $('#oni_easy_mode_loader_details').html(content);
+        $('#spot_easy_mode_loader_details').html(content);
     }
 
     /**
@@ -111,12 +111,12 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
      */
     function showBuildingUiIndicator()
     {
-        $(document.body).addClass('oni_easy_mode_loading');
+        $(document.body).addClass('spot_easy_mode_loading');
 
         insertProgressIndicator();
 
         updateProgressIndicator(
-            'Building UI <span id="oni_easy_mode_loader_progress">0</span>%'
+            'Building UI <span id="spot_easy_mode_loader_progress">0</span>%'
         );
     }
 
@@ -129,7 +129,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
         p = (easyMode.cells.total-easyMode.cells.execution_queue.length) * 100 / easyMode.cells.total;
 
-        $('#oni_easy_mode_loader_progress').text(Math.floor(p));
+        $('#spot_easy_mode_loader_progress').text(Math.floor(p));
     }
 
     function easyModeBootStrap (IPython)
@@ -139,7 +139,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
         // 1 Build widgets
         easyMode.building = true;
 
-        console.info('ONI: Building easy mode...');
+        console.info('Spot: Building easy mode...');
 
         // 2 Create an execution queue to display progress
         easyMode.cells.execution_queue = [];
@@ -176,8 +176,8 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
     }
 
     if (isEasyModeAvailable()) {
-        // Add oni CSS classes (easymode enabled by default)
-        $(document.body).addClass('oni').addClass('oni_easy_mode').addClass('oni_easy_mode_loading');
+        // Add spot CSS classes (easymode enabled by default)
+        $(document.body).addClass('spot').addClass('spot_easy_mode').addClass('spot_easy_mode_loading');
 
         // Listen for URL's hash changes
         $(window).on('hashchange', function ()
@@ -192,19 +192,19 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
         });
     }
 
-    // Enable oni tooltip text wrapper
+    // Enable spot tooltip text wrapper
     $(function () {
         $('body').tooltip({
-            selector: '.oni-text-wrapper[data-toggle]',
+            selector: '.spot-text-wrapper[data-toggle]',
             container: 'body',
-            template: '<div class="oni-tooltip tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+            template: '<div class="spot-tooltip tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
             title: function () {
                 return $(this).html();
             },
             html: true
         });
 
-        $('body').on('show.bs.tooltip', '.oni-text-wrapper', function () {
+        $('body').on('show.bs.tooltip', '.spot-text-wrapper', function () {
             return this.clientWidth !== this.scrollWidth || this.clientHeight !== this.scrollHeight;
         });
     });
@@ -217,7 +217,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
         // Do nothing when running stand alone
         if (!isEasyModeAvailable()) return;
 
-        // We are running inside and iframe from ONI. Let's have some fun!
+        // We are running inside and iframe from Spot. Let's have some fun!
 
         // Let Notebook be aware it is running on an iframe
         IPython._target = '_self';
@@ -227,7 +227,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
             // Skip this event while building UI
             if (!easyMode.ready) return;
 
-            $('#notebook button.btn:not([disabled])').addClass('oniDisabled').attr('disabled', 'disabled');
+            $('#notebook button.btn:not([disabled])').addClass('spotDisabled').attr('disabled', 'disabled');
 
             insertProgressIndicator();
         });
@@ -239,12 +239,12 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
             removeProgressIndicator();
 
-            $('#notebook button.btn.oniDisabled').removeClass('oniDisabled').removeAttr('disabled');
+            $('#notebook button.btn.spotDisabled').removeClass('spotDisabled').removeAttr('disabled');
         });
 
         events.on('kernel_ready.Kernel', function ()
         {
-            console.info('ONI: Kernel is ready');
+            console.info('Spot: Kernel is ready');
 
             easyMode.stage |= easyMode.KERNEL_READY;
 
@@ -253,7 +253,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
         events.on('notebook_loaded.Notebook', function ()
         {
-            console.info('ONI: Notebook loaded');
+            console.info('Spot: Notebook loaded');
 
             easyMode.stage |= easyMode.NOTEBOOK_READY;
 
@@ -275,7 +275,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
                 easyMode.building = false;
                 easyMode.ready = false;
                 isEasyModeEnabled() && alert('Ooops some code failed. Please go to ipython notebook mode and manually fix the error.');
-                $(document.body).removeClass('oni');
+                $(document.body).removeClass('spot');
                 removeProgressIndicator();
                 hideEasyMode();
                 // Select and scroll to first cell with errors
@@ -291,7 +291,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
             if (easyMode.cells.execution_queue.length===0)
             {
-                console.info('ONI: Cell execution has finished');
+                console.info('Spot: Cell execution has finished');
 
                 easyMode.ready = true;
                 easyMode.building = false;
@@ -315,7 +315,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
             easyMode.cells.execution_queue.push(cell);
 
-            console.info('ONI: Cell execution requested: ' + easyMode.cells.execution_queue.length + ' of ' + easyMode.cells.total);
+            console.info('Spot: Cell execution requested: ' + easyMode.cells.execution_queue.length + ' of ' + easyMode.cells.total);
 
             cell.clear_output(false);
             // There seems to be a bug on IPython sometimes cells with widgets dont get cleared
@@ -325,7 +325,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
         $(function ()
         {
-            console.info('ONI: DOM is ready');
+            console.info('Spot: DOM is ready');
 
             easyMode.stage |= easyMode.DOM_READY;
 

@@ -13,28 +13,28 @@ var DetailsPanel = React.createClass({
     },
     _render_host_cell(host) {
         return (
-            <p className="oni-text-wrapper" data-toggle="tooltip">
+            <p className="spot-text-wrapper" data-toggle="tooltip">
                 {host}
             </p>
         );
     },
     _render_useragent_cell(useragent) {
         return (
-            <p className="oni-text-wrapper" data-toggle="tooltip">
+            <p className="spot-text-wrapper" data-toggle="tooltip">
                 {useragent}
             </p>
         );
     },
     _render_referer_cell(referer) {
         return (
-            <p className="oni-text-wrapper" data-toggle="tooltip">
+            <p className="spot-text-wrapper" data-toggle="tooltip">
                 {referer}
             </p>
         );
     },
     _render_fulluri_cell(fulluri) {
         return (
-            <p className="oni-text-wrapper" data-toggle="tooltip">
+            <p className="spot-text-wrapper" data-toggle="tooltip">
                 {fulluri}
             </p>
         );

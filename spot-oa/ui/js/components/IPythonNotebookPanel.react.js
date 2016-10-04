@@ -1,8 +1,8 @@
 var React = require('react');
 
-var OniActions = require('../actions/OniActions');
-var OniConstants = require('../constants/OniConstants');
-var OniStore = require('../stores/OniStore');
+var SpotActions = require('../actions/SpotActions');
+var SpotConstants = require('../constants/SpotConstants');
+var SpotStore = require('../stores/SpotStore');
 
 var IPythonNotebookPanel = React.createClass({
     propTypes: {
@@ -23,13 +23,13 @@ var IPythonNotebookPanel = React.createClass({
                 toggleIPythonNotebookPanel: function () {
                     easyMode = !easyMode;
 
-                    OniActions.toggleMode(title, easyMode);
+                    SpotActions.toggleMode(title, easyMode);
 
                     if (easyMode) {
-                        OniActions.restorePanel(title);
+                        SpotActions.restorePanel(title);
                     }
                     else {
-                        OniActions.expandPanel(title);
+                        SpotActions.expandPanel(title);
                     }
                 },
                 getButtons: function () {
@@ -58,12 +58,12 @@ var IPythonNotebookPanel = React.createClass({
         return {date: this.props.date.replace(/-/g, ''), easyMode: true};
     },
     componentDidMount: function () {
-        OniStore.addChangeDateListener(this._onDateChange);
-        OniStore.addPanelToggleModeListener(this._onToggleMode);
+        SpotStore.addChangeDateListener(this._onDateChange);
+        SpotStore.addPanelToggleModeListener(this._onToggleMode);
     },
     componentWillUnmount: function () {
-        OniStore.removeChangeDateListener(this._onDateChange);
-        OniStore.removePanelToggleModeListener(this._onToggleMode);
+        SpotStore.removeChangeDateListener(this._onDateChange);
+        SpotStore.removePanelToggleModeListener(this._onToggleMode);
     },
     render: function () {
         var ipynbPath;
@@ -74,12 +74,12 @@ var IPythonNotebookPanel = React.createClass({
             <iframe
                 name="nbView"
                 className="nbView"
-                src={OniConstants.NOTEBOOKS_PATH + '/' + ipynbPath + (this.state.easyMode ? '#showEasyMode' : '#showNinjaMode') }>
+                src={SpotConstants.NOTEBOOKS_PATH + '/' + ipynbPath + (this.state.easyMode ? '#showEasyMode' : '#showNinjaMode') }>
             </iframe>
         );
     },
     _onDateChange: function () {
-        var date = OniStore.getDate().replace(/-/g, '');
+        var date = SpotStore.getDate().replace(/-/g, '');
 
         this.setState({date: date});
     },

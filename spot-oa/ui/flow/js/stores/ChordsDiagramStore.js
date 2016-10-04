@@ -1,8 +1,8 @@
 var d3 = require('d3');
 var assign = require('object-assign');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var NetflowConstants = require('../constants/NetflowConstants');
 var RestStore = require('../../../js/stores/RestStore');
 
@@ -31,15 +31,15 @@ var ChordsDiagramStore = assign(new RestStore(NetflowConstants.API_VISUAL_DETAIL
   }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
   switch (action.actionType) {
-    case OniConstants.UPDATE_DATE:
+    case SpotConstants.UPDATE_DATE:
       ChordsDiagramStore.setDate(action.date);
       break;
-    case OniConstants.SELECT_IP:
+    case SpotConstants.SELECT_IP:
       ChordsDiagramStore.setIp(action.ip);
       break;
-    case OniConstants.RELOAD_DETAILS_VISUAL:
+    case SpotConstants.RELOAD_DETAILS_VISUAL:
       ChordsDiagramStore.reload();
       break;
   }

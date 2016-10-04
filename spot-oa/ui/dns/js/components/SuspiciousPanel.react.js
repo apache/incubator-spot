@@ -2,7 +2,7 @@ var React = require('react');
 
 var GridPanelMixin = require('../../../js/components/GridPanelMixin.react');
 var SuspiciousGridMixin = require('../../../js/components/SuspiciousGridMixin.react.js');
-var OniUtils = require('../../../js/utils/OniUtils.js');
+var SpotUtils = require('../../../js/utils/SpotUtils.js');
 var SuspiciousStore = require('../stores/SuspiciousStore');
 
 var SuspiciousPanel = React.createClass({
@@ -15,11 +15,11 @@ var SuspiciousPanel = React.createClass({
   {
     var reps, highestRep;
 
-    reps = OniUtils.parseReputation(item.query_rep);
-    highestRep = OniUtils.getHighestReputation(reps);
+    reps = SpotUtils.parseReputation(item.query_rep);
+    highestRep = SpotUtils.getHighestReputation(reps);
 
     return (
-      <p key={'dns_qry_name_' + idx} className={'oni-text-wrapper text-' + OniUtils.CSS_RISK_CLASSES[highestRep]} data-toggle="tooltip">
+      <p key={'dns_qry_name_' + idx} className={'spot-text-wrapper text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]} data-toggle="tooltip">
         {query}
       </p>
     );
@@ -68,13 +68,13 @@ var SuspiciousPanel = React.createClass({
   _render_query_rep_cell: function (query_rep, item, idx) {
       var reps, highestRep, queryRep;
 
-      reps = OniUtils.parseReputation(query_rep);
-      highestRep = OniUtils.getHighestReputation(reps);
+      reps = SpotUtils.parseReputation(query_rep);
+      highestRep = SpotUtils.getHighestReputation(reps);
 
       queryRep = this._renderRepCell('dns_query_rep_' + idx,  reps);
 
       return (
-          <p key={'dns_query_rep_' + idx} className={'query_rep text-' + OniUtils.CSS_RISK_CLASSES[highestRep]}>
+          <p key={'dns_query_rep_' + idx} className={'query_rep text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
               {queryRep}
           </p>
       );

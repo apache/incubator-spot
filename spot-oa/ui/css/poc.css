@@ -8,14 +8,14 @@ body {
     border: 0px none transparent;
 }
 
-#oni-nav {
+#spot-nav {
     background-color:#0071C5;
 }
 
-#oni-nav .navbar-brand {
+#spot-nav .navbar-brand {
     color: #ffffff;
 }
-#oni-nav .navbar-nav>li>a {
+#spot-nav .navbar-nav>li>a {
     color: #ffffff;
 }
 
@@ -29,23 +29,23 @@ body {
   margin: 0 10px;
 }
 
-.oni-frame-content > .panel {
+.spot-frame-content > .panel {
     border-color: #0071C5;
 }
 
-.oni-frame-content > .panel > .panel-heading {
+.spot-frame-content > .panel > .panel-heading {
     color: #fff;
     background-color: #0071C5;
     border-color: #0071C5;
 }
 
-.oni_loader
+.spot-loader
 {
     text-align: center;
     margin-top: 20px;
 }
 
-.oni_loader .spinner
+.spot-loader .spinner
 {
     display: inline-block;
     width: 16px;
@@ -54,7 +54,7 @@ body {
     background-image: url(../images/ajax-loader.gif);
 }
 
-.oni-grid-panel > table > thead th {
+.spot-grid-panel > table > thead th {
     vertical-align: middle;
 }
 

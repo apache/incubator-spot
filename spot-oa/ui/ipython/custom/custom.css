@@ -1,41 +1,41 @@
-.oni.oni_easy_mode {
+.spot.spot_easy_mode {
     background-color: white;
 }
 
-.oni.oni_easy_mode:not(.oni_easy_mode_loading) #site {
+.spot.spot_easy_mode:not(.spot_easy_mode_loading) #site {
     height: 100% !important;
 }
 
-.oni.oni_easy_mode:not(.oni_easy_mode_loading) #notebook {
+.spot.spot_easy_mode:not(.spot_easy_mode_loading) #notebook {
     padding: 0 !important;
     box-shadow: none;
     -webkit-box-shadow: none;
 }
 
-.oni.oni_easy_mode #header,
-.oni.oni_easy_mode #pager,
-.oni.oni_easy_mode #tooltip,
-.oni.oni_easy_mode #notebook > .end_space,
-.oni.oni_easy_mode .cell:not(.code_cell),
-.oni.oni_easy_mode .cell.code_cell > .input,
-.oni.oni_easy_mode .cell.code_cell > .widget-area > .prompt {
+.spot.spot_easy_mode #header,
+.spot.spot_easy_mode #pager,
+.spot.spot_easy_mode #tooltip,
+.spot.spot_easy_mode #notebook > .end_space,
+.spot.spot_easy_mode .cell:not(.code_cell),
+.spot.spot_easy_mode .cell.code_cell > .input,
+.spot.spot_easy_mode .cell.code_cell > .widget-area > .prompt {
     position: absolute !important;
     top: -1000000000px;
     left: -1000000000px;
 }
 
-.oni.oni_easy_mode.oni_easy_mode_loading .cell.code_cell {
+.spot.spot_easy_mode.spot_easy_mode_loading .cell.code_cell {
     position: absolute !important;
     top: -1000000000px;
     left: -1000000000px;
 }
 
-.oni.oni_easy_mode #notebook-container {
+.spot.spot_easy_mode #notebook-container {
     -webkit-box-shadow: none;
     box-shadow: none;
 }
 
-.oni.oni_easy_mode .cell.code_cell {
+.spot.spot_easy_mode .cell.code_cell {
     border-color: transparent !important;
     padding: 0 !important;
 }
@@ -43,11 +43,11 @@
 /*****************************************
  **         EASY MODE SPINNER           **
  *****************************************/
-.oni #oni_easy_mode_loader {
+.spot #spot_easy_mode_loader {
     display: none;
 }
 
-.oni.oni_easy_mode #oni_easy_mode_loader {
+.spot.spot_easy_mode #spot_easy_mode_loader {
     display: block;
     position: fixed;
     top: 10px;
@@ -56,7 +56,7 @@
     margin-top: 50px;
 }
 
-.oni.oni_easy_mode #oni_easy_mode_loader_spinner
+.spot.spot_easy_mode #spot_easy_mode_loader_spinner
 {
     display: inline-block;
     width: 16px;
@@ -65,81 +65,81 @@
     background-image: url(./ajax-loader.gif);
 }
 
-.oni.oni_easy_mode:not(.oni_easy_mode_loading) #oni_easy_mode_loader
+.spot.spot_easy_mode:not(.spot_easy_mode_loading) #spot_easy_mode_loader
 {
     right: 25px;
     margin-top: 0px;
     width: auto;
 }
 
-.oni.oni_ninja_mode #oni_easy_mode_loader
+.spot.spot_ninja_mode #spot_easy_mode_loader
 {
     display: none;
 }
 
 /*****************************************
- **         ONI TOOLTIP STYLING         **
+ **         Spot TOOLTIP STYLING         **
  *****************************************/
-.oni .oni-tooltip .tooltip-inner {
+.spot .spot-tooltip .tooltip-inner {
     word-wrap: break-word;
 }
 
-.oni .oni-text-wrapper.overflown {
+.spot .spot-text-wrapper.overflown {
     color: red;
 }
 
-.oni .oni-text-wrapper {
+.spot .spot-text-wrapper {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 12em;
 }
 
-.oni .oni-text-wrapper.oni-text-sm {
+.spot .spot-text-wrapper.spot-text-sm {
     width: 6em;
 }
 
-.oni .oni-text-wrapper.oni-text-lg {
+.spot .spot-text-wrapper.spot-text-lg {
     width: 18em;
 }
 
-.oni .oni-text-wrapper.oni-text-xlg {
+.spot .spot-text-wrapper.spot-text-xlg {
     width: 30em;
 }
 
 /* Classes for the threat investigation notebooks*/
-body.oni_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table,
-body.oni_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table{
+body.spot_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table,
+body.spot_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table{
     margin:10px 10px 20px 0px;
     font-size:12px;
 }
 
 
-body.oni_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td, th,
-body.oni_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td, th{
+body.spot_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td, th,
+body.spot_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td, th{
     border: solid 1px #CCC;
     padding: 3px;
     background-color: #FFF;
     line-height:14px;
 }
 
-body.oni_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td,
-body.oni_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td{
+body.spot_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td,
+body.spot_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table td{
     height:25px;
     max-width: 180px;
     width:100px;
 }
 
-body.oni_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table th,
-body.oni_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table th{
+body.spot_easy_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table th,
+body.spot_ninja_mode[data-notebook-name*="Threat"] .widget-area .widget-box div table th{
 
     background-color: #0071C5;
     color: #FFF;
     text-align: center;
 }
 
-body.oni_easy_mode[data-notebook-name*="Threat"] .widget-area > .widget-subarea,
-body.oni_ninja_mode[data-notebook-name*="Threat"] .widget-area > .widget-subarea
+body.spot_easy_mode[data-notebook-name*="Threat"] .widget-area > .widget-subarea,
+body.spot_ninja_mode[data-notebook-name*="Threat"] .widget-area > .widget-subarea
 {
     width: 90%;
 }

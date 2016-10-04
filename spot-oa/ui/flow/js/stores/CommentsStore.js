@@ -2,8 +2,8 @@ var assign = require('object-assign');
 var d3 = require('d3');
 
 var NetflowConstants = require('../constants/NetflowConstants');
-var OniConstants = require('../../../js/constants/OniConstants');
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
 var RestStore = require('../../../js/stores/RestStore');
 
 var CommentsStore = assign(new RestStore(NetflowConstants.API_COMMENTS), {
@@ -14,15 +14,15 @@ var CommentsStore = assign(new RestStore(NetflowConstants.API_COMMENTS), {
   setDate: function (date)
   {
     this.setEndpoint(NetflowConstants.API_COMMENTS.replace('${date}', date.replace(/-/g, '')));
-  } 
+  }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
   switch (action.actionType) {
-    case OniConstants.UPDATE_DATE:
+    case SpotConstants.UPDATE_DATE:
       CommentsStore.setDate(action.date);
       break;
-    case OniConstants.RELOAD_COMMENTS:
+    case SpotConstants.RELOAD_COMMENTS:
       CommentsStore.reload();
       break;
   }
