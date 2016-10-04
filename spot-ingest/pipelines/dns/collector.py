@@ -6,7 +6,7 @@ import subprocess
 import json
 import logging
 from multiprocessing import Process
-from oni.utils import Util, NewFileEvent
+from common.utils import Util, NewFileEvent
 
 class Collector(object):
 
@@ -17,7 +17,7 @@ class Collector(object):
     def _initialize_members(self,hdfs_app_path,kafka_topic,conf_type):
     
         # getting parameters.
-        self._logger = logging.getLogger('ONI.INGEST.DNS')
+        self._logger = logging.getLogger('SPOT.INGEST.DNS')
         self._hdfs_app_path = hdfs_app_path
         self._kafka_topic = kafka_topic
 
@@ -83,13 +83,13 @@ class Collector(object):
 
         # split file.
         name = file_name.split('.')[0]
-        split_cmd="editcap -c {0} {1} {2}/{3}_oni.pcap".format(self._pkt_num,file,self._pcap_split_staging,name)
+        split_cmd="editcap -c {0} {1} {2}/{3}_spot.pcap".format(self._pkt_num,file,self._pcap_split_staging,name)
         self._logger.info("Splitting file: {0}".format(split_cmd))
         Util.execute_cmd(split_cmd,self._logger)
 
         for currdir,subdir,files in os.walk(self._pcap_split_staging):
             for file in files:
-                if file.endswith(".pcap") and "{0}_oni".format(name) in file:
+                if file.endswith(".pcap") and "{0}_spot".format(name) in file:
 
                         # get timestamp from the file name to build hdfs path.
                         file_date = file.split('.')[0]

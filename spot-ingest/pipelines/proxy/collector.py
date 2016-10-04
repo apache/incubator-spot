@@ -5,7 +5,7 @@ import json
 import os
 import sys
 import copy
-from oni.utils import Util, NewFileEvent
+from common.utils import Util, NewFileEvent
 from multiprocessing import Process
 import time
 
@@ -18,7 +18,7 @@ class Collector(object):
     def _initialize_members(self,hdfs_app_path,kafka_topic,conf_type):
         
         # getting parameters.
-        self._logger = logging.getLogger('ONI.INGEST.PROXY')
+        self._logger = logging.getLogger('SPOT.INGEST.PROXY')
         self._hdfs_app_path = hdfs_app_path
         self._kafka_topic = kafka_topic
 

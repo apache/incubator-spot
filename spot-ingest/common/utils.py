@@ -13,11 +13,11 @@ class Util(object):
     def remove_kafka_topic(cls,zk,topic,logger):
         rm_kafka_topic = "kafka-topics --delete --zookeeper {0} --topic {1}".format(zk,topic)
         try:
-            logger.info("oni.Utils: Executing: {0}".format(rm_kafka_topic))
+            logger.info("SPOT.Utils: Executing: {0}".format(rm_kafka_topic))
             subprocess.call(rm_kafka_topic,shell=True)
 
         except subprocess.CalledProcessError as e:
-            logger.error("oni.Utils: There was an error executing: {0}".format(e.cmd))
+            logger.error("SPOT.Utils: There was an error executing: {0}".format(e.cmd))
             sys.exit(1)
 
     @classmethod
@@ -29,14 +29,14 @@ class Util(object):
     @classmethod
     def creat_hdfs_folder(cls,hdfs_path,logger):
         hadoop_create_folder="hadoop fs -mkdir -p {0}".format(hdfs_path)
-        logger.info("oni.Utils: Creating hdfs folder: {0}".format(hadoop_create_folder))
+        logger.info("SPOT.Utils: Creating hdfs folder: {0}".format(hadoop_create_folder))
         subprocess.call(hadoop_create_folder,shell=True)
 
     @classmethod
     def load_to_hdfs(cls,file_local_path,file_hdfs_path,logger):
         # move file to hdfs.
         load_to_hadoop_script = "hadoop fs -moveFromLocal {0} {1}".format(file_local_path,file_hdfs_path)
-        logger.info("oni.Utils: Loading file to hdfs: {0}".format(load_to_hadoop_script))
+        logger.info("SPOT.Utils: Loading file to hdfs: {0}".format(load_to_hadoop_script))
         subprocess.call(load_to_hadoop_script,shell=True)
 
     @classmethod
@@ -51,7 +51,7 @@ class Util(object):
 
 		if create_file:
 				# create file handler for logger.
-				fh = logging.FileHandler('oni.log')
+				fh = logging.FileHandler('SPOT.log')
 				fh.setLevel(level=logging.DEBUG)
 				fh.setFormatter(formatter)
 		# reate console handler for logger.
@@ -80,11 +80,11 @@ class Util(object):
     def execute_cmd(cls,command,logger):
 
         try:
-            logger.info("oni.Utils: Executing: {0}".format(command))
+            logger.info("SPOT.Utils: Executing: {0}".format(command))
             subprocess.call(command,shell=True)
 
         except subprocess.CalledProcessError as e:
-            logger.error("oni.Utils: There was an error executing: {0}".format(e.cmd))
+            logger.error("SPOT.Utils: There was an error executing: {0}".format(e.cmd))
             sys.exit(1)
 
     @classmethod

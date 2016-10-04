@@ -2,20 +2,20 @@ Open-Network-Insight Ingest Framework
 ======
 Ingest data is captured or transferred into the Hadoop cluster, where they are transformed and loaded into solution data stores.
 
-![Ingest Framework](docs/ONI_Ingest_Framework1_1.png)
+![Ingest Framework](docs/SPOT_Ingest_Framework1_1.png)
 
 ## Getting Started
 
 ### Prerequisites
-* [oni-setup](https://github.com/Open-Network-Insight/oni-setup)
+* [spot-setup](https://github.com/Open-Network-Insight/spot-setup)
 * [kafka-python](https://github.com/dpkp/kafka-python)
-* [oni-nfdump](https://github.com/Open-Network-Insight/oni-nfdump)
+* [spot-nfdump](https://github.com/Open-Network-Insight/spot-nfdump)
 * tshark
   * [download](https://www.wireshark.org/download.html)
   * [how to install](https://github.com/Open-Network-Insight/open-network-insight/wiki/Install%20Ingest%20Prerequisites)
 * [watchdog](http://pythonhosted.org/watchdog/)
 * [spark-streaming-kafka-0-8-assembly_2.11](http://search.maven.org/#search|ga|1|a%3A%22spark-streaming-kafka-0-8-assembly_2.11%22%20AND%20v%3A%222.0.0%22)	 
-* Ingest user with sudo privileges (i.e. oni). This user will execute all the processes in the Ingest Framework also this user needs to have access to hdfs solution path (i.e. /user/oni/).
+* Ingest user with sudo privileges (i.e. spot). This user will execute all the processes in the Ingest Framework also this user needs to have access to hdfs solution path (i.e. /user/spot/).
 
 ### Configure Kafka
 **Adding Kafka Service:**
@@ -28,7 +28,7 @@ Ingest module uses a default configuration for the message size (999999 bytes), 
 * replica.fetch.max.bytes
 
 ### Spark-Streaming Kafka support.
-Download the following jar file: [spark-streaming-kafka-0-8-assembly_2.11](http://search.maven.org/#search|ga|1|a%3A%22spark-streaming-kafka-0-8-assembly_2.11%22%20AND%20v%3A%222.0.0%22). This jar adds support for Spark Streaming + Kafka and needs to be downloaded on the following path : **oni-ingest/oni** (with the same name)
+Download the following jar file: [spark-streaming-kafka-0-8-assembly_2.11](http://search.maven.org/#search|ga|1|a%3A%22spark-streaming-kafka-0-8-assembly_2.11%22%20AND%20v%3A%222.0.0%22). This jar adds support for Spark Streaming + Kafka and needs to be downloaded on the following path : **spot-ingest/common** (with the same name)
 
 ### Getting Started
 
@@ -40,7 +40,7 @@ The following roles are required in all the nodes where the Ingest Framework wil
 
 **Get the code:**
 
-     git clone https://github.com/Open-Network-Insight/oni-ingest.git
+     git clone https://github.com/Open-Network-Insight/spot-ingest.git
 
 **Ingest Configuration:**
 

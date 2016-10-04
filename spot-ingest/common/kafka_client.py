@@ -1,7 +1,7 @@
 #!/bin/env python 
 import logging
 import os
-from oni.utils import Util
+from common.utils import Util
 from kafka import KafkaProducer
 from kafka import KafkaConsumer as KC
 from kafka.partitioner.roundrobin import RoundRobinPartitioner
@@ -17,7 +17,7 @@ class KafkaTopic(object):
     def _initialize_members(self,topic,server,port,zk_server,zk_port,partitions):
 
         # get logger isinstance
-        self._logger = logging.getLogger("ONI.INGEST.KAFKA")
+        self._logger = logging.getLogger("SPOT.INGEST.KAFKA")
 
         # kafka requirements
         self._server = server

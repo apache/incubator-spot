@@ -4,9 +4,9 @@ import argparse
 import os
 import json
 import sys
-from oni.utils import Util
-from oni.kerberos import Kerberos
-from oni.kafka_client import KafkaTopic
+from common.utils import Util
+from common.kerberos import Kerberos
+from common.kafka_client import KafkaTopic
 import datetime 
 
 # get master configuration.
@@ -32,7 +32,7 @@ def start_collector(type,workers_num,id=None):
     ingest_id = str(datetime.datetime.time(datetime.datetime.now())).replace(":","_").replace(".","_")
     
     # create logger.
-    logger = Util.get_logger("ONI.INGEST")
+    logger = Util.get_logger("SPOT.INGEST")
 
     # validate the given configuration exists in ingest_conf.json.
     if not type in master_conf["pipelines"]:
@@ -58,7 +58,7 @@ def start_collector(type,workers_num,id=None):
     zk_server = master_conf["kafka"]['zookeper_server']
     zk_port = master_conf["kafka"]['zookeper_port']
          
-    topic = "ONI-INGEST-{0}_{1}".format(type,ingest_id) if not id else id
+    topic = "SPOT-INGEST-{0}_{1}".format(type,ingest_id) if not id else id
     kafka = KafkaTopic(topic,k_server,k_port,zk_server,zk_port,workers_num)
 
     # create a collector instance based on data source type.

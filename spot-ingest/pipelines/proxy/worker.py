@@ -3,7 +3,7 @@ import os
 import logging
 import json
 
-from oni.utils import Util
+from common.utils import Util
 
 
 class Worker(object):
@@ -15,7 +15,7 @@ class Worker(object):
     def _initialize_members(self,db_name,hdfs_app_path,kafka_consumer,conf_type,processes):
         
         # get logger instance.
-        self._logger = Util.get_logger('ONI.INGEST.WRK.PROXY')
+        self._logger = Util.get_logger('SPOT.INGEST.WRK.PROXY')
 
         self._db_name = db_name
         self._hdfs_app_path = hdfs_app_path
@@ -38,7 +38,7 @@ class Worker(object):
 
         # spark job command.
         spark_job_cmd = ("spark-submit --master yarn "
-                        "--jars {0}/oni/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar "
+                        "--jars {0}/common/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar "
                         "{1}/{2} " 
                         "-zk {3} " 
                         "-t {4} "

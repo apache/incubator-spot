@@ -41,9 +41,9 @@ fi
 
 INGEST_DATE=`date +"%H_%M_%S"`
 
-screen -d -m -S ONI-INGEST-${INGEST_CONF}-${INGEST_DATE}  -s /bin/bash
-screen -S ONI-INGEST-${INGEST_CONF}-${INGEST_DATE} -X setenv TZ ${TIME_ZONE}
-screen -dr  ONI-INGEST-${INGEST_CONF}-${INGEST_DATE} -X screen -t Master sh -c "python master_collector.py -t ${INGEST_CONF} -w ${WORKERS_NUM} -id ONI-INGEST-${INGEST_CONF}-${INGEST_DATE}; echo 'Closing Master...'; sleep 432000"
+screen -d -m -S SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}  -s /bin/bash
+screen -S SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE} -X setenv TZ ${TIME_ZONE}
+screen -dr  SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE} -X screen -t Master sh -c "python master_collector.py -t ${INGEST_CONF} -w ${WORKERS_NUM} -id SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}; echo 'Closing Master...'; sleep 432000"
 
 echo "Creating master collector"; sleep 2
 
@@ -53,13 +53,13 @@ if [ $WORKERS_NUM -gt 0 ]; then
     if [ $TYPE == "proxy" ]; 
     then
         echo "Creating worker_${w}"
-        screen -dr ONI-INGEST-${INGEST_CONF}-${INGEST_DATE} -X screen -t Worker_$w sh -c "python worker.py -t ${INGEST_CONF} -i ${w} -top ONI-INGEST-${INGEST_CONF}-${INGEST_DATE} -p ${WORKERS_NUM}; echo 'Closing worker...'; sleep 432000"
+        screen -dr SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE} -X screen -t Worker_$w sh -c "python worker.py -t ${INGEST_CONF} -i ${w} -top SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE} -p ${WORKERS_NUM}; echo 'Closing worker...'; sleep 432000"
     
     else
         while [  $w -le  $((WORKERS_NUM-1)) ]; 
 	    do
             echo "Creating worker_${w}"
-		    screen -dr ONI-INGEST-${INGEST_CONF}-${INGEST_DATE}  -X screen -t Worker_$w sh -c "python worker.py -t ${INGEST_CONF} -i ${w} -top ONI-INGEST-${INGEST_CONF}-${INGEST_DATE}; echo 'Closing worker...'; sleep 432000"
+		    screen -dr SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}  -X screen -t Worker_$w sh -c "python worker.py -t ${INGEST_CONF} -i ${w} -top SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}; echo 'Closing worker...'; sleep 432000"
 		    let w=w+1
             sleep 2
 	    done
@@ -71,7 +71,7 @@ fi
 #-----------------------------------------------------------------------------------
 # show outputs.
 #-----------------------------------------------------------------------------------
-echo "Background ingest process is running: ONI-INGEST-${INGEST_CONF}-${INGEST_DATE}"
-echo "To rejoin the session use: screen -x ONI-INGEST-${INGEST_CONF}-${INGEST_DATE}"
+echo "Background ingest process is running: SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}"
+echo "To rejoin the session use: screen -x SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}"
 echo 'To switch between workers and master use: crtl a + "'
 
