@@ -7,7 +7,7 @@ Ingest data is captured or transferred into the Hadoop cluster, where they are t
 ## Getting Started
 
 ### Prerequisites
-* [spot-setup](https://github.com/Open-Network-Insight/spot-setup)
+* [spot-setup](../spot-setup)
 * [kafka-python](https://github.com/dpkp/kafka-python)
 * [spot-nfdump](https://github.com/Open-Network-Insight/spot-nfdump)
 * tshark
