@@ -1,4 +1,4 @@
-Open-Network-Insight Ingest Framework
+Spot Ingest Framework
 ======
 Ingest data is captured or transferred into the Hadoop cluster, where they are transformed and loaded into solution data stores.
 
