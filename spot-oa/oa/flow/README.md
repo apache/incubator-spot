@@ -25,15 +25,15 @@ Flow spot-oa main script executes the following steps:
 - [Python 2.7](https://www.python.org/download/releases/2.7/) should be installed in the node running Flow OA.
 
 The following files and modules are already included but some of them require configuration. See the following sections for more information:
-- [components/iana](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#IANA-iana)
-- [components/data](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#data)
-- [components/nc](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#network-context-nc)
-- [components/reputation](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/reputation)
+- [components/iana](/spot-oa/oa/components#IANA-iana)
+- [components/data](/spot-oa/oa/components#data)
+- [components/nc](/spot-oa/oa/components#network-context-nc)
+- [components/reputation](/spot-oa/oa/components/reputation)
 - flow_config.json
 
 The following files are not included:
-- [context/iploc.csv](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/context)
-- [context/ipranges.csv](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/context)
+- [context/iploc.csv](/spot-oa/oa/context)
+- [context/ipranges.csv](/spot-oa/oa/context)
 
 **Prerequisites**
 
@@ -48,7 +48,7 @@ Before running Flow OA users need to configure components for the first time. It
 
 **Output**
 
-- flow_scores.csv. Main results file for Flow OA. This file will contain suspicious connects information and it's limited to the number of rows the user selected when running [oa/start_oa.py](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/INSTALL.md#usage).
+- flow_scores.csv. Main results file for Flow OA. This file will contain suspicious connects information and it's limited to the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
        
         Schema with zero-indexed columns:
         0.   sev:            int
@@ -119,5 +119,5 @@ With these iPython notebooks user will be able to perform further analysis and s
 experiment adding or modifying the code. 
 If a new functionality is required for the ipython notebook, the templates need to be modified to include the functionality for new executions.
 For further reference on how to work with these notebooks, you can read:  
-- [Edge Notebook](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/flow/ipynb_templates/EdgeNotebook.md)
-- [Threat Investigation Notebook](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/flow/ipynb_templates/ThreatInvestigation.md)
+- [Edge Notebook](/spot-oa/oa/flow/ipynb_templates/EdgeNotebook.md)
+- [Threat Investigation Notebook](/spot-oa/oa/flow/ipynb_templates/ThreatInvestigation.md)

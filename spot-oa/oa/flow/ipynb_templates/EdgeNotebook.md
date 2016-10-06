@@ -41,7 +41,7 @@ and this can be performed executing the last cell on the notebook with the follo
 
 **Input files**  
 All these paths should be relative to the main OA path.    
-Schema for these files can be found [here](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/flow)
+Schema for these files can be found [here](/spot-oa/oa/flow)
 
         data/flow/<date>/flow_scores.csv
         data/flow/<date>/flow_scores_bu.csv

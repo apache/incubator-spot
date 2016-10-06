@@ -23,8 +23,8 @@ The following python modules will have to be imported for the notebook to work c
 - Execution of the spot-oa process for Flow
 - Score a set connections at the Edge Investigation Notebook 
 - Correct setup the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
-- Include a comma separated network context file. **Optional** [Schema](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/README.md#network-context-nc)
-- Include a geolocation database file. [Schema](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/README.md#geoloc)   
+- Include a comma separated network context file. **Optional** [Schema](/spot-oa/oa/components/README.md#network-context-nc)
+- Include a geolocation database file. [Schema](/spot-oa/oa/components/README.md#geoloc)   
 
 
 ##Additional Configuration
@@ -39,9 +39,9 @@ The whole process in this notebook depends entirely on the existence of the scor
 All these paths should be relative to the main OA path.    
 Schema for these files can be found here:
 
-[flow_scores.csv](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/flow)  
-[iploc.csv](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/README.md#geoloc)  
-[networkcontext_1.csv](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/README.md#network-context-nc)  
+[flow_scores.csv](/spot-oa/oa/flow)  
+[iploc.csv](/spot-oa/oa/components/README.md#geoloc)  
+[networkcontext_1.csv](/spot-oa/oa/components/README.md#network-context-nc)  
   
 
         data/flow/<date>/flow_scores.csv  

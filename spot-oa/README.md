@@ -17,27 +17,27 @@ Some of the technologies used are:
 
 Oni-oa is the root folder, below are more details about child folders:
 
- - [**context**](context/README.md) : Static files for adding network context to the data  
- - [**oa**](oa/INSTALL.md) : Operational Analytics path
- - [**ui**](ui/README.md) : GUI files
+ - [**context**](/spot-oa/context/README.md) : Static files for adding network context to the data  
+ - [**oa**](/spot-oa/oa/INSTALL.md) : Operational Analytics path
+ - [**ui**](/spot-oa/ui/README.md) : GUI files
 
 ----------
 
 ## **Operational Analytics (Back end)**
-* [DNS](oa/dns/README.md)
-* [FLOW](oa/flow/README.md)
-* [PROXY](oa/proxy/README.md)
+* [DNS](/spot-oa/oa/dns/README.md)
+* [FLOW](/spot-oa/oa/flow/README.md)
+* [PROXY](/spot-oa/oa/proxy/README.md)
 
 ## **IPython Notebooks**
 * Flow
- * [EdgeNotebook](oa/flow/ipynb_templates/EdgeNotebook.md) 
- * [ThreatInvestigation](oa/flow/ipynb_templates/ThreatInvestigation.md)
+ * [EdgeNotebook](/spot-oa/oa/flow/ipynb_templates/EdgeNotebook.md) 
+ * [ThreatInvestigation](/spot-oa/oa/flow/ipynb_templates/ThreatInvestigation.md)
 * DNS
- * [EdgeNotebook](oa/dns/ipynb_templates/EdgeNotebook.md) 
- * [ThreatInvestigation](oa/dns/ipynb_templates/ThreatInvestigation.md)
+ * [EdgeNotebook](/spot-oa/oa/dns/ipynb_templates/EdgeNotebook.md) 
+ * [ThreatInvestigation](/spot-oa/oa/dns/ipynb_templates/ThreatInvestigation.md)
 * PROXY
- * [EdgeNotebook](oa/proxy/ipynb_templates/EdgeNotebook.md) 
- * [ThreatInvestigation](oa/proxy/ipynb_templates/ThreatInvestigation.md)
+ * [EdgeNotebook](/spot-oa/oa/proxy/ipynb_templates/EdgeNotebook.md) 
+ * [ThreatInvestigation](/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md)
 
 ##**Views**
 

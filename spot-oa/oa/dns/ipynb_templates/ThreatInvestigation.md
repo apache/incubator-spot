@@ -34,7 +34,7 @@ The whole process in this notebook depends entirely on the existence of the scor
  
 **Input files**
 All these paths should be relative to the main OA path.       
-Schema for these files can be found [here](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/DNS)   
+Schema for these files can be found [here](/spot-oa/oa/DNS)   
 
         data/dns/<date>/dns_scores.csv  
 
