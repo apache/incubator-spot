@@ -24,13 +24,13 @@ main modules due to differences in the data model and what context information i
                             process and transform data for any of the supported data types.
         utils.py    ->      Miscellaneous utilities required by start_oa.py to load data, load logger, etc.
         
-More information about oa/flow in [README.md](/flow)
+More information about oa/flow in [README.md](/spot-oa/oa/flow)
 
-More information about oa/dns in [README.md](/dns)
+More information about oa/dns in [README.md](/spot-oa/oa/dns)
 
-More information about oa/proxy in [README.md](/proxy)
+More information about oa/proxy in [README.md](/spot-oa/oa/proxy)
 
-More information about oa/components in [README.md](/components)
+More information about oa/components in [README.md](/spot-oa/oa/components)
 
 ##Operational Analytics prerequisites
 
