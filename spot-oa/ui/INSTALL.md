@@ -1,6 +1,6 @@
-# Installation Guide
+# Apache Spot (incubating) - Installation Guide
 
-Open Network Insight User Interface (aka Spot UI or UI) Provides tools for interactive visualization, noise filters, white listing, and attack heuristics.
+Apache Spot - User Interface (aka Spot UI or UI) Provides tools for interactive visualization, noise filters, white listing, and attack heuristics.
 
 Here you will find instructions to get Spot UI up and running. For more information about Spot look [here](/Open-Network-Insight/open-network-insight).
 
