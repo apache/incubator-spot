@@ -26,7 +26,7 @@ def main():
     bro_parse(args.zk,args.topic,args.db,args.db_table,args.num_of_workers)
 
 
-def oni_decoder(s):
+def spot_decoder(s):
     
     if s is None:
         return None
@@ -123,7 +123,7 @@ def save_to_hive(rdd,sqc,db,db_table,topic):
 
 def bro_parse(zk,topic,db,db_table,num_of_workers):
     
-    app_name = "ONI-INGEST-{0}".format(topic)
+    app_name = "SPOT-INGEST-{0}".format(topic)
     wrks = int(num_of_workers)
 
  	# create spark context
@@ -132,7 +132,7 @@ def bro_parse(zk,topic,db,db_table,num_of_workers):
     sqc = HiveContext(sc)
 
     # create DStream for each topic partition.
-    topic_dstreams = [ KafkaUtils.createStream(ssc, zk, app_name, {topic: 1}, keyDecoder=oni_decoder, valueDecoder=oni_decoder) for _ in range (wrks)  ] 
+    topic_dstreams = [ KafkaUtils.createStream(ssc, zk, app_name, {topic: 1}, keyDecoder=spot_decoder, valueDecoder=spot_decoder) for _ in range (wrks)  ] 
     tp_stream = ssc.union(*topic_dstreams)
 
     # Parallelism in Data Processing

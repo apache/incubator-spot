@@ -5,9 +5,9 @@ import os
 import json
 import logging
 import sys
-from oni.utils import Util
-from oni.kerberos import Kerberos
-from oni.kafka_client import KafkaConsumer
+from common.utils import Util
+from common.kerberos import Kerberos
+from common.kafka_client import KafkaConsumer
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 conf_file = "{0}/ingest_conf.json".format(script_path)
@@ -29,7 +29,7 @@ def main():
 
 def start_worker(type,topic,id,processes=None):
 
-    logger = Util.get_logger("ONI.INGEST.WORKER")
+    logger = Util.get_logger("SPOT.INGEST.WORKER")
 
     # validate the given configuration exists in ingest_conf.json.
     if not type in worker_conf["pipelines"]:

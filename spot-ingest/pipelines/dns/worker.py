@@ -6,7 +6,7 @@ import subprocess
 import json
 import os
 from multiprocessing import Process
-from oni.utils import Util
+from common.utils import Util
 
 
 class Worker(object):
@@ -18,7 +18,7 @@ class Worker(object):
     def _initialize_members(self,db_name,hdfs_app_path,kafka_consumer,conf_type):
 
         # get logger instance.
-        self._logger = Util.get_logger('ONI.INGEST.WRK.DNS')
+        self._logger = Util.get_logger('SPOT.INGEST.WRK.DNS')
 
         self._db_name = db_name
         self._hdfs_app_path = hdfs_app_path
