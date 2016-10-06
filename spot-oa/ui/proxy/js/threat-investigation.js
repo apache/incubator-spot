@@ -26,7 +26,7 @@ var PanelRow = require('../../js/components/PanelRow.react');
 var Panel = require('../../js/components/Panel.react');
 var IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
 
-var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure();
+var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure('');
 
 React.render(
   <div id="spot-content">
