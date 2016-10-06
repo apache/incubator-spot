@@ -77,7 +77,7 @@ Each of these services are represented by a sub-module in this project, McAfee G
 **Enable/Disable GTI service**
 
 It's possible to disable any of the reputation services mentioned above, all it takes is to remove the configuration for the undesired service in gti_config.json. To learn more about it, see the section below.
-To add a different reputation service, you can read all about it [here](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/components/reputation)
+To add a different reputation service, you can read all about it [here](reputation)
 
 **Configuration**
 
@@ -183,7 +183,7 @@ This is an optional functionality you can enable / disable depending on your pre
 **Pre-requisites**  
 To start using this module, you need to include a comma separated file containing the geolocation for most (or all) IPs.
 To learn more about the expected schema for this file or where to find a full geolocation db, please refer 
-to the  [_context_](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/context/README.md) documentation  
+to the  [_context_](../../context/README.md) documentation  
 
  
 **Configuration**

@@ -24,13 +24,13 @@ main modules due to differences in the data model and what context information i
                             process and transform data for any of the supported data types.
         utils.py    ->      Miscellaneous utilities required by start_oa.py to load data, load logger, etc.
         
-More information about oa/flow in [README.md](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/flow)
+More information about oa/flow in [README.md](/flow)
 
-More information about oa/dns in [README.md](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/dns)
+More information about oa/dns in [README.md](/dns)
 
-More information about oa/proxy in [README.md](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/proxy)
+More information about oa/proxy in [README.md](/proxy)
 
-More information about oa/components in [README.md](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/components)
+More information about oa/components in [README.md](/components)
 
 ##Operational Analytics prerequisites
 
@@ -38,12 +38,12 @@ In order to execute this process there are a few prerequisites:
 
  1. Python 2.7.
  2.  Components configuration. To find about how to configure each of the extra components included in this project
-        visit oa/components/[README.md](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/components).
+        visit oa/components/[README.md](/components).
         These components are required to add context or extract additional information that is going to complement your 
         original data. Each of these components are independent from each other. Based on the data type some components are 
         required or not.
  3. spot-ml results. Operational Analytics works and transforms Machine Learning results. The implementation of Machine Learning
-        in this project is through [spot-ml](https://github.com/Open-Network-Insight/oni-ml). Although the Operational Analytics
+        in this project is through [spot-ml](/spot-ml). Although the Operational Analytics
          is prepared to read csv files and there is not a direct dependency between spot-oa and spot-ml, it's highly recommended
          to have these two pieces set up together.
          If users want to implement their own machine learning piece to detect suspicious connections they need to refer
@@ -59,11 +59,11 @@ In order to execute this process there are a few prerequisites:
  Depending on the data type that is going to be processed some components are required and other components are not.
  If users are planning to analyze the three data types supported (Flow, DNS and Proxy) then all components should be configured.
 
- 1. Clone project spot-oa from [github repository](https://github.com/Open-Network-Insight/oni-oa) in your /home/\<user> directory 
+ 1. Clone project spot-oa from [github repository](/spot-oa) in your /home/\<user> directory 
     or if it was already cloned go to spot-oa folder.
     
  2. Add context files. Context files should go into spot-oa/context folder and they should contain network and geo localization context.  
- For more information on context files go to [spot-oa/context/README.md](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/README.md) 
+ For more information on context files go to [spot-oa/context/README.md](/spot-oa/tree/1.1/README.md) 
     
     2.1. Add a file ipranges.csv: Ip ranges file is used by OA when running data type Flow. 
          It should contain a list of ip ranges and the label for the given range, example:
@@ -95,7 +95,7 @@ In order to execute this process there are a few prerequisites:
  4. Configure components. Components are python modules included in this project that add context and details to the data 
     being analyzed. There are five components and while not all components are required to every data type, it's recommended to
     configure all of them in case new data types are analyzed in the future.
-    For more details about how to configure each component go to [spot-oa/oa/components/README.md](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/README.md).
+    For more details about how to configure each component go to [spot-oa/oa/components/README.md](/components/README.md).
     
  ####Usage
  
@@ -123,8 +123,8 @@ In order to execute this process there are a few prerequisites:
  Depending on the number of records being processed and the data type, OA can take long or short time to execute.
  When the process completes you can go to spot-oa/data/\<data type> folder and check the results.
  
- For more information on each data type and output files go to each [spot-oa/oa/flow](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/dns), 
- [spot-oa/oa/dns](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/flow) or [spot-oa/oa/proxy](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/proxy)
+ For more information on each data type and output files go to each [spot-oa/oa/flow](/oa/dns), 
+ [spot-oa/oa/dns](/oa/flow) or [spot-oa/oa/proxy](/oa/proxy)
                         
                             
 

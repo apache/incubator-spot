@@ -44,10 +44,10 @@ DNS spot-oa main script executes the following steps:
 - [Python 2.7](https://www.python.org/download/releases/2.7/) should be installed in the node running Proxy OA.  
 
 	The following modules are already included but some of them require configuration. See the following sections for more information. 
-- [components/iana](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#IANA-iana)
-- [components/data](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#data)
-- [components/nc](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#network-context-nc)
-- [components/reputation](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/reputation)
+- [components/iana](/components#IANA-iana)
+- [components/data](components#data)
+- [components/nc](components#network-context-nc)
+- [components/reputation](components/reputation)
 - dns_conf.json
 
 
@@ -139,5 +139,5 @@ With these iPython notebooks user will be able to perform further analysis and s
 experiment adding or modifying the code. 
 If a new functionality is required for the ipython notebook, the templates need to be modified to include the functionality for new executions.
 For further reference on how to work with these notebooks, you can read:  
-[Edge Notebook.ipynb](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/dns/ipynb_templates/EdgeNotebook.md)  
-[Threat_Investigation.ipynb](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/dns/ipynb_templates/ThreatInvestigation.md)
+[Edge Notebook.ipynb](/dns/ipynb_templates/EdgeNotebook.md)  
+[Threat_Investigation.ipynb](/dns/ipynb_templates/ThreatInvestigation.md)
