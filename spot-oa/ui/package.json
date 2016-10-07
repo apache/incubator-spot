@@ -1,7 +1,7 @@
 {
   "name": "spot_ui",
   "version": "1.1.0",
-  "description": "Open Network Insight :: UI",
+  "description": "Apache Spot :: UI",
   "repository": "https://github.com/Open-Network-Insight/open-network-insight",
   "license": "Apache License, Version 2.0",
   "dependencies": {

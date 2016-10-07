@@ -1,7 +1,7 @@
 {
   "name": "spot_ui_flow",
   "version": "1.1.0",
-  "description": "Open Network Insight :: UI :: Netflow",
+  "description": "Apache Spot :: UI :: Netflow",
   "scripts": {
     "watch-suspicious": "watchify js/suspicious.js -o js/suspicious.bundle.min.js -v -d",
     "watch-threat-investigation": "watchify js/threat-investigation.js -o js/threat-investigation.bundle.min.js -v -d",
