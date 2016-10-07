@@ -35,4 +35,4 @@ Here you will find instructions to get Spot UI up and running. For more informat
 
 	`$ ./runIpython.sh`
 
-3. Verify your installation by going to one of the URLs found [here](../../wiki/Suspicious%20Connects).
+3. Verify your installation by going to one of the URLs found [here](https://github.com/Open-Network-Insight/open-network-insight/wiki/Suspicious%20Connects).

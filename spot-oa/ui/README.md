@@ -86,7 +86,7 @@ This document is intended for front end developers who want to contribute to our
 
 ## Getting Started
 
-Here you will find useful information to get you started on how to contribute to our User Interface (UI). For more information on how to use "Apache Spot - User Interface" (Spot UI) please read our [User Guide](../../wiki/User%20Guide)
+Here you will find useful information to get you started on how to contribute to our User Interface (UI). For more information on how to use "Apache Spot - User Interface" (Spot UI) please read our [User Guide](https://github.com/Open-Network-Insight/open-network-insight/wiki/User%20Guide)
 
 ## Technical Documentation
 
