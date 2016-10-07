@@ -63,7 +63,7 @@ In order to execute this process there are a few prerequisites:
     or if it was already cloned go to spot-oa folder.
     
  2. Add context files. Context files should go into spot-oa/context folder and they should contain network and geo localization context.  
- For more information on context files go to [spot-oa/context/README.md](/spot-oa/tree/1.1/README.md) 
+ For more information on context files go to [spot-oa/context/README.md](/spot-oa/README.md) 
     
     2.1. Add a file ipranges.csv: Ip ranges file is used by OA when running data type Flow. 
          It should contain a list of ip ranges and the label for the given range, example:

@@ -23,7 +23,7 @@ The following python modules will have to be imported for the notebook to work c
 ##Pre-requisites  
 - Execution of the spot-oa process for Proxy
 - Score a set connections at the Edge Investigation Notebook
-- Correct setup of the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
+- Correct setup of the spot.conf file. [Read more](/wiki/Edit%20Solution%20Configuration) 
 
 
 ##Additional Configuration
@@ -34,7 +34,7 @@ This also affects the number of IPs that will appear in the Timeline chart.
 The whole process in this notebook depends entirely on the existence of the scored _proxy_scores.tsv_ file, which is generated at the OA process, and scored at the Edge Investigation Notebook.
 
 **Input files**
-Schema for these files can be found [here](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/proxy)
+Schema for these files can be found [here](/spot-oa/oa/proxy)
 
         ~/spot-oa/data/proxy/<date>/proxy_scores.tsv  
 

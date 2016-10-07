@@ -22,7 +22,7 @@ The following python modules will have to be imported for the notebook to work c
 ##Pre-requisites  
 - Execution of the spot-oa process for DNS 
 - Score a set connections in the Edge Investigation Notebook
-- Correct setup of the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
+- Correct setup of the spot.conf file. [Read more](/wiki/Edit%20Solution%20Configuration) 
 
 
 ##Additional Configuration  

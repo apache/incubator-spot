@@ -23,8 +23,8 @@ The following python modules will be imported for the notebook to work correctly
 
 ###Pre-requisites
 - Execution of the spot-oa process for Flow
-- Correct setup the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration)
-- Have a public key created between the current UI node and the ML node. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Configure%20User%20Accounts#configure-user-accounts)
+- Correct setup the spot.conf file. [Read more](/wiki/Edit%20Solution%20Configuration)
+- Have a public key created between the current UI node and the ML node. [Read more](/wiki/Configure%20User%20Accounts#configure-user-accounts)
 
 
 ##Additional Configuration

@@ -22,7 +22,7 @@ The following python modules will have to be imported for the notebook to work c
 ##Pre-requisites  
 - Execution of the spot-oa process for Flow
 - Score a set connections at the Edge Investigation Notebook 
-- Correct setup the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
+- Correct setup the spot.conf file. [Read more](/wiki/Edit%20Solution%20Configuration) 
 - Include a comma separated network context file. **Optional** [Schema](/spot-oa/oa/components/README.md#network-context-nc)
 - Include a geolocation database file. [Schema](/spot-oa/oa/components/README.md#geoloc)   
 

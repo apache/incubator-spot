@@ -1,5 +1,5 @@
-# **Open Network Insight**
-ONI Operational Analytics (OA) is a collection of modules, which includes both the data processing and transformation as well as the GUI module for data visualization. 
+# **Apache Spot (incubating)**
+Apache Spots (incubating) Operational Analytics (OA) is a collection of modules, which includes both the data processing and transformation as well as the GUI module for data visualization. 
 
 The visualization repository (UI folder) contains all the front-end code and files related to the Open Network Insight visual elements, such as styles, pages, data files, etc.
 Some of the technologies used are:
@@ -15,7 +15,7 @@ Some of the technologies used are:
 
 ## **Folder Structure**
 
-Oni-oa is the root folder, below are more details about child folders:
+spot-oa is the root folder, below are more details about child folders:
 
  - [**context**](/spot-oa/context/README.md) : Static files for adding network context to the data  
  - [**oa**](/spot-oa/oa/INSTALL.md) : Operational Analytics path

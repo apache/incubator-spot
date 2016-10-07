@@ -46,7 +46,7 @@ You need to update the _engine.json_ file accordingly:
         }
 
 Where:
-- <database engine>: Whichever database engine you have installed and configured in your cluster to work with ONI. i.e. "Impala" or "Hive".
+- <database engine>: Whichever database engine you have installed and configured in your cluster to work with Apache Spot (incubating). i.e. "Impala" or "Hive".
 For this key, the value you enter needs to match exactly with one of the following keys, where you'll need to add the corresponding node name. 
 - <node>: The node name in your cluster where you have the database service running. 
 
