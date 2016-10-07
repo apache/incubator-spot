@@ -2,14 +2,14 @@
 
 Apache Spot - User Interface (aka Spot UI or UI) Provides tools for interactive visualization, noise filters, white listing, and attack heuristics.
 
-Here you will find instructions to get Spot UI up and running. For more information about Spot look [here](/Open-Network-Insight/open-network-insight).
+Here you will find instructions to get Spot UI up and running. For more information about Spot look [here](../../).
 
 ## Requirements
 
 - IPython with notebook module enabled (== 3.2.0) [link](https://ipython.org/ipython-doc/3/index.html)
 - NPM - Node Package Manager [link](https://www.npmjs.com/)
 - spot-oa output
-> Spot UI takes any output from [spot-oa backend](/Open-Network-Insight/spot-oa/tree/master/oa/), as input for the visualization tools provided. Please make sure there are files available under PATH_TO_SPOT/ui/data/${PIPELINE}/${DATE}/
+> Spot UI takes any output from [spot-oa backend](../oa/), as input for the visualization tools provided. Please make sure there are files available under PATH_TO_SPOT/ui/data/${PIPELINE}/${DATE}/
 
 ## Install Spot UI
 
@@ -35,4 +35,4 @@ Here you will find instructions to get Spot UI up and running. For more informat
 
 	`$ ./runIpython.sh`
 
-3. Verify your installation by going to one of the URLs found [here](https://github.com/Open-Network-Insight/spot-docs/wiki/Suspicious%20Connects).
+3. Verify your installation by going to one of the URLs found [here](../../wiki/Suspicious%20Connects).
