@@ -1,18 +1,18 @@
-# oni-setup
+# spot-setup
 
 ## Intended Audience
 
-This document is intended for any developer or sysadmin interested in technical aspects or in contributing to the setup installation process of the ONI solution. 
+This document is intended for any developer or sysadmin in learning the technical aspects or in contributing to the setup installation process of the Apache Spot solution.
 
 ## Getting Started
 
-This information will help you to get started on contributing to the ONI Setup repository. For information about installing and running ONI go to our [Installation Guide](https://github.com/Open-Network-Insight/open-network-insight/wiki/Installation%20&%20Configuration%20Guides).
+This information will help you to get started on contributing to the Apache Spot Setup repository. For information about installing and running Apache Spot go to our [Installation Guide](https://github.com/Open-Network-Insight/open-network-insight/wiki/Installation%20&%20Configuration%20Guides).
 
-oni-setup contains the scripts to setup HDFS for ONI solution. It will create the folder and database structure needed to run ONI on HDFS and HIVE respectively. Oni-setup is a component of Open-Network-Insight and is executed in the initial configuration after Linux user creation and before Ingest installation.
+Spot-setup contains the scripts to setup HDFS for Apache Spot solution. It will create the folder and database structure needed to run Apache Spot on HDFS and HIVE respectively. Spot-setup is a component of Apache Spot and is executed in the initial configuration after Linux user creation and before Ingest installation.
 
 ## Prerequisites
 
-To collaborate and run oni-setup, it is required the following:
+To collaborate and run spot-setup, it is required the following prerequisites:
 - A running Hadoop cluster
 - Linux user account created in all nodes with sudo privileges
 
@@ -22,17 +22,17 @@ The main script in the repository is **hdfs_setup.sh** which is responsible of l
 
 ## Environment Variables
 
-**duxbay.conf** is the file storing the variables needed during the installation process including node assignment, User interface, Machine Learning and Ingest gateway nodes.
+**spot.conf** is the file storing the variables needed during the installation process including node assignment, User interface, Machine Learning and Ingest gateway nodes.
 
-This file also contains sources desired to be installed as part of ONI, general paths for HDFS folders, Kerberos information and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
+This file also contains sources desired to be installed as part of Apache Spot, general paths for HDFS folders, Kerberos information and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
 
 To read more about these variables, please review the [wiki] (https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration).
 
 ## Database Query Scripts
 
-oni-setup contains a script per use case, as of today, there is a tables creation script for each DNS, flow and Proxy data.
+spot-setup contains a script per use case, as of today, there is a table creation script for each DNS, flow and Proxy data.
 
-These HQL scripts are intended to be executed as a Hive statement and must comply HQL standards. 
+These HQL scripts are intended to be executed as a Hive statement and must comply HQL standards.
 
 We want to create tables in Avro/Parquet format to get a faster query performance. This format is an industry standard and you can find more information about it on:
 - Avro is a data serialization system - https://avro.apache.org/
@@ -53,18 +53,18 @@ To get to Avro/parquet format we need a staging table to store CSV data temporar
 
 ## Licensing
 
-oni-setup is licensed under Apache Version 2.0
+spot-setup is licensed under Apache Version 2.0
 
-## Contributing 
+## Contributing
 
 Create a pull request and contact the maintainers.
 
 ## Issues
 
-Report issues at the OpenNetworkInsight [issues] (https://github.com/Open-Network-Insight/open-network-insight/issues) page.
- 
+Report issues at the Apache Spot [issues] (https://github.com/Open-Network-Insight/open-network-insight/issues) page.
+
 ## Maintainers
 
 - [Moises Valdovinos] (https://github.com/moy8011)
-- [Everardo Lopez Sandoval] (https://github.com/EverLoSa)  
+- [Everardo Lopez Sandoval] (https://github.com/EverLoSa)
 
