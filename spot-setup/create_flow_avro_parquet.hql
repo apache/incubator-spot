@@ -12,8 +12,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow (
   trsec INT,
   tdur FLOAT,
   sip  STRING,
- dip STRING,
- sport INT,
+  dip STRING,
+  sport INT,
   dport INT,
   proto STRING,
   flag STRING,
@@ -42,12 +42,12 @@ TBLPROPERTIES ('avro.schema.literal'='{
   , "fields": [
         {"name": "treceived",                  "type":["string",   "null"]}
      ,  {"name": "unix_tstamp",                 "type":["long",     "null"]}
-     ,  {"name": "tryear",                    "type":["float",   "null"]}
-     ,  {"name": "trmonth",                    "type":["float",   "null"]}
-     ,  {"name": "trday",                    "type":["float",   "null"]}
-     ,  {"name": "trhour",                    "type":["float",   "null"]}
-     ,  {"name": "trminute",                    "type":["float",   "null"]}
-     ,  {"name": "trsec",                    "type":["float",   "null"]}
+     ,  {"name": "tryear",                    "type":["int",   "null"]}
+     ,  {"name": "trmonth",                    "type":["int",   "null"]}
+     ,  {"name": "trday",                    "type":["int",   "null"]}
+     ,  {"name": "trhour",                    "type":["int",   "null"]}
+     ,  {"name": "trminute",                    "type":["int",   "null"]}
+     ,  {"name": "trsec",                    "type":["int",   "null"]}
      ,  {"name": "tdur",                    "type":["float",   "null"]}
      ,  {"name": "sip",              "type":["string",   "null"]}
      ,  {"name": "sport",                 "type":["int",   "null"]}

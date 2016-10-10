@@ -2,7 +2,7 @@
 
 DSOURCES=('flow' 'dns' 'proxy')
 DFOLDERS=('binary' 'hive' 'stage')
-source /etc/duxbay.conf
+source /etc/spot.conf
 
 #
 # creating HDFS user's folder
