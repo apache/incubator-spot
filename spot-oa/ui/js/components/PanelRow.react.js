@@ -1,6 +1,6 @@
 var React = require('react');
 
-var OniStore = require('../stores/OniStore');
+var SpotStore = require('../stores/SpotStore');
 
 var PanelRow = React.createClass({
   propTypes: {
@@ -25,22 +25,22 @@ var PanelRow = React.createClass({
   },
   componentDidMount: function ()
   {
-      OniStore.addPanelExpandListener(this._onChildExpanded);
-      OniStore.addPanelRestoreListener(this._onChildRestored);
+      SpotStore.addPanelExpandListener(this._onChildExpanded);
+      SpotStore.addPanelRestoreListener(this._onChildRestored);
   },
   render: function () {
-    var cssCls = this.state.maximized ? 'oni-maximized' : this.state.minimized ? 'oni-minimized' : '';
+    var cssCls = this.state.maximized ? 'spot-maximized' : this.state.minimized ? 'spot-minimized' : '';
 
     return (
-      <div className={'oni-row row ' + cssCls}>
+      <div className={'spot-row row ' + cssCls}>
         {this.props.children}
       </div>
     );
   },
   componentWillUnmount: function ()
   {
-    OniStore.removePanelExpandListener(this._onChildExpanded);
-    OniStore.removePanelRestoreListener(this._onChildRestored);
+    SpotStore.removePanelExpandListener(this._onChildExpanded);
+    SpotStore.removePanelRestoreListener(this._onChildRestored);
   },
   _onChildExpanded: function (childTitle) {
     if (this.state.childrenTitles.indexOf(childTitle)>=0)

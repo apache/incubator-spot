@@ -1,11 +1,11 @@
 var React = require('react');
 
-var OniConstants = require('../../js/constants/OniConstants');
-var OniActions = require('../../js/actions/OniActions');
+var SpotConstants = require('../../js/constants/SpotConstants');
+var SpotActions = require('../../js/actions/SpotActions');
 var EdInActions = require('../../js/actions/EdInActions');
 var StoryboardActions = require('../../js/actions/StoryboardActions');
-var OniUtils = require('../../js/utils/OniUtils');
- 
+var SpotUtils = require('../../js/utils/SpotUtils');
+
 // Build and Render Toolbar
 var FilterInput = require('./components/FilterInput.react');
 var DateInput = require('../../js/components/DateInput.react');
@@ -59,36 +59,36 @@ var TimelinePanel = require('./components/TimelinePanel.react');
 var CommentsStore = require('./stores/CommentsStore');
 
 React.render(
-  <div id="oni-content" className="storyboard">
+  <div id="spot-content" className="storyboard">
   <PanelRow>
-      <Panel title={OniConstants.COMMENTS_PANEL} expandable className="col-md-6" >
+      <Panel title={SpotConstants.COMMENTS_PANEL} expandable className="col-md-6" >
           <ExecutiveThreatBriefingPanel store={CommentsStore} />
       </Panel>
-      <Panel title={OniConstants.INCIDENT_PANEL} expandable container className="col-md-6">
+      <Panel title={SpotConstants.INCIDENT_PANEL} expandable container className="col-md-6">
           <IncidentProgressionPanel />
       </Panel>
     </PanelRow>
     <PanelRow>
-      <Panel title={OniConstants.IMPACT_ANALYSIS_PANEL} expandable container className="col-md-4 sb_impact">
+      <Panel title={SpotConstants.IMPACT_ANALYSIS_PANEL} expandable container className="col-md-4 sb_impact">
         <ImpactAnalysis />
       </Panel>
-      <Panel title={OniConstants.GLOBE_VIEW_PANEL} expandable container className="col-md-4 sb_globe_view">
+      <Panel title={SpotConstants.GLOBE_VIEW_PANEL} expandable container className="col-md-4 sb_globe_view">
           <MapView />
       </Panel>
-      <Panel title={OniConstants.TIMELINE_PANEL} expandable className="col-md-4 sb_timeline" >
-          <TimelinePanel />  
+      <Panel title={SpotConstants.TIMELINE_PANEL} expandable className="col-md-4 sb_timeline" >
+          <TimelinePanel />
 
-      </Panel>    
+      </Panel>
     </PanelRow>
   </div>,
-document.getElementById('oni-content-wrapper')
+document.getElementById('spot-content-wrapper')
 );
 
 
-var initial_filter = OniUtils.getCurrentFilter();
+var initial_filter = SpotUtils.getCurrentFilter();
 
 // Set search criteria
-OniActions.setDate(OniUtils.getCurrentDate());
+SpotActions.setDate(SpotUtils.getCurrentDate());
 initial_filter && StoryboardActions.setFilter(initial_filter);
 
 // Load data
@@ -96,4 +96,3 @@ StoryboardActions.reloadComments();
 
 // Create a hook to allow notebook iframe to reloadComments
 window.iframeReloadHook = StoryboardActions.reloadComments;
-  

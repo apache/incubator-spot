@@ -1,4 +1,4 @@
-var OniUtils = {
+var SpotUtils = {
   IP_V4_REGEX: /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/,
   CSS_RISK_CLASSES: {'3': 'danger', '2': 'warning', '1': 'info', '0': 'default', '-1': 'default'},
   getCurrentDate: function (name)
@@ -6,7 +6,7 @@ var OniUtils = {
     // Look for a date on location's hash, default to today
     var date;
 
-    date = OniUtils.getUrlParam(name || 'date');
+    date = SpotUtils.getUrlParam(name || 'date');
 
     if (date)
     {
@@ -14,7 +14,7 @@ var OniUtils = {
     }
     else
     {
-        return OniUtils.getDateString(new Date());
+        return SpotUtils.getDateString(new Date());
     }
   },
   getDateString: function (date)
@@ -24,7 +24,7 @@ var OniUtils = {
   getCurrentFilter: function ()
   {
     // Look for a date on location's hash, default to today
-    return OniUtils.getUrlParam('filter');
+    return SpotUtils.getUrlParam('filter');
   },
   getUrlParam: function (name, defaultValue)
   {
@@ -72,12 +72,12 @@ var OniUtils = {
     rawReps.forEach(function (serviceInfo) {
       var info;
 
-      info = serviceInfo.split(':'); // SERVICE:SERVICE_REPUTATION:ONI_REPUTATION:SERVICE_CATEGORIES
+      info = serviceInfo.split(':'); // SERVICE:SERVICE_REPUTATION:SPOT_REPUTATION:SERVICE_CATEGORIES
 
       reps[info[0]] = {
         'text': info[1],
         'value': +info[2],
-        'cssClass': OniUtils.CSS_RISK_CLASSES[info[2]] || OniUtils.CSS_RISK_CLASSES[0],
+        'cssClass': SpotUtils.CSS_RISK_CLASSES[info[2]] || SpotUtils.CSS_RISK_CLASSES[0],
         'categories': info.length<4 ? null :info[3].split(';').map(category => {
           category = category.split('|');
 
@@ -94,7 +94,7 @@ var OniUtils = {
   getHighestReputation: function (reps) {
     if (!reps) return -1;
 
-    reps = typeof reps == 'string' ? OniUtils.parseReputation(reps) : reps;
+    reps = typeof reps == 'string' ? SpotUtils.parseReputation(reps) : reps;
 
     return Object.keys(reps).reduce(function (hr, serviceName) {
       return Math.max(hr, reps[serviceName].value);
@@ -102,4 +102,4 @@ var OniUtils = {
   },
 };
 
-module.exports = OniUtils;
+module.exports = SpotUtils;

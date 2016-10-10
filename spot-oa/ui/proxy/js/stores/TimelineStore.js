@@ -1,8 +1,8 @@
 var assign = require('object-assign');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
 var FlowConstants = require('../constants/ProxyConstants');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var RestStore = require('../../../js/stores/RestStore');
 
 var fields = ['title', 'summary'];
@@ -10,8 +10,8 @@ var filterName;
 
 
 var TimelineStore = assign(new RestStore(FlowConstants.API_TIMELINE), {
-    _parser: d3.tsv, 
-    _sdate:'', 
+    _parser: d3.tsv,
+    _sdate:'',
     _slegend:false,
     errorMessages: {
         404: 'Please choose a different date, no data has been found'
@@ -19,7 +19,7 @@ var TimelineStore = assign(new RestStore(FlowConstants.API_TIMELINE), {
     setDate: function (date)
     {
         this.setEndpoint(FlowConstants.API_TIMELINE.replace('${date}', date.replace(/-/g, '')));
-        this._sdate = date; 
+        this._sdate = date;
     },
     setFilter: function (name, value)
     {
@@ -41,13 +41,13 @@ var TimelineStore = assign(new RestStore(FlowConstants.API_TIMELINE), {
 });
 
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
     switch (action.actionType) {
-        case OniConstants.UPDATE_DATE:
+        case SpotConstants.UPDATE_DATE:
             TimelineStore.setDate(action.date);
 
             break;
-        case OniConstants.SELECT_COMMENT:
+        case SpotConstants.SELECT_COMMENT:
             var comment, filterParts, key;
 
             TimelineStore.clearFilter();
@@ -76,4 +76,3 @@ OniDispatcher.register(function (action) {
 });
 
 module.exports = TimelineStore;
-

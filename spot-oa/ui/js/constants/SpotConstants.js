@@ -1,4 +1,4 @@
-var OniConstants = {
+var SpotConstants = {
   // Search Actions
   UPDATE_FILTER: 'UPDATE_FILTER',
   UPDATE_DATE: 'UPDATE_DATE',
@@ -34,4 +34,4 @@ var OniConstants = {
   NOTEBOOKS_PATH: '/notebooks/ipynb'
 };
 
-module.exports = OniConstants;
+module.exports = SpotConstants;

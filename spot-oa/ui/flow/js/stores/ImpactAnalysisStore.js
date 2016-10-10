@@ -1,8 +1,8 @@
 var assign = require('object-assign');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
 var FlowConstants = require('../constants/NetflowConstants');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var RestStore = require('../../../js/stores/JsonStore');
 
 var fields = ['title', 'summary'];
@@ -35,13 +35,13 @@ var ImpactAnalysisStore = assign(new RestStore(FlowConstants.API_IMPACT_ANALYSIS
     }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
     switch (action.actionType) {
-        case OniConstants.UPDATE_DATE:
+        case SpotConstants.UPDATE_DATE:
             ImpactAnalysisStore.setDate(action.date);
 
             break;
-        case OniConstants.SELECT_COMMENT:
+        case SpotConstants.SELECT_COMMENT:
             var comment, filterParts, key;
 
             ImpactAnalysisStore.clearFilter();
@@ -70,4 +70,3 @@ OniDispatcher.register(function (action) {
 });
 
 module.exports = ImpactAnalysisStore;
-

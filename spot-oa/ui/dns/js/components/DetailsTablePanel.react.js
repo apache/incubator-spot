@@ -2,7 +2,6 @@ var React = require('react');
 
 var GridPanelMixin = require('../../../js/components/GridPanelMixin.react');
 var DetailsStore = require('../stores/DetailsStore');
-var OniUtils = require('../../../js/utils/OniUtils.js');
 
 var DetailsTablePanel = React.createClass({
   mixins: [GridPanelMixin],
@@ -22,7 +21,7 @@ var DetailsTablePanel = React.createClass({
   _render_dns_qry_name_cell: function (query, item, idx)
   {
     return (
-      <p key={'dns_qry_name_' + idx} className="oni-text-wrapper" data-toggle="tooltip">
+      <p key={'dns_qry_name_' + idx} className="spot-text-wrapper" data-toggle="tooltip">
         {query}
       </p>
     );

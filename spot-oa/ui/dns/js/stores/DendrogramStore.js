@@ -1,5 +1,5 @@
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var DnsConstants = require('../constants/DnsConstants');
 var RestStore = require('../../../js/stores/RestStore');
 var assign = require('object-assign');
@@ -29,19 +29,19 @@ var DendrogramStore = assign(new RestStore(DnsConstants.API_VISUAL_DETAILS), {
   }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
   switch (action.actionType) {
-    case OniConstants.UPDATE_DATE:
+    case SpotConstants.UPDATE_DATE:
       DendrogramStore.setDate(action.date);
       break;
-    case OniConstants.SELECT_IP:
+    case SpotConstants.SELECT_IP:
       DendrogramStore.setSrcIp(action.ip);
       break;
-    case OniConstants.RELOAD_SUSPICIOUS:
+    case SpotConstants.RELOAD_SUSPICIOUS:
       DendrogramStore.setSrcIp('');
       DendrogramStore.resetData();
       break;
-    case OniConstants.RELOAD_DETAILS_VISUAL:
+    case SpotConstants.RELOAD_DETAILS_VISUAL:
       DendrogramStore.reload();
       break;
   }

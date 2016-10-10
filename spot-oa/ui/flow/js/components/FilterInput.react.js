@@ -1,10 +1,8 @@
 var React = require('react');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
 var EdInActions = require('../../../js/actions/EdInActions');
 var SuspiciousStore = require('../stores/SuspiciousStore');
-var OniUtils = require('../../../js/utils/OniUtils');
+var SpotUtils = require('../../../js/utils/SpotUtils');
 
 var FilterInput = React.createClass({
   getInitialState: function ()
@@ -23,7 +21,7 @@ var FilterInput = React.createClass({
 
     cssClasses = 'form-control';
 
-    if (this.state.filter && !OniUtils.IP_V4_REGEX.test(this.state.filter))
+    if (this.state.filter && !SpotUtils.IP_V4_REGEX.test(this.state.filter))
     {
       cssClasses += ' has-error';
     }

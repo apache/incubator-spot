@@ -1,8 +1,8 @@
 var assign = require('object-assign');
 var d3 = require('d3');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var ProxyConstants = require('../constants/ProxyConstants');
 var RestStore = require('../../../js/stores/RestStore');
 
@@ -41,19 +41,19 @@ var DetailsStore = assign(new RestStore(ProxyConstants.API_DETAILS), {
     }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
     switch (action.actionType) {
-        case OniConstants.UPDATE_DATE:
+        case SpotConstants.UPDATE_DATE:
             DetailsStore.setDate(action.date);
             break;
-        case OniConstants.SELECT_THREAT:
+        case SpotConstants.SELECT_THREAT:
             DetailsStore.setClientIp(action.threat[CLIENT_IP_FILTER]);
             DetailsStore.setHash(action.threat[HASH_FILTER].replace(/\//g, '-'));
             break;
-        case OniConstants.RELOAD_SUSPICIOUS:
+        case SpotConstants.RELOAD_SUSPICIOUS:
             DetailsStore.resetData();
             break;
-        case OniConstants.RELOAD_DETAILS:
+        case SpotConstants.RELOAD_DETAILS:
             DetailsStore.reload();
             break;
     }

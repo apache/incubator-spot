@@ -1,8 +1,8 @@
 var assign = require('object-assign');
 var d3 = require('d3');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var ProxyConstants = require('../constants/ProxyConstants');
 var RestStore = require('../../../js/stores/RestStore');
 
@@ -17,12 +17,12 @@ var CommentsStore = assign(new RestStore(ProxyConstants.API_COMMENTS), {
   }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
   switch (action.actionType) {
-    case OniConstants.UPDATE_DATE:
+    case SpotConstants.UPDATE_DATE:
       CommentsStore.setDate(action.date);
       break;
-    case OniConstants.RELOAD_COMMENTS:
+    case SpotConstants.RELOAD_COMMENTS:
       CommentsStore.reload();
       break;
   }

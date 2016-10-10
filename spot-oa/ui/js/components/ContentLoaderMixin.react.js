@@ -3,15 +3,15 @@ var React = require('react');
 var ContentLoaderMixin = {
     renderError: function () {
         return (
-            <div className="oni-content-loader">
+            <div className="spot-content-loader">
                 <div className="text-center text-danger">{this.state.error}</div>
             </div>
         );
     },
     renderContentLoader: function () {
         return (
-            <div className="oni-content-loader">
-                <div className="oni_loader">
+            <div className="spot-content-loader">
+                <div className="spot-loader">
                     Loading <span className="spinner"></span>
                 </div>
             </div>

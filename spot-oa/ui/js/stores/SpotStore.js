@@ -1,8 +1,8 @@
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
-var OniDispatcher = require('../dispatchers/OniDispatcher');
-var OniConstants = require('../constants/OniConstants');
+var SpotDispatcher = require('../dispatchers/SpotDispatcher');
+var SpotConstants = require('../constants/SpotConstants');
 
 var CHANGE_DATE_EVENT = 'change_date';
 var PANEL_EXPAND_EVENT = 'panel_expand';
@@ -11,7 +11,7 @@ var PANEL_TOGGLE_MODE_EVENT = 'panel_toggle_mode';
 
 var date = '';
 
-var OniStore = assign({}, EventEmitter.prototype, {
+var SpotStore = assign({}, EventEmitter.prototype, {
   setDate: function (newDate)
   {
     date = newDate;
@@ -69,21 +69,21 @@ var OniStore = assign({}, EventEmitter.prototype, {
   },
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
   switch (action.actionType) {
-    case OniConstants.UPDATE_DATE:
-      OniStore.setDate(action.date);
+    case SpotConstants.UPDATE_DATE:
+      SpotStore.setDate(action.date);
       break;
-    case OniConstants.EXPAND_PANEL:
-      OniStore.emitPanelExpand(action.panel);
+    case SpotConstants.EXPAND_PANEL:
+      SpotStore.emitPanelExpand(action.panel);
       break;
-    case OniConstants.RESTORE_PANEL:
-      OniStore.emitPanelRestore(action.panel);
+    case SpotConstants.RESTORE_PANEL:
+      SpotStore.emitPanelRestore(action.panel);
       break;
-    case OniConstants.TOGGLE_MODE_PANEL:
-      OniStore.emitPanelToggleMode(action.panel, action.mode);
+    case SpotConstants.TOGGLE_MODE_PANEL:
+      SpotStore.emitPanelToggleMode(action.panel, action.mode);
       break;
   }
 });
 
-module.exports = OniStore;
+module.exports = SpotStore;

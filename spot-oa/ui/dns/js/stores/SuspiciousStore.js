@@ -1,8 +1,8 @@
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var DnsConstants = require('../constants/DnsConstants');
 var RestStore = require('../../../js/stores/RestStore');
-var OniUtils = require('../../../js/utils/OniUtils');
+var SpotUtils = require('../../../js/utils/SpotUtils');
 var assign = require('object-assign');
 
 var IP_FILTER = 'ip_dst';
@@ -61,7 +61,7 @@ var SuspiciousStore = assign(new RestStore(DnsConstants.API_SUSPICIOUS), {
         return item.dns_sev=="0";
     });
 
-    if (state.data.length>OniConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, OniConstants.MAX_SUSPICIOUS_ROWS);
+    if (state.data.length>SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
 
     return state;
   },
@@ -85,7 +85,7 @@ var SuspiciousStore = assign(new RestStore(DnsConstants.API_SUSPICIOUS), {
       this.removeRestFilter(IP_FILTER);
       this.removeRestFilter(DNS_FILTER);
     }
-    else if (OniUtils.IP_V4_REGEX.test(filter))
+    else if (SpotUtils.IP_V4_REGEX.test(filter))
     {
       this.removeRestFilter(DNS_FILTER);
       this.setRestFilter(IP_FILTER, filter);
@@ -173,24 +173,24 @@ var SuspiciousStore = assign(new RestStore(DnsConstants.API_SUSPICIOUS), {
   }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
   switch (action.actionType) {
-    case OniConstants.UPDATE_FILTER:
+    case SpotConstants.UPDATE_FILTER:
       SuspiciousStore.setFilter(action.filter);
       break;
-    case OniConstants.UPDATE_DATE:
+    case SpotConstants.UPDATE_DATE:
       SuspiciousStore.setDate(action.date);
       break;
-    case OniConstants.RELOAD_SUSPICIOUS:
+    case SpotConstants.RELOAD_SUSPICIOUS:
       SuspiciousStore.reload();
       break;
-    case OniConstants.HIGHLIGHT_THREAT:
+    case SpotConstants.HIGHLIGHT_THREAT:
       SuspiciousStore.highlightThreat(action.threat);
       break;
-    case OniConstants.UNHIGHLIGHT_THREAT:
+    case SpotConstants.UNHIGHLIGHT_THREAT:
       SuspiciousStore.unhighlightThreat();
       break;
-    case OniConstants.SELECT_THREAT:
+    case SpotConstants.SELECT_THREAT:
       SuspiciousStore.selectThreat(action.threat);
       break;
   }

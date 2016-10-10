@@ -163,7 +163,7 @@ var IngestSummaryPanel = React.createClass({
   },
   getDefaultProperties: function () {
     return {
-      id: 'oni-is'
+      id: 'spot-is'
     };
   },
   getInitialState: function ()
@@ -185,7 +185,7 @@ var IngestSummaryPanel = React.createClass({
     else if (this.state.loading)
     {
       content = (
-        <div className="oni_loader">
+        <div className="spot-loader">
             Loading <span className="spinner"></span>
         </div>
       );

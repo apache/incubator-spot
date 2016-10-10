@@ -2,7 +2,7 @@ var React = require('react');
 
 var GridPanelMixin = require('../../../js/components/GridPanelMixin.react');
 var SuspiciousMixin = require('../../../js/components/SuspiciousGridMixin.react.js');
-var OniUtils = require('../../../js/utils/OniUtils.js');
+var SpotUtils = require('../../../js/utils/SpotUtils.js');
 var SuspiciousStore = require('../stores/SuspiciousStore');
 
 var SuspiciousPanel = React.createClass({
@@ -34,7 +34,7 @@ var SuspiciousPanel = React.createClass({
 
             return (
                 <li key={keyPrefix + '_list_srv' + idx + '_name'}>
-                    <span className={'label label-' + OniUtils.CSS_RISK_CLASSES[service.value] + ' text-uppercase'}>{serviceName}</span>
+                    <span className={'label label-' + SpotUtils.CSS_RISK_CLASSES[service.value] + ' text-uppercase'}>{serviceName}</span>
                     <dl>
                         {categories}
                     </dl>
@@ -64,11 +64,11 @@ var SuspiciousPanel = React.createClass({
     _render_host_cell: function (host, item, idx) {
         var reps, highestRep;
 
-        reps = OniUtils.parseReputation(item.uri_rep);
-        highestRep = OniUtils.getHighestReputation(reps);
+        reps = SpotUtils.parseReputation(item.uri_rep);
+        highestRep = SpotUtils.getHighestReputation(reps);
 
         return (
-            <p key={'host_' + idx} className={'oni-text-wrapper text-' + OniUtils.CSS_RISK_CLASSES[highestRep]} data-toggle="tooltip">
+            <p key={'host_' + idx} className={'spot-text-wrapper text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]} data-toggle="tooltip">
                 {host}
             </p>
         );
@@ -76,14 +76,14 @@ var SuspiciousPanel = React.createClass({
     _render_uri_rep_cell: function (uri_rep, item, idx) {
         var reps, highestRep, uriRep, uriCat;
 
-        reps = OniUtils.parseReputation(uri_rep);
-        highestRep = OniUtils.getHighestReputation(reps);
+        reps = SpotUtils.parseReputation(uri_rep);
+        highestRep = SpotUtils.getHighestReputation(reps);
 
         uriRep = this._renderRepCell('host_rep_' + idx, reps);
         uriCat = this._renderCatCell('host_cat_' + idx, reps);
 
         return (
-            <p key={'uri_info_' + idx} className={'uri_info text-' + OniUtils.CSS_RISK_CLASSES[highestRep]}>
+            <p key={'uri_info_' + idx} className={'uri_info text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
                 {uriRep} {uriCat}
             </p>
         );

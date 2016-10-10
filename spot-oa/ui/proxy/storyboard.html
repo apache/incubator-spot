@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <!--Bootstrap Date picker styles-->
     <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
-    <!-- ONI styles -->
-    <link rel="stylesheet" type="text/css" href="../css/oni.css" />
+    <!-- Spot styles -->
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
     <!-- PoC theme -->
     <link rel="stylesheet" type="text/css" href="../css/poc.css" />
     <!-- Dendrogram styles -->
@@ -37,26 +37,26 @@
     <meta name="theme-color" content="#ffffff">
 
     <style>
-        #oni-content > .oni-row {
+        #spot-content > .spot-row {
             height: 100% !important;
         }
 
-        #oni-content > .oni-row > .oni-sidebar {
+        #spot-content > .spot-row > .spot-sidebar {
             height: 50%;
         }
 
-        #oni-content > .oni-row > .oni-stage {
+        #spot-content > .spot-row > .spot-stage {
             height: 100%;
         }
 
         @media (min-width: 992px) {
-            #oni-content > .oni-row > .oni-stage {
+            #spot-content > .spot-row > .spot-stage {
                 float: right;
             }
         }
 
         /* Incident Progression */
-        .oni-incident-progression text {
+        .spot-incident-progression text {
             alignment-baseline: middle;
             stroke: rgb(0, 0, 0);
             stroke-width: 0px;
@@ -71,42 +71,42 @@
             user-select: none;
         }
 
-        .oni-incident-progression .node text {
+        .spot-incident-progression .node text {
             text-anchor: middle;
         }
 
-        .oni-incident-progression .node circle {
+        .spot-incident-progression .node circle {
             fill-opacity: 0.3;
             stroke-opacity: 1;
         }
 
-        .oni-incident-progression .node circle.background {
+        .spot-incident-progression .node circle.background {
             fill: white;
             stroke: white;
             fill-opacity: 1;
             stroke-opacity: 1;
         }
 
-        .oni-incident-progression .node circle.fulluri {
+        .spot-incident-progression .node circle.fulluri {
             fill: rgba(238, 238, 238, 0.3);
             stroke: rgb(238, 238, 238);
         }
 
-        .oni-incident-progression .blur {
+        .spot-incident-progression .blur {
             opacity: 0.1 !important;
         }
 
-        .oni-incident-progression .active {
+        .spot-incident-progression .active {
             opacity: 1 !important;
         }
 
-        .oni-incident-progression .link {
+        .spot-incident-progression .link {
             fill: none;
             stroke: #ccc;
             stroke-width: 1.5px;
         }
 
-        .oni-incident-progression .legend rect {
+        .spot-incident-progression .legend rect {
             fill-opacity: 0.3;
             stroke-opacity: 1;
             width: 10px;
@@ -114,13 +114,13 @@
             transform: translate(0,-5px);
         }
 
-        .oni-incident-progression .legend text {
+        .spot-incident-progression .legend text {
             transform: translate(15px, 0);
         }
     </style>
 </head>
 <body>
-    <nav id="oni-nav" class="navbar navbar-inverse">
+    <nav id="spot-nav" class="navbar navbar-inverse">
         <div class="container-fluid">
             <!-- App name and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -130,7 +130,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <span class="navbar-brand">Open Network Insight :: Proxy :: Storyboard</span>
+                <span class="navbar-brand">Apache Spot :: Proxy :: Storyboard</span>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="main-menu">
@@ -198,7 +198,7 @@
             </div> <!-- /Tools Buttons-->
         </div>
     </nav>
-    <div id="oni-content-wrapper" class="container-fluid">
+    <div id="spot-content-wrapper" class="container-fluid">
         <!-- Main Content Placeholder -->
     </div>
 

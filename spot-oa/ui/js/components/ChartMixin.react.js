@@ -6,7 +6,7 @@ var ChartMixin = {
     },
     getDefaultProps: function() {
         return {
-            className: 'oni-chart'
+            className: 'spot-chart'
         };
     },
     componentDidUpdate: function (prevProps, prevState)

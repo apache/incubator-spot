@@ -2,9 +2,9 @@ require("babel-polyfill");
 var React = require('react');
 
 var DateInput = require('../../js/components/DateInput.react');
-var OniActions = require('../../js/actions/OniActions');
-var OniConstants = require('../../js/constants/OniConstants');
-var OniUtils = require('../../js/utils/OniUtils');
+var SpotActions = require('../../js/actions/SpotActions');
+var SpotConstants = require('../../js/constants/SpotConstants');
+var SpotUtils = require('../../js/utils/SpotUtils');
 var StoryboardActions = require('../../js/actions/StoryboardActions');
 
 React.render(
@@ -34,28 +34,28 @@ var TimelinePanel = require('./components/TimelinePanel.react');
 var CommentsStore = require('./stores/CommentsStore');
 
 React.render(
-  <div id="oni-content">
+  <div id="spot-content">
     <PanelRow maximized>
-        <Panel className="col-md-4 oni-sidebar" title={OniConstants.COMMENTS_PANEL} expandable>
+        <Panel className="col-md-4 spot-sidebar" title={SpotConstants.COMMENTS_PANEL} expandable>
             <ExecutiveThreatBriefingPanel store={CommentsStore} />
         </Panel>
-        <Panel className="col-md-8 oni-stage" title={OniConstants.INCIDENT_PANEL} container expandable>
-            <IncidentProgressionPanel className="oni-incident-progression"/>
+        <Panel className="col-md-8 spot-stage" title={SpotConstants.INCIDENT_PANEL} container expandable>
+            <IncidentProgressionPanel className="spot-incident-progression"/>
         </Panel>
-        <Panel className="col-md-4 oni-sidebar sb_timeline" title={OniConstants.TIMELINE_PANEL} expandable>
+        <Panel className="col-md-4 spot-sidebar sb_timeline" title={SpotConstants.TIMELINE_PANEL} expandable>
             <TimelinePanel />
         </Panel>
     </PanelRow>
   </div>,
-  document.getElementById('oni-content-wrapper')
+  document.getElementById('spot-content-wrapper')
 );
 
 // Set search criteria
 var date;
 
-date = OniUtils.getCurrentDate();
+date = SpotUtils.getCurrentDate();
 
-OniActions.setDate(date);
+SpotActions.setDate(date);
 
 // Make inital load
 StoryboardActions.reloadComments();

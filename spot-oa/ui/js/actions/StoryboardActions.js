@@ -1,17 +1,17 @@
-var OniDispatcher = require('../dispatchers/OniDispatcher');
-var OniConstants = require('../constants/OniConstants');
+var SpotDispatcher = require('../dispatchers/SpotDispatcher');
+var SpotConstants = require('../constants/SpotConstants');
 
 var StoryBoardActions = {
     reloadComments: function ()
     {
-        OniDispatcher.dispatch({
-            actionType: OniConstants.RELOAD_COMMENTS
+        SpotDispatcher.dispatch({
+            actionType: SpotConstants.RELOAD_COMMENTS
         });
     },
     selectComment: function (comment)
     {
-        OniDispatcher.dispatch({
-            actionType: OniConstants.SELECT_COMMENT,
+        SpotDispatcher.dispatch({
+            actionType: SpotConstants.SELECT_COMMENT,
             comment: comment
         });
     }

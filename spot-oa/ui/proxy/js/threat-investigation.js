@@ -1,7 +1,7 @@
 var React = require('react');
 
-var OniActions = require('../../js/actions/OniActions');
-var OniUtils = require('../../js/utils/OniUtils');
+var SpotActions = require('../../js/actions/SpotActions');
+var SpotUtils = require('../../js/utils/SpotUtils');
 
 var DateInput = require('../../js/components/DateInput.react');
 
@@ -26,21 +26,21 @@ var PanelRow = require('../../js/components/PanelRow.react');
 var Panel = require('../../js/components/Panel.react');
 var IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
 
-var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure();
+var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure('');
 
 React.render(
-  <div id="oni-content">
+  <div id="spot-content">
     <PanelRow maximized>
       <Panel title={ipynbClosure.getTitle()} container className="col-md-12" extraButtons={ipynbClosure.getButtons}>
-        <IPythonNotebookPanel title={ipynbClosure.getTitle()} date={OniUtils.getCurrentDate()} ipynb="proxy/${date}/Threat_Investigation.ipynb" />
+        <IPythonNotebookPanel title={ipynbClosure.getTitle()} date={SpotUtils.getCurrentDate()} ipynb="proxy/${date}/Threat_Investigation.ipynb" />
       </Panel>
     </PanelRow>
   </div>,
-  document.getElementById('oni-content-wrapper')
+  document.getElementById('spot-content-wrapper')
 );
 // Set search criteria
 var date;
 
-date = OniUtils.getCurrentDate();
+date = SpotUtils.getCurrentDate();
 
-OniActions.setDate(date);
+SpotActions.setDate(date);

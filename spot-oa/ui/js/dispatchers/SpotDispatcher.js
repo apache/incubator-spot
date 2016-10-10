@@ -1,21 +1,21 @@
 var Dispatcher = require('flux').Dispatcher;
 
 // Create dispatcher instance$
-var OniDispatcher = new Dispatcher();
+var SpotDispatcher = new Dispatcher();
 
 // Convenience method to handle dispatch requests$
-OniDispatcher.handleServerAction = function(action) {
+SpotDispatcher.handleServerAction = function(action) {
   this.dispatch({
     source: 'SERVER_ACTION',
     action: action
   });
 }
 
-OniDispatcher.handleAction = function(action) {
+SpotDispatcher.handleAction = function(action) {
   this.dispatch({
     source: 'VIEW_ACTION',
     action: action
   });
 }
 
-module.exports = OniDispatcher;
+module.exports = SpotDispatcher;

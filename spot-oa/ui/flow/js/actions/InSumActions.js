@@ -1,9 +1,9 @@
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
 var NetflowConstants = require('../constants/NetflowConstants');
 
 var InSumActions = {
   reloadSummary: function () {
-    OniDispatcher.dispatch({
+    SpotDispatcher.dispatch({
       actionType: NetflowConstants.RELOAD_INGEST_SUMMARY
     });
   }

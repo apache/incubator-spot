@@ -1,9 +1,9 @@
 var React = require('react');
 
-var OniActions = require('../../js/actions/OniActions');
+var SpotActions = require('../../js/actions/SpotActions');
 var InSumActions = require('./actions/InSumActions');
 var NetflowConstants = require('./constants/NetflowConstants');
-var OniUtils = require('../../js/utils/OniUtils');
+var SpotUtils = require('../../js/utils/SpotUtils');
 var DateUtils = require('../../js/utils/DateUtils');
 
 // Build and Render Toolbar
@@ -13,8 +13,8 @@ var DateInput = require('../../js/components/DateInput.react');
 var startDate, endDate, today;
 
 today = new Date();
-startDate = OniUtils.getUrlParam(NetflowConstants.START_DATE);
-endDate = OniUtils.getUrlParam(NetflowConstants.END_DATE);
+startDate = SpotUtils.getUrlParam(NetflowConstants.START_DATE);
+endDate = SpotUtils.getUrlParam(NetflowConstants.END_DATE);
 
 if (!startDate && endDate)
 {
@@ -75,19 +75,19 @@ var Panel = require('../../js/components/Panel.react');
 var IngestSummaryPanel = require('./components/IngestSummaryPanel.react');
 
 React.render(
-  <div id="oni-content">
+  <div id="spot-content">
     <PanelRow maximized>
       <Panel title="Ingest Summary" container header={false} className="col-md-12">
-        <IngestSummaryPanel id="oni-is" />
+        <IngestSummaryPanel id="spot-is" />
       </Panel>
     </PanelRow>
   </div>,
-  document.getElementById('oni-content-wrapper')
+  document.getElementById('spot-content-wrapper')
 );
 
 // Set period
-OniActions.setDate(startDate, NetflowConstants.START_DATE);
-OniActions.setDate(endDate, NetflowConstants.END_DATE);
+SpotActions.setDate(startDate, NetflowConstants.START_DATE);
+SpotActions.setDate(endDate, NetflowConstants.END_DATE);
 
 // Load data
 InSumActions.reloadSummary();

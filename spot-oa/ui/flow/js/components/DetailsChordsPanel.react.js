@@ -197,7 +197,7 @@ var DetailsChordsPanel = React.createClass({
     else if (this.state.loading)
     {
       content = (
-        <div className="oni_loader">
+        <div className="spot-loader">
             Loading <span className="spinner"></span>
         </div>
       );

@@ -26,10 +26,10 @@ var ExecutiveThreatBriefingPanel = React.createClass({
 
         comments = this.state.data.map(function (comment, idx) {
             return (
-                <div key={'comment' + idx} className="oni-comment panel panel-default">
+                <div key={'comment' + idx} className="spot-comment panel panel-default">
                     <div id={'comment' + idx + '_title'} className="panel-heading" role="tab">
                         <h4 className="panel-title text-center">
-                            <a className="collapsed" role="button" data-toggle="collapse" data-parent="#oni-executive-threat-briefing" href={'#comment' + idx + '_summary'}
+                            <a className="collapsed" role="button" data-toggle="collapse" data-parent="#spot-executive-threat-briefing" href={'#comment' + idx + '_summary'}
                                aria-expanded="false" aria-controls={'comment' + idx + '_summary'} onClick={() => {this._onSelect(comment)}}>
                                 {comment.title}
                             </a>
@@ -44,7 +44,7 @@ var ExecutiveThreatBriefingPanel = React.createClass({
         }.bind(this));
 
         return (
-            <div id="oni-executive-threat-briefing" className="panel-group" role="tablist" aria-multiselectable="true">
+            <div id="spot-executive-threat-briefing" className="panel-group" role="tablist" aria-multiselectable="true">
                 {comments}
             </div>
         );

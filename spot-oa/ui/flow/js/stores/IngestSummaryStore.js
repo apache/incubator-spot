@@ -1,8 +1,8 @@
 var assign = require('object-assign');
 var d3 = require('d3');
 
-var OniDispatcher = require('../../../js/dispatchers/OniDispatcher');
-var OniConstants = require('../../../js/constants/OniConstants');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
 var NetflowConstants = require('../constants/NetflowConstants');
 var DateUtils = require('../../../js/utils/DateUtils');
 var RestStore = require('../../../js/stores/RestStore');
@@ -139,9 +139,9 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
     }
 });
 
-OniDispatcher.register(function (action) {
+SpotDispatcher.register(function (action) {
     switch (action.actionType) {
-        case OniConstants.UPDATE_DATE:
+        case SpotConstants.UPDATE_DATE:
             switch (action.name) {
                 case NetflowConstants.START_DATE:
                     IngestSummaryStore.setStartDate(action.date);

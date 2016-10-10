@@ -1,10 +1,10 @@
-# Open Network Insight - User Interface
+# Apache Spot (incubating) - User Interface
 
 Provides tools for interactive visualization, noise filters, white listing, and attack heuristics.
 
 ## Table of Contents
 
-- [Open Network Insight - User Interface](#open-network-insight---user-interface)
+- [Apache Spot - User Interface](#apache-spot---user-interface)
   * [Table of Contents](#table-of-contents)
   * [Intended Audience](#intended-audience)
   * [Getting Started](#getting-started)
@@ -18,39 +18,39 @@ Provides tools for interactive visualization, noise filters, white listing, and 
       - [Ingest Summary](#ingest-summary)
       - [App directory structure](#app-directory-structure)
         * [App Actions](#app-actions)
-          + [ONI actions](#oni-actions)
+          + [Spot actions](#spot-actions)
           + [Suspicious actions](#suspicious-actions)
           + [Storyboard actions](#storyboard-actions)
         * [App Components](#app-components)
-          + [ONI/ui/js/components/ChartMixin.react.js](#oniuijscomponentschartmixinreactjs)
-          + [ONI/ui/js/components/ContentLoaderMixin.react.js](#oniuijscomponentscontentloadermixinreactjs)
-          + [ONI/ui/js/components/DateInput.react.js](#oniuijscomponentsdateinputreactjs)
-          + [ONI/ui/js/components/DendrogramMixin.react.js](#oniuijscomponentsdendrogrammixinreactjs)
-          + [ONI/ui/js/components/DetailsPanelMixin.react.js](#oniuijscomponentsdetailspanelmixinreactjs)
-          + [ONI/ui/js/components/ExecutiveThreatBriefingPanel.react.js](#oniuijscomponentsexecutivethreatbriefingpanelreactjs)
-          + [ONI/ui/js/components/GridPanelMixin.react.js](#oniuijscomponentsgridpanelmixinreactjs)
-          + [ONI/ui/js/components/IPythonNotebookPanel.react.js](#oniuijscomponentsipythonnotebookpanelreactjs)
-          + [ONI/ui/js/components/Panel.react.js](#oniuijscomponentspanelreactjs)
-          + [ONI/ui/js/components/PanelRow.react.js](#oniuijscomponentspanelrowreactjs)
-          + [ONI/ui/js/components/SuspiciousGridMixin.react.js](#oniuijscomponentssuspiciousgridmixinreactjs)
-          + [ONI/ui/js/components/TimelineMixin.react.js](#oniuijscomponentstimelinemixinreactjs)
+          + [SPOT/ui/js/components/ChartMixin.react.js](#spotuijscomponentschartmixinreactjs)
+          + [SPOT/ui/js/components/ContentLoaderMixin.react.js](#spotuijscomponentscontentloadermixinreactjs)
+          + [SPOT/ui/js/components/DateInput.react.js](#spotuijscomponentsdateinputreactjs)
+          + [SPOT/ui/js/components/DendrogramMixin.react.js](#spotuijscomponentsdendrogrammixinreactjs)
+          + [SPOT/ui/js/components/DetailsPanelMixin.react.js](#spotuijscomponentsdetailspanelmixinreactjs)
+          + [SPOT/ui/js/components/ExecutiveThreatBriefingPanel.react.js](#spotuijscomponentsexecutivethreatbriefingpanelreactjs)
+          + [SPOT/ui/js/components/GridPanelMixin.react.js](#spotuijscomponentsgridpanelmixinreactjs)
+          + [SPOT/ui/js/components/IPythonNotebookPanel.react.js](#spotuijscomponentsipythonnotebookpanelreactjs)
+          + [SPOT/ui/js/components/Panel.react.js](#spotuijscomponentspanelreactjs)
+          + [SPOT/ui/js/components/PanelRow.react.js](#spotuijscomponentspanelrowreactjs)
+          + [SPOT/ui/js/components/SuspiciousGridMixin.react.js](#spotuijscomponentssuspiciousgridmixinreactjs)
+          + [SPOT/ui/js/components/TimelineMixin.react.js](#spotuijscomponentstimelinemixinreactjs)
         * [App Constants](#app-constants)
-          + [ONI/ui/js/constants/OniConstants.js](#oniuijsconstantsoniconstantsjs)
+          + [SPOT/ui/js/constants/SpotConstants.js](#spotuijsconstantsspotconstantsjs)
         * [App Dispatchers](#app-dispatchers)
-          + [ONI/ui/js/dispatchers/OniDispatcher.js](#oniuijsdispatchersonidispatcherjs)
+          + [SPOT/ui/js/dispatchers/SpotDispatcher.js](#spotuijsdispatchersspotdispatcherjs)
         * [App Stores](#app-stores)
-          + [ONI/ui/js/stores/OniStores.js](#oniuijsstoresonistoresjs)
-          + [ONI/ui/js/stores/JsonStore.js](#oniuijsstoresjsonstorejs)
-          + [ONI/ui/js/stores/RestStore.js](#oniuijsstoresreststorejs)
-          + [ONI/ui/js/stores/OniStore.js](#oniuijsstoresonistorejs)
+          + [SPOT/ui/js/stores/SpotStores.js](#spotuijsstoresspotstoresjs)
+          + [SPOT/ui/js/stores/JsonStore.js](#spotuijsstoresjsonstorejs)
+          + [SPOT/ui/js/stores/RestStore.js](#spotuijsstoresreststorejs)
+          + [SPOT/ui/js/stores/SpotStore.js](#spotuijsstoresspotstorejs)
         * [App Utils](#app-utils)
-          + [ONI/ui/js/utils/CategoryLauout.js](#oniuijsutilscategorylauoutjs)
+          + [SPOT/ui/js/utils/CategoryLauout.js](#spotuijsutilscategorylauoutjs)
           + [DateUtils.js](#dateutilsjs)
-          + [ONI/ui/js/utils/OniUtils.js](#oniuijsutilsoniutilsjs)
+          + [SPOT/ui/js/utils/SpotUtils.js](#spotuijsutilsspotutilsjs)
       - [Pipeline directory structure](#pipeline-directory-structure)
         * [Actions](#actions)
         * [Netflow Actions](#netflow-actions)
-          + [ONI/ui/flow/js/actions/InSumActions.js](#oniuiflowjsactionsinsumactionsjs)
+          + [SPOT/ui/flow/js/actions/InSumActions.js](#spotuiflowjsactionsinsumactionsjs)
         * [Components](#components)
         * [Netflow Components](#netflow-components)
           + [Suspicious](#suspicious-1)
@@ -86,7 +86,7 @@ This document is intended for front end developers who want to contribute to our
 
 ## Getting Started
 
-Here you will find useful information to get you started on how to contribute to our User Interface (UI). For more information on how to use "Open Network Insight - User Interface" (ONI UI) please read our [User Guide](https://github.com/Open-Network-Insight/open-network-insight/wiki/User%20Guide)
+Here you will find useful information to get you started on how to contribute to our User Interface (UI). For more information on how to use "Apache Spot - User Interface" (Spot UI) please read our [User Guide](https://github.com/Open-Network-Insight/open-network-insight/wiki/User%20Guide)
 
 ## Technical Documentation
 
@@ -103,14 +103,14 @@ For more information about ReactJS and Flux, please go to:
 
 From now on we assume you are familiar with ReactJS+Flux applications.
 
-For every path found on this document, "ONI" refers to the path where ONI UI is intalled and "PIPELINE" the pipeline subfolder you want to work on.
+For every path found on this document, "SPOT" refers to the path where Spot UI is intalled and "PIPELINE" the pipeline subfolder you want to work on.
 
 #### Development/Debugging process
 
-1. Install ONI UI. Follow this [guide](INSTALL.md#install-oni-ui).
-2. Run ONI UI. Follow this [guide](INSTALL.md#how-to-run-oni-ui).
+1. Install Spot UI. Follow this [guide](INSTALL.md#install-spot-ui).
+2. Run Spot UI. Follow this [guide](INSTALL.md#how-to-run-spot-ui).
 3. Start watching for code changes
-    1. $ cd ONI/ui/PIPELINE/
+    1. $ cd SPOT/ui/PIPELINE/
     2. Watch one of the following modules
         1. Suspicous: `$ npm run watch-suspicious`
         2. Threat Investigation: `$ npm run watch-threat_investigation`
@@ -120,7 +120,7 @@ For every path found on this document, "ONI" refers to the path where ONI UI is 
 
 #### Building modules
 
-At ONI/ui/ you can:
+At SPOT/ui/ you can:
 
 - Build all modules: `npm run build-all`
 - Build Netflow module: `npm run build-flow`
@@ -129,10 +129,10 @@ At ONI/ui/ you can:
 
 The build process will create the following files:
 
-- Suspicious: `ONI/ui/PIPELINE/js/suspicious.bundle.min.js`
-- Threat Investigation: `ONI/ui/PIPELINE/js/threat-investigation.bundle.min.js`
-- Storyboard: `ONI/ui/PIPELINE/js/storyboard.bundle.min.js`
-- Ingest Summary: `ONI/ui/PIPELINE/js/ingest-summary.bundle.min.js` for netflow
+- Suspicious: `SPOT/ui/PIPELINE/js/suspicious.bundle.min.js`
+- Threat Investigation: `SPOT/ui/PIPELINE/js/threat-investigation.bundle.min.js`
+- Storyboard: `SPOT/ui/PIPELINE/js/storyboard.bundle.min.js`
+- Ingest Summary: `SPOT/ui/PIPELINE/js/ingest-summary.bundle.min.js` for netflow
 
 Each pipeline has the following sections:
 
@@ -150,14 +150,14 @@ Shows Suspicious data, reads output files from OA.
 
 HTML file:
 
-- *ONI/ui/PIPELINE/suspicious.html*
+- *SPOT/ui/PIPELINE/suspicious.html*
 
 JavaScript file:
 
-- *ONI/ui/PIPELINE/js/suspicious.js*
+- *SPOT/ui/PIPELINE/js/suspicious.js*
 
 JavaScript bundle minified file:
-- *ONI/ui/PIPELINE/js/suspicious.bundle.min.js*
+- *SPOT/ui/PIPELINE/js/suspicious.bundle.min.js*
 
 #### Threat Investigation
 
@@ -165,14 +165,14 @@ Tools to manage high risk threats.
 
 HTML file:
 
-- *ONI/ui/PIPELINE/threat-investigation.html*
+- *SPOT/ui/PIPELINE/threat-investigation.html*
 
 JavaScript file:
 
-- *ONI/ui/PIPELINE/js/threat-investigation.js*
+- *SPOT/ui/PIPELINE/js/threat-investigation.js*
 
 JavaScript bundle minified file:
-- *ONI/ui/PIPELINE/js/threat-investigation.bundle.min.js*
+- *SPOT/ui/PIPELINE/js/threat-investigation.bundle.min.js*
 
 #### Storyboard
 
@@ -180,14 +180,14 @@ Displays extra information for high risk threats.
 
 HTML file:
 
-- *ONI/ui/PIPELINE/storyboard.html*
+- *SPOT/ui/PIPELINE/storyboard.html*
 
 JavaScript file:
 
-- *ONI/ui/PIPELINE/js/storyboard.js*
+- *SPOT/ui/PIPELINE/js/storyboard.js*
 
 JavaScript bundle minified file:
-- *ONI/ui/PIPELINE/js/storyboard.bundle.min.js*
+- *SPOT/ui/PIPELINE/js/storyboard.bundle.min.js*
 
 #### Ingest Summary
 
@@ -195,20 +195,20 @@ Displays statistical information of any ingested data.
 
 HTML file:
 
-- *ONI/ui/flow/ingest-summary.html*
+- *SPOT/ui/flow/ingest-summary.html*
 
 JavaScript file:
 
-- *ONI/ui/flow/js/ingest-summary.js*
+- *SPOT/ui/flow/js/ingest-summary.js*
 
 JavaScript bundle minified file:
-- *ONI/ui/flow/js/ingest-summary.bundle.min.js*
+- *SPOT/ui/flow/js/ingest-summary.bundle.min.js*
 
 #### App directory structure
 
 Our code follows the recommendation for ReactJS+Flux applications, the project structure looks like this:
 
-- *ONI/ui/js/*
+- *SPOT/ui/js/*
     - [_actions_](#app-actions)
     - [_components_](#app-components)
     - [_constants_](#app-constants)
@@ -220,9 +220,9 @@ Our code follows the recommendation for ReactJS+Flux applications, the project s
 
 ##### App Actions
 
-###### ONI actions
+###### Spot actions
 
-_ONI/ui/js/actions/OniActions.js_
+_SPOT/ui/js/actions/SpotActions.js_
 
 Actions that are used through the application
 
@@ -244,7 +244,7 @@ Actions that are used through the application
 
 ###### Suspicious actions
 
-_ONI/ui/js/actions/EdInActions.js_
+_SPOT/ui/js/actions/EdInActions.js_
 
 Suspicious related actions
 
@@ -282,7 +282,7 @@ Suspicious related actions
 
 ###### Storyboard actions
 
-_ONI/ui/js/actions/StoryboardActions.js_
+_SPOT/ui/js/actions/StoryboardActions.js_
 
 Defines actions that belong to storyboard section
 
@@ -297,7 +297,7 @@ Defines actions that belong to storyboard section
 
 ##### App Components
 
-###### _ONI/ui/js/components/ChartMixin.react.js_
+###### _SPOT/ui/js/components/ChartMixin.react.js_
 
 This mixin takes care of deciding when a chart must be built and/or drawn. A component using this mixin must provide two methods:
 
@@ -314,7 +314,7 @@ It must be used along with [ContentLoaderMixin.react.js](#contentloadermixin-rea
 
 In order to decide when to build and draw a chart, it will look for special properties on the component's state, state.**error**, state.**loading**, state.**data**.
 
-###### _ONI/ui/js/components/ContentLoaderMixin.react.js_
+###### _SPOT/ui/js/components/ContentLoaderMixin.react.js_
 
 Deals with showing and hiding a loading spinner. A component using this mixing must provide a method:
 
@@ -324,11 +324,11 @@ Deals with showing and hiding a loading spinner. A component using this mixing m
 
 In order to render the loading spinner, this mixin checks the content of state.**loading** property. If state.**error** is present, it will be rendered instead of calling renderContent().
 
-###### _ONI/ui/js/components/DateInput.react.js_
+###### _SPOT/ui/js/components/DateInput.react.js_
 
-A component that allows user to pick a date. After selecting the date this component will trigger an `UPDATE_DATE` action from [OniActions](#oniactions-js).
+A component that allows user to pick a date. After selecting the date this component will trigger an `UPDATE_DATE` action from [SpotActions](#spotactions-js).
 
-###### _ONI/ui/js/components/DendrogramMixin.react.js_
+###### _SPOT/ui/js/components/DendrogramMixin.react.js_
 
 This mixin takes care of the creation of dendrogram charts, more specific components should be created in order to gather data to feed this mixing.
 
@@ -347,15 +347,15 @@ __Note__:
 
 > _"children"_ property could be empty or omitted.
 
-###### _ONI/ui/js/components/DetailsPanelMixin.react.js_
+###### _SPOT/ui/js/components/DetailsPanelMixin.react.js_
 
 Extends [GridPanelMixin.react.js](#gridpanelmixin-react-js) and defines common functionality for those details grid panels from suspicious, such as an empty message and attaches change event listener to a store. Final components should only worry about providing custom cell render functions. For more information on custom render functions, go [here](#gridpanelmixin-react-js).
 
-###### _ONI/ui/js/components/ExecutiveThreatBriefingPanel.react.js_
+###### _SPOT/ui/js/components/ExecutiveThreatBriefingPanel.react.js_
 
 Renders a list of available comments added using our threat investigation section. As soon as user selects a comment it will trigger a `SELECT_COMMENT` action from  [StoryBoardActions](#storyboardactions-js) at the same as a summary is shown for selected comment. Listen for change events from [CommentsStore](#CommentsStore.js).
 
-###### _ONI/ui/js/components/GridPanelMixin.react.js_
+###### _SPOT/ui/js/components/GridPanelMixin.react.js_
 
 A helper component which renders a table. It allows for customization on final components.
 
@@ -407,7 +407,7 @@ Each table row support the following events:
 >
 >   Subscribe to this element by adding a `_onMouseLeaveRow` function to the final component.
 
-###### _ONI/ui/js/components/IPythonNotebookPanel.react.js_
+###### _SPOT/ui/js/components/IPythonNotebookPanel.react.js_
 
 Helper component that makes it easy to render an IPython Notebook.
 
@@ -419,7 +419,7 @@ Properties:
 - date: The initial date
 - ipynb: The ipynb file to be rendered
 
-###### _ONI/ui/js/components/Panel.react.js_
+###### _SPOT/ui/js/components/Panel.react.js_
 
 A component to wrap content and deal with general panel events.
 
@@ -431,7 +431,7 @@ Properties:
 - expandable: `true` when panel can be expanded/restored, `false` otherwise.
 - toggleable: `true` when panel can toggle between modes, `false` otherwise.
 
-Listen for [OniStore](#OniStore.js) events:
+Listen for [SpotStore](#SpotStore.js) events:
 
 > - EXPAND_PANEL
 >
@@ -445,11 +445,11 @@ Listen for [OniStore](#OniStore.js) events:
 >
 >   Make panel toggle switch to a new mode.
 
-###### _ONI/ui/js/components/PanelRow.react.js_
+###### _SPOT/ui/js/components/PanelRow.react.js_
 
 A panel container that allows expand/restore feature to work properly. Listens for EXPAND_PANEL/RESTORE_PANEL events on child panels and reacts in the same way, either expanding or restoring.
 
-###### _ONI/ui/js/components/SuspiciousGridMixin.react.js_
+###### _SPOT/ui/js/components/SuspiciousGridMixin.react.js_
 
 Defines common functionality for a Suspicious grid panels, such as an empty message, attaches change event listener to a store, popover events and events to highlight rows when mouse over a row. Final components should only worry about providing custom cell render functions. For more information on custom render functions, go [here](#gridpanelmixin-react-js).
 
@@ -459,17 +459,17 @@ Extends [GridPanelMixin](#GridPanelMixin.react.js) and provides event handlers f
 
 > - onMouseClick
 >
->   Uses [OniActions](#OniActions.js). Starts `SELECT_THREAT` action, loads threat details by starting `RELOAD_DETAILS` action.
+>   Uses [SpotActions](#SpotActions.js). Starts `SELECT_THREAT` action, loads threat details by starting `RELOAD_DETAILS` action.
 >
 > - onMouseEnter
 >
->   Starts `HIGHLIGHT_THREAT` on [OniActions](#OniActions.js).
+>   Starts `HIGHLIGHT_THREAT` on [SpotActions](#SpotActions.js).
 >
 > - onMouseLeave
 >
->   Starts `UNHIGHLIGHT_THREAT` on [OniActions](#OniActions.js).
+>   Starts `UNHIGHLIGHT_THREAT` on [SpotActions](#SpotActions.js).
 
-###### _ONI/ui/js/components/TimelineMixin.react.js_
+###### _SPOT/ui/js/components/TimelineMixin.react.js_
 
 This mixin takes care of the creation of timeline charts, more specific components should be created in order to gather data to feed this mixing.
 
@@ -490,7 +490,7 @@ __Note__:
 
 ##### App Constants
 
-###### _ONI/ui/js/constants/OniConstants.js_
+###### _SPOT/ui/js/constants/SpotConstants.js_
 
 Defines constant values for action names, panel identifiers, panel modes, notebook source path, etc.
 
@@ -556,15 +556,15 @@ Misc
 
 ##### App Dispatchers
 
-###### _ONI/ui/js/dispatchers/OniDispatcher.js_
+###### _SPOT/ui/js/dispatchers/SpotDispatcher.js_
 
-As per Flux architecture, ONI defines its own action dispatcher.
+As per Flux architecture, Spot defines its own action dispatcher.
 
 ##### App Stores
 
-_ONI/ui/js/stores/
+_SPOT/ui/js/stores/
 
-###### _ONI/ui/js/stores/OniStores.js_
+###### _SPOT/ui/js/stores/SpotStores.js_
 
 Provides methods to emit, listen and stop listening for following actions:
 
@@ -573,7 +573,7 @@ Provides methods to emit, listen and stop listening for following actions:
 > - RESTORE_PANEL
 > - TOGGLE_MODE_PANEL
 
-###### _ONI/ui/js/stores/JsonStore.js_
+###### _SPOT/ui/js/stores/JsonStore.js_
 
 This store makes it easy to retrieve JSON data from server.
 
@@ -620,7 +620,7 @@ Detaches listener.
 
 Makes proper filter replacements to endpoint and request data from server.
 
-###### _ONI/ui/js/stores/RestStore.js_
+###### _SPOT/ui/js/stores/RestStore.js_
 
 This store makes it easy to retrieve data delimited files from server. A quick note, the name RestStore comes from a former version.
 
@@ -689,7 +689,7 @@ Detaches listener.
 
 Makes proper filter replacements to endpoint and request data from server. `_parser` is used to parse the server's response.
 
-###### _ONI/ui/js/stores/OniStore.js_
+###### _SPOT/ui/js/stores/SpotStore.js_
 
 Stores global data
 
@@ -702,7 +702,7 @@ Provides methods to emit, listen and stop listening for following actions:
 
 ##### App Utils
 
-###### _ONI/ui/js/utils/CategoryLauout.js_
+###### _SPOT/ui/js/utils/CategoryLauout.js_
 
 A layout to build D3 charts that positions nodes on a canvas. Nodes belonging to the same category are placed together.
 
@@ -722,7 +722,7 @@ Returns the first 10 digits of a date in an ISO format.
 
 Creates a date object from a string that looks  like "1985-01-12".
 
-###### _ONI/ui/js/utils/OniUtils.js_
+###### _SPOT/ui/js/utils/SpotUtils.js_
 
 > IP_V4_REGEX : RegExp
 
@@ -804,15 +804,15 @@ The object looks like:
 }
 ```
 
-CSS class names came from OniUtils.CSS_RISK_CLASSES.
+CSS class names came from SpotUtils.CSS_RISK_CLASSES.
 
 > getHighestReputation(reps)
 
-Gets the highest reputation value from a structure like the one returned by OniUtils.parseReputation.
+Gets the highest reputation value from a structure like the one returned by SpotUtils.parseReputation.
 
 #### Pipeline directory structure
 
-- *ONI/ui/PIPELINE/js/*
+- *SPOT/ui/PIPELINE/js/*
   - [_actions_](#netflow-actions)
   - [_components_](#netflow-components)
   - _constants_
@@ -822,7 +822,7 @@ Gets the highest reputation value from a structure like the one returned by OniU
 
 ##### Netflow Actions
 
-###### _ONI/ui/flow/js/actions/InSumActions.js_
+###### _SPOT/ui/flow/js/actions/InSumActions.js_
 
 > - RELOAD_INGEST_SUMMARY
 >
@@ -832,7 +832,7 @@ Gets the highest reputation value from a structure like the one returned by OniU
 
 ##### Netflow Components
 
-_ONI/ui/js/flow/components/_
+_SPOT/ui/js/flow/components/_
 
 ###### Suspicious
 
@@ -864,7 +864,7 @@ _ONI/ui/js/flow/components/_
 
 ##### DNS Components
 
-_ONI/ui/js/dns/components/_
+_SPOT/ui/js/dns/components/_
 
 ###### Suspicious
 
@@ -887,7 +887,7 @@ _ONI/ui/js/dns/components/_
 
 ##### Proxy Components
 
-_ONI/ui/js/proxy/components/
+_SPOT/ui/js/proxy/components/
 
 ###### Suspicious
 
@@ -913,11 +913,11 @@ _ONI/ui/js/proxy/components/
 
 ##### Netflow Stores
 
-_ONI/ui/js/flow/stores/_
+_SPOT/ui/js/flow/stores/_
 
 ###### Suspicious
 
-- [OniStore.js](#onistore.js)
+- [SpotStore.js](#spotstore.js)
 
 - SuspiciousStore.js
 
@@ -952,7 +952,7 @@ _ONI/ui/js/flow/stores/_
 
 ###### Storyboard
 
-- [OniStore.js](#onistore.js)
+- [SpotStore.js](#spotstore.js)
 
 - CommentsStore.js
 
@@ -996,7 +996,7 @@ _ONI/ui/js/flow/stores/_
 
 ###### Ingest Summary
 
-- [OniStore.js](#onistore.js)
+- [SpotStore.js](#spotstore.js)
 
 - IngestSummaryStore
 
@@ -1004,11 +1004,11 @@ _ONI/ui/js/flow/stores/_
 
 ##### DNS Stores
 
-_ONI/ui/js/dns/stores/_
+_SPOT/ui/js/dns/stores/_
 
 ###### Suspicious
 
-- [OniStore.js](#onistore.js)
+- [SpotStore.js](#spotstore.js)
 
 - SuspiciousStore.js
 
@@ -1044,7 +1044,7 @@ _ONI/ui/js/dns/stores/_
 
 ###### Storyboard
 
-- [OniStore.js](#onistore.js)
+- [SpotStore.js](#spotstore.js)
 
 - CommentsStore.js
 
@@ -1065,11 +1065,11 @@ _ONI/ui/js/dns/stores/_
 
 ##### Proxy Stores
 
-_ONI/ui/js/proxy/_
+_SPOT/ui/js/proxy/_
 
 ###### Suspicious
 
-- [OniStore.js](#onistore.js)
+- [SpotStore.js](#spotstore.js)
 
 - SuspiciousStore.js
 
@@ -1095,7 +1095,7 @@ _ONI/ui/js/proxy/_
 
 ###### Storyboard
 
-- [OniStore.js](#onistore.js)
+- [SpotStore.js](#spotstore.js)
 
 - CommentsStore.js
 

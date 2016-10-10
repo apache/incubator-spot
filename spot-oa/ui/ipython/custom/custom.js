@@ -139,7 +139,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
         // 1 Build widgets
         easyMode.building = true;
 
-        console.info('ONI: Building easy mode...');
+        console.info('Spot: Building easy mode...');
 
         // 2 Create an execution queue to display progress
         easyMode.cells.execution_queue = [];
@@ -217,7 +217,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
         // Do nothing when running stand alone
         if (!isEasyModeAvailable()) return;
 
-        // We are running inside and iframe from ONI. Let's have some fun!
+        // We are running inside and iframe from Spot. Let's have some fun!
 
         // Let Notebook be aware it is running on an iframe
         IPython._target = '_self';
@@ -244,7 +244,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
         events.on('kernel_ready.Kernel', function ()
         {
-            console.info('ONI: Kernel is ready');
+            console.info('Spot: Kernel is ready');
 
             easyMode.stage |= easyMode.KERNEL_READY;
 
@@ -253,7 +253,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
         events.on('notebook_loaded.Notebook', function ()
         {
-            console.info('ONI: Notebook loaded');
+            console.info('Spot: Notebook loaded');
 
             easyMode.stage |= easyMode.NOTEBOOK_READY;
 
@@ -291,7 +291,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
             if (easyMode.cells.execution_queue.length===0)
             {
-                console.info('ONI: Cell execution has finished');
+                console.info('Spot: Cell execution has finished');
 
                 easyMode.ready = true;
                 easyMode.building = false;
@@ -315,7 +315,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
             easyMode.cells.execution_queue.push(cell);
 
-            console.info('ONI: Cell execution requested: ' + easyMode.cells.execution_queue.length + ' of ' + easyMode.cells.total);
+            console.info('Spot: Cell execution requested: ' + easyMode.cells.execution_queue.length + ' of ' + easyMode.cells.total);
 
             cell.clear_output(false);
             // There seems to be a bug on IPython sometimes cells with widgets dont get cleared
@@ -325,7 +325,7 @@ require(['jquery', 'bootstrap'], function($, bootstrap)
 
         $(function ()
         {
-            console.info('ONI: DOM is ready');
+            console.info('Spot: DOM is ready');
 
             easyMode.stage |= easyMode.DOM_READY;
 

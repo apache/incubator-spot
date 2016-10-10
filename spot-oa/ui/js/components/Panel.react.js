@@ -1,8 +1,8 @@
 var React = require('react');
 var assign = require('object-assign');
 
-var OniActions = require('../actions/OniActions');
-var OniStore = require('../stores/OniStore');
+var SpotActions = require('../actions/SpotActions');
+var SpotStore = require('../stores/SpotStore');
 
 var Panel = React.createClass({
     propTypes: {
@@ -25,12 +25,12 @@ var Panel = React.createClass({
         return {hidden: false, maximized: false, baseMode: true};
     },
     componentDidMount: function () {
-        OniStore.addPanelExpandListener(this._onExpand);
-        OniStore.addPanelRestoreListener(this._onRestore);
+        SpotStore.addPanelExpandListener(this._onExpand);
+        SpotStore.addPanelRestoreListener(this._onRestore);
     },
     componentWillUnmount: function () {
-        OniStore.removePanelExpandListener(this._onExpand);
-        OniStore.removePanelRestoreListener(this._onRestore);
+        SpotStore.removePanelExpandListener(this._onExpand);
+        SpotStore.removePanelRestoreListener(this._onRestore);
     },
     render: function () {
         var panelHeading, buttons, cssCls, containerCss;
@@ -82,7 +82,7 @@ var Panel = React.createClass({
             }
         }
 
-        cssCls = this.state.maximized ? 'oni-maximized col-md-12' : this.state.minimized ? 'oni-minimized' : "";
+        cssCls = this.state.maximized ? 'spot-maximized col-md-12' : this.state.minimized ? 'spot-minimized' : "";
 
         if (this.props.header) {
             panelHeading = (
@@ -98,8 +98,8 @@ var Panel = React.createClass({
         containerCss = 'panel-body-container' + (this.props.container ? ' container-box' : '');
 
         return (
-            <div className={'oni-frame ' + this.props.className + ' ' + cssCls}>
-                <div className="oni-frame-content">
+            <div className={'spot-frame ' + this.props.className + ' ' + cssCls}>
+                <div className="spot-frame-content">
                     <div className={'panel panel-primary' + (this.props.header ? '' : ' no-heading')}>
                         {panelHeading}
                         <div className="panel-body">
@@ -114,10 +114,10 @@ var Panel = React.createClass({
     },
     _onToggleClick: function () {
         if (this.state.maximized) {
-            OniActions.restorePanel(this.props.title);
+            SpotActions.restorePanel(this.props.title);
         }
         else {
-            OniActions.expandPanel(this.props.title);
+            SpotActions.expandPanel(this.props.title);
         }
     },
     _onExpand: function (panel) {
