@@ -20,8 +20,8 @@ The following python modules will be imported for the notebook to work correctly
 
 ###Pre-requisites
 - Execution of the spot-oa process for DNS
-- Correct setup the spot.conf file. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration) 
-- Have a public key authentication between the current UI node and the ML node. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Configure%20User%20Accounts#configure-user-accounts)
+- Correct setup the spot.conf file. [Read more](/wiki/Edit%20Solution%20Configuration) 
+- Have a public key authentication between the current UI node and the ML node. [Read more](/wiki/Configure%20User%20Accounts#configure-user-accounts)
 
 
 ##Data source
@@ -35,7 +35,7 @@ and this can be performed executing the last cell on the notebook with the follo
 
 **Input files**  
 All these paths should be relative to the main OA path.    
-Schema for these files can be found [here](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/dns)
+Schema for these files can be found [here](/spot-oa/oa/dns)
 
         data/dns/<date>/dns_scores.csv  
         data/dns/<date>/dns_scores_bu.csv

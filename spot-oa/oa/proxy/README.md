@@ -42,10 +42,10 @@ Proxy spot-oa main script executes the following steps:
 - [Python 2.7](https://www.python.org/download/releases/2.7/) should be installed in the node running Proxy OA. 
 
 	The following modules are already included but some of them require configuration. Please refer to the _components_ documentation for more information. 
-- [components/iana](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#IANA-iana)
-- [components/data](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#data)
-- [components/nc](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components#network-context-nc)
-- [components/reputation](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/components/reputation)
+- [components/iana](/spot-oa/oa/components#IANA-iana)
+- [components/data](/spot-oa/oa/components#data)
+- [components/nc](/spot-oa/oa/components#network-context-nc)
+- [components/reputation](/spot-oa/oa/components/reputation)
 - proxy_conf.json
 
 **Prerequisites**
@@ -60,7 +60,7 @@ Before running Proxy OA, users need to configure components for the first time. 
 
 **Output**
 
-- proxy_scores.tsv: Main results file for Proxy OA. This file is tab separated and it's limited to the number of rows the user selected when running [oa/start_oa.py](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/INSTALL.md#usage).
+- proxy_scores.tsv: Main results file for Proxy OA. This file is tab separated and it's limited to the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
 
 		Schema with zero-indexed columns: 
 
@@ -131,5 +131,5 @@ With these iPython notebooks user will be able to perform further analysis and s
 experiment adding or modifying the code. 
 If a new functionality is required for the ipython notebook, the templates need to be modified to include the functionality for new executions.
 For further reference on how to work with these notebooks, you can read:  
-[Edge Notebook.ipynb](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/proxy/ipynb_templates/EdgeNotebook.md)  
-[Threat_Investigation.ipynb](https://github.com/Open-Network-Insight/oni-oa/blob/1.1/oa/proxy/ipynb_templates/ThreatInvestigation.md)
+[Edge Notebook.ipynb](/spot-oa/oa/proxy/ipynb_templates/EdgeNotebook.md)  
+[Threat_Investigation.ipynb](/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md)

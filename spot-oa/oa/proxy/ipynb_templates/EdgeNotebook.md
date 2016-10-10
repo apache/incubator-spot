@@ -20,8 +20,8 @@ The following python modules will be imported for the notebook to work correctly
 
 ###Pre-requisites
 - Execution of the spot-oa process for Proxy
-- Correct setup the spot.conf file [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration)
-- Have a public key created between the current UI node and the ML node. [Read more](https://github.com/Open-Network-Insight/open-network-insight/wiki/Configure%20User%20Accounts#configure-user-accounts)
+- Correct setup the spot.conf file [Read more](/wiki/Edit%20Solution%20Configuration)
+- Have a public key created between the current UI node and the ML node. [Read more](/wiki/Configure%20User%20Accounts#configure-user-accounts)
 
 
 ###Data
@@ -34,7 +34,7 @@ and this can be performed executing the last cell on the notebook with the follo
 
 **Input files**
 All these paths should be relative to the main OA path.    
-Schema for these files can be found [here](https://github.com/Open-Network-Insight/oni-oa/tree/1.1/oa/proxy)
+Schema for these files can be found [here](/spot-oa/oa/proxy)
 
         data/proxy/<date>/proxy_scores.tsv  
         data/proxy/<date>/proxy_scores_bu.tsv
