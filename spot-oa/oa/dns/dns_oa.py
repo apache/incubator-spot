@@ -6,7 +6,7 @@ import shutil
 import sys
 import datetime
 import csv
-import tldextract
+from tld import get_tld
 
 from collections import OrderedDict
 from utils import Util
@@ -149,8 +149,8 @@ class OA(object):
 
 
     def _add_tld_column(self):
-        self._dns_scores = [conn + [tldextract.extract(str(conn[self._conf['dns_results_fields']['dns_qry_name']])).registered_domain] for conn in self._dns_scores ] 
- 
+        qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
+        self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col])) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]))] for conn in self._dns_scores ] 
   
     def _add_reputation(self):
 
