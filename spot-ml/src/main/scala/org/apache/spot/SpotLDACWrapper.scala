@@ -17,6 +17,7 @@ import scala.sys.process._
 
 object SpotLDACWrapper {
 
+
   case class SpotLDACInput(doc: String, word: String, count: Int) extends Serializable
 
   case class SpotLDACOutput(docToTopicMix: Map[String, Array[Double]], wordResults: Map[String, Array[Double]])
