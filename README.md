@@ -97,7 +97,7 @@ Help us improve ONI!
 ONI is Apache 2.0 licensed and accepts contribuitions via GitHub pull requests. Please follow the next steps
 and join our comunity.
 
-### **Contribuiting to ONI code**
+### **Contributing to ONI code**
 
 * Fork the repo of the module that you wish to commit to.
 * Create a Branch, we use [topic branches](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches) for our commits. 
