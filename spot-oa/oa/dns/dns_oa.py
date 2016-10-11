@@ -150,7 +150,7 @@ class OA(object):
 
     def _add_tld_column(self):
         qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
-        self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col])) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]))] for conn in self._dns_scores ] 
+        self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ] 
   
     def _add_reputation(self):
 
