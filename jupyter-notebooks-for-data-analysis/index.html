@@ -1,0 +1,333 @@
+<!doctype html>
+
+<!--[if lt IE 7]><html lang="en-US" class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en-US" class="no-js">
+    <!--<![endif]-->
+
+    <head>
+        <meta charset="utf-8">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <title>Apache Spot  Jupyter Notebooks for Data Analysis</title>
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link rel="apple-touch-icon" href="../wp-content/themes/oni/library/images/apple-touch-icon.png">
+        <link rel="icon" href="../wp-content/themes/oni/favicon.png">
+        <!--[if IE]>
+        <link rel="shortcut icon" href="http://spot.incubator.apache.org../wp-content/themes/oni/favicon.ico">
+        <![endif]-->
+        <meta name="msapplication-TileColor" content="#f01d4f">
+        <meta name="msapplication-TileImage" content="../wp-content/themes/oni/library/images/win8-tile-icon.png">
+        <meta name="theme-color" content="#121212">
+
+        <link rel="pingback" href="http://spot.incubator.apache.org/xmlrpc.php">
+
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Feed" href="http://spot.incubator.apache.org/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Comments Feed" href="http://spot.incubator.apache.org/comments/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Jupyter Notebooks for Data Analysis Comments Feed" href="http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/feed/" />
+        <script type="text/javascript">
+			window._wpemojiSettings = {
+				"baseUrl" : "https:\/\/s.w.org\/images\/core\/emoji\/72x72\/",
+				"ext" : ".png",
+				"source" : {
+					"concatemoji" : "http:\/\/spot.incubator.apache.org\/wp-includes\/js\/wp-emoji-release.min.js"
+				}
+			}; ! function(a, b, c) {
+				function d(a) {
+					var c,
+					    d,
+					    e,
+					    f = b.createElement("canvas"),
+					    g = f.getContext && f.getContext("2d"),
+					    h = String.fromCharCode;
+					if (!g || !g.fillText)
+						return !1;
+					switch(g.textBaseline="top",g.font="600 32px Arial",a) {
+					case"flag":
+						return g.fillText(h(55356, 56806, 55356, 56826), 0, 0), f.toDataURL().length > 3e3;
+					case"diversity":
+						return g.fillText(h(55356, 57221), 0, 0),
+						c = g.getImageData(16, 16, 1, 1).data,
+						d = c[0] + "," + c[1] + "," + c[2] + "," + c[3], g.fillText(h(55356, 57221, 55356, 57343), 0, 0),
+						c = g.getImageData(16, 16, 1, 1).data,
+						e = c[0] + "," + c[1] + "," + c[2] + "," + c[3], d !== e;
+					case"simple":
+						return g.fillText(h(55357, 56835), 0, 0), 0 !== g.getImageData(16,16,1,1).data[0];
+					case"unicode8":
+						return g.fillText(h(55356, 57135), 0, 0), 0 !== g.getImageData(16,16,1,1).data[0]
+					}
+					return !1
+				}
+
+				function e(a) {
+					var c = b.createElement("script");
+					c.src = a, c.type = "text/javascript", b.getElementsByTagName("head")[0].appendChild(c)
+				}
+
+				var f,
+				    g,
+				    h,
+				    i;
+				for ( i = Array("simple", "flag", "unicode8", "diversity"), c.supports = {
+					everything : !0,
+					everythingExceptFlag : !0
+				},
+				h = 0; h < i.length; h++)
+					c.supports[i[h]] = d(i[h]), c.supports.everything = c.supports.everything && c.supports[i[h]], "flag" !== i[h] && (c.supports.everythingExceptFlag = c.supports.everythingExceptFlag && c.supports[i[h]]);
+				c.supports.everythingExceptFlag = c.supports.everythingExceptFlag && !c.supports.flag, c.DOMReady = !1, c.readyCallback = function() {
+					c.DOMReady = !0
+				}, c.supports.everything || ( g = function() {
+					c.readyCallback()
+				}, b.addEventListener ? (b.addEventListener("DOMContentLoaded", g, !1), a.addEventListener("load", g, !1)) : (a.attachEvent("onload", g), b.attachEvent("onreadystatechange", function() {
+					"complete" === b.readyState && c.readyCallback()
+				})),
+				f = c.source || {}, f.concatemoji ? e(f.concatemoji) : f.wpemoji && f.twemoji && (e(f.twemoji), e(f.wpemoji)))
+			}(window, document, window._wpemojiSettings);
+        </script>
+        <style type="text/css">
+			img.wp-smiley, img.emoji {
+				display: inline !important;
+				border: none !important;
+				box-shadow: none !important;
+				height: 1em !important;
+				width: 1em !important;
+				margin: 0 .07em !important;
+				vertical-align: -0.1em !important;
+				background: none !important;
+				padding: 0 !important;
+			}
+        </style>
+        <link rel='stylesheet' id='googleFonts-css'  href='http://fonts.googleapis.com/css?family=Lato%3A400%2C700%2C400italic%2C700italic' type='text/css' media='all' />
+        <link rel='stylesheet' id='bones-stylesheet-css'  href='../wp-content/themes/oni/library/css/style.css' type='text/css' media='all' />
+        <!--[if lt IE 9]>
+        <link rel='stylesheet' id='bones-ie-only-css'  href='http://spot.incubator.apache.org../wp-content/themes/oni/library/css/ie.css' type='text/css' media='all' />
+        <![endif]-->
+        <link rel='stylesheet' id='mm-css-css'  href='../wp-content/themes/oni/library/css/meanmenu.css' type='text/css' media='all' />
+        <script type='text/javascript' src='../wp-content/themes/oni/library/js/libs/modernizr.custom.min.js'></script>
+        <script type='text/javascript' src='../wp-includes/js/jquery/jquery.js'></script>
+        <script type='text/javascript' src='../wp-includes/js/jquery/jquery-migrate.min.js'></script>
+        <script type='text/javascript' src='../wp-content/themes/oni/library/js/jquery.meanmenu.js'></script>
+        <link rel='https://api.w.org/' href='../wp-json/' />
+        <link rel="canonical" href="http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/" />
+        <!--<link rel='shortlink' href='http://spot.incubator.apache.org/?p=136' />-->
+        <link rel="alternate" type="application/json+oembed" href="http://spot.incubator.apache.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fopen-network-insight.org%2Fjupyter-notebooks-for-data-analysis%2F" />
+        <link rel="alternate" type="text/xml+oembed" href="http://spot.incubator.apache.org/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fopen-network-insight.org%2Fjupyter-notebooks-for-data-analysis%2F&#038;format=xml" />
+
+
+    </head>
+
+    <body class="single single-post postid-136 single-format-standard" itemscope itemtype="http://schema.org/WebPage">
+
+        <div id="container">
+
+            <header class="header" role="banner" itemscope itemtype="http://schema.org/WPHeader">
+
+                <div id="inner-header" class="wrap cf">
+
+                    <p id="logo" class="h1" itemscope itemtype="http://schema.org/Organization">
+                        <a href="http://spot.incubator.apache.org" rel="nofollow"><img src="../wp-content/themes/oni/library/images/logo.png" alt="Open Network Insight" /></a>
+                    </p>
+
+                    <nav role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        <ul id="menu-main-menu" class="nav top-nav cf">
+                            <li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4">
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight">Get Started</a>
+                            </li>
+                            <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight#if-you-want-all-of-the-oni-code-at-once-just-clone-it">Download</a>
+                            </li>
+                            <li id="menu-item-6" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6">
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight#contributing-to-oni">Contribute</a>
+                            </li>
+                            <li id="menu-item-7" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7">
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight/wiki">Wiki</a>
+                            </li>
+                            <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-13">
+                                <a href="../blog/">Blog</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </header>
+
+            <div id="mobile-nav"></div>
+
+            <div id="content">
+
+                <div id="inner-content" class="wrap cf">
+
+                    <main id="main" class="m-all t-2of3 d-5of7 cf" role="main" itemscope itemprop="mainContentOfPage" itemtype="http://schema.org/Blog">
+
+                        <article id="post-136" class="cf post-136 post type-post status-publish format-standard hentry category-uncategorized" role="article" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
+
+                            <header class="article-header entry-header">
+
+                                <h1 class="entry-title single-title" itemprop="headline" rel="bookmark">Jupyter Notebooks for Data Analysis</h1>
+
+                                <p class="byline entry-meta vcard">
+
+                                    <time class="updated entry-time" datetime="2016-09-22" itemprop="datePublished">
+                                        September 22, 2016
+                                    </time>
+                                    </span>
+                                </p>
+
+                            </header>
+                            <section class="entry-content cf" itemprop="articleBody">
+                                <p>
+                                    <strong>Why Does Apache Spot Include iPython notebooks? </strong>
+                                </p>
+                                <p>
+                                    The project team wants Apache Spot to be a versatile tool that can be used by anyone. This means that data scientists and developers need to be able to query and handle the source data to find all the information they need for their decision making. The iPython Notebook is an appropriate platform for easy data exploration. One of its biggest advantages is that it provides parallel and distributed computing to enable code execution and debugging in an interactive environment – thus the ‘i’ in iPython.
+                                </p>
+                                <p>
+                                    The iPython notebook is a web based interactive computational environment that provides access to the Python shell. While iPython notebooks were originally designed to work with the Python language, they support a number of other programming languages, including Ruby, Scala, Julia, R, Go, C, C++, Java and Perl. There are also multiple additional packages that can be used to get the most out of this highly-customizable tool.
+                                </p>
+                                <p>
+                                    Starting on version 4.0, most notebook functionalities are now part of the Project Jupyter, while iPython remains as the kernel to work with Python code in the notebooks.
+                                </p>
+                                <img src="../wp-content/uploads/2016/10/iPython-1.png" alt="ipython" width="361" height="107" class="aligncenter size-full wp-image-140" srcset="../wp-content/uploads/2016/10/iPython-1.png 361w, ../wp-content/uploads/2016/10/iPython-1-300x89.png 300w" sizes="(max-width: 361px) 100vw, 361px" />
+                                <p>
+                                    <strong>IPython with Apache Spot for Network Threat Detection</strong>
+                                </p>
+                                <p>
+                                    <em>NOTE:  This is not intended to be a step-by-step tutorial on how to code a threat analysis in Apache Spot, but more like an introduction on how to approach the suspicions of a security breach.</em>
+                                </p>
+                                <p>
+                                    Although machine learning (ML) will do most of the work detecting anomalies in the traffic, Apache Spot also includes two notebook templates that can get you started on this. The <em>Threat_Investigation_master.ipynb</em> is designed to query the raw data table to find all connections in a day that are related to any threat you select – even connections that were not necessarily flagged as suspicious by ML on a first run. This gives us the chance to get a new data subset and here is where the fun begins.
+                                </p>
+                                <p>
+                                    If you suspect of a specific type of attack in your network, you can get the whole story by answering the Five ‘W’s.
+                                </p>
+                                <p>
+                                    <strong><em>What? </em></strong>
+                                </p>
+                                <p>
+                                    Maybe there’s been an increase in the logs collected by the system, which indicates abnormal amounts of communication in your network. Or, the amount of POST requests in your network have risen overnight. This is the mystery that needs to be solved by researching through the anomalies previously detected by ML.
+                                </p>
+                                <p>
+                                    <strong><em>Who?</em></strong>
+                                </p>
+                                <p>
+                                    Assuming you have a network context, you can identify the name of the infected machine inside the network, as well as the name of the IP or DNS on the other side of the connection (if it is a known host). If you don’t have a network context or are using DHCP, this can be a little tricky to detect using only Netflow logs. But, that’s where DNS and Proxy logs, come in handy. Including a network context file with Apache Spot is really simple and can go a long way when identifying a threat.
+                                </p>
+                                <p>
+                                    <strong><em>When?</em></strong>
+                                </p>
+                                <p>
+                                    To have a broader visibility on the attack, you can customize the queries on the Threat investigation notebook to review the data through a wider time lapse – instead of just checking through the current day. With this, you could find an increase of a certain type of requests to one (or many) URIs and predict its future behavior.
+                                </p>
+                                <p>
+                                    <strong><em>Where?</em></strong>
+                                </p>
+                                <p>
+                                    When working only with DNS, having a destination URL might not say much about where your information is going to, but Apache Spot allows you to connect with a geolocation database to identify the location of the suspected attackers IP. Taking advantage of this option, you can visually locate the other end of the connection on a map. You might find that it’s pointing to a country banned by your company, indicating a leak.
+                                </p>
+                                <p>
+                                    <strong><em>Why?</em></strong>
+                                </p>
+                                <p>
+                                    This answer to “why” will depend highly on the result of the analysis. For instance, an excessive amount of POST requests from one machine inside the network to an unidentified URI can indicate a data mining attack. Tracing back to patient zero, you can find that this could have originated with a phishing email, malicious software installed by an employee or a one-time visitor’s infected machine that connected to your network.
+                                </p>
+                                <p>
+                                    <strong>How to Get Answers to the Five Ws Questions</strong>
+                                </p>
+                                <p>
+                                    All of the previous questions can be answered by looking at the raw data collected. Although performing elaborated queries directly to your database can seem tempting, this type of analysis with Hive, or even Impala, can be very time consuming. A better approach would be to use Pandas to read and transform your dataset into a relational structured dataframe. This lets you work with as if it were an offline structured relational database.
+                                </p>
+                                <p>
+                                    Once you have your desired results and data subsets, you can use MatplotLib to easily graph your findings. (We cover this subject in more depth in another post.) Another advantage of the notebook is that you can download it as HTML or a PDF file to store locally and use it in a presentation – or just keep it for future reference.
+                                </p>
+                                <p>
+                                    <strong>Wrap Up</strong>
+                                </p>
+                                <p>
+                                    This post was meant to be just a brief introduction of how you can use iPython notebooks in Apache Spot to perform further data analysis and include it our executive report (in addition to the already included Story board). Although this is not the only way you can do this, it is a very interactive and fun way to do it. You’ll also see that the overall processing time is very short – thanks to the iPython notebook task parallelism ability.
+                                </p>
+                                <p>
+                                    We want to hear from YOU! Have you used iPython notebooks before? How do you feel about having this tool in Apache Spot? If you’re interested in further data analysis through interactive charts, a new post is coming soon on D3 and jQuery data visualization. Also, check back soon to read more on this and other Cybersecurity subjects.
+                                </p>
+                            </section>
+                            
+                            <footer class="article-footer">
+            
+                              filed under: <a href="../category/data-science/" rel="category tag">Data Science</a>, <a href="../category/ipython-notebooks/" rel="category tag">Ipython Notebooks</a>, <a href="../category/threat-analysis-tools/" rel="category tag">Threat Analysis Tools</a>
+                              
+                            </footer> 
+
+                        </article>
+
+                    </main>
+
+                    <div id="sidebar1" class="sidebar m-all t-1of3 d-2of7 last-col cf" role="complementary">
+
+                        <div id="recent-posts-2" class="widget widget_recent_entries">
+                            <h4 class="widgettitle">Recent Posts</h4>
+                            <ul>
+                                <li>
+                                    <a href="../jupyter-notebooks-for-data-analysis/">Jupyter Notebooks for Data Analysis</a>
+                                </li>
+                                <li>
+                                    <a href="../apache-spot-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/">Apache Spot (Incubating) and Cybersecurity — Using NetFlows to Detect Threats to  Critical Infrastructure</a>
+                                </li>
+                                <li>
+                                    <a href="../how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/">How Apache Spot (Incubating) Helps Create Well-Stocked Data Lakes and Catch Powerful Insights</a>
+                                </li>
+                                <li>
+                                    <a href="../apache-spot-3-most-asked-questions/">Apache Spot (Incubating): 3 Most-Asked Questions</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="archives-2" class="widget widget_archive">
+                            <h4 class="widgettitle">Archives</h4>
+                            <ul>
+                                <li>
+                                    <a href='../2016/09/'>September 2016</a>
+                                </li>
+                                <li>
+                                    <a href='../2016/08/'>August 2016</a>
+                                </li>
+                                <li>
+                                    <a href='../2016/03/'>March 2016</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <footer class="footer" role="contentinfo" itemscope itemtype="http://schema.org/WPFooter">
+
+                <div id="inner-footer" class="wrap cf">
+
+                    <nav role="navigation"></nav>
+                    <p class="source-org copyright" style="text-align:center;">
+                        &copy; 2016 Apache Spot.
+                    </p>
+
+                </div>
+
+            </footer>
+
+        </div>
+
+        <script type='text/javascript' src='/wp-includes/js/comment-reply.min.js'></script>
+        <script type='text/javascript' src='../wp-content/themes/oni/library/js/scripts.js'></script>
+        <script type='text/javascript' src='/wp-includes/js/wp-embed.min.js'></script>
+
+    </body>
+
+</html>
+<!-- end of site. what a ride! -->

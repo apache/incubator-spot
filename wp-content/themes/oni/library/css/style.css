@@ -739,6 +739,8 @@ POSTS & CONTENT STYLES
 .social-icons a {font-size:2em;}
 .social-icons a:hover {color:#fff;}
 .social-icons a:first-child {margin-right:15px;}
+.add-to-slack {margin:0 0 0 15px;}
+.add-to-slack {position:relative;top:5px;}
 
 #content { margin-top: 2em; }
 

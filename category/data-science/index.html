@@ -12,7 +12,7 @@
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <title>Github</title>
+        <title>Apache Spot  Data Science</title>
 
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
@@ -27,19 +27,15 @@
         <meta name="msapplication-TileImage" content="../../wp-content/themes/oni/library/images/win8-tile-icon.png">
         <meta name="theme-color" content="#121212">
 
-        <link rel="pingback" href="../../xmlrpc.php">
+        <link rel="pingback" href="http://spot.incubator.apache.org/xmlrpc.php">
 
-        <link rel='dns-prefetch' href='//fonts.googleapis.com' />
-        <link rel='dns-prefetch' href='//s.w.org' />
         <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Feed" href="../../feed/" />
         <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Comments Feed" href="../../comments/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; github Tag Feed" href="../../tag/github/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Data Science Category Feed" href="../../category/data-science/feed/" />
         <script type="text/javascript">
 			window._wpemojiSettings = {
-				"baseUrl" : "https:\/\/s.w.org\/images\/core\/emoji\/2\/72x72\/",
+				"baseUrl" : "https:\/\/s.w.org\/images\/core\/emoji\/72x72\/",
 				"ext" : ".png",
-				"svgUrl" : "https:\/\/s.w.org\/images\/core\/emoji\/2\/svg\/",
-				"svgExt" : ".svg",
 				"source" : {
 					"concatemoji" : "http:\/\/spot.incubator.apache.org\/wp-includes\/js\/wp-emoji-release.min.js"
 				}
@@ -48,30 +44,24 @@
 					var c,
 					    d,
 					    e,
-					    f,
-					    g,
-					    h = b.createElement("canvas"),
-					    i = h.getContext && h.getContext("2d"),
-					    j = String.fromCharCode;
-					if (!i || !i.fillText)
+					    f = b.createElement("canvas"),
+					    g = f.getContext && f.getContext("2d"),
+					    h = String.fromCharCode;
+					if (!g || !g.fillText)
 						return !1;
-					switch(i.textBaseline="top",i.font="600 32px Arial",a) {
+					switch(g.textBaseline="top",g.font="600 32px Arial",a) {
 					case"flag":
-						return i.fillText(j(55356, 56806, 55356, 56826), 0, 0), !(h.toDataURL().length < 3e3) && (i.clearRect(0, 0, h.width, h.height), i.fillText(j(55356, 57331, 65039, 8205, 55356, 57096), 0, 0),
-						c = h.toDataURL(), i.clearRect(0, 0, h.width, h.height), i.fillText(j(55356, 57331, 55356, 57096), 0, 0),
-						d = h.toDataURL(), c !== d);
+						return g.fillText(h(55356, 56806, 55356, 56826), 0, 0), f.toDataURL().length > 3e3;
 					case"diversity":
-						return i.fillText(j(55356, 57221), 0, 0),
-						e = i.getImageData(16, 16, 1, 1).data,
-						f = e[0] + "," + e[1] + "," + e[2] + "," + e[3], i.fillText(j(55356, 57221, 55356, 57343), 0, 0),
-						e = i.getImageData(16, 16, 1, 1).data,
-						g = e[0] + "," + e[1] + "," + e[2] + "," + e[3], f !== g;
+						return g.fillText(h(55356, 57221), 0, 0),
+						c = g.getImageData(16, 16, 1, 1).data,
+						d = c[0] + "," + c[1] + "," + c[2] + "," + c[3], g.fillText(h(55356, 57221, 55356, 57343), 0, 0),
+						c = g.getImageData(16, 16, 1, 1).data,
+						e = c[0] + "," + c[1] + "," + c[2] + "," + c[3], d !== e;
 					case"simple":
-						return i.fillText(j(55357, 56835), 0, 0), 0 !== i.getImageData(16,16,1,1).data[0];
+						return g.fillText(h(55357, 56835), 0, 0), 0 !== g.getImageData(16,16,1,1).data[0];
 					case"unicode8":
-						return i.fillText(j(55356, 57135), 0, 0), 0 !== i.getImageData(16,16,1,1).data[0];
-					case"unicode9":
-						return i.fillText(j(55358, 56631), 0, 0), 0 !== i.getImageData(16,16,1,1).data[0]
+						return g.fillText(h(55356, 57135), 0, 0), 0 !== g.getImageData(16,16,1,1).data[0]
 					}
 					return !1
 				}
@@ -85,7 +75,7 @@
 				    g,
 				    h,
 				    i;
-				for ( i = Array("simple", "flag", "unicode8", "diversity", "unicode9"), c.supports = {
+				for ( i = Array("simple", "flag", "unicode8", "diversity"), c.supports = {
 					everything : !0,
 					everythingExceptFlag : !0
 				},
@@ -117,7 +107,7 @@
         <link rel='stylesheet' id='googleFonts-css'  href='http://fonts.googleapis.com/css?family=Lato%3A400%2C700%2C400italic%2C700italic' type='text/css' media='all' />
         <link rel='stylesheet' id='bones-stylesheet-css'  href='../../wp-content/themes/oni/library/css/style.css' type='text/css' media='all' />
         <!--[if lt IE 9]>
-        <link rel='stylesheet' id='bones-ie-only-css'  href='../../wp-content/themes/oni/library/css/ie.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='bones-ie-only-css'  href='http://spot.incubator.apache.org/wp-content/themes/oni/library/css/ie.css' type='text/css' media='all' />
         <![endif]-->
         <link rel='stylesheet' id='mm-css-css'  href='../../wp-content/themes/oni/library/css/meanmenu.css' type='text/css' media='all' />
         <script type='text/javascript' src='../../wp-content/themes/oni/library/js/libs/modernizr.custom.min.js'></script>
@@ -128,7 +118,7 @@
 
     </head>
 
-    <body class="archive tag tag-github tag-6" itemscope itemtype="http://schema.org/WebPage">
+    <body class="archive category category-data-science category-11" itemscope itemtype="http://schema.org/WebPage">
 
         <div id="container">
 
@@ -142,17 +132,17 @@
 
                     <nav role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
                         <ul id="menu-main-menu" class="nav top-nav cf">
-                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/apache-spot">Get Started</a>
+                            <li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4">
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight">Get Started</a>
                             </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/apache-spot#if-you-want-all-of-the-oni-code-at-once-just-clone-it">Download</a>
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight#if-you-want-all-of-the-oni-code-at-once-just-clone-it">Download</a>
                             </li>
-                            <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/apache-spot#contributing-to-oni">Contribute</a>
+                            <li id="menu-item-6" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6">
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight#contributing-to-oni">Contribute</a>
                             </li>
-                            <li id="menu-item-106" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-106">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/apache-spot/wiki">Wiki</a>
+                            <li id="menu-item-7" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7">
+                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight/wiki">Wiki</a>
                             </li>
                             <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-13">
                                 <a href="../../blog/">Blog</a>
@@ -172,16 +162,16 @@
 
                     <main id="main" class="m-all t-2of3 d-5of7 cf" role="main" itemscope itemprop="mainContentOfPage" itemtype="http://schema.org/Blog">
 
-                        <h1 class="page-title">Tag: github</h1>
+                        <h1 class="page-title">Category: Data Science</h1>
 
-                        <article id="post-62" class="cf post-62 post type-post status-publish format-standard hentry category-security-analytics tag-github tag-apache-spot tag-open-source" role="article">
+                        <article id="post-136" class="cf post-136 post type-post status-publish format-standard hentry category-data-science category-ipython-notebooks category-threat-analysis-tools" role="article">
 
                             <header class="entry-header article-header">
 
-                                <h3 class="h2 entry-title"><a href="../../apache-spot-3-most-asked-questions/" rel="bookmark" title="Apache Spot: Three Most-Asked Questions">Apache Spot (Incubating): Three Most-Asked Questions</a></h3>
+                                <h3 class="h2 entry-title"><a href="../../jupyter-notebooks-for-data-analysis/" rel="bookmark" title="Jupyter Notebooks for Data Analysis">Jupyter Notebooks for Data Analysis</a></h3>
                                 <p class="byline entry-meta vcard">
-                                    <time class="updated entry-time" datetime="2016-03-29" itemprop="datePublished">
-                                        March 29, 2016
+                                    <time class="updated entry-time" datetime="2016-09-22" itemprop="datePublished">
+                                        September 22, 2016
                                     </time>
                                     </span>
                                 </p>
@@ -191,7 +181,7 @@
                             <section class="entry-content cf">
 
                                 <p>
-                                    While this is not the first blog post about Apache Spot, it is the first one by a creator of the solution. As a security data scientist in Intel&#8217;s Data Center Group, I joined a small team to start thinking about solving really hard problems in cloud analytics. The team grew, and out of that&#8230; <a class="excerpt-read-more" href="../../apache-spot-3-most-asked-questions/" title="Read Apache Spot: Three Most-Asked Questions">Read more &raquo;</a>
+                                    Why Does Apache Spot Include iPython notebooks? The project team wants Apache Spot to be a versatile tool that can be used by anyone. This means that data scientists and developers need to be able to query and handle the source data to find all the information they need for their decision making. The iPython&#8230; <a class="excerpt-read-more" href="../../jupyter-notebooks-for-data-analysis/" title="Read Jupyter Notebooks for Data Analysis">Read more &raquo;</a>
                                 </p>
 
                             </section>

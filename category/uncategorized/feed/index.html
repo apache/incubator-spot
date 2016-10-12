@@ -9,7 +9,7 @@
 
 <channel>
 	<title>Uncategorized &#8211; Apache Spot</title>
-	<atom:link href="http://spot.incubator.apache.org//category/uncategorized/feed/" rel="self" type="application/rss+xml" />
+	<atom:link href="http://spot.incubator.apache.org/category/uncategorized/feed/" rel="self" type="application/rss+xml" />
 	<link>http://spot.incubator.apache.org/</link>
 	<description></description>
 	<lastBuildDate>Tue, 27 Sep 2016 18:37:15 +0000</lastBuildDate>
@@ -17,19 +17,59 @@
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	
+    <item>
+        <title>Jupyter Notebooks for Data Analysis</title>
+        <link>http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/</link>
+        <comments>http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/#respond</comments>
+        <pubDate>Thu, 22 Sep 2016 21:28:12 +0000</pubDate>
+        <dc:creator><![CDATA[oni-admin]]></dc:creator>
+                <category><![CDATA[Uncategorized]]></category>
+
+        <guid isPermaLink="false">http://spot.incubator.apache.org/?p=136</guid>
+        <description><![CDATA[Why Does Apache Spot Include iPython notebooks? The project team wants Apache Spot needs to be a versatile tool that can be used by anyone. This means that data scientists and developers need to be able to query and handle the source data to find all the information they need for their decision making. The...  <a class="excerpt-read-more" href="http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/" title="Read Jupyter Notebooks for Data Analysis">Read more &#187;</a>]]></description>
+                <content:encoded><![CDATA[<p><strong>Why Does Apache Spot Include iPython notebooks? </strong></p>
+<p>The project team wants Apache Spot needs to be a versatile tool that can be used by anyone. This means that data scientists and developers need to be able to query and handle the source data to find all the information they need for their decision making. The iPython Notebook is an appropriate platform for easy data exploration. One of its biggest advantages is that it provides parallel and distributed computing to enable code execution and debugging in an interactive environment – thus the ‘i’ in iPython.</p>
+<p>The iPython notebook is a web based interactive computational environment that provides access to the Python shell. While iPython notebooks were originally designed to work with the Python language, they support a number of other programming languages, including Ruby, Scala, Julia, R, Go, C, C++, Java and Perl. There are also multiple additional packages that can be used to get the most out of this highly-customizable tool.</p>
+<p>Starting on version 4.0, most notebook functionalities are now part of the Project Jupyter, while iPython remains as the kernel to work with Python code in the notebooks.</p>
+<img src="http://spot.incubator.apache.org/wp-content/uploads/2016/10/iPython-1.png" alt="ipython" width="361" height="107" class="aligncenter size-full wp-image-140" srcset="http://spot.incubator.apache.org/wp-content/uploads/2016/10/iPython-1.png 361w, http://spot.incubator.apache.org/wp-content/uploads/2016/10/iPython-1-300x89.png 300w" sizes="(max-width: 361px) 100vw, 361px" />
+<p><strong>IPython with Apache Spot for Network Threat Detection</strong></p>
+<p><em>NOTE:  This is not intended to be a step-by-step tutorial on how to code a threat analysis in Apache Spot, but more like an introduction on how to approach the suspicions of a security breach.</em></p>
+<p>Although machine learning (ML) will do most of the work detecting anomalies in the traffic, Apache Spot also includes two notebook templates that can get you started on this. The <em>Threat_Investigation_master.ipynb</em> is designed to query the raw data table to find all connections in a day that are related to any threat you select – even connections that were not necessarily flagged as suspicious by ML on a first run. This gives us the chance to get a new data subset and here is where the fun begins.</p>
+<p>If you suspect of a specific type of attack in your network, you can get the whole story by answering the Five ‘W’s.</p>
+<p><strong><em>What? </em></strong></p>
+<p>Maybe there’s been an increase in the logs collected by the system, which indicates abnormal amounts of communication in your network. Or, the amount of POST requests in your network have risen overnight. This is the mystery that needs to be solved by researching through the anomalies previously detected by ML.</p>
+<p><strong><em>Who?</em></strong></p>
+<p>Assuming you have a network context, you can identify the name of the infected machine inside the network, as well as the name of the IP or DNS on the other side of the connection (if it is a known host). If you don’t have a network context or are using DHCP, this can be a little tricky to detect using only Netflow logs. But, that’s where DNS and Proxy logs, come in handy. Including a network context file with Apache Spot is really simple and can go a long way when identifying a threat.</p>
+<p><strong><em>When?</em></strong></p>
+<p>To have a broader visibility on the attack, you can customize the queries on the Threat investigation notebook to review the data through a wider time lapse – instead of just checking through the current day. With this, you could find an increase of a certain type of requests to one (or many) URIs and predict its future behavior.</p>
+<p><strong><em>Where?</em></strong></p>
+<p>When working only with DNS, having a destination URL might not say much about where your information is going to, but Apache Spot allows you to connect with a geolocation database to identify the location of the suspected attackers IP. Taking advantage of this option, you can visually locate the other end of the connection on a map. You might find that it’s pointing to a country banned by your company, indicating a leak.</p>
+<p><strong><em>Why?</em></strong></p>
+<p>This answer to “why” will depend highly on the result of the analysis. For instance, an excessive amount of POST requests from one machine inside the network to an unidentified URI can indicate a data mining attack. Tracing back to patient zero, you can find that this could have originated with a phishing email, malicious software installed by an employee or a one-time visitor’s infected machine that connected to your network.</p>
+<p><strong>How to Get Answers to the Five Ws Questions</strong></p>
+<p>All of the previous questions can be answered by looking at the raw data collected. Although performing elaborated queries directly to your database can seem tempting, this type of analysis with Hive, or even Impala, can be very time consuming. A better approach would be to use Pandas to read and transform your dataset into a relational structured dataframe. This lets you work with as if it were an offline structured relational database.</p>
+<p>Once you have your desired results and data subsets, you can use MatplotLib to easily graph your findings. (We cover this subject in more depth in another post.) Another advantage of the notebook is that you can download it as HTML or a PDF file to store locally and use it in a presentation – or just keep it for future reference.</p>
+<p><strong>Wrap Up</strong></p>
+<p>This post was meant to be just a brief introduction of how you can use iPython notebooks in Apache Spot to perform further data analysis and include it our executive report (in addition to the already included Story board). Although this is not the only way you can do this, it is a very interactive and fun way to do it. You’ll also see that the overall processing time is very short – thanks to the iPython notebook task parallelism ability.</p>
+<p>We want to hear from YOU! Have you used iPython notebooks before? How do you feel about having this tool in Apache Spot? If you’re interested in further data analysis through interactive charts, a new post is coming soon on D3 and jQuery data visualization. Also, check back soon to read more on this and other Cybersecurity subjects.</p>
+]]></content:encoded>
+            <wfw:commentRss>http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/feed/</wfw:commentRss>
+        <slash:comments>0</slash:comments>
+        </item>	
+	
 	<item>
-		<title>How Apache Spot Helps Create Well-Stocked Data Lakes and Catch Powerful Insights</title>
-		<link>http://spot.incubator.apache.org//how-open-network-insight-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/</link>
-		<comments>http://spot.incubator.apache.org//how-open-network-insight-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/#respond</comments>
+		<title>How Apache (Incubating) Spot Helps Create Well-Stocked Data Lakes and Catch Powerful Insights</title>
+		<link>http://spot.incubator.apache.org/how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/</link>
+		<comments>http://spot.incubator.apache.org/how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/#respond</comments>
 		<pubDate>Mon, 08 Aug 2016 07:59:41 +0000</pubDate>
 		<dc:creator><![CDATA[oni-admin]]></dc:creator>
 				<category><![CDATA[Uncategorized]]></category>
 
-		<guid isPermaLink="false">http://spot.incubator.apache.org//?p=113</guid>
-		<description><![CDATA[About four years ago, the era of the Big Data analytics began. Paired with advanced analytics, massive volumes of data can be culled to not only inform critical decisions, but also to simulate sophisticated “what if” scenarios that allow companies to gain competitive advantages by generating and predicting different scenarios. For example, a financial services...  <a class="excerpt-read-more" href="http://spot.incubator.apache.org//how-open-network-insight-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/" title="Read How Apache Spot Helps Create Well-Stocked Data Lakes and Catch Powerful Insights">Read more &#187;</a>]]></description>
+		<guid isPermaLink="false">http://spot.incubator.apache.org/?p=113</guid>
+		<description><![CDATA[About four years ago, the era of the Big Data analytics began. Paired with advanced analytics, massive volumes of data can be culled to not only inform critical decisions, but also to simulate sophisticated “what if” scenarios that allow companies to gain competitive advantages by generating and predicting different scenarios. For example, a financial services...  <a class="excerpt-read-more" href="http://spot.incubator.apache.org/how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/" title="Read How Apache Spot Helps Create Well-Stocked Data Lakes and Catch Powerful Insights">Read more &#187;</a>]]></description>
 				<content:encoded><![CDATA[<p>About four years ago, the era of the Big Data analytics began. Paired with advanced analytics, massive volumes of data can be culled to not only inform critical decisions, but also to simulate sophisticated “what if” scenarios that allow companies to gain competitive advantages by generating and predicting different scenarios. For example, a financial services company can more accurately determine what other products to offer a customer, and in what order, based on a wide variety of data, then use advanced analytics to gather insights. Creating a data lake that can be effectively used for predictive analytics raises tough questions — what data sources should we use?  How should this data be collected and ingested? What are the best algorithms to analyze the data, and how should we present these results to our decision maker?</p>
 <p>Apache Spot can help to solve most of these issues. Following is a description of the Apache Spot, which is designed to facilitate Big Data analytics scenarios like the financial services company’s question about the right product to offer customers.</p>
-<a href="http://spot.incubator.apache.org//wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4.png"><img src="http://spot.incubator.apache.org//wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4.png" alt="oni_architecture-diagram_1300_v4" width="1300" height="675" class="alignnone size-full wp-image-114" srcset="http://spot.incubator.apache.org//wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4.png 1300w, http://spot.incubator.apache.org//wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4-300x156.png 300w, http://spot.incubator.apache.org//wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4-768x399.png 768w, http://spot.incubator.apache.org//wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4-1024x532.png 1024w" sizes="(max-width: 1300px) 100vw, 1300px" /></a>
+<a href="http://spot.incubator.apache.org/wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4.png"><img src="http://spot.incubator.apache.org/wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4.png" alt="oni_architecture-diagram_1300_v4" width="1300" height="675" class="alignnone size-full wp-image-114" srcset="http://spot.incubator.apache.org/wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4.png 1300w, http://spot.incubator.apache.org/wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4-300x156.png 300w, http://spot.incubator.apache.org/wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4-768x399.png 768w, http://spot.incubator.apache.org/wp-content/uploads/2016/09/ONI_Architecture-Diagram_1300_v4-1024x532.png 1024w" sizes="(max-width: 1300px) 100vw, 1300px" /></a>
 <h3><strong>Apache Spot Core Components</strong></h3>
 <p>The Apache Spot Core is composed of three main components — data integration (collectors), data store (HDFS here, but can also be a non-SQL database) and machine learning.</p>
 <p>In this diagram, the top left shows Apache Spot Data Sources, which include the collection of the information that will be used to create a data lake. The process is simple. Define a pull or push from the source of information then capture this information on Apache Spot’s “collectors.” The collectors are processes that interpret the information that is sent, then write it to the HDFS system in the Apache Spot cluster. The HDFS stores the data lake and ensures that resources can grow while remaining economical at every size. The Apache Spot algorithms are part of machine learning and are used to detect the uncommon information in the data lake.</p>
@@ -40,7 +80,7 @@
 <h3><strong>Customizable Open Source</strong></h3>
 <p>Because Apache Spot is an open-source project, most of the components depicted here can be modified by the end user.</p>
 ]]></content:encoded>
-			<wfw:commentRss>http://spot.incubator.apache.org//how-open-network-insight-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/feed/</wfw:commentRss>
+			<wfw:commentRss>http://spot.incubator.apache.org/how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/feed/</wfw:commentRss>
 		<slash:comments>0</slash:comments>
 		</item>
 	</channel>
