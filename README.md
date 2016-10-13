@@ -1,11 +1,9 @@
-# **Open Network Insight**   <sup><sup><sub>_The business of network security - the "port perspective"_</sub></sup></sup>
+# **Apache Spot (Incubating)**   
 
-Open Network Insight is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their compute environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale.
+Apache Spot is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their compute environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale.
 
 While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge. Open Network Insight provides tools to accelerate companies’ ability to expose suspicious connections and previously unseen attacks using flow and packet analysis technologies. 
 <br><br>
-
-![oni logo](docs/oni-guy.png "ONI")![](docs/oni-logo.png "ONI")
 
 ----
 
