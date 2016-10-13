@@ -91,8 +91,8 @@ Our Central repository for our Apache Spot solution is found here. If you find a
 
 Help us improve Apache Spot!
 
-Apache Spot is Apache 2.0 licensed and accepts contribuitions via GitHub pull requests. Please follow the next steps
-and join our comunity.
+Apache Spot is Apache 2.0 licensed and accepts contributions via GitHub pull requests. Please follow the next steps
+and join our community.
 
 ### **Contributing to Apache Spot code**
 
@@ -122,7 +122,7 @@ Our Central repository for our Open Network Insight solution is found here. If y
 
 ### **Merge approval**
 
-* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for ONI please go to: [How to create an Issue](ISSUES.md)
+* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for Apache Spot please go to: [How to create an Issue](ISSUES.md)
  organization.
 ### **Commit Guidelines**
 * Bug fixes should be a single commit.
@@ -134,7 +134,7 @@ at least 3 "LGTM" from maintainers are required to approve the merge. If you hav
 
 ## **Licensing**
 
-ONI is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
+Apache Spot is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
 
 * oni-nfdump [License](https://github.com/Open-Network-Insight/oni-nfdump/blob/master/BSD-license.txt)
 * oni-lda-c [License](https://github.com/Open-Network-Insight/oni-lda-c/blob/1.0.1/license.txt)
