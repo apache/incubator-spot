@@ -8,7 +8,6 @@ While current threat intelligence tools help, identifying unknown threats and at
 ----
 
 ## **Overview**
-![oni approach](docs/oni-approach.png "ONI Approach")
 
 With the arrival of big data platforms, security organizations can now make data-driven decisions about how they protect their assets.  Records of network traffic, captured as network flows, are often stored and analyzed for use in network management.  An organization can use this same information to gain insight into what channels corporate information flows through. 
 
@@ -45,7 +44,7 @@ While inspecting specific, unique flows of data that may be important for indivi
 * Attack heuristics.
 * Noise filter.
 
-## Try the ONI UI with example data:
+## Try the Apache Spot UI with example data:
 
 *Running Demo on Docker*
 
@@ -61,9 +60,9 @@ pull the code from [oni-demo repo](https://github.com/Open-Network-Insight/oni-d
 
 ## **Getting Started**
 
-ONI can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](https://github.com/Open-Network-Insight/open-network-insight/wiki).
+Apache Spot can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](https://github.com/Open-Network-Insight/open-network-insight/wiki).
 
-## If you want all of the ONI code at once, just clone it!
+## If you want all of the Apache Spot code at once, just clone it!
         git clone --recursive https://github.com/Open-Network-Insight/open-network-insight.git
 
 ## **Roadmap**
@@ -72,7 +71,7 @@ TBD
 
 ## **Documentation (Developer Guide)**
 
-ONI functionality is divided into different repositories, go to each repository for developer documentation:
+Apache Spot functionality is divided into different repositories, go to each repository for developer documentation:
 
 * [oni-ingest](https://github.com/Open-Network-Insight/oni-ingest)
 * [oni-ml](https://github.com/Open-Network-Insight/oni-ml)
@@ -83,24 +82,37 @@ ONI functionality is divided into different repositories, go to each repository 
 
 ## **Community Support**
 
-Our Central repository for our Open Network Insight solution is found here. If you find a bug, have question or something to discuss please contact us:
+Our Central repository for our Apache Spot solution is found here. If you find a bug, have question or something to discuss please contact us:
 
-* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for ONI please go to: [How to create an Issue](ISSUES.md)
+* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for Apache Spot please go to: [How to create an Issue](ISSUES.md)
 * [Go to our Slack channel](https://opennetworkinsights.slack.com/messages/general/). 
 
-## **Contributing to ONI**
+## **Contributing to Apache Spot**
 
-Help us improve ONI!
+Help us improve Apache Spot!
 
-ONI is Apache 2.0 licensed and accepts contribuitions via GitHub pull requests. Please follow the next steps
+Apache Spot is Apache 2.0 licensed and accepts contribuitions via GitHub pull requests. Please follow the next steps
 and join our comunity.
 
-### **Contributing to ONI code**
+### **Contributing to Apache Spot code**
 
 * Fork the repo of the module that you wish to commit to.
 * Create a Branch, we use [topic branches](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches) for our commits. 
 * Push your commit(s) to your repository.
-* Create a pull request to the original repo in ONI organization.
+* Create a pull request to the original repo in Apache Spot organization
+TBD
+## **Documentation (Developer Guide)**
+Apache Spot functionality is divided into different repositories, go to each repository for developer documentation:
+* [oni-ingest](https://github.com/Open-Network-Insight/oni-ingest)
+* [oni-ml](https://github.com/Open-Network-Insight/oni-ml)
+* [oni-oa](https://github.com/Open-Network-Insight/oni-oa)
+* [oni-setup](https://github.com/Open-Network-Insight/oni-setup)
+* [oni-nfdump](https://github.com/Open-Network-Insight/oni-nfdump)
+* [oni-lda-c](https://github.com/Open-Network-Insight/oni-lda-c)
+## **Community Support**
+Our Central repository for our Open Network Insight solution is found here. If you find a bug, have question or something to discuss please contact us:
+* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for ONI please go to: [How to create an Issue](ISSUES.md)
+ organization.
 
 ### **Commit Guidelines**
 
@@ -110,6 +122,12 @@ and join our comunity.
 
 ### **Merge approval**
 
+* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for ONI please go to: [How to create an Issue](ISSUES.md)
+ organization.
+### **Commit Guidelines**
+* Bug fixes should be a single commit.
+* Please be clear with the commit messages about what you are fixing or adding to the code base. If you code is addressing an open issue please add the reference to the issue in the comments with: Fix: Issue's URL. 
+### **Merge approval**
 ONI maintainers use LGTM (Looks Good to Me) in a comments on the code review to indicate acceptance, 
 at least 3 "LGTM" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
 
