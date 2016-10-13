@@ -2,7 +2,7 @@
 
 Apache Spot is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their compute environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale.
 
-While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge. Open Network Insight provides tools to accelerate companies’ ability to expose suspicious connections and previously unseen attacks using flow and packet analysis technologies. 
+While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge. Apache Spot provides tools to accelerate companies’ ability to expose suspicious connections and previously unseen attacks using flow and packet analysis technologies. 
 <br><br>
 
 ----
@@ -21,7 +21,7 @@ There are two vectors that all organizations should evaluate:
 
 While inspecting specific, unique flows of data that may be important for individual organizations, all organizations can realize significant risk reduction from analysis of network flows and DNS (domain name service) replies.
 
-**Open Network Insight**  by leveraging strong technology in both Big Data and Scientific Computing disciplines is a solution intended to support this strategy by focusing on “hard security problems” detecting events such as lateral movement, side-channel data escapes, insider issues, or stealthy behavior in general.  
+**Apache Spot**  by leveraging strong technology in both Big Data and Scientific Computing disciplines is a solution intended to support this strategy by focusing on “hard security problems” detecting events such as lateral movement, side-channel data escapes, insider issues, or stealthy behavior in general.  
 
  
 ### **Telemetry**
