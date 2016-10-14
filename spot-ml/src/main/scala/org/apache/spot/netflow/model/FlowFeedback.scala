@@ -45,20 +45,8 @@ object FlowFeedback {
          3	dstIP
          4	sport
          5	dport
-         6	proto
-         7	flag
-         8	ipkt
-         9	ibyt
-         10	lda_score
-         11	rank
-         12	srcIpInternal
-         13	destIpInternal
-         14	srcGeo
-         15	dstGeo
-         16	srcDomain
-         17	dstDomain
-         18	srcIP_rep
-         19	dstIP_rep
+         6	ipkt
+         7	ibyt
         */
 
       // Given the structure pull out indexes we need for a new DataFrame creation
@@ -70,8 +58,8 @@ object FlowFeedback {
       val DestinationIpIndex = 3
       val SourcePortIndex = 4
       val DestinationPortIndex = 5
-      val IpktIndex = 8
-      val IbytIndex = 9
+      val IpktIndex = 6
+      val IbytIndex = 7
       val HourIndex = 20
       val MinuteIndex = 21
       val SecondIndex = 22
@@ -79,8 +67,9 @@ object FlowFeedback {
       sqlContext.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(ScoreIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(Seq(
-          row(MinuteIndex).trim.toInt,
-          row(SecondIndex).trim.toInt,
+          row(TimeStartIndex).split(" ")(1).split(":")(0).trim.toInt, // hour
+          row(TimeStartIndex).split(" ")(1).split(":")(1).trim.toInt, // minute
+          row(TimeStartIndex).split(" ")(1).split(":")(2).trim.toInt, // second
           row(SourceIpIndex),
           row(DestinationIpIndex),
           row(SourcePortIndex),
