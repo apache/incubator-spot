@@ -168,7 +168,9 @@ object FlowSuspiciousConnectsModel {
       .reduceByKey(_ + _)
 
     val ipWordCounts =
-      sparkContext.union(srcWordCounts, dstWordCounts).map({ case ((ip, word), count) => SpotLDACInput(ip, word, count) })
+      sparkContext.union(srcWordCounts, dstWordCounts)
+        .reduceByKey(_ + _)
+        .map({ case ((ip, word), count) => SpotLDACInput(ip, word, count) })
 
 
     val SpotLDACOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDACWrapper.runLDA(ipWordCounts,
