@@ -38,44 +38,35 @@ object DNSFeedback {
       val feedback: RDD[String] = sc.parallelize(lines)
 
       /*
-      The columns and their entries are thus:
-
-      0   frame_time             object
-      1   frame_len              object
-      2   ip_dst                 object
-      3   dns_qry_name           object
-      4   dns_qry_class           int64
-      5   dns_qry_type            int64
-      6   dns_qry_rcode           int64
-      7   domain                 object
-      8   subdomain              object
-      9   subdomain_length        int64
-      10  num_periods             int64
-      11  subdomain_entropy     float64
-      12  top_domain              int64
-      13  word                   object
-      14  score                 float64
-      15  query_rep              object
-      16  hh                      int64
-      17  ip_sev                  int64
-      18  dns_sev                 int64
-      19  dns_qry_class_name     object
-      20  dns_qry_type_name      object
-      21  dns_qry_rcode_name     object
-      22  network_context       float64
-      23  unix_tstamp
+      The columns and their entries are as follows:
+       0 frame_time
+       1 frame_len
+       2 ip_dst
+       3 dns_qry_name
+       4 dns_qry_class
+       5 dns_qry_type
+       6 dns_qry_rcode
+       7 score
+       8 tld
+       9 query_rep
+       10 hh 10
+       11 ip_sev
+       12 dns_sev
+       13 dns_qry_class_name
+       14 dns_qry_type_name
+       15 dns_qry_rcode_name
+       16 network_context
+       16 unix_tstamp
       */
       val FrameTimeIndex = 0
-      val UnixTimeStampIndex = 23
+      val UnixTimeStampIndex = 16
       val FrameLenIndex = 1
       val IpDstIndex = 2
       val DnsQryNameIndex = 3
       val DnsQryClassIndex = 4
       val DnsQryTypeIndex = 5
       val DnsQryRcodeIndex = 6
-      val DnsSevIndex = 18
-      val fullURISeverityIndex = 22
-
+      val DnsSevIndex = 12
 
       sqlContext.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(DnsSevIndex).trim.toInt == 3)
