@@ -12,7 +12,7 @@
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <title>Apache Spot  Jupyter Notebooks for Data Analysis</title>
+        <title>Apache Spot (Incubating)  Jupyter Notebooks for Data Analysis</title>
 
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
@@ -29,9 +29,9 @@
 
         <link rel="pingback" href="http://spot.incubator.apache.org/xmlrpc.php">
 
-        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Feed" href="http://spot.incubator.apache.org/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Comments Feed" href="http://spot.incubator.apache.org/comments/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Jupyter Notebooks for Data Analysis Comments Feed" href="http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot (Incubating) &raquo; Feed" href="http://spot.incubator.apache.org/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot (Incubating) &raquo; Comments Feed" href="http://spot.incubator.apache.org/comments/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot (Incubating) &raquo; Jupyter Notebooks for Data Analysis Comments Feed" href="http://spot.incubator.apache.org/jupyter-notebooks-for-data-analysis/feed/" />
         <script type="text/javascript">
 			window._wpemojiSettings = {
 				"baseUrl" : "https:\/\/s.w.org\/images\/core\/emoji\/72x72\/",
@@ -184,10 +184,10 @@
                             </header>
                             <section class="entry-content cf" itemprop="articleBody">
                                 <p>
-                                    <strong>Why Does Apache Spot Include iPython notebooks? </strong>
+                                    <strong>Why Does Apache Spot (Incubating) Include iPython notebooks? </strong>
                                 </p>
                                 <p>
-                                    The project team wants Apache Spot to be a versatile tool that can be used by anyone. This means that data scientists and developers need to be able to query and handle the source data to find all the information they need for their decision making. The iPython Notebook is an appropriate platform for easy data exploration. One of its biggest advantages is that it provides parallel and distributed computing to enable code execution and debugging in an interactive environment – thus the ‘i’ in iPython.
+                                    The project team wants Apache Spot (Incubating) to be a versatile tool that can be used by anyone. This means that data scientists and developers need to be able to query and handle the source data to find all the information they need for their decision making. The iPython Notebook is an appropriate platform for easy data exploration. One of its biggest advantages is that it provides parallel and distributed computing to enable code execution and debugging in an interactive environment – thus the ‘i’ in iPython.
                                 </p>
                                 <p>
                                     The iPython notebook is a web based interactive computational environment that provides access to the Python shell. While iPython notebooks were originally designed to work with the Python language, they support a number of other programming languages, including Ruby, Scala, Julia, R, Go, C, C++, Java and Perl. There are also multiple additional packages that can be used to get the most out of this highly-customizable tool.
@@ -197,13 +197,13 @@
                                 </p>
                                 <img src="../wp-content/uploads/2016/10/iPython-1.png" alt="ipython" width="361" height="107" class="aligncenter size-full wp-image-140" srcset="../wp-content/uploads/2016/10/iPython-1.png 361w, ../wp-content/uploads/2016/10/iPython-1-300x89.png 300w" sizes="(max-width: 361px) 100vw, 361px" />
                                 <p>
-                                    <strong>IPython with Apache Spot for Network Threat Detection</strong>
+                                    <strong>IPython with Apache Spot (Incubating) for Network Threat Detection</strong>
                                 </p>
                                 <p>
-                                    <em>NOTE:  This is not intended to be a step-by-step tutorial on how to code a threat analysis in Apache Spot, but more like an introduction on how to approach the suspicions of a security breach.</em>
+                                    <em>NOTE:  This is not intended to be a step-by-step tutorial on how to code a threat analysis in Apache Spot (Incubating), but more like an introduction on how to approach the suspicions of a security breach.</em>
                                 </p>
                                 <p>
-                                    Although machine learning (ML) will do most of the work detecting anomalies in the traffic, Apache Spot also includes two notebook templates that can get you started on this. The <em>Threat_Investigation_master.ipynb</em> is designed to query the raw data table to find all connections in a day that are related to any threat you select – even connections that were not necessarily flagged as suspicious by ML on a first run. This gives us the chance to get a new data subset and here is where the fun begins.
+                                    Although machine learning (ML) will do most of the work detecting anomalies in the traffic, Apache Spot (Incubating) also includes two notebook templates that can get you started on this. The <em>Threat_Investigation_master.ipynb</em> is designed to query the raw data table to find all connections in a day that are related to any threat you select – even connections that were not necessarily flagged as suspicious by ML on a first run. This gives us the chance to get a new data subset and here is where the fun begins.
                                 </p>
                                 <p>
                                     If you suspect of a specific type of attack in your network, you can get the whole story by answering the Five ‘W’s.
@@ -218,7 +218,7 @@
                                     <strong><em>Who?</em></strong>
                                 </p>
                                 <p>
-                                    Assuming you have a network context, you can identify the name of the infected machine inside the network, as well as the name of the IP or DNS on the other side of the connection (if it is a known host). If you don’t have a network context or are using DHCP, this can be a little tricky to detect using only Netflow logs. But, that’s where DNS and Proxy logs, come in handy. Including a network context file with Apache Spot is really simple and can go a long way when identifying a threat.
+                                    Assuming you have a network context, you can identify the name of the infected machine inside the network, as well as the name of the IP or DNS on the other side of the connection (if it is a known host). If you don’t have a network context or are using DHCP, this can be a little tricky to detect using only Netflow logs. But, that’s where DNS and Proxy logs, come in handy. Including a network context file with Apache Spot (Incubating) is really simple and can go a long way when identifying a threat.
                                 </p>
                                 <p>
                                     <strong><em>When?</em></strong>
@@ -230,7 +230,7 @@
                                     <strong><em>Where?</em></strong>
                                 </p>
                                 <p>
-                                    When working only with DNS, having a destination URL might not say much about where your information is going to, but Apache Spot allows you to connect with a geolocation database to identify the location of the suspected attackers IP. Taking advantage of this option, you can visually locate the other end of the connection on a map. You might find that it’s pointing to a country banned by your company, indicating a leak.
+                                    When working only with DNS, having a destination URL might not say much about where your information is going to, but Apache Spot (Incubating) allows you to connect with a geolocation database to identify the location of the suspected attackers IP. Taking advantage of this option, you can visually locate the other end of the connection on a map. You might find that it’s pointing to a country banned by your company, indicating a leak.
                                 </p>
                                 <p>
                                     <strong><em>Why?</em></strong>
@@ -251,10 +251,10 @@
                                     <strong>Wrap Up</strong>
                                 </p>
                                 <p>
-                                    This post was meant to be just a brief introduction of how you can use iPython notebooks in Apache Spot to perform further data analysis and include it our executive report (in addition to the already included Story board). Although this is not the only way you can do this, it is a very interactive and fun way to do it. You’ll also see that the overall processing time is very short – thanks to the iPython notebook task parallelism ability.
+                                    This post was meant to be just a brief introduction of how you can use iPython notebooks in Apache Spot (Incubating) to perform further data analysis and include it our executive report (in addition to the already included Story board). Although this is not the only way you can do this, it is a very interactive and fun way to do it. You’ll also see that the overall processing time is very short – thanks to the iPython notebook task parallelism ability.
                                 </p>
                                 <p>
-                                    We want to hear from YOU! Have you used iPython notebooks before? How do you feel about having this tool in Apache Spot? If you’re interested in further data analysis through interactive charts, a new post is coming soon on D3 and jQuery data visualization. Also, check back soon to read more on this and other Cybersecurity subjects.
+                                    We want to hear from YOU! Have you used iPython notebooks before? How do you feel about having this tool in Apache Spot (Incubating)? If you’re interested in further data analysis through interactive charts, a new post is coming soon on D3 and jQuery data visualization. Also, check back soon to read more on this and other Cybersecurity subjects.
                                 </p>
                             </section>
                             
@@ -277,13 +277,13 @@
                                     <a href="../jupyter-notebooks-for-data-analysis/">Jupyter Notebooks for Data Analysis</a>
                                 </li>
                                 <li>
-                                    <a href="../apache-spot-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/">Apache Spot (Incubating) and Cybersecurity — Using NetFlows to Detect Threats to  Critical Infrastructure</a>
+                                    <a href="../apache-spot-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/">Apache Spot (Incubating) (Incubating) and Cybersecurity — Using NetFlows to Detect Threats to  Critical Infrastructure</a>
                                 </li>
                                 <li>
-                                    <a href="../how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/">How Apache Spot (Incubating) Helps Create Well-Stocked Data Lakes and Catch Powerful Insights</a>
+                                    <a href="../how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/">How Apache Spot (Incubating) (Incubating) Helps Create Well-Stocked Data Lakes and Catch Powerful Insights</a>
                                 </li>
                                 <li>
-                                    <a href="../apache-spot-3-most-asked-questions/">Apache Spot (Incubating): 3 Most-Asked Questions</a>
+                                    <a href="../apache-spot-3-most-asked-questions/">Apache Spot (Incubating) (Incubating): 3 Most-Asked Questions</a>
                                 </li>
                             </ul>
                         </div>
@@ -314,7 +314,7 @@
 
                     <nav role="navigation"></nav>
                     <p class="source-org copyright" style="text-align:center;">
-                        &copy; 2016 Apache Spot.
+                        &copy; 2016 Apache Spot (Incubating).
                     </p>
 
                 </div>
