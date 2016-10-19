@@ -11,7 +11,8 @@ import scala.math._
 object Quantiles extends Serializable {
 
   /**
-    * Compute the empirical cumulative distribution function.
+    * Compute the empirical cumulative distribution function,
+    * cf. [[https://en.wikipedia.org/wiki/Empirical_distribution_function]]
     *
     * @param data An RDD of doubles.
     * @return RDD[(Double,Double)] where each pair is of the form (value, ecdf at value)
@@ -19,24 +20,30 @@ object Quantiles extends Serializable {
     */
 
   def computeEcdf(data: RDD[Double]): RDD[(Double, Double)] = {
-    val counts = data.map(v => (v, 1)).reduceByKey(_ + _).sortByKey().cache()
 
-    val totalCountPerPartition: Array[Double] = 0.0 +: counts.mapPartitionsWithIndex {
-      case (_, partition) => Iterator(partition.map({ case (sample, count) => count }).sum.toDouble)
+    // pair each distinct value with the number of times it appears in the data, then sort by the data values
+    val valueCountPairs = data.map(v => (v, 1)).reduceByKey(_ + _).sortByKey().cache()
+
+    // for each partition, sum the counts of all values in the partition
+    val countsPerPartition: Array[Double] = valueCountPairs.mapPartitionsWithIndex {
+      case (_, partition) => Iterator(partition.map({ case (_, count) => count }).sum.toDouble)
     }.collect()
 
-    val totalCount = totalCountPerPartition.sum
+    val totalCount = countsPerPartition.sum
 
-    val valueCountToLeftPairs : RDD[(Double, Double)] = counts.mapPartitionsWithIndex {
+    // pair each value v with the sum of counts of all values <= v in the data
+    val valueCountLEQPairs : RDD[(Double, Double)] = valueCountPairs.mapPartitionsWithIndex {
       case (index, partition) =>
-        val precedingCount = totalCountPerPartition.take(index).sum
-        val p = partition.scanLeft((0.0, precedingCount))({ case ((_, countToLeft), (value, countOfValue)) =>
-          (value, countToLeft + countOfValue)})
+        val countInPrecedingPartitions = countsPerPartition.take(index).sum
+        val p = partition.scanLeft((0.0, countInPrecedingPartitions))({ case ((_, countOfLEQValues), (value, countOfValue)) =>
+          (value, countOfLEQValues + countOfValue)})
 
         // first element is an extraneous zero and must be dropped
         p.drop(1)
     }
-    valueCountToLeftPairs.map({case (value, countToLeftOfValue) => (value, countToLeftOfValue / totalCount)})
+
+    // normalize counts by  total number entries in the data to obtain the ecdf
+    valueCountLEQPairs.map({case (value, countToLeftOfValue) => (value, countToLeftOfValue / totalCount)})
   }
 
   /**
