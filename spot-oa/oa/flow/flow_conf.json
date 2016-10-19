@@ -14,28 +14,17 @@
 	    ,"sport":10
 	    ,"dport":11
 	    ,"proto":12
-	    ,"flag":13
-	    ,"fwd":14
-	    ,"stos":15
-	    ,"ipkt":16
-	    ,"ibyt":17
-	    ,"opkt":18
-	    ,"obyt":19
-	    ,"input":20
-	    ,"output":21
-	    ,"sas":22
-	    ,"das":23
-	    ,"dtos":24
-	    ,"dir":25
-	    ,"rip":26
-	    ,"year":27
-	    ,"month":28
-	    ,"day":29
-	    ,"hour":30
-	    ,"lda_score_ab":35
-	    ,"lda_score_ba":36
+
+	    ,"ipkt":13
+	    ,"ibyt":14
+	    ,"opkt":15
+	    ,"obyt":16
+
+
+	    ,"score":17
+
     },
-	"column_indexes_filter": [0,8,9,10,11,12,13,16,17],	
+	"column_indexes_filter": [0,8,9,10,11,12,13,14],
 	"flow_score_fields": {
 		"sev": 0,
 		"tstart": 1,
@@ -43,11 +32,7 @@
 		"dstIP":3,
 		"sport":4,
 		"dport":5,
-		"proto":6,
-		"flag":7,
-		"ipkt":8,
-		"ibyt":9,
-		"lda_score":10,
-		"rank":11
+		"ipkt":6,
+		"ibyt":7
 	}
 }

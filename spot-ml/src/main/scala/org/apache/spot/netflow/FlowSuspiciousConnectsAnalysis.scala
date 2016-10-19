@@ -53,6 +53,7 @@ object FlowSuspiciousConnectsAnalysis {
     HourField,
     MinuteField,
     SecondField,
+    DurationField,
     SourceIPField,
     DestinationIPField,
     SourcePortField,
@@ -67,6 +68,13 @@ object FlowSuspiciousConnectsAnalysis {
 
   val OutSchema = StructType(
     List(TimeReceivedField,
+      YearField,
+      MonthField,
+      DayField,
+      HourField,
+      MinuteField,
+      SecondField,
+      DurationField,
       SourceIPField,
       DestinationIPField,
       SourcePortField,
