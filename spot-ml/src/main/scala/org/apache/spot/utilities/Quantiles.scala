@@ -22,7 +22,7 @@ object Quantiles extends Serializable {
   def computeEcdf(data: RDD[Double]): RDD[(Double, Double)] = {
 
     // pair each distinct value with the number of times it appears in the data, then sort by the data values
-    val valueCountPairs = data.map(v => (v, 1)).reduceByKey(_ + _).sortByKey().cache()
+    val valueCountPairs = data.map(v => (v, 1L)).reduceByKey(_ + _).sortByKey().cache()
 
     // for each partition, sum the counts of all values in the partition
     val countsPerPartition: Array[Double] = valueCountPairs.mapPartitionsWithIndex {

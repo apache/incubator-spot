@@ -49,17 +49,17 @@ object DNSFeedback {
        7 score
        8 tld
        9 query_rep
-       10 hh 10
+       10 hh
        11 ip_sev
        12 dns_sev
        13 dns_qry_class_name
        14 dns_qry_type_name
        15 dns_qry_rcode_name
        16 network_context
-       16 unix_tstamp
+       17 unix_tstamp
       */
       val FrameTimeIndex = 0
-      val UnixTimeStampIndex = 16
+      val UnixTimeStampIndex = 17
       val FrameLenIndex = 1
       val IpDstIndex = 2
       val DnsQryNameIndex = 3
@@ -71,13 +71,13 @@ object DNSFeedback {
       sqlContext.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(DnsSevIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(Seq(row(FrameTimeIndex),
-          row(UnixTimeStampIndex),
-          row(FrameLenIndex),
+          row(UnixTimeStampIndex).toLong,
+          row(FrameLenIndex).toInt,
           row(IpDstIndex),
           row(DnsQryNameIndex),
           row(DnsQryClassIndex),
-          row(DnsQryTypeIndex),
-          row(DnsQryRcodeIndex))))
+          row(DnsQryTypeIndex).toInt,
+          row(DnsQryRcodeIndex).toInt)))
         .flatMap(row => List.fill(duplicationFactor)(row)), ModelSchema)
         .select(modelColumns:_*)
     } else {
