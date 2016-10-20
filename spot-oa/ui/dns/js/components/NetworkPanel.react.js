@@ -7,31 +7,6 @@ var EdInActions = require('../../../js/actions/EdInActions');
 var SpotConstants = require('../../../js/constants/SpotConstants');
 var SuspiciousStore = require('../stores/SuspiciousStore');
 
-var topLevelDomains;
-
-function getDnsNodeName (fullName)
-{
-  var name = fullName.split(".").length <=2 ? fullName : "";
-
-  if(name == "")
-  {
-    var tldIndex = -1;
-
-    topLevelDomains.forEach(function (d, i)
-    {
-      if (fullName.indexOf(d) > -1)
-      {
-        tldIndex = i;
-        return;
-      }
-    });
-
-    name = fullName.split('.').slice(tldIndex - 1, fullName.split('.').length).join('.');
-  }
-
-  return name;
-}
-
 function encodeNodeId(id)
 {
   // Make sure id is a valid HTML Attribute value
@@ -44,8 +19,7 @@ function filterDataAndBuildGraph()
   //Get the nodes from the data
   var nodes = data.map(function (d)
                        {
-                          var top_domain = getDnsNodeName(d.dns_qry_name);
-                          return { name: top_domain, isInternal: 1};
+                          return { name: d.tld, isInternal: 1};
                         });
 
   var nodes_2 = data.map(function (d)
@@ -60,7 +34,7 @@ function filterDataAndBuildGraph()
                         {
                             var nodeName, ii, n, source, target, id;
 
-                            nodeName = getDnsNodeName(d.dns_qry_name);
+                            nodeName = d.tld;
 
                             source = -1;
                             target = -1;
@@ -507,18 +481,7 @@ var NetworkPanel = React.createClass({
   },
   buildGraph: function ()
   {
-    if (!topLevelDomains)
-    {
-      d3.csv('domainList.csv', function (domains)
-      {
-        topLevelDomains = domains;
-        filterDataAndBuildGraph.call(this);
-      }.bind(this));
-    }
-    else
-    {
-      filterDataAndBuildGraph.call(this);
-    }
+    filterDataAndBuildGraph.call(this);
   },
   _onChange: function ()
   {
@@ -530,7 +493,7 @@ var NetworkPanel = React.createClass({
 
     threat = SuspiciousStore.getHighlightedThreat();
 
-    id = getDnsNodeName(threat.dns_qry_name) + '-' + threat.ip_dst;
+    id = threat.tld + '-' + threat.ip_dst;
     id = 'k' + encodeNodeId(id);
 
     highlightEdge.call(this, id);
@@ -542,7 +505,7 @@ var NetworkPanel = React.createClass({
 
     threat = SuspiciousStore.getSelectedThreat();
 
-    id = getDnsNodeName(threat.dns_qry_name) + '-' + threat.ip_dst;
+    id = threat.tld + '-' + threat.ip_dst;
     id = 'k' + encodeNodeId(id);
 
     selectEdge.call(this, id);
