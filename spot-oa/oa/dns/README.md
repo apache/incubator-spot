@@ -19,29 +19,32 @@ DNS spot-oa main script executes the following steps:
 		3. Gets the dns_results.csv from the HDFS location according to the selected date, and copies it back to the corresponding data path.
 		 
 		4. Reads a given number of rows from the results file.
-		 
-		5. Checks reputation for the query_name of each connection.
-		 
-		6. Adds two new columns for the severity of the query_name and the client ip of each connection.
 
-		7. Adds a new column with the hour part of the frame_time.
+		5. Gets the top level domain out of the dns_qry_name, and adds it in the new column 'tld' 
 		 
-		8. Translates the 'dns_query_class', 'dns_query_type','dns_query_rcode' to human readable text according to the IANA specification. The translated values are stored in the dns_qry_class_name, dns_qry_type_name, dns_qry_rcode_name columns, respectively. 
+		6. Checks reputation for the query_name of each connection.
 		 
-		9. Adds Network Context.
-		
-		10. Saves dns_scores.csv file.
+		7. Adds two new columns for the severity of the query_name and the client ip of each connection.
+
+		8. Adds a new column with the hour part of the frame_time.
 		 
-		11. Creates a backup of dns_scores.csv file named dns_scores_bu.csv.
+		9. Translates the 'dns_query_class', 'dns_query_type','dns_query_rcode' to human readable text according to the IANA specification. The translated values are stored in the dns_qry_class_name, dns_qry_type_name, dns_qry_rcode_name columns, respectively. 
+		 
+		10. Adds Network Context.
 		
-		12. Creates dns data details files.
+		11. Saves dns_scores.csv file.
+		 
+		12. Creates a backup of dns_scores.csv file named dns_scores_bu.csv.
 		
-		13. Creates dendrogram data files.
+		13. Creates dns data details files.
+		
+		14. Creates dendrogram data files.
 
 
 **Dependencies**
 
 - [Python 2.7](https://www.python.org/download/releases/2.7/) should be installed in the node running Proxy OA.  
+- [TLD 0.7.6](https://pypi.python.org/pypi/tld/0.7.6)
 
 	The following modules are already included but some of them require configuration. See the following sections for more information. 
 - [components/iana](/spot-oa/oa/components#IANA-iana)
@@ -57,6 +60,7 @@ DNS spot-oa main script executes the following steps:
 Before running DNS OA users need to configure components for the first time. It is important to mention that configuring these components make them work for other data sources as Flow and Proxy.  
 
 - Configure database engine
+- Configure required dependencies
 - Configure GTI services
 - Configure IANA service
 - Configure Network Context service
@@ -76,24 +80,18 @@ Before running DNS OA users need to configure components for the first time. It 
 		3.dns_qry_name: string		
 		4.dns_qry_class: string		
 		5.dns_qry_type: int		
-		6.dns_qry_rcode: int		
-		7.domain: string		
-		8.subdomain: string		
-		9.subdomain_length: int		
-		10.num_periods: int		
-		11.subdomain_entropy: string		
-		12.top_domain: double		
-		13.word: string		
-		14.score: double		
-		15.query_rep: string		
-		16.hh: string		
-		17.ip_sev: int		
-		18.dns_sev: int		
-		19.dns_qry_class_name: string		
-		20.dns_qry_type_name: string		
-		21.dns_qry_rcode_name: string		
-		22.network_context: string		
-		23.unix_tstamp: bigint
+		6.dns_qry_rcode: int
+		7.score: double	
+		8.tld: string		
+		9.query_rep: string		
+		10.hh: string		
+		11.ip_sev: int		
+		12.dns_sev: int		
+		13.dns_qry_class_name: string		
+		14.dns_qry_type_name: string		
+		15.dns_qry_rcode_name: string		
+		16.network_context: string		
+		17.unix_tstamp: bigint
 
 - dns_scores_bu.csv: The backup file of suspicious connects in case user wants to roll back any changes made during analysis. Schema is same as dns_scores.csv.
 
