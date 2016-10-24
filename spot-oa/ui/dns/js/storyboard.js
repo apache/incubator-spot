@@ -38,7 +38,7 @@ React.render(
         <ExecutiveThreatBriefingPanel store={CommentsStore} />
       </Panel>
       <Panel title={SpotConstants.INCIDENT_PANEL} expandable>
-        <IncidentProgressionPanel />
+        <IncidentProgressionPanel className="dendrogram" />
       </Panel>
     </PanelRow>
   </div>,

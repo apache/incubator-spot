@@ -1,56 +1,71 @@
-var React = require('react');
+const React = require('react');
 
-var DendrogramMixin = require('../../../js/components/DendrogramMixin.react');
-var DendrogramStore = require('../stores/DendrogramStore');
+const ContentLoaderMixin = require('../../../js/components/ContentLoaderMixin.react');
+const ChartMixin = require('../../../js/components/ChartMixin.react');
+const DendrogramMixin = require('../../../js/components/DendrogramMixin.react');
+const DendrogramStore = require('../stores/DendrogramStore');
 
-var DetailsDendrogramPanel = React.createClass({
-    mixins: [DendrogramMixin],
+const DetailsDendrogramPanel = React.createClass({
+    mixins: [ContentLoaderMixin, ChartMixin, DendrogramMixin],
     componentDidMount: function()
     {
         DendrogramStore.addChangeDataListener(this._onChange);
+        window.addEventListener('resize', this.buildChart);
     },
     componentWillUnmount: function ()
     {
         DendrogramStore.removeChangeDataListener(this._onChange);
+        window.removeEventListener('resize', this.buildChart);
     },
     _onChange: function ()
     {
-        var state, root;
+        const storeData = DendrogramStore.getData();
 
-        state = DendrogramStore.getData();
-
-        root = {
-            name: DendrogramStore.getSrcIp(),
-            children: []
-        };
-
-        if (!state.loading)
-        {
-            state.data.forEach(function (item)
-            {
-                var children;
-
-                root.children.push(item);
-
-                item.name = item.dns_qry_name;
-                item.children = [];
-
-                // TODO: API must return answers as JSON array
-                children = item.dns_a.split('|');
-
-                children.forEach(function (child_name)
-                {
-                    item.children.push({
-                        name: child_name
-                    });
-                });
-            });
+        if (storeData.loading) {
+            this.setState(storeData);
         }
+        else {
+            const state = {loading: false};
 
-        state.root = root;
-        delete state.data;
+            state.data = {
+                id: 'root',
+                name: DendrogramStore.getSrcIp(),
+                children: []
+            };
 
-        this.setState(state);
+            let nodeId = 0;
+            state.leafNodes = 0;
+            storeData.data.forEach(function (item)
+            {
+                let answers;
+
+                let childNode = {
+                    id: `node${++nodeId}`,
+                    name: item.dns_qry_name
+                };
+                state.data.children.push(childNode);
+
+                answers = item.dns_a.split('|');
+
+                if (answers.length) {
+                    let childId = 0;
+                    childNode.children = [];
+
+                    answers.forEach((answer) => {
+                        state.leafNodes++;
+                        childNode.children.push({
+                            id: `node${nodeId}.${++childId}`,
+                            name: answer
+                        });
+                    });
+                }
+                else {
+                    state.leafNodes++;
+                }
+            });
+
+            this.setState(state);
+        }
     }
 });
 

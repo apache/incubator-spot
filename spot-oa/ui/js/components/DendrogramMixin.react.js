@@ -1,187 +1,108 @@
 var $ = require('jquery');
+const Base64 = require('js-base64').Base64;
 var d3 = require('d3');
 var React = require('react');
+const SpotUtils = require('../utils/SpotUtils');
 
-function setChildrenIds(root)
-{
-    root.children.forEach(function (child, i)
-    {
-        child.id = root.id + '_' + i;
+var DendrogramMixin = {
+  buildChart ()
+  {
+    const svgSel = $(this.svg);
 
-        child.children instanceof Array && child.children.length>0 && setChildrenIds(child);
-    });
-}
+    this.canvasWidth = $(this.getDOMNode()).width();
+    this.canvasHeight = 100 + this.state.leafNodes * 20; // Make sure last magic number is at least twice the font size
 
-function countLeafNodes(root)
-{
-    var count = 0;
+    svgSel.width(this.canvasWidth).height(this.canvasHeight);
 
-    if (!(root.children instanceof Array)) return 0;
+    this.cluster = d3.layout.cluster();
 
-    root.children.forEach(function (child)
-    {
-        if (child.children && child.children.length>0)
-        {
-            count += countLeafNodes(child);
-        }
-        else
-        {
-            count++;
-        }
-    });
-
-    return count;
-}
-
-function buildDendrogram (root)
-{
-    var width, height, cluster, diagonal, svg, nodes, leafNodes, node, links, link;
-
-    // Build data tree structure
-
-    root.id = 'root';
-    setChildrenIds(root);
-
-    leafNodes = countLeafNodes(root);
-
-    // Substract scroll bar width
-    width = $(this.getDOMNode().parentNode).width() - 20;
-    height = 100 + leafNodes * 20; // Make sure last magic number is at least twice the font size
-
-    cluster = d3.layout.cluster()
-                                .size([height-100, width-300]);
-
-    diagonal = d3.svg.diagonal()
+    this.diagonal = d3.svg.diagonal()
                                 .projection(function (d) {
                                     return [d.y, d.x]
                                 });
 
-    // Remove any old dendrogram
-    // TODO: Update diagram instead of remove node
-    d3.select(this.getDOMNode()).select('svg').remove();
-
-    svg = d3.select(this.getDOMNode()).append('svg')
-                                            .attr('width', width)
-                                            .attr('height', height)
-                                        .append('g')
-                                            .attr('transform', 'translate(100,50)');
-
-    // Build Dendrogram
-
-    nodes = cluster.nodes(root);
-    links = cluster.links(nodes);
-
-    link = svg.selectAll('.link')
-                                .data(links)
-                                .enter().append('path')
-                                                    .attr('class', 'link')
-                                                    .attr('d', diagonal)
-                                                    .on("mouseover", function (d)
-                                                    {
-                                                      d3.select(this)
-                                                                    .style("stroke-width", 2)
-                                                                    .style("cursor", "pointer")
-                                                                    .style("stroke", "#ED1C24");
-
-                                                      d3.select("#" + d.source.id)
-                                                                                  .style("fill", "#C4D600");
-                                                                                  //.attr("r", 4.5 * 2);
-
-                                                      d3.select("#" + d.target.id)
-                                                                                  .style("fill", "#C4D600");
-                                                                                  //.attr("r", 4.5 * 2);
-                                                    })
-                                                    .on("mouseout", function (d)
-                                                    {
-                                                      d3.select(this)
-                                                                    .style("stroke-width", null)
-                                                                    .style("cursor", null)
-                                                                    .style("stroke", null);
-
-                                                      d3.select("#" + d.source.id)
-                                                                                 .style("fill", null);
-
-                                                      d3.select("#" + d.target.id)
-                                                                                  .style("fill", null);
-                                                    });
-
-    node = svg.selectAll('.node')
-                              .data(nodes)
-                              .enter().append('g')
-                                                  .attr('class', function (d) { return 'node depth_' + d.depth; })
-                                                  .attr('transform', function (d) { return 'translate(' + d.y + ',' + d.x + ')'; });
-
-    node.append('circle')
-                      .attr('r', 4.5)
-                      .attr("id", function (d) { return d.id;})
-                      .on("mouseover", function (d)
-                      {
-                        d3.select(this)
-                                      .style("cursor", "pointer")
-                                      .style("fill", "#C4D600");
-                      })
-                      .on("mouseout", function (d)
-                      {
-                        d3.select(this)
-                                      .style("cursor", null)
-                                      .style("fill", null);
-                      });
-
-    node.append('text')
-                    .attr('dx', function (d) { return d.depth===0 ? -10 : 10; })
-                    .attr('dy', 3)
-                    .style('text-anchor', function (d) { return d.depth===0 ? 'end' : 'start' })
-                    .attr('fill', 'black')
-                    .text(function (d) { return d.name; });
-}
-
-var DendrogramMixin = {
-  getInitialState: function ()
-  {
-    return {loading: false, root: {}};
+    this.canvas = d3.select(this.svg).append('g')
+                                        .attr('transform', 'translate(100,50)');
   },
-  render:function()
-  {
-    var content;
+  draw() {
+      this.cluster.size([this.canvasHeight-100, this.canvasWidth-300]);
 
-    if (this.state.error)
-    {
-        content = (
-            <div className="text-center text-danger">
-                {this.state.error}
-            </div>
-        );
-    }
-    else if (this.state.loading)
-    {
-      content = (
-        <div className="spot-loader">
-            Loading <span className="spinner"></span>
-        </div>
-      );
-    }
-    else
-    {
-      content = '';
-    }
+      const nodes = this.cluster.nodes(this.state.data);
+      const links = this.cluster.links(nodes);
 
-    return (
-      <div className="dendrogram">{content}</div>
-    )
+      this.drawNodes(nodes);
+      this.drawLinks(links);
   },
-  componentDidUpdate: function ()
-  {
-    if (!this.state.loading && !this.state.error)
-    {
-      if (this.state.root.name===undefined)
+  drawNodes(nodes) {
+      const nodeSel = {};
+
+      nodeSel.update = this.canvas.selectAll('.node').data(nodes, n => n.id);
+
+      nodeSel.enter = nodeSel.update.enter();
+      nodeSel.exit = nodeSel.update.exit();
+
+      const nodeEl = nodeSel.enter.append('g')
+                                .attr('class', n => `node depth_${n.depth}`)
+                                .attr('transform', n => `translate(${n.y},${n.x})`);
+
+      nodeEl.append('circle')
+                        .attr('r', 4.5)
+                        .attr('id', n => SpotUtils.encodeId(n.id))
+                        .on('mouseover', function (n) {
+                          d3.select(this)
+                                        .style('cursor', 'pointer')
+                                        .style('fill', '#C4D600');
+                        })
+                        .on('mouseout', function (d)
+                        {
+                          d3.select(this)
+                                        .style('cursor', null)
+                                        .style('fill', null);
+                        });
+
+      nodeEl.append('text')
+                      .attr('dx', n => n.depth===0 ? -10 : 10)
+                      .attr('dy', 3)
+                      .style('text-anchor', n => n.depth===0 ? 'end' : 'start')
+                      .attr('fill', 'black')
+                      .text(n => n.name);
+
+    nodeSel.exit.remove();
+  },
+  drawLinks(links) {
+      const linkSel = {};
+
+      linkSel.update = this.canvas.selectAll('.link')
+                                  .data(links, l => `link-${l.source.id}-${l.target.id}`);
+      linkSel.enter = linkSel.update.enter();
+      linkSel.exit = linkSel.update.exit();
+
+      linkSel.enter.append('path', '.node')
+        .attr('class', 'link')
+        .attr('d', this.diagonal)
+        .on('mouseover', function (l)
+        {
+            d3.select(this)
+                .style('stroke-width', 2)
+                .style('cursor', 'pointer')
+                .style('stroke', '#ED1C24');
+
+            d3.selectAll(`#${SpotUtils.encodeId(l.source.id)},#${SpotUtils.encodeId(l.target.id)}`)
+                .style('fill', '#C4D600');
+      })
+      .on('mouseout', function (l)
       {
-        d3.select(this.getDOMNode()).select('svg').remove();
-      }
-      else
-      {
-        buildDendrogram.call(this, this.state.root);
-      }
-    }
+        d3.select(this)
+                      .style('stroke-width', null)
+                      .style('cursor', null)
+                      .style('stroke', null);
+
+        d3.selectAll(`#${SpotUtils.encodeId(l.source.id)},#${SpotUtils.encodeId(l.target.id)}`)
+                        .style('fill', null);
+      });
+
+    // Remove old nodes
+    linkSel.exit.remove();
   }
 };
 
