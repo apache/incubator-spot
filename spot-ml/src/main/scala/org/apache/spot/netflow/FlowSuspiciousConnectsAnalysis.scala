@@ -35,11 +35,13 @@ object FlowSuspiciousConnectsAnalysis {
     val scoredDF = model.score(sparkContext, sqlContext, rawDataDF)
 
 
+
     val filteredDF = scoredDF.filter(Score + " <= " + config.threshold)
+
     val mostSusipiciousDF: DataFrame = filteredDF.orderBy(Score).limit(config.maxResults)
 
 
-    val outputDF = filteredDF.select(OutColumns: _*).sort(Score)
+    val outputDF = mostSusipiciousDF.select(OutColumns: _*).sort(Score)
 
     logger.info("Neflow  suspcicious connects analysis completed.")
     logger.info("Saving results to : " + config.hdfsScoredConnect)
