@@ -43,8 +43,8 @@ class Collector(object):
         self._watcher = FileWatcher(self._collector_path,self._supported_files)
 
         # Multiprocessing. 
-        self._processes = 5
-        self._ingestion_interval = 5
+        self._processes = conf["collector_processes"]
+        self._ingestion_interval = conf["ingestion_interval"]
         self._pool = Pool(processes=self._processes)
 
     def start(self):
