@@ -76,7 +76,7 @@ class Collector(object):
             
             for x in range(0,self._processes):
                 file = self._watcher.GetNextFile()
-                resutl = self._pool.apply_async(ingest_file,args=(file,self._kafka_topic.Partition,self._hdfs_root_path ,self._kafka_topic.Topic,self._kafka_topic.BootstrapServers,))
+                resutl = self._pool.apply_async(ingest_file,args=(file,self._pkt_num,self._pcap_split_staging,self._kafka_topic.Partition,self._hdfs_root_path ,self._kafka_topic.Topic,self._kafka_topic.BootstrapServers,))
                 #resutl.get() # to debug add try and catch.
                 if  not self._watcher.HasFiles: break    
         return True
