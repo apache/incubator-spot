@@ -2,15 +2,18 @@ package org.apache.spot.netflow.model
 
 import org.apache.log4j.Logger
 import org.apache.spark.SparkContext
+import org.apache.spark.broadcast.Broadcast
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, Row, SQLContext}
+import org.apache.spark.sql.{DataFrame, Row, SQLContext, WideUDFs}
 import org.apache.spot.SpotLDACWrapper
 import org.apache.spot.SpotLDACWrapper.{SpotLDACInput, SpotLDACOutput}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
 import org.apache.spot.utilities.Quantiles
+import WideUDFs.udf
 
 /**
   * A probabilistic model of the netflow traffic observed in a network.
@@ -43,19 +46,37 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                                   ibytCuts: Array[Double],
                                   ipktCuts: Array[Double]) {
 
+
   def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame): DataFrame = {
 
 
-    val ipToTopicMixBC = sc.broadcast(ipToTopicMix)
+    import sqlContext.implicits._
+    val ipToTopicMixRDD: RDD[(String, Array[Double])] = sc.parallelize(ipToTopicMix.toSeq)
+    val ipToTopicMixDF = ipToTopicMixRDD.map({ case (doc, probabilities) => IpTopicMix(doc, probabilities) }).toDF
+
+
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
 
-    val scoreFunction =
-      new FlowScoreFunction(timeCuts,
+    val dataWithSrcTopicMix = {
+      val joinedDF = inDF.join(ipToTopicMixDF, inDF(SourceIP) === ipToTopicMixDF("ip"))
+      val schemaWithSrcTopicMix = inDF.schema.fieldNames :+ "topicMix"
+      val dataWithSrcIpProb: DataFrame = joinedDF.selectExpr(schemaWithSrcTopicMix: _*)
+        .withColumnRenamed("topicMix", SrcIpTopicMix)
+
+      val joinedDF2 = dataWithSrcIpProb.join(ipToTopicMixDF, dataWithSrcIpProb(DestinationIP) === ipToTopicMixDF("ip"))
+      val schema = dataWithSrcIpProb.schema.fieldNames :+  "topicMix"
+      joinedDF2.selectExpr(schema: _*).withColumnRenamed("topicMix", DstIpTopicMix)
+    }
+
+
+
+
+
+    val scoreFunction =  new FlowScoreFunction(timeCuts,
         ibytCuts,
         ipktCuts,
         topicCount,
-        ipToTopicMixBC,
         wordToPerTopicProbBC)
 
 
@@ -67,7 +88,9 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                           srcPort: Int,
                           dstPort: Int,
                           ipkt: Long,
-                          ibyt: Long) =>
+                          ibyt: Long,
+                          srcIpTopicMix: Seq[Double],
+                          dstIpTopicMix: Seq[Double]) =>
       scoreFunction.score(hour,
         minute,
         second,
@@ -76,11 +99,22 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
         srcPort,
         dstPort,
         ipkt,
-        ibyt))
+        ibyt,
+        srcIpTopicMix,
+        dstIpTopicMix))
 
-    inDF.withColumn(Score, scoringUDF(FlowSuspiciousConnectsModel.ModelColumns: _*))
+
+    dataWithSrcTopicMix.withColumn(Score,
+      scoringUDF(FlowSuspiciousConnectsModel.ModelColumns :+ col(SrcIpTopicMix) :+ col(DstIpTopicMix): _*))
+
   }
+
+
+
+
 }
+case class IpTopicMix(ip: String, topicMix
+: Array[Double]) extends Serializable
 
 /**
   * Contains dataframe schema information as well as the train-from-dataframe routine

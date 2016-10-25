@@ -38,7 +38,7 @@ class FlowWordCreator(timeCuts: Array[Double],
                         dstPort: Int,
                         ipkt: Long,
                         ibyt: Long) =>
-    flowWords(hour, minute, second, srcIP, dstIP, srcPort, dstPort, ipkt, ibyt).srcWord)
+    flowWords(hour, minute, second, srcPort, dstPort, ipkt, ibyt).srcWord)
 
 
   /**
@@ -54,7 +54,7 @@ class FlowWordCreator(timeCuts: Array[Double],
                         dstPort: Int,
                         ipkt: Long,
                         ibyt: Long) =>
-    flowWords(hour, minute, second, srcIP, dstIP, srcPort, dstPort, ipkt, ibyt).dstWord)
+    flowWords(hour, minute, second, srcPort, dstPort, ipkt, ibyt).dstWord)
 
 
   /**
@@ -63,23 +63,13 @@ class FlowWordCreator(timeCuts: Array[Double],
     * @param hour
     * @param minute
     * @param second
-    * @param srcIP
-    * @param dstIP
     * @param srcPort
     * @param dstPort
     * @param ipkt
     * @param ibyt
     * @return [[FlowWords]] containing source and destination words.
     */
-  def flowWords(hour: Int,
-                minute: Int,
-                second: Int,
-                srcIP: String,
-                dstIP: String,
-                srcPort: Int,
-                dstPort: Int,
-                ipkt: Long,
-                ibyt: Long): FlowWords = {
+  def flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, ipkt: Long, ibyt: Long): FlowWords = {
 
 
     val timeOfDay: Double = hour.toDouble + minute.toDouble / 60 + second.toDouble / 3600

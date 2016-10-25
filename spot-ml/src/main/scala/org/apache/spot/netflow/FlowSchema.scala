@@ -61,6 +61,13 @@ object FlowSchema {
   val Obyt = "obyt"
   val ObytField = StructField(Obyt, LongType, nullable = true)
 
+
+  // intermediate fields
+
+  val SrcIpTopicMix  = "source_ip_topic_mix"
+  val DstIpTopicMix  = "destination_ip_topic_mix"
+
+
   // output fields
 
   val SourceWord = "source_word"
