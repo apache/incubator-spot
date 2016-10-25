@@ -111,7 +111,6 @@ def save_to_hive(rdd,sqc,db,db_table,topic):
 
 
         df = sqc.createDataFrame(rdd.collect()[0],proxy_schema)
-        df.show()
         sqc.setConf("hive.exec.dynamic.partition", "true")
         sqc.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
 
@@ -132,12 +131,8 @@ def bro_parse(zk,topic,db,db_table,num_of_workers):
     sqc = HiveContext(sc)
 
     # create DStream for each topic partition.
-    topic_dstreams = [ KafkaUtils.createStream(ssc, zk, app_name, {topic: 1}, keyDecoder=spot_decoder, valueDecoder=spot_decoder) for _ in range (wrks)  ] 
-    tp_stream = ssc.union(*topic_dstreams)
-
-    # Parallelism in Data Processing
-    #processingDStream = tp_stream(wrks)
-
+    tp_stream = KafkaUtils.createStream(ssc, zk, app_name, {topic: wrks}, keyDecoder=spot_decoder, valueDecoder=spot_decoder)
+   
     # parse the RDD content.
     proxy_logs = tp_stream.map(lambda x: proxy_parser(x[1]))
 
