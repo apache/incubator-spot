@@ -11,7 +11,7 @@ class SuspiciousConnectsScoreFunction(topicCount: Int,
   def score(ip: String, word: String): Double = {
 
     val uniformProb = Array.fill(topicCount) {
-      1.0d / topicCount
+      0.0d / topicCount
     }
 
     val topicGivenDocProbs = ipToTopicMixBC.value.getOrElse(ip, uniformProb)
