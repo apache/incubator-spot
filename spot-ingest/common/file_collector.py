@@ -12,9 +12,6 @@ class FileWatcher(object):
 
     def _initialize_members(self,collector_path,supported_files):        
 
-        self._logger = logging.getLogger('SPOT.INGEST.WATCHER')        
-        self._logger.info("Creating File watcher")
-
         # initializing observer.
         event_handler = NewFileEvent(self)
         self._observer = Observer()
@@ -23,6 +20,10 @@ class FileWatcher(object):
         self._collector_path = collector_path
         self._files_queue = Queue()
         self._supported_files = supported_files
+
+        self._logger = logging.getLogger('SPOT.INGEST.WATCHER')    
+        self._logger.info("Creating File watcher")
+        self._logger.info("Supported Files: {0}".format(self._supported_files))
 
     def start(self):       
         
@@ -35,7 +36,9 @@ class FileWatcher(object):
         self._logger.info("File: {0}".format(file))
 
         # Validate the file is supported.        
-        if file.endswith(tuple(self._supported_files)):                   
+        collected_file_parts = file.split("/")
+        collected_file = collected_file_parts[len(collected_file_parts) -1 ]    
+        if (collected_file.endswith(tuple(self._supported_files)) or collected_file.startswith(tuple(self._supported_files))  ) and not  ".current" in collected_file:                   
             self._files_queue.put(file)
             self._logger.info("File {0} added to the queue".format(file))                        
         else:
@@ -47,7 +50,7 @@ class FileWatcher(object):
     def stop(self):
         self._logger.info("Stopping File Watcher")
         self._files_queue.close()
-        while not self._files_queue.empty(): self._files_queue.get()
+        while not self._files_queue.empty(): self._files_queue.get()      
         self._observer.stop()
         self._observer.join()
 

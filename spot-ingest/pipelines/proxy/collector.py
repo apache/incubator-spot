@@ -49,7 +49,7 @@ class Collector(object):
 
     def start(self):
 
-        self._logger.info("Starting PROXY INGEST")
+        self._logger.info("Starting PROXY collector")
         self._watcher.start()   
     
         try:
@@ -66,7 +66,7 @@ class Collector(object):
             self._pool.join()
              
 
-    def _ingest_files_pool(self,):
+    def _ingest_files_pool(self):
             
        
         if self._watcher.HasFiles:
@@ -97,5 +97,6 @@ def ingest_file(file,message_size,topic,kafka_servers):
         Util.execute_cmd(rm_file,logger)
         logger.info("File {0} has been successfully sent to Kafka Topic:".format(file))
 
-    except Exception as err:
+    except Exception as err:        
         logger.error("There was a problem, please check the following error message:{0}".format(err.message))
+        logger.error("Exception: {0}".format(err))

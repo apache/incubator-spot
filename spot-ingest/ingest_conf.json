@@ -13,8 +13,9 @@
     "pipelines":{
         "flow":{
             "type":"flow",
-            "collector_path":"/path_to_flow_collector",
+            "collector_path":"/collector_path/flow",
             "local_staging":"/tmp/",
+            "supported_files":["nfcapd."],
             "process_opt":""
         },
         "dns":{
@@ -28,7 +29,7 @@
         "proxy":{
             "type":"proxy",
             "collector_path":"/path_to_proxy_collecor",
-            "supported_files":["log"],
+            "supported_files":[".log"],
             "parser":"bro_parser.py"
         }
     }
