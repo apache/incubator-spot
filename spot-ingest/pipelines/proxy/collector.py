@@ -95,7 +95,7 @@ def ingest_file(file,message_size,topic,kafka_servers):
             KafkaTopic.SendMessage(message,kafka_servers,topic,0)            
         rm_file = "rm {0}".format(file)
         Util.execute_cmd(rm_file,logger)
-        logger.info("File {0} has been successfully sent to Kafka Topic:".format(file))
+        logger.info("File {0} has been successfully sent to Kafka Topic: {1}".format(file,topic))
 
     except Exception as err:        
         logger.error("There was a problem, please check the following error message:{0}".format(err.message))

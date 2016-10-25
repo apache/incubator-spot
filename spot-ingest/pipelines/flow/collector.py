@@ -5,7 +5,7 @@ import logging
 import os
 import json
 from multiprocessing import Process
-from common.utils import Util, NewFileEvent
+from common.utils import Util
 from common.file_collector import FileWatcher
 from multiprocessing import Pool
 from common.kafka_client import KafkaTopic
@@ -52,8 +52,7 @@ class Collector(object):
         self._watcher.start()
             
         try:
-            while True:
-                #self._ingest_files()
+            while True:                
                 self._ingest_files_pool()              
                 time.sleep(self._ingestion_interval)
         except KeyboardInterrupt:
@@ -73,7 +72,7 @@ class Collector(object):
             for x in range(0,self._processes):
                 file = self._watcher.GetNextFile()
                 resutl = self._pool.apply_async(ingest_file,args=(file,self._kafka_topic.Partition,self._hdfs_root_path ,self._kafka_topic.Topic,self._kafka_topic.BootstrapServers,))
-                resutl.get() # to debug add try and catch.
+                #resutl.get() # to debug add try and catch.
                 if  not self._watcher.HasFiles: break    
         return True
     
