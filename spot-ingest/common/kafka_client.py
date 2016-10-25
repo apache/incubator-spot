@@ -81,7 +81,7 @@ class KafkaTopic(object):
     @property
     def BootstrapServers(self):
         servers = "{0}:{1}".format(self._server,self._port) 
-        return server
+        return servers
 
 
 class KafkaConsumer(object):
