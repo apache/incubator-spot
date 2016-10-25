@@ -81,7 +81,7 @@ class Collector(object):
                 if  not self._watcher.HasFiles: break    
         return True
 
-def ingest_file(self,file,pkt_num,pcap_split_staging, partition,hdfs_root_path,topic,kafka_servers):
+def ingest_file(file,pkt_num,pcap_split_staging, partition,hdfs_root_path,topic,kafka_servers):
 
     logger = logging.getLogger('SPOT.INGEST.FLOW.{0}'.format(os.getpid()))
     
@@ -117,9 +117,9 @@ def ingest_file(self,file,pkt_num,pcap_split_staging, partition,hdfs_root_path,t
                         Util.load_to_hdfs(os.path.join(currdir,file),hadoop_pcap_file,logger)
 
                         # create event for workers to process the file.
-                        self._logger.info( "Sending split file to worker number: {0}".format(partition))
-                        self._kafka_topic.send_message(hadoop_pcap_file,partition)
-                        self._logger.info("File {0} has been successfully sent to Kafka Topic to: {1}".format(file,topic))
+                        logger.info( "Sending split file to worker number: {0}".format(partition))
+                        KafkaTopic.SendMessage(hadoop_pcap_file,kafka_servers,topic,partition)
+                        logger.info("File {0} has been successfully sent to Kafka Topic to: {1}".format(file,topic))
 
 
         logger.info("Removing file: {0}".format(org_file))
