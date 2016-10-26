@@ -31,7 +31,7 @@
 		,"proto":6
 		,"ipkt":7
 		,"ibyt":8
-		,"lda_score":9
+		,"score":9
 		,"rank":10
 		,"srcIpInternal":11
 		,"destIpInternal":12
