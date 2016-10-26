@@ -41,5 +41,16 @@
 		,"dstDomain":16
 		,"srcIP_rep":17
 		,"dstIP_rep":18
+	},
+	"flow_feedback_fields": {
+		"sev":0
+		,"tstart":1
+		,"srcIP":2
+		,"dstIP":3
+		,"sport":4
+		,"dport":5
+		,"ipkt":6
+		,"ibyt":7
 	}
+
 }
