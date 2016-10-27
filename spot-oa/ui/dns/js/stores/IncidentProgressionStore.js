@@ -39,11 +39,9 @@ SpotDispatcher.register(function (action) {
   switch (action.actionType) {
     case SpotConstants.UPDATE_DATE:
       IncidentProgressionStore.setDate(action.date);
-
-      break;
-    case SpotConstants.RELOAD_COMMENTS:
       IncidentProgressionStore.clearFilter();
       IncidentProgressionStore.resetData();
+
       break;
     case SpotConstants.SELECT_COMMENT:
       var comment, filterParts, key;

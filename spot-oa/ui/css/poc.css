@@ -167,8 +167,14 @@ body {
     transition: stroke .5s linear;
 }
 
-.edge-highlight {
-    stroke-width: 3px;
+.edge.active {
+    stroke: #FDB813 !important;
+    stroke-opacity: 1 !important;
+}
+
+.edge.highlight {
+    stroke: #FDB813 !important;
+    stroke-opacity: 1 !important;
 }
 
 .edge-faded {
@@ -198,11 +204,6 @@ body {
     border-radius: 10px;
     font-family: verdana, san-serif;
     padding: 10px;
-}
-
-.active {
-    stroke-opacity: 1;
-    transition: background-color 1.0s linear;
 }
 
 /*-------------------------- Flashing/ blinker Animation----------------------*/

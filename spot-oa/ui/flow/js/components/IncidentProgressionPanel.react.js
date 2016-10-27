@@ -1,49 +1,49 @@
-var React = require('react');
+const React = require('react');
 
-var DendrogramMixin = require('../../../js/components/DendrogramMixin.react');
-var IncidentProgressionStore = require('../stores/IncidentProgressionStore');
- 
-var IncidentProgressionPanel = React.createClass({ 
-    mixins: [DendrogramMixin],
+const ContentLoaderMixin = require('../../../js/components/ContentLoaderMixin.react');
+const ChartMixin = require('../../../js/components/ChartMixin.react');
+const DendrogramMixin = require('../../../js/components/DendrogramMixin.react');
+const IncidentProgressionStore = require('../stores/IncidentProgressionStore');
+
+const IncidentProgressionPanel = React.createClass({
+    mixins: [ContentLoaderMixin, ChartMixin, DendrogramMixin],
     componentDidMount: function ()
     {
         IncidentProgressionStore.addChangeDataListener(this._onChange);
-        window.addEventListener('resize', this.buildGraph);
+        window.addEventListener('resize', this.buildChart);
     },
     componentWillUnmount: function ()
     {
         IncidentProgressionStore.removeChangeDataListener(this._onChange);
-        window.removeEventListener('resize', this.buildGraph);
+        window.removeEventListener('resize', this.buildChart);
     },
     _onChange: function ()
     {
-        var state, filterName, root;
+        const storeData = IncidentProgressionStore.getData();
+        const state = {loading: storeData.loading};
 
-        state = IncidentProgressionStore.getData();
-
-        root = {
+        state.data = {
+            id: 'root',
             name: IncidentProgressionStore.getFilterValue(),
             children: []
         };
 
         if (!state.loading)
         {
-            filterName = IncidentProgressionStore.getFilterName();
+            let filterName = IncidentProgressionStore.getFilterName();
 
-            state.data.children.forEach(function (item)
-            {
-                root.children.push({
+            state.leafNodes = 0;
+            storeData.data.children.forEach((item) => {
+                state.data.children.push({
+                    id: `node${++state.leafNodes}`,
                     name: item['name'],
                     children: item['children']
                 });
-            }.bind(this));
+            });
         }
 
-        state.root = root;
-        delete state.data;
-
         this.setState(state);
-    } 
+    }
 });
 
 module.exports = IncidentProgressionPanel;
