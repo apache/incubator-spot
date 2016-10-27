@@ -63,15 +63,15 @@ class FlowScoreFunction(timeCuts: Array[Double],
       1.0d / topicCount
     }
 
-    val srcScore = srcTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(srcWord, uniformProb))
+    val scoreOfConnectionFromSrcIP = srcTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(srcWord, uniformProb))
       .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
       .sum
 
 
-    val dstScore = dstTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(dstWord, uniformProb))
+    val scoreOfConnectionsFromDstIP = dstTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(dstWord, uniformProb))
       .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
       .sum
 
-    Math.min(srcScore,dstScore)
+    Math.min(scoreOfConnectionFromSrcIP,scoreOfConnectionsFromDstIP)
   }
 }
