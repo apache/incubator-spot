@@ -5,8 +5,9 @@ import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSuspiciousConnectsAnalysis
-import org.apache.spot.netflow.FlowSuspiciousConnects
+import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis
 import org.apache.spot.proxy.ProxySuspiciousConnectsAnalysis
+
 
 /**
   * Top level entrypoint to execute suspicious connections analysis on network data.
@@ -45,7 +46,7 @@ object SuspiciousConnects {
         implicit val outputDelimiter = OutputDelimiter
 
         analysis match {
-          case "flow" => FlowSuspiciousConnects.run(config, sparkContext, sqlContext, logger)
+          case "flow" => FlowSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger)
           case "dns" => DNSSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger)
           case "proxy" => ProxySuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger)
           case _ => logger.error("Unsupported (or misspelled) analysis: " + analysis)

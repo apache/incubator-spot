@@ -65,7 +65,7 @@ function getLinksFromData(data, nodes) {
 
     data.forEach((item) => {
         const id = createLinkId(item.srcIP, item.dstIP);
-        const score = -Math.log(item.lda_score);
+        const score = -Math.log(item.score);
 
         if (!(id in links)) {
             links[id] = {
