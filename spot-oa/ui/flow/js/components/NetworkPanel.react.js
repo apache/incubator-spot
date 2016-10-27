@@ -44,7 +44,7 @@ function draw(selectedEdgeId, sourceIpNodeId, targetIpNodeId, data) {
     return {
       source: fSrc,
       target: fDst,
-      weight: -Math.log(d.lda_score),
+      weight: -Math.log(d.score),
       id: "k" + d.srcIP.replace(/\./g, "_") + "-" + d.dstIP.replace(/\./g, "_")
     };
   });
