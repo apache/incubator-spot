@@ -99,7 +99,7 @@ object FlowPostLDA {
     val dataWithIpProb = dataWithIpProbJoin.selectExpr(newSchemaColumns: _*)
 
     def scoreFunction(word: String, ipProbabilities: Seq[Double], topicCount: Int): Double = {
-      val uniformProb = Array.fill(topicCount)(0.05d)
+      val uniformProb = Array.fill(topicCount)(0.0d)
       val wordGivenTopicProb = wordToProbPerTopic.value.getOrElse(word, uniformProb)
 
       ipProbabilities.zip(wordGivenTopicProb)
