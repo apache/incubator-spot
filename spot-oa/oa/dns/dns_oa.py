@@ -51,8 +51,7 @@ class OA(object):
 
         # initialize data engine
         self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
-        self._engine = Data(self._db,self._table_name ,self._logger)
-        self._db = 'onidb'
+        self._engine = Data(self._db,self._table_name ,self._logger) 
 
 
     def start(self):
@@ -150,7 +149,7 @@ class OA(object):
         Util.create_csv_file(dns_scores_bu_csv,dns_scores_final)  
 
 
-    def _add_tld_column(self): 
+    def _add_tld_column(self):
         qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
         self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ] 
   
