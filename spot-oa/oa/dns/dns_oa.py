@@ -39,8 +39,8 @@ class OA(object):
         self._ingest_summary_path = None
         self._dns_scores = []
         self._dns_scores_headers = []
-        self._results_delimiter = ','
-        self._details_limit = 500
+        self._results_delimiter = '\t'
+        self._details_limit = 250
 
         # get app configuration.
         self._spot_conf = Util.get_spot_conf()
