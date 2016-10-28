@@ -6,6 +6,7 @@ import shutil
 import sys
 import datetime
 import csv
+from tld import get_tld
 
 from collections import OrderedDict
 from utils import Util
@@ -61,6 +62,7 @@ class OA(object):
         self._create_folder_structure()
         self._add_ipynb()
         self._get_dns_results()
+        self._add_tld_column()
         self._add_reputation()
         self._add_hh_and_severity()
         self._add_iana()
@@ -106,7 +108,7 @@ class OA(object):
         get_command = Util.get_ml_results_form_hdfs(hdfs_path,self._data_path)
         self._logger.info("{0}".format(get_command))
 
-         # valdiate files exists
+         # validate files exists
         if os.path.isfile(dns_results):
 
             # read number of results based in the limit specified.
@@ -144,6 +146,11 @@ class OA(object):
         # create bk file
         dns_scores_bu_csv = "{0}/dns_scores_bu.csv".format(self._data_path)
         Util.create_csv_file(dns_scores_bu_csv,dns_scores_final)  
+
+
+    def _add_tld_column(self):
+        qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
+        self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ] 
   
     def _add_reputation(self):
 
@@ -181,7 +188,7 @@ class OA(object):
 
             self._dns_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._dns_scores  ]
 
-        
+
 
     def _add_hh_and_severity(self):
 
@@ -216,7 +223,7 @@ class OA(object):
         else:
             self._dns_scores = [ conn + [""] for conn in self._dns_scores ]
 
-   
+
     def _get_oa_details(self):
         
         self._logger.info("Getting OA DNS suspicious details/chord diagram")       

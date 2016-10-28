@@ -32,6 +32,7 @@ Provides tools for interactive visualization, noise filters, white listing, and 
           + [SPOT/ui/js/components/IPythonNotebookPanel.react.js](#spotuijscomponentsipythonnotebookpanelreactjs)
           + [SPOT/ui/js/components/Panel.react.js](#spotuijscomponentspanelreactjs)
           + [SPOT/ui/js/components/PanelRow.react.js](#spotuijscomponentspanelrowreactjs)
+          + [SPOT/ui/js/components/PolloNetworkViewMixin.react.js](#spotuijscomponentspollonetworkviewreactjs)
           + [SPOT/ui/js/components/SuspiciousGridMixin.react.js](#spotuijscomponentssuspiciousgridmixinreactjs)
           + [SPOT/ui/js/components/TimelineMixin.react.js](#spotuijscomponentstimelinemixinreactjs)
         * [App Constants](#app-constants)
@@ -449,6 +450,37 @@ Listen for [SpotStore](#SpotStore.js) events:
 
 A panel container that allows expand/restore feature to work properly. Listens for EXPAND_PANEL/RESTORE_PANEL events on child panels and reacts in the same way, either expanding or restoring.
 
+###### _SPOT/ui/js/components/PolloNetworkViewMixin.react.js_
+
+This mixin takes care of the creation of force directed graph charts, more specific components should be created in order to gather data to feed this mixing.
+
+This component will look for `this.state.data` which should be an object like:
+```javascript
+{
+  maxNodes,
+  nodes: [
+      { ... },
+      ...
+  ],
+  links: [
+      { ... }
+  ]
+}
+```
+Each node element must look like:
+
+```javascript
+{
+    id: "UNIQUE_NODE_ID",
+    label: "NODE_LABEL",
+    internalIp: true,
+    hits: 121
+}
+```
+internalIp field is used internal to render this node as a diamond, true, or circle, false.
+
+hits counts the number of times this node is referenced on raw data. It serves as a input to calculate the size of the node.
+
 ###### _SPOT/ui/js/components/SuspiciousGridMixin.react.js_
 
 Defines common functionality for a Suspicious grid panels, such as an empty message, attaches change event listener to a store, popover events and events to highlight rows when mouse over a row. Final components should only worry about providing custom cell render functions. For more information on custom render functions, go [here](#gridpanelmixin-react-js).
@@ -841,7 +873,7 @@ _SPOT/ui/js/flow/components/_
 
     See [SuspiciousGridMixin.react.js](#suspiciousgridmixin.react.js)
 
-- NetworkPanel.react.js
+- NetworkViewPanel.react.js
 - DetailsPanel.react.js
 - DetailsTablePanel.react.js
 
@@ -873,7 +905,7 @@ _SPOT/ui/js/dns/components/_
 
     See [SuspiciousGridMixin.react.js](#suspiciousdendrogrampanel.react.js)
 
-- NetworkPanel.react.js
+- NetworkViewPanel.react.js
 - DetailsPanel.react.js
 - DetailsTablePanel.react.js
 - DetailsDendrogramPanel.react.js

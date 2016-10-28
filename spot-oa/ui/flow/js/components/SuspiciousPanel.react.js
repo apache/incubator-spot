@@ -144,7 +144,7 @@ var SuspiciousPanel = React.createClass({
     _render_dstDomain_cell: false,
     _render_dstGeo_cell: false,
     _render_flag_cell: false,
-    _render_lda_score_cell: false,
+    _render_score_cell: false,
     _render_srcDomain_cell: false,
     _render_srcGeo_cell: false,
     _render_srcIpInternal_cell: false,

@@ -7,11 +7,9 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel
-import org.apache.spot.dns.sideinformation.DNSSideInformation
 import org.apache.log4j.Logger
 
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel.ModelSchema
-import org.apache.spot.dns.sideinformation.DNSSideInformation.SideInfoSchema
 
 /**
   * The suspicious connections analysis of DNS log data develops a probabilistic model the DNS queries
@@ -37,13 +35,6 @@ object DNSSuspiciousConnectsAnalysis {
       QueryClassField,
       QueryTypeField,
       QueryResponseCodeField,
-      DomainField,
-      SubdomainField,
-      SubdomainLengthField,
-      NumPeriodsField,
-      SubdomainEntropyField,
-      TopDomainField,
-      WordField,
       ScoreField))
 
   val OutColumns = OutSchema.fieldNames.map(col)
@@ -79,11 +70,7 @@ object DNSSuspiciousConnectsAnalysis {
     val filteredDF = scoredDF.filter(Score + " <= " + config.threshold)
     val mostSusipiciousDF: DataFrame = filteredDF.orderBy(Score).limit(config.maxResults)
 
-    // add the "side information" expected by the OA layer
-    val sideInformationGenerator = new DNSSideInformation(model)
-    val dfWithSideInfo = sideInformationGenerator.addSideInformationForOA(sparkContext, sqlContext, mostSusipiciousDF)
-
-    val outputDF = dfWithSideInfo.select(OutColumns:_*).sort(Score)
+    val outputDF = mostSusipiciousDF.select(OutColumns:_*).sort(Score)
 
     logger.info("DNS  suspcicious connects analysis completed.")
     logger.info("Saving results to : " + config.hdfsScoredConnect)

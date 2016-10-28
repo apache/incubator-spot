@@ -50,7 +50,7 @@ var PanelRow = require('../../js/components/PanelRow.react');
 var Panel = require('../../js/components/Panel.react');
 
 var SuspiciousPanel = require('./components/SuspiciousPanel.react');
-var NetworkPanel = require('./components/NetworkPanel.react');
+var NetworkViewPanel = require('./components/NetworkViewPanel.react');
 var IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
 var DetailsPanel = require('./components/DetailsPanel.react');
 
@@ -63,7 +63,7 @@ React.render(
         <SuspiciousPanel />
       </Panel>
       <Panel title={SpotConstants.NETVIEW_PANEL} container expandable reloadable onReload={EdInActions.reloadSuspicious}>
-        <NetworkPanel />
+        <NetworkViewPanel />
       </Panel>
     </PanelRow>
     <PanelRow>

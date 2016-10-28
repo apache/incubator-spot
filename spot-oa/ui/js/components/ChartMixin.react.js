@@ -28,7 +28,7 @@ var ChartMixin = {
     },
     renderContent: function () {
         let state = this.state || {};
-        let chartContent = state.data ? <svg className="canvas"></svg> : null;
+        let chartContent = state.data ? <svg className="canvas" ref={e => {this.svg=e?e.getDOMNode():e;}}></svg> : null;
 
         return (
             <div className={this.props.className}>

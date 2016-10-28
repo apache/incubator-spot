@@ -1,3 +1,10 @@
+const Base64 = require('js-base64').Base64;
+
+const ID_REPLACE = '=';
+const ID_REPLACE_REGEX = new RegExp(`[${ID_REPLACE}]`, 'g');
+const ID_REPLACEMENT = '_';
+const ID_REPLACEMENT_REGEX = new RegExp(`[${ID_REPLACEMENT}]`, 'g');
+
 var SpotUtils = {
   IP_V4_REGEX: /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/,
   CSS_RISK_CLASSES: {'3': 'danger', '2': 'warning', '1': 'info', '0': 'default', '-1': 'default'},
@@ -100,6 +107,12 @@ var SpotUtils = {
       return Math.max(hr, reps[serviceName].value);
     }, -1);
   },
+  encodeId(id) {
+      return Base64.encode(id).replace(ID_REPLACE_REGEX, ID_REPLACEMENT);
+  },
+  decodeId(id) {
+      return Base64.decode(id.replace(ID_REPLACEMENT_REGEX, ID_REPLACE));
+  }
 };
 
 module.exports = SpotUtils;
