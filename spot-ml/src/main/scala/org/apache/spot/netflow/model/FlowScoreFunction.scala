@@ -59,7 +59,7 @@ class FlowScoreFunction(timeCuts: Array[Double],
 
 
 
-    val zeroProb = Array.fill(topicCount) { 0 }
+    val zeroProb = Array.fill(topicCount) { 0d }
 
     val scoreOfConnectionFromSrcIP = srcTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(srcWord, zeroProb))
       .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
