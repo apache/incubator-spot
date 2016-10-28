@@ -39,7 +39,8 @@ class OA(object):
         self._ingest_summary_path = None
         self._dns_scores = []
         self._dns_scores_headers = []
-        self._results_delimiter = '\t'
+        self._results_delimiter = ','
+        self._details_limit = 500
 
         # get app configuration.
         self._spot_conf = Util.get_spot_conf()
@@ -51,6 +52,7 @@ class OA(object):
         # initialize data engine
         self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
         self._engine = Data(self._db,self._table_name ,self._logger)
+        self._db = 'onidb'
 
 
     def start(self):
@@ -148,7 +150,7 @@ class OA(object):
         Util.create_csv_file(dns_scores_bu_csv,dns_scores_final)  
 
 
-    def _add_tld_column(self):
+    def _add_tld_column(self): 
         qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
         self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ] 
   
@@ -260,7 +262,7 @@ class OA(object):
 
     def _get_dns_details(self,dns_qry_name,year,month,day,hh,dns_iana):
                     
-        limit = 250
+        limit = self._details_limit
         edge_file ="{0}/edge-{1}_{2}_00.csv".format(self._data_path,dns_qry_name.replace("/","-"),hh)
         edge_tmp  ="{0}/edge-{1}_{2}_00.tmp".format(self._data_path,dns_qry_name.replace("/","-"),hh)
 
@@ -305,8 +307,7 @@ class OA(object):
            
 
     def _get_dns_dendrogram(self):
-       
-        
+        limit = self._details_limit
         for conn in self._dns_scores:            
             date=conn[self._conf["dns_score_fields"]["frame_time"]].split(" ")
             date = filter(None,date)
@@ -316,14 +317,13 @@ class OA(object):
                 month=datetime.datetime.strptime(date[0], '%b').strftime('%m')
                 day=date[1]
                 ip_dst=conn[self._conf["dns_score_fields"]["ip_dst"]]
-                self._get_dendro(self._db,self._table_name,ip_dst,year,month,day)
+                self._get_dendro(self._db,self._table_name,ip_dst,year,month,day, limit)
 
 
-    def _get_dendro(self,db,table,ip_dst,year,month,day):
+    def _get_dendro(self,db,table,ip_dst,year,month,day,limit):
 
         dendro_file = "{0}/dendro-{1}.csv".format(self._data_path,ip_dst)
         if not os.path.isfile(dendro_file):
-            dndro_qry = ("SELECT dns_a, dns_qry_name, ip_dst FROM (SELECT susp.ip_dst, susp.dns_qry_name, susp.dns_a FROM {0}.{1} as susp WHERE susp.y={2} AND susp.m={3} AND susp.d={4} AND susp.ip_dst='{5}' ) AS tmp GROUP BY dns_a, dns_qry_name, ip_dst").format(db,table,year,month,day,ip_dst)
-
+            dndro_qry = ("SELECT dns_a, dns_qry_name, ip_dst FROM (SELECT susp.ip_dst, susp.dns_qry_name, susp.dns_a FROM {0}.{1} as susp WHERE susp.y={2} AND susp.m={3} AND susp.d={4} AND susp.ip_dst='{5}' LIMIT {6}) AS tmp GROUP BY dns_a, dns_qry_name, ip_dst").format(db,table,year,month,day,ip_dst,limit)
             # execute query
             self._engine.query(dndro_qry,dendro_file)
