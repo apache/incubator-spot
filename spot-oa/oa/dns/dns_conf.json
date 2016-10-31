@@ -8,15 +8,7 @@
         , "dns_qry_class" : 5
         , "dns_qry_type" : 6
         , "dns_qry_rcode" : 7
-        , "domain" : 8
-        , "subdomain" : 9
-        , "subdomain_length" : 10
-        , "num_periods": 11
-        , "subdomain_entropy" : 12
-        , "top_domain" : 13
-        , "word" : 14
-        , "score" : 15
-        , "query_rep" : 16        
+        , "score" : 8  
     },
     "dns_score_fields": 
     {
@@ -27,23 +19,17 @@
         , "dns_qry_class" : 4
         , "dns_qry_type" : 5
         , "dns_qry_rcode" : 6
-        , "domain" : 7
-        , "subdomain" : 8
-        , "subdomain_length" : 9
-        , "num_periods": 10
-        , "subdomain_entropy" : 11
-        , "top_domain" : 12
-        , "word" : 13
-        , "score" : 14
-        , "query_rep" : 15 
-        , "hh": 16 
-        , "ip_sev" : 17
-        , "dns_sev" : 18
-        , "dns_qry_class_name" : 19
-        , "dns_qry_type_name" : 20
-        , "dns_qry_rcode_name" : 21
-        , "network_context" :22
-        , "unix_tstamp": 23
+        , "score" : 7
+        , "tld" : 8
+        , "query_rep" : 9 
+        , "hh": 10
+        , "ip_sev" : 11
+        , "dns_sev" : 12
+        , "dns_qry_class_name" : 13
+        , "dns_qry_type_name" : 14
+        , "dns_qry_rcode_name" : 15
+        , "network_context" : 16
+        , "unix_tstamp": 17
     },
     "add_reputation":{
         "query_rep":4   

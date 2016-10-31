@@ -1,58 +1,77 @@
 package org.apache.spot.netflow
 
+import org.apache.spark.sql.types._
+
+/**
+  * Data frame schemas and column names used in the netflow suspicious connects analysis.
+  */
+
 object FlowSchema {
 
   // input fields
 
   val TimeReceived = "treceived"
-  val UnixTimestamp = "unix_tstamp"
+  val TimeReceivedField = StructField(TimeReceived, StringType, nullable = true)
+
   val Year = "tryear"
+  val YearField = StructField(Year, IntegerType, nullable = true)
+
   val Month = "trmonth"
+  val MonthField = StructField(Month, IntegerType, nullable = true)
+
   val Day = "trday"
+  val DayField = StructField(Day, IntegerType, nullable = true)
+
   val Hour = "trhour"
+  val HourField = StructField(Hour, IntegerType, nullable = true)
+
   val Minute = "trminute"
+  val MinuteField = StructField(Minute, IntegerType, nullable = true)
+
   val Second = "trsec"
+  val SecondField = StructField(Second, IntegerType, nullable = true)
+
   val Duration = "tdur"
+  val DurationField = StructField(Duration, FloatType, nullable = true)
+
   val SourceIP = "sip"
+  val SourceIPField = StructField(SourceIP, StringType, nullable = true)
+
   val DestinationIP = "dip"
+  val DestinationIPField = StructField(DestinationIP, StringType, nullable = true)
+
   val SourcePort = "sport"
+  val SourcePortField = StructField(SourcePort, IntegerType, nullable = true)
+
   val DestinationPort = "dport"
-  val proto = "proto"
-  val Flag = "flag"
-  val fwd = "fwd"
-  val stos = "stos"
-  val ipkt = "ipkt"
-  val ibyt = "ibyt"
-  val opkt = "opkt"
-  val obyt = "obyt"
-  val input = "input"
-  val output = "output"
-  val sas = "sas"
-  val das = "das"
-  val dtos = "dtos"
-  val dir = "dir"
-  val rip = "rip"
+  val DestinationPortField = StructField(DestinationPort, IntegerType, nullable = true)
 
-  // derived and intermediate fields
-  val NumTime = "num_time"
-  val IBYTBin = "ibyt_bin"
-  val IPKTBin = "ipkt_bin"
-  val TimeBin = "time_bin"
-  val PortWord = "port_word"
-  val IpPair = "ip_pair"
-  val SourceProbabilities = "sourceProb"
-  val DestinationProbabilities = "destProb"
+  val Protocol = "proto"
+  val ProtocolField = StructField(Protocol, StringType, nullable = true)
 
-  // temporary fields
-  val Probabilities = "probabilities"
-  val Doc = "doc"
+  val Ipkt = "ipkt"
+  val IpktField = StructField(Ipkt, LongType, nullable = true)
+
+  val Ibyt = "ibyt"
+  val IbytField = StructField(Ibyt, LongType, nullable = true)
+
+  val Opkt = "opkt"
+  val OpktField = StructField(Opkt, LongType, nullable = true)
+
+  val Obyt = "obyt"
+  val ObytField = StructField(Obyt, LongType, nullable = true)
+
+
+  // intermediate fields
+
+  val SrcIpTopicMix  = "source_ip_topic_mix"
+  val DstIpTopicMix  = "destination_ip_topic_mix"
 
 
   // output fields
 
   val SourceWord = "source_word"
   val DestinationWord = "destination_word"
-  val SourceScore = "source_score"
-  val DestinationScore = "destination_score"
-  val MinimumScore = "min_score"
+  val Score = "score"
+  val ScoreField = StructField(Score, DoubleType)
 }

@@ -120,12 +120,9 @@ class OA(object):
         self._logger.info("Adding headers based on configuration file: score_fields.json")
         self._flow_scores = [ [ str(key) for (key,value) in self._conf['flow_score_fields'].items()] ]
 
-        ldaab_index = self._conf["flow_results_fields"]["lda_score_ab"]
-        ldaba_index = self._conf["flow_results_fields"]["lda_score_ba"]
-
         # filter results add sev and rank.
         self._logger.info("Filtering required columns based on configuration")
-        self._flow_scores.extend([ [0] +  [ conn[i] for i in self._conf['column_indexes_filter'] ] + [(conn[ldaab_index] if (conn[ldaab_index]<= conn[ldaba_index]) else conn[ldaba_index])] + [n]  for n, conn in enumerate(self._flow_results) ])
+        self._flow_scores.extend([ [0] +  [ conn[i] for i in self._conf['column_indexes_filter'] ] + [n] for n, conn in enumerate(self._flow_results) ])
      
     def _create_flow_scores_csv(self):
 

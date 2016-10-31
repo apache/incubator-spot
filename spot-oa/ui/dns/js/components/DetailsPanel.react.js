@@ -28,7 +28,7 @@ var DetailsPanel = React.createClass({
     if (this.state.mode === SpotConstants.VISUAL_DETAILS_MODE)
     {
       return (
-        <DetailsDendrogramPanel />
+        <DetailsDendrogramPanel className="dendrogram" />
       );
     }
     else
