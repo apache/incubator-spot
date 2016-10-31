@@ -5,7 +5,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{DataFrame, Row, SQLContext}
+import org.apache.spark.sql.{DataFrame, Row, SQLContext, UserDefinedFunction}
 import org.apache.spot.netflow.FlowSchema._
 
 /**
@@ -68,32 +68,45 @@ object FlowPostLDA {
 
     val docToTopicMixRDD: RDD[(String, Array[Double])] = sc.parallelize(docToTopicMix.toSeq)
 
-    val docToTopicMixDF = docToTopicMixRDD.map({ case (doc, probabilities) => DocTopicMix(doc, probabilities) }).toDF
+      val docToTopicMixDF = docToTopicMixRDD.map({ case (doc, probabilities) => DocTopicMix(doc,
+      probabilities.asInstanceOf[Array[Double]].array) }).toDF
 
     val words = sc.broadcast(wordToProbPerTopic)
 
-    val dataWithSrcScore = score(sc, dataWithWord, docToTopicMixDF, words, SourceScore, SourceIP, SourceProbabilities, SourceWord, topicCount)
-    val dataWithDestScore = score(sc, dataWithSrcScore, docToTopicMixDF, words, DestinationScore, DestinationIP, DestinationProbabilities, DestinationWord, topicCount)
+    val dataWithSrcScore = score(sc, dataWithWord, docToTopicMixDF, words,
+        SourceScore, SourceIP, SourceProbabilities, SourceWord, topicCount, logger)
+
+    val dataWithDestScore = score(sc, dataWithSrcScore, docToTopicMixDF, words,
+        DestinationScore, DestinationIP, DestinationProbabilities, DestinationWord, topicCount, logger)
+
     val dataScored = minimumScore(dataWithDestScore)
 
     logger.info("Persisting data")
-    val filteredDF = dataScored.filter(MinimumScore + " <= " + threshold)
-    filteredDF.orderBy(MinimumScore).limit(topK).rdd.map(row => Row.fromSeq(row.toSeq.dropRight(1))).map(_.mkString(outputDelimiter)).saveAsTextFile(resultsFilePath)
+
+    val filteredDF = dataScored
+      .filter(MinimumScore + " <= " + threshold)
+      .orderBy(MinimumScore)
+      .limit(topK)
+      .drop(MinimumScore)
+
+    filteredDF.rdd.map(_.mkString(outputDelimiter)).saveAsTextFile(resultsFilePath)
 
     logger.info("Flow post LDA completed")
   }
 
   def score(sc: SparkContext,
             dataFrame: DataFrame,
-            docToTopicMixesDF: DataFrame,
+            docToTopicMixeDF: DataFrame,
             wordToProbPerTopic: Broadcast[Map[String, Array[Double]]],
             scoreColumnName: String,
             ipColumnName: String,
             ipProbabilitiesColumnName: String,
             wordColumnName: String,
-            topicCount: Int): DataFrame = {
+            topicCount: Int,
+            logger: Logger): DataFrame = {
 
-    val dataWithIpProbJoin = dataFrame.join(docToTopicMixesDF, dataFrame(ipColumnName) === docToTopicMixesDF(Doc))
+
+    val dataWithIpProbJoin = dataFrame.join(docToTopicMixeDF, dataFrame(ipColumnName) === docToTopicMixeDF(Doc), "left_outer")
 
     var newSchemaColumns = dataFrame.schema.fieldNames :+ Probabilities + " as " + ipProbabilitiesColumnName
     val dataWithIpProb = dataWithIpProbJoin.selectExpr(newSchemaColumns: _*)
@@ -107,9 +120,10 @@ object FlowPostLDA {
         .sum
     }
 
-    def udfScoreFunction = udf((word: String, ipProbabilities: Seq[Double]) => scoreFunction(word, ipProbabilities, topicCount))
+    def udfScoreFunction: UserDefinedFunction = udf((word: String, ipProbabilities: Seq[Double]) => scoreFunction(word, ipProbabilities, topicCount))
 
-    val result: DataFrame = dataWithIpProb.withColumn(scoreColumnName, udfScoreFunction(dataWithIpProb(wordColumnName), dataWithIpProb(ipProbabilitiesColumnName)))
+    val result: DataFrame = dataWithIpProb.withColumn(scoreColumnName, udfScoreFunction(dataWithIpProb(wordColumnName),
+      dataWithIpProb(ipProbabilitiesColumnName)))
     newSchemaColumns = dataFrame.schema.fieldNames :+ scoreColumnName
     result.select(newSchemaColumns.map(col): _*)
   }

@@ -206,7 +206,10 @@ object DNSSuspiciousConnectsModel {
       config.localUser,
       config.analysis,
       config.nodes,
-      config.ldaPRGSeed)
+      config.ldaPRGSeed,
+      sparkContext,
+      sqlContext,
+      logger)
 
 
     new DNSSuspiciousConnectsModel(topicCount,

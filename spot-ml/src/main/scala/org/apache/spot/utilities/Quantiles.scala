@@ -19,9 +19,9 @@ object Quantiles extends Serializable {
     */
 
   def computeEcdf(data: RDD[Double]): RDD[(Double, Double)] = {
-    val counts = data.map(v => (v, 1)).reduceByKey(_ + _).sortByKey().cache()
+    val counts = data.map(v => (v, 1)).reduceByKey(_ + _).sortByKey().persist()
 
-    val totalCountPerPartition: Array[Double] = 0.0 +: counts.mapPartitionsWithIndex {
+    val totalCountPerPartition: Array[Double] = counts.mapPartitionsWithIndex {
       case (_, partition) => Iterator(partition.map({ case (sample, count) => count }).sum.toDouble)
     }.collect()
 
@@ -36,6 +36,7 @@ object Quantiles extends Serializable {
         // first element is an extraneous zero and must be dropped
         p.drop(1)
     }
+    counts.unpersist()
     valueCountToLeftPairs.map({case (value, countToLeftOfValue) => (value, countToLeftOfValue / totalCount)})
   }
 

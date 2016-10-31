@@ -128,18 +128,24 @@ object FlowPreLDA {
 
     val dataWithWordDF = FlowWordCreation.flowWordCreation(totalDataDF, sc, logger, sqlContext)
 
-    val src_word_counts = dataWithWordDF.select(SourceIP, SourceWord)
+    val sourceIPDF = dataWithWordDF.select(SourceIP, SourceWord)
+
+    val sourceDocWordCounts = sourceIPDF
       .map({ case Row(sourceIp: String, sourceWord: String) => (sourceIp, sourceWord) -> 1 })
       .reduceByKey(_ + _)
 
-    val dest_word_counts = dataWithWordDF.select(DestinationIP, DestinationWord)
+    val destinationIPDF = dataWithWordDF.select(DestinationIP, DestinationWord)
+
+    val destDocWordCounts = destinationIPDF
       .map({ case Row(destinationIp: String, destinationWord: String) => (destinationIp, destinationWord) -> 1 })
       .reduceByKey(_ + _)
 
-    val word_counts = sc.union(src_word_counts, dest_word_counts).map({case ((ip, word), count) => SpotLDACInput(ip, word, count)})
+    val docWordCount = sc.union(sourceDocWordCounts, destDocWordCounts).map({case ((ip, word), count) => SpotLDACInput(ip, word, count)})
+
+    docWordCount.count
 
     logger.info("Flow pre LDA completed")
-    word_counts
+    docWordCount
 
   }
 

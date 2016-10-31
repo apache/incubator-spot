@@ -35,7 +35,7 @@ object SuspiciousConnects {
     parser.parse(args, SuspiciousConnectsConfig()) match {
       case Some(config) =>
 
-        Logger.getLogger("org").setLevel(Level.OFF)
+        Logger.getLogger("org").setLevel(Level.WARN)
         Logger.getLogger("akka").setLevel(Level.OFF)
 
         val analysis = config.analysis

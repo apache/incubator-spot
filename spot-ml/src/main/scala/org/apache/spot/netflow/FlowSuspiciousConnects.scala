@@ -18,7 +18,7 @@ object FlowSuspiciousConnects {
 
     val SpotLDACOutput(documentResults, wordResults) = SpotLDACWrapper.runLDA(docWordCount, config.modelFile, config.topicDocumentFile, config.topicWordFile,
       config.mpiPreparationCmd, config.mpiCmd, config.mpiProcessCount, config.topicCount, config.localPath,
-      config.ldaPath, config.localUser,  config.analysis, config.nodes, config.ldaPRGSeed)
+      config.ldaPath, config.localUser,  config.analysis, config.nodes, config.ldaPRGSeed, sparkContext, sqlContext, logger)
 
     FlowPostLDA.flowPostLDA(config.inputPath, config.hdfsScoredConnect, config.outputDelimiter, config.threshold, config.maxResults, documentResults,
       wordResults, config.topicCount, sparkContext, sqlContext, logger)

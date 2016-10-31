@@ -1,11 +1,17 @@
 package org.apache.spot
 
+import org.apache.log4j.{Level, LogManager}
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions._
 import org.apache.spot.SpotLDACWrapper.SpotLDACInput
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
 
 
 class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
+
+  val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
+  logger.setLevel(Level.INFO)
 
 
   "normalizeWord" should "calculate exponential of each value in the input string, then sum up all the exponential and " +
@@ -54,6 +60,9 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
   "createModel" should "return model in Array[String] format. Each string should contain the document count and the" +
     "total count for each word" in {
 
+    val testSqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
+    import testSqlContext.implicits._
+
     val documentWordData = sparkContext.parallelize(Array(SpotLDACInput("192.168.1.1", "333333_7.0_0.0_1.0", 8),
       SpotLDACInput("10.10.98.123", "1111111_6.0_3.0_5.0", 4),
       SpotLDACInput("66.23.45.11", "-1_43_7.0_2.0_6.0", 2),
@@ -64,22 +73,38 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
       "-1_43_7.0_2.0_6.0" -> 2,
       "-1_80_6.0_1.0_1.0" -> 3)
 
-    val distinctDocument = documentWordData.map({case SpotLDACInput(doc, word, count) => doc}).distinct.collect()
+    val modelDF: DataFrame = SpotLDACWrapper.createModel(documentWordData, wordDictionary, sparkContext, logger)
 
-    val model = SpotLDACWrapper.createModel(documentWordData, wordDictionary, distinctDocument)
+    val model = modelDF.select(col("docWordCount")).rdd
+      .map(
+        x=> ( x.toString().replaceAll("\\[","").replaceAll("\\]","") )
+      ).collect
+
+    val documentDictionary = modelDF.select(col("docID"))
+      .rdd
+      .map(x=>x.toString.replaceAll("\\]","").replaceAll("\\[",""))
+      .zipWithIndex.toDF("docName", "docIdx")
+
+    println(documentDictionary.collect.foreach(println))
 
     model should contain ("2 0:8 3:5")
     model should contain ("1 1:4")
     model should contain ("1 2:2")
-    model shouldBe Array("2 0:8 3:5", "1 1:4", "1 2:2")
+    //model shouldBe Array("2 0:8 3:5", "1 1:4", "1 2:2")
 
   }
 
   "getDocumentResults" should "return Array[String] of documents and its 20 values when the sum of each value in the line is bigger" +
     "than 0. Each result value should be divided by the sum of all values and the result array order should be the same" +
     "as incomming data (topicDocument Data)" in {
+
+    val testSqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
+    import testSqlContext.implicits._
+
     val topicCount = 20
-    val documentDictionary = Map(3 -> "10.10.98.123", 0 -> "66.23.45.11", 1 -> "192.168.1.1", 2 -> "133.546.43.22")
+    val documentDictionary = sparkContext.parallelize(Array
+    (("10.10.98.123"->3), ( "66.23.45.11"->0), ( "192.168.1.1"->1 ), ("133.546.43.22" -> 2))).toDF("docName","docIdx")
+
     val topicDocumentData = Array("0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 " +
       "0.0124531442 0.0124531442 0.0124531442 0.0124531442 23983.5532262138 0.0124531442 0.0124531442 0.0124531442 " +
       "0.0124531442 0.0124531442 0.0124531442 22999.4716800747 0.0124531442",
@@ -93,7 +118,7 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
       "0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 12.0124531442 " +
       "0.0124531442 0.0124531442 0.0124531442 0.0124531442")
 
-    val results = SpotLDACWrapper.getDocumentResults(topicDocumentData, documentDictionary, topicCount)
+    val results = SpotLDACWrapper.getDocumentResults(topicDocumentData, documentDictionary, topicCount, sparkContext)
 
     results("66.23.45.11") shouldBe Array(2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7,
       2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7,

@@ -131,7 +131,10 @@ object ProxySuspiciousConnectsModel {
       config.localUser,
       config.analysis,
       config.nodes,
-      config.ldaPRGSeed)
+      config.ldaPRGSeed,
+      sparkContext,
+      sqlContext,
+      logger)
 
     new ProxySuspiciousConnectsModel(config.topicCount, documentResults, wordResults, timeCuts, entropyCuts, agentCuts)
   }

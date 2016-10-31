@@ -4,6 +4,12 @@ import org.apache.spark.rdd.RDD
 import java.io.PrintWriter
 import java.io.File
 
+import org.apache.log4j.Logger
+import org.apache.spark.sql.{DataFrame, Row, SQLContext}
+import org.apache.spark.SparkContext
+import org.apache.spark.sql.functions._
+
+import scala.collection.immutable.Map
 import scala.io.Source._
 import scala.sys.process._
 
@@ -21,7 +27,6 @@ object SpotLDACWrapper {
 
   case class SpotLDACOutput(docToTopicMix: Map[String, Array[Double]], wordResults: Map[String, Array[Double]])
 
-
   def runLDA(docWordCount: RDD[SpotLDACInput],
              modelFile: String,
              topicDocumentFile: String,
@@ -35,33 +40,39 @@ object SpotLDACWrapper {
              localUser: String,
              dataSource: String,
              nodes: String,
-             prgSeed: Option[Long]):   SpotLDACOutput =  {
+             prgSeed: Option[Long],
+             sparkContext: SparkContext,
+             sqlContext: SQLContext,
+             logger: Logger):   SpotLDACOutput =  {
+
+    import sqlContext.implicits._
+    val docWordCountCache = docWordCount.cache()
 
     // Create word Map Word,Index for further usage
     val wordDictionary: Map[String, Int] = {
-      val words = docWordCount
-        .cache
-        .map({case SpotLDACInput(doc, word, count) => word})
+      val words = docWordCountCache.map({case SpotLDACInput(doc, word, count) => word})
         .distinct
         .collect
       words.zipWithIndex.toMap
     }
 
-    val distinctDocument = docWordCount.map({case SpotLDACInput(doc, word, count) => doc}).distinct.collect
-    //distinctDocument.cache()
-
-    // Create document Map Index, Document for further usage
-    val documentDictionary: Map[Int, String] = {
-      distinctDocument
-        //.collect
-        .zipWithIndex
-        .sortBy(_._2)
-        .map(kv => (kv._2, kv._1))
-        .toMap
-    }
-
     // Create model for MPI
-    val model = createModel(docWordCount, wordDictionary, distinctDocument)
+    val modelDF = createModel(docWordCountCache, wordDictionary, sparkContext, sqlContext, logger)
+
+    docWordCountCache.unpersist()
+
+    val documentDictionary = modelDF.select(col("docID"))
+      .rdd
+      .map(
+        x=>  x.toString().replaceAll("\\[","").replaceAll("\\]","")
+      )
+      .zipWithIndex.toDF("docName", "docIdx")
+
+    val model = modelDF.select(col("docWordCount"))
+      .rdd
+      .map(
+        x=>  x.toString().replaceAll("\\[","").replaceAll("\\]","")
+      ).collect
 
     // Persist model.dat
     val modelWriter = new PrintWriter(new File(modelFile))
@@ -108,7 +119,7 @@ object SpotLDACWrapper {
     }
 
     // Create document results
-    val docToTopicMix = getDocumentResults(documentTopicMixRawLines, documentDictionary, topicCount)
+    val docToTopicMix = getDocumentResults(documentTopicMixRawLines, documentDictionary, topicCount, sparkContext)
 
     // Create word results
     val wordResults = getWordToProbPerTopicMap(topicWordData, wordDictionary)
@@ -128,7 +139,7 @@ object SpotLDACWrapper {
 
     val wordProbs: Array[Double] = logWordProbs.map(math.exp)
 
-    // renormalize to account for any weirdness from the log/exp transformations
+    // Normalize to account for any weirdness from the log/exp transformations
     val sumRawWord = wordProbs.sum
     wordProbs.map(_ / sumRawWord)
   }
@@ -147,37 +158,80 @@ object SpotLDACWrapper {
     }
   }
 
-  def createModel(documentWordData: RDD[SpotLDACInput], wordToIndex: Map[String, Int], distinctDocument: Array[String])
-  : Array[String]
-  = {
+  def createModel(documentWordData: RDD[SpotLDACInput],
+                  wordToIndex: Map[String, Int],
+                  sparkContext: SparkContext,
+                  sqlContext: SQLContext,
+                  logger: Logger): DataFrame = {
+    import sqlContext.implicits._
+
     val documentCount = documentWordData
       .map({case SpotLDACInput(doc, word, count) => doc})
       .map(document => (document, 1))
       .reduceByKey(_ + _)
-      .collect
-      .toMap
 
     val wordIndexdocWordCount = documentWordData
       .map({case SpotLDACInput(doc, word, count) => (doc, wordToIndex(word) + ":" + count)})
       .groupByKey()
       .map(x => (x._1, x._2.mkString(" ")))
-      .collect
-      .toMap
 
-    distinctDocument
-      //.collect
-      .map(doc => documentCount(doc)
-        + " "
-        + wordIndexdocWordCount(doc))
+
+
+    val wordCountDF = wordIndexdocWordCount.toDF("docID","wordIDCount")
+    val distinctDocDF = documentCount.toDF("docID","docCount")
+
+    val docWordCount = distinctDocDF.join(wordCountDF, wordCountDF("docID").equalTo(distinctDocDF("docID")))
+                              .drop(wordCountDF("docID"))
+    def concatDocWordCount = {udf( (a: String, b: String) => a.concat(" ").concat(b))}
+    val modelDF = docWordCount.withColumn("docWordCount",
+              concatDocWordCount(
+                  docWordCount("docCount"),
+                  docWordCount("wordIDCount")))
+                  .drop(col("docCount")).drop(col("wordIDCount"))
+    modelDF.count()
+    modelDF
   }
 
-  def getDocumentResults(topicDocumentData: Array[String],
-                         docIndexToDocument: Map[Int, String],
-                         topicCount: Int) : Map[String, Array[Double]] = {
+  def getDocumentResults(ldaResults: Array[String],
+                         docIndexToDocument: DataFrame,// Map[Int, String],
+                         topicCount: Int, sc: SparkContext) : Map[String, Array[Double]] = {
 
-    topicDocumentData.zipWithIndex
-      .map({case (topic, docIdx) => getTopicDocument(docIndexToDocument(docIdx), topic, topicCount)})
-      .toMap
+      val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+      import sqlContext.implicits._
+
+      val topicDocumentData = sc.parallelize(ldaResults.zipWithIndex)
+        .map(
+          {
+            case (topic, docIdx) => (getTopicDocumentArray(topic, topicCount), docIdx)
+          }
+        ).toDF("topicMix", "docIdx")
+
+      val docTopicDF = topicDocumentData.join(docIndexToDocument,
+        topicDocumentData("docIdx").equalTo(docIndexToDocument("docIdx")))
+        .drop(topicDocumentData("docIdx"))
+        .drop(docIndexToDocument("docIdx")).select(col("docName"), col("topicMix"))
+
+
+    val results = docTopicDF.rdd.map({case(a: Row) => (a.toSeq.toArray)})
+                    .map({case (a) => (a(0).asInstanceOf[String], a(1).asInstanceOf[Seq[Double]].toArray)})
+                    .collectAsMap().toMap
+    results
+    }
+
+  def getTopicDocumentArray(line: String, topicCount: Int) : Array[Double]  ={
+
+    val topics = line.split(" ").map(_.toDouble)
+    val topicsSum = topics.sum
+
+    val topicsProb = {
+      if (topicsSum > 0) {
+        topics.map(_ / topicsSum)
+      }
+      else {
+        Array.fill(topicCount)(0d)
+      }
+    }
+    topicsProb
   }
 
   def getWordToProbPerTopicMap(topicWordData: Array[String],
