@@ -5,7 +5,6 @@ var RestStore = require('../../../js/stores/RestStore');
 var assign = require('object-assign');
 
 var SRC_IP_FILTER = 'ip_dst';
-var DATA_ROWS_LIMIT = 1000;
 
 var DendrogramStore = assign(new RestStore(DnsConstants.API_VISUAL_DETAILS), {
   setDate: function (date)
@@ -23,7 +22,6 @@ var DendrogramStore = assign(new RestStore(DnsConstants.API_VISUAL_DETAILS), {
   setData: function (data)
   {
     this._data = data;
-    this._data.data = this._data.data.slice(0, DATA_ROWS_LIMIT);
 
     this.emitChangeData();
   }
