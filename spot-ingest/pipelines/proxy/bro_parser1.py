@@ -101,8 +101,6 @@ def save_to_hive(rdd,sqc,db,db_table,topic):
     else:
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
 
-
-
 def bro_parser(zk,topic,db,db_table,num_of_workers):
     
     app_name = topic
@@ -115,15 +113,8 @@ def bro_parser(zk,topic,db,db_table,num_of_workers):
 
     tp_stream = KafkaUtils.createStream(ssc, "10.219.32.102:2181", app_name, {topic: wrks}, keyDecoder=spot_decoder, valueDecoder=spot_decoder)
     
-    proxy_data = tp_stream.map(lambda row: row[1]).map(
-        lambda row: row.split("\n")).map(
-            lambda row: [row[0]]).map(
-                lambda row: row[0]).filter(
-                    lambda row: rex_date.match(row)).map(
-                        lambda row: row.strip("\n").strip("\r").replace("\t", " ").replace("  ", " ")).map(
-                            lambda row: split_log_entry(row)).map(
-                                lambda row: proxy_parser(row))
-
+    proxy_data = tp_stream.map(lambda row: row[1]).map(lambda row: row.split("\n")).map(lambda row: [row[0]]).map(lambda row: row[0]).filter(lambda row: rex_date.match(row)).map(lambda row: row.strip("\n").strip("\r").replace("\t", " ").replace("  ", " ")).map(lambda row: split_log_entry(row)).map(lambda row: proxy_parser(row))
+                                
     proxy_data.foreachRDD(lambda x: save_to_hive(x,sqc,db,db_table,topic))
 
     ssc.start();  
