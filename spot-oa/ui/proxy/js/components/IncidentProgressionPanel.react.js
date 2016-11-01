@@ -36,14 +36,14 @@ var IncidentProgressionPanel = React.createClass({
 
         this.d3Dispatch = d3.dispatch('scroll');
         this.d3Dispatch.on('scroll', this.onScroll);
-        this.svg = d3.select(this.getDOMNode()).selectAll('svg.canvas');
+        this.svgSel = d3.select(this.svg);
 
-        this.canvas = this.svg.select('g');
+        this.canvas = this.svgSel.select('g');
 
         if (!this.canvas.node()) {
-            this.canvas = this.svg.append('g').attr('transform', 'translate(0,' + LEGEND_HEIGHT + ')');
+            this.canvas = this.svgSel.append('g').attr('transform', 'translate(0,' + LEGEND_HEIGHT + ')');
 
-            this.svg.on('mousewheel', () => {
+            this.svgSel.on('mousewheel', () => {
                 this.d3Dispatch.scroll.call(this, d3.event);
 
                 d3.event.stopPropagation();
@@ -108,7 +108,7 @@ var IncidentProgressionPanel = React.createClass({
 
         // Make sure svg element takes all available space
         element = $(this.getDOMNode());
-        this.svg.style('width', element.width()).style('height', element.height());
+        this.svgSel.style('width', element.width()).style('height', element.height());
 
         layout = this._createLayout();
 
@@ -361,8 +361,8 @@ var IncidentProgressionPanel = React.createClass({
             return;
         }
 
-        this.svg.selectAll('.node,.link').classed('blur', false);
-        this.svg.selectAll('.active').classed('active', false);
+        this.svgSel.selectAll('.node,.link').classed('blur', false);
+        this.svgSel.selectAll('.active').classed('active', false);
     },
     onScroll(e) {
         let lastStart = this.ipWindow.start;

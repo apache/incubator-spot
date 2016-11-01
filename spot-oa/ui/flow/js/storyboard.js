@@ -75,9 +75,8 @@ React.render(
       <Panel title={SpotConstants.GLOBE_VIEW_PANEL} expandable container className="col-md-4 sb_globe_view">
           <MapView />
       </Panel>
-      <Panel title={SpotConstants.TIMELINE_PANEL} expandable className="col-md-4 sb_timeline" >
+      <Panel title={SpotConstants.TIMELINE_PANEL} expandable className="col-md-4 timeline" >
           <TimelinePanel />
-
       </Panel>
     </PanelRow>
   </div>,
