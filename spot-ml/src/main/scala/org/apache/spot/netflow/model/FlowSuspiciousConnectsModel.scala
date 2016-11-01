@@ -58,13 +58,17 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
 
+    /** A left outer join (below) takes rows from the left DF for which the join expression is not
+      * satisfied (for any entry in the right DF), and fills in 'null' values (for the additional columns).
+      */
     val dataWithSrcTopicMix = {
-      val joinedDF = inDF.join(ipToTopicMixDF, inDF(SourceIP) === ipToTopicMixDF("ip"))
+      val joinedDF = inDF.join(ipToTopicMixDF, inDF(SourceIP) === ipToTopicMixDF("ip"), "left_outer")
       val schemaWithSrcTopicMix = inDF.schema.fieldNames :+ "topicMix"
       val dataWithSrcIpProb: DataFrame = joinedDF.selectExpr(schemaWithSrcTopicMix: _*)
         .withColumnRenamed("topicMix", SrcIpTopicMix)
 
-      val joinedDF2 = dataWithSrcIpProb.join(ipToTopicMixDF, dataWithSrcIpProb(DestinationIP) === ipToTopicMixDF("ip"))
+      val joinedDF2 = dataWithSrcIpProb.join(ipToTopicMixDF,
+        dataWithSrcIpProb(DestinationIP) === ipToTopicMixDF("ip"), "left_outer")
       val schema = dataWithSrcIpProb.schema.fieldNames :+  "topicMix"
       joinedDF2.selectExpr(schema: _*).withColumnRenamed("topicMix", DstIpTopicMix)
     }
