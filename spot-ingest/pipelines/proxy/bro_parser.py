@@ -1,3 +1,4 @@
+import argparse
 import re
 import shlex
 
@@ -97,13 +98,13 @@ def save_to_hive(rdd,sqc,db,db_table,topic):
         sqc.setConf("hive.exec.dynamic.partition", "true")
         sqc.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
         hive_table = "{0}.{1}".format(db,db_table)
-        #df.write.saveAsTable(hive_table,format="parquet",mode="append",partitionBy=('y','m','d','h'))
+        df.write.saveAsTable(hive_table,format="parquet",mode="append",partitionBy=('y','m','d','h'))
     else:
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
 
 
 
-def bro_parser(zk,topic,db,db_table,num_of_workers):
+def bro_parse(zk,topic,db,db_table,num_of_workers):
     
     app_name = topic
     wrks = int(num_of_workers)
