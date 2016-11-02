@@ -188,7 +188,7 @@ object FlowSuspiciousConnectsModel {
 
     // simplify DNS log entries into "words"
 
-    val flowWordCreator = new FlowWordCreator(ibytCuts, ipktCuts, timeCuts)
+    val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts)
 
     val srcWordUDF = flowWordCreator.srcWordUDF
     val dstWordUDF = flowWordCreator.dstWordUDF
