@@ -47,7 +47,7 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                                   ipktCuts: Array[Double]) {
 
 
-  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame): DataFrame = {
+  def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame): DataFrame = {
 
 
     import sqlContext.implicits._
@@ -62,15 +62,16 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
       * satisfied (for any entry in the right DF), and fills in 'null' values (for the additional columns).
       */
     val dataWithSrcTopicMix = {
-      val joinedDF = inDF.join(ipToTopicMixDF, inDF(SourceIP) === ipToTopicMixDF("ip"), "left_outer")
-      val schemaWithSrcTopicMix = inDF.schema.fieldNames :+ "topicMix"
-      val dataWithSrcIpProb: DataFrame = joinedDF.selectExpr(schemaWithSrcTopicMix: _*)
+      val recordsWithSrcIPTopicMixes = flowRecords.join(ipToTopicMixDF,
+        flowRecords(SourceIP) === ipToTopicMixDF("ip"), "left_outer")
+      val schemaWithSrcTopicMix = flowRecords.schema.fieldNames :+ "topicMix"
+      val dataWithSrcIpProb: DataFrame = recordsWithSrcIPTopicMixes.selectExpr(schemaWithSrcTopicMix: _*)
         .withColumnRenamed("topicMix", SrcIpTopicMix)
 
-      val joinedDF2 = dataWithSrcIpProb.join(ipToTopicMixDF,
+      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(ipToTopicMixDF,
         dataWithSrcIpProb(DestinationIP) === ipToTopicMixDF("ip"), "left_outer")
       val schema = dataWithSrcIpProb.schema.fieldNames :+  "topicMix"
-      joinedDF2.selectExpr(schema: _*).withColumnRenamed("topicMix", DstIpTopicMix)
+        recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed("topicMix", DstIpTopicMix)
     }
 
 
