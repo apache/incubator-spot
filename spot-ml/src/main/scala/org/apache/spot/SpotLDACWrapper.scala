@@ -30,6 +30,7 @@ object SpotLDACWrapper {
 
   def runLDA(docWordCount: RDD[SpotLDACInput],
              modelFile: String,
+             hdfsModelFile: String,
              topicDocumentFile: String,
              topicWordFile: String,
              mpiPreparationCmd: String,
@@ -69,16 +70,24 @@ object SpotLDACWrapper {
       )
       .zipWithIndex.toDF("docName", "docIdx")
 
-    val model = modelDF.select(col("docWordCount"))
-      .rdd
-      .map(
-        x=>  x.toString().replaceAll("\\[","").replaceAll("\\]","")
-      ).collect
 
-    // Persist model.dat
-    val modelWriter = new PrintWriter(new File(modelFile))
-    model foreach (row => modelWriter.write("%s\n".format(row)))
-    modelWriter.close()
+
+//    val model = modelDF.select(col("docWordCount"))
+//      .rdd
+//      .map(
+//        x=>  x.toString().replaceAll("\\[","").replaceAll("\\]","")
+//      ).collect
+//
+//    // Persist model.dat
+//    val modelWriter = new PrintWriter(new File(modelFile))
+//    model foreach (row => modelWriter.write("%s\n".format(row)))
+//    modelWriter.close()
+
+    modelDF.rdd.map(_.mkString).saveAsTextFile(hdfsModelFile)
+
+    sys.process.Process(Seq("hadoop", "fs", "-getmerge", hdfsModelFile + "/part-*", modelFile)).!
+    sys.process.Process(Seq("hadoop", "fs", "-rm", "-r", "-skipTrash", hdfsModelFile)).!
+
 
     // Copy model.dat to each machinefile node
     val nodeList = nodes.replace("'","").split(",")
@@ -176,19 +185,23 @@ object SpotLDACWrapper {
       .groupByKey()
       .map(x => (x._1, x._2.mkString(" ")))
 
-
-
     val wordCountDF = wordIndexdocWordCount.toDF("docID","wordIDCount")
     val distinctDocDF = documentCount.toDF("docID","docCount")
 
+    distinctDocDF.show()
+
     val docWordCount = distinctDocDF.join(wordCountDF, wordCountDF("docID").equalTo(distinctDocDF("docID")))
                               .drop(wordCountDF("docID"))
+
+    docWordCount.show()
+
     def concatDocWordCount = {udf( (a: String, b: String) => a.concat(" ").concat(b))}
     val modelDF = docWordCount.withColumn("docWordCount",
               concatDocWordCount(
                   docWordCount("docCount"),
                   docWordCount("wordIDCount")))
                   .drop(col("docCount")).drop(col("wordIDCount"))
+    modelDF.show()
     modelDF.count()
     modelDF
   }

@@ -195,6 +195,7 @@ object DNSSuspiciousConnectsModel {
 
     val SpotLDACOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDACWrapper.runLDA(ipDstWordCounts,
       config.modelFile,
+      config.hdfsModelFile,
       config.topicDocumentFile,
       config.topicWordFile,
       config.mpiPreparationCmd,

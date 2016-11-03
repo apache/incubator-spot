@@ -120,6 +120,7 @@ object ProxySuspiciousConnectsModel {
 
     val SpotLDACOutput(documentResults, wordResults) = SpotLDACWrapper.runLDA(docWordCount,
       config.modelFile,
+      config.hdfsModelFile,
       config.topicDocumentFile,
       config.topicWordFile,
       config.mpiPreparationCmd,

@@ -209,6 +209,7 @@ object FlowSuspiciousConnectsModel {
 
     val SpotLDACOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDACWrapper.runLDA(ipWordCounts,
       config.modelFile,
+      config.hdfsModelFile,
       config.topicDocumentFile,
       config.topicWordFile,
       config.mpiPreparationCmd,
@@ -220,7 +221,11 @@ object FlowSuspiciousConnectsModel {
       config.localUser,
       config.analysis,
       config.nodes,
-      config.ldaPRGSeed)
+      config.ldaPRGSeed,
+      sparkContext,
+      sqlContext,
+      logger
+    )
 
 
     new FlowSuspiciousConnectsModel(topicCount,

@@ -73,7 +73,7 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
       "-1_43_7.0_2.0_6.0" -> 2,
       "-1_80_6.0_1.0_1.0" -> 3)
 
-    val modelDF: DataFrame = SpotLDACWrapper.createModel(documentWordData, wordDictionary, sparkContext, logger)
+    val modelDF: DataFrame = SpotLDACWrapper.createModel(documentWordData, wordDictionary, sparkContext, sqlContext, logger)
 
     val model = modelDF.select(col("docWordCount")).rdd
       .map(
