@@ -45,7 +45,7 @@ proxy_schema = StructType([
                                     StructField("h", StringType(), True)])
 
 def main():
-
+    
     # input Parameters
     parser = argparse.ArgumentParser(description="Bro Parser")
     parser.add_argument('-zk','--zookeeper',dest='zk',required=True,help='Zookeeper IP and port (i.e. 10.0.0.1:2181)',metavar='')
@@ -59,13 +59,13 @@ def main():
     bro_parse(args.zk,args.topic,args.db,args.db_table,args.num_of_workers)
 
 def spot_decoder(s):
-    
+
     if s is None:
         return None
     return s
 
 def split_log_entry(line):
-    
+
     lex = shlex.shlex(line)
     lex.quotes = '"'
     lex.whitespace_split = True
@@ -75,34 +75,38 @@ def split_log_entry(line):
 def proxy_parser(proxy_fields):
     
     proxy_parsed_data = []
-    # create full URI.
-    proxy_uri_path =  proxy_fields[17] if  len(proxy_fields[17]) > 1 else ""
-    proxy_uri_qry =  proxy_fields[18] if  len(proxy_fields[18]) > 1 else "" 
-    full_uri= "{0}{1}{2}".format(proxy_fields[15],proxy_uri_path,proxy_uri_qry)
-    date = proxy_fields[0].split('-')
-    year =  date[0]
-    month = date[1].zfill(2)
-    day = date[2].zfill(2)
-    hour = proxy_fields[1].split(":")[0].zfill(2)
-    # re-order fields. 
-    proxy_parsed_data = [proxy_fields[0],proxy_fields[1],proxy_fields[3],proxy_fields[15],proxy_fields[12],proxy_fields[20],proxy_fields[13],int(proxy_fields[2]),proxy_fields[4],
-    proxy_fields[5],proxy_fields[6],proxy_fields[7],proxy_fields[8],proxy_fields[9],proxy_fields[10],proxy_fields[11],proxy_fields[14],proxy_fields[16],proxy_fields[17],proxy_fields[18],
-    proxy_fields[19],proxy_fields[21],int(proxy_fields[22]),int(proxy_fields[23]),proxy_fields[24],proxy_fields[25],proxy_fields[26],full_uri,year,month,day,hour ]
-    
+
+    if len(proxy_fields) > 1:
+
+        # create full URI.
+        proxy_uri_path =  proxy_fields[17] if  len(proxy_fields[17]) > 1 else ""
+        proxy_uri_qry =  proxy_fields[18] if  len(proxy_fields[18]) > 1 else ""
+        full_uri= "{0}{1}{2}".format(proxy_fields[15],proxy_uri_path,proxy_uri_qry)
+        date = proxy_fields[0].split('-')
+        year =  date[0]
+        month = date[1].zfill(2)
+        day = date[2].zfill(2)
+        hour = proxy_fields[1].split(":")[0].zfill(2)
+        # re-order fields. 
+        proxy_parsed_data = [proxy_fields[0],proxy_fields[1],proxy_fields[3],proxy_fields[15],proxy_fields[12],proxy_fields[20],proxy_fields[13],int(proxy_fields[2]),proxy_fields[4],
+        proxy_fields[5],proxy_fields[6],proxy_fields[7],proxy_fields[8],proxy_fields[9],proxy_fields[10],proxy_fields[11],proxy_fields[14],proxy_fields[16],proxy_fields[17],proxy_fields[18],
+        proxy_fields[19],proxy_fields[21],int(proxy_fields[22]),int(proxy_fields[23]),proxy_fields[24],proxy_fields[25],proxy_fields[26],full_uri,year,month,day,hour ]
+
     return proxy_parsed_data
 
-def save_to_hive(rdd,sqc,db,db_table,topic):
-    
-    if not rdd.isEmpty():        
+
+def save_data(rdd,sqc,db,db_table,topic):
+
+    if not rdd.isEmpty():
+
         df = sqc.createDataFrame(rdd,proxy_schema)        
         sqc.setConf("hive.exec.dynamic.partition", "true")
         sqc.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
         hive_table = "{0}.{1}".format(db,db_table)
         df.write.saveAsTable(hive_table,format="parquet",mode="append",partitionBy=('y','m','d','h'))
+
     else:
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
-
-
 
 def bro_parse(zk,topic,db,db_table,num_of_workers):
     
@@ -114,20 +118,11 @@ def bro_parse(zk,topic,db,db_table,num_of_workers):
     ssc = StreamingContext(sc,1)
     sqc = HiveContext(sc)
 
-    tp_stream = KafkaUtils.createStream(ssc, "10.219.32.102:2181", app_name, {topic: wrks}, keyDecoder=spot_decoder, valueDecoder=spot_decoder)
-    
-    proxy_data = tp_stream.map(lambda row: row[1]).map(
-        lambda row: row.split("\n")).map(
-            lambda row: [row[0]]).map(
-                lambda row: row[0]).filter(
-                    lambda row: rex_date.match(row)).map(
-                        lambda row: row.strip("\n").strip("\r").replace("\t", " ").replace("  ", " ")).map(
-                            lambda row: split_log_entry(row)).map(
-                                lambda row: proxy_parser(row))
+    tp_stream = KafkaUtils.createStream(ssc, zk, app_name, {topic: wrks}, keyDecoder=spot_decoder, valueDecoder=spot_decoder)
 
-    proxy_data.foreachRDD(lambda x: save_to_hive(x,sqc,db,db_table,topic))
-
-    ssc.start();  
+    proxy_data = tp_stream.map(lambda row: row[1]).flatMap(lambda row: row.split("\n")).filter(lambda row: rex_date.match(row)).map(lambda row: row.strip("\n").strip("\r").replace("\t", " ").replace("  ", " ")).map(lambda row:  split_log_entry(row)).map(lambda row: proxy_parser(row))
+    saved_data = proxy_data.foreachRDD(lambda row: save_data(row,sqc,db,db_table,topic))
+    ssc.start();
     ssc.awaitTermination()
 
 
