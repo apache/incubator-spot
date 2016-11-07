@@ -25,6 +25,7 @@ class Worker(object):
         self._script_path = os.path.dirname(os.path.abspath(__file__))
         conf_file = "{0}/ingest_conf.json".format(os.path.dirname(os.path.dirname(self._script_path)))
         conf = json.loads(open(conf_file).read())
+        self._spark_conf  = conf["spark-streaming"]
         self._conf = conf["pipelines"][conf_type]
         self._processes = processes
 
@@ -34,21 +35,27 @@ class Worker(object):
 
         # parser
         parser = self._conf["parser"]
-        
 
+        #spark conf
+        diver_memory = self._spark_conf["driver_memory"]
+        num_exec = self._spark_conf["spark_exec"]
+        exec_memory = self._spark_conf["spark_executor_memory"]
+        exec_cores = self._spark_conf["spark_executor_cores"]
+        
+        jar_path = os.path.dirname(os.path.dirname(self._script_path))
         # spark job command.          
          spark_job_cmd = ("spark-submit --master yarn "
-                        "--driver-memory 2g "
-                        "--num-executors 20 "
-                        "--conf spark.executor.memory=10g "
-                        "--conf spark.executor.cores=2 "
-                        "--jars {0}/common/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar "
-                        "{1}/{2} "
-                        "-zk {3} "
-                        "-t {4} "
-                        "-db {5} "
-                        "-dt {6} "
-                        "-w {7}".format(os.path.dirname(os.path.dirname(self._script_path)),self._script_path,parser,self._kafka_consumer.ZookeperServer,self._kafka_consumer.Topic,self._db_name,"proxy",self._processes))
+                        "--driver-memory {0} "
+                        "--num-executors {1} "
+                        "--conf spark.executor.memory={2} "
+                        "--conf spark.executor.cores={3} "
+                        "--jars {4}/common/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar "
+                        "{5}/{6} "
+                        "-zk {7} "
+                        "-t {8} "
+                        "-db {9} "
+                        "-dt {10} "
+                        "-w {11}".format(diver_memory,num_exec,exec_memory,exec_cores,jar_path,self._script_path,parser,self._kafka_consumer.ZookeperServer,self._kafka_consumer.Topic,self._db_name,"proxy",self._processes))
 
         
         # start spark job.
