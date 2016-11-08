@@ -333,7 +333,7 @@ class OA(object):
             mm = date_array_2[1]
         
             # connection details query.
-            sp_query = ("SELECT treceived as tstart,sip as srcip,dip as dstip,sport as sport,dport as dport,proto as proto,flag as flags,stos as TOS,ibyt as bytes,ipkt as pkts,input as input, output as output,rip as rip from {0}.{1} where ((sip='{2}' AND dip='{3}') or (sip='{3}' AND dip='{2}')) AND y={8} AND m={4} AND d={5} AND h={6} AND trminute={7} order by tstart limit 100")
+            sp_query = ("SELECT treceived as tstart,sip as srcip,dip as dstip,sport as sport,dport as dport,proto as proto,flag as flags,stos as TOS,ibyt as ibytes,ipkt as ipkts,input as input, output as output,rip as rip, obyt as obytes, opkt as opkts from {0}.{1} where ((sip='{2}' AND dip='{3}') or (sip='{3}' AND dip='{2}')) AND y={8} AND m={4} AND d={5} AND h={6} AND trminute={7} order by tstart limit 100")
                  
             # sp query.
             sp_query = sp_query.format(self._db,self._table_name,sip,dip,mh,dy,hr,mm,yr)
