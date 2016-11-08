@@ -236,10 +236,10 @@ class OA(object):
         
         # read configuration.
         self._logger.info("Reading reputation configuration file: {0}".format(reputation_conf_file))
-        rep_conf = json.loads(open(reputation_conf_file).read())["gti"]
-
-        if os.path.isfile(rep_conf['refclient']):
-           
+        rep_conf = json.loads(open(reputation_conf_file).read())
+ 
+        if "gti" in rep_conf and os.path.isfile(rep_conf['gti']['refclient']):
+            rep_conf = rep_conf['gti']
             # initialize gti module.
             self._logger.info("Initializing GTI component")
             flow_gti = gti.Reputation(rep_conf,self._logger)
@@ -263,22 +263,23 @@ class OA(object):
             # getting reputation for dst IPs            
             dst_ips = [  conn[dst_ip_index] for conn in flow_scores_dst ]
             dst_rep_results = flow_gti.check(dst_ips)
-                       
+
             flow_scores_final = iter(self._flow_scores)
             next(flow_scores_final)
-            
+
             self._flow_scores = []
             flow_scores = [conn + [src_rep_results[conn[src_ip_index]]] + [dst_rep_results[conn[dst_ip_index]]]  for conn in  flow_scores_final ]
             self._flow_scores = flow_scores           
-           
+            
         else:
             # add values to gtiSrcRep and gtiDstRep.
             flow_scores = iter(self._flow_scores)
             next(flow_scores)
 
             self._flow_scores = [ conn + ["",""] for conn in flow_scores ]   
-            self._logger.info("WARNING: IP reputation was not added. No refclient configured".format(reputation_conf_file))  
-    
+            self._logger.info("WARNING: IP reputation was not added. No refclient configured")  
+
+
         self._flow_scores.insert(0,flow_headers_rep)       
 
     def _get_oa_details(self):
