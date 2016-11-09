@@ -27,7 +27,7 @@ var GridPanelMixin = {
         </div>
       );
     }
-    else if (this.state.data.length===0)
+    else if (!this.state.data || this.state.data.length===0)
     {
         content = (
             <div className="text-center">
