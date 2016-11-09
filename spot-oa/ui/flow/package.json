@@ -15,12 +15,15 @@
   },
   "browserify": {
     "transform": [
-      ["babelify", {"presets": ["es2015", "react"]}],
+      "babelify",
       "browserify-shim"
     ]
   },
   "browserify-shim": {
     "jquery": "global:$",
-    "d3": "global:d3"
+    "d3": "global:d3",
+    "react": "global:React",
+    "react-dom": "global:ReactDOM",
+    "react-dom/server": "global:ReactDOMServer"
   }
 }

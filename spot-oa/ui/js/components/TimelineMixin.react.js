@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const d3 = require('d3');
 const React = require('react');
+const ReactDOM = require('react-dom');
 
 const colorScale = d3.scale.category10();
 
@@ -27,7 +28,7 @@ const locale = d3.locale({
 
 const TimelineMixin = {
     buildChart() {
-        this.canvas = d3.select(this.getDOMNode()).select('*').datum(this.state.data);
+        this.canvas = d3.select(ReactDOM.findDOMNode(this)).select('*').datum(this.state.data);
 
         const dataDate = this.state.date;
         const startTime = Date.parse(dataDate + " 00:00");
@@ -62,11 +63,15 @@ const TimelineMixin = {
         }
     },
     draw() {
+        const rootNode = $(ReactDOM.findDOMNode(this));
         // Get current viewport width
-        this.eventDropsChart.width($(this.getDOMNode()).width())
+        this.eventDropsChart.width(rootNode.width());
 
         // Create svg element and draw eventDropsChart
         this.canvas.call(this.eventDropsChart);
+        // TODO: Find a better way to re-render childrens when panel toggles
+        // Make sure we don't listen twice for the same event
+        $('svg', rootNode).off('parentUpdate').on('parentUpdate', this.draw);
 
         // Add a tooltip
         if (this.getTooltipContent) {
@@ -81,7 +86,7 @@ const TimelineMixin = {
             has leave an event
         */
         const tooltipRef = this.tooltip;
-        d3.select(this.getDOMNode()).select('rect.zoom')
+        d3.select(ReactDOM.findDOMNode(this)).select('rect.zoom')
             .on('mousemove.timeline', function () {
                 const zoomRect = d3.select(this);
 

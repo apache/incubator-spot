@@ -1,13 +1,14 @@
 require("babel-polyfill");
-var React = require('react');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var DateInput = require('../../js/components/DateInput.react');
-var SpotActions = require('../../js/actions/SpotActions');
-var SpotConstants = require('../../js/constants/SpotConstants');
-var SpotUtils = require('../../js/utils/SpotUtils');
-var StoryboardActions = require('../../js/actions/StoryboardActions');
+const DateInput = require('../../js/components/DateInput.react');
+const SpotActions = require('../../js/actions/SpotActions');
+const SpotConstants = require('../../js/constants/SpotConstants');
+const SpotUtils = require('../../js/utils/SpotUtils');
+const StoryboardActions = require('../../js/actions/StoryboardActions');
 
-React.render(
+ReactDOM.render(
   (
     <form className="form-inline">
       <div className="form-group">
@@ -24,23 +25,23 @@ React.render(
   document.getElementById('nav_form')
 );
 
-var PanelRow = require('../../js/components/PanelRow.react');
-var Panel = require('../../js/components/Panel.react');
+const PanelRow = require('../../js/components/PanelRow.react');
+const Panel = require('../../js/components/Panel.react');
 
-var ExecutiveThreatBriefingPanel = require('../../js/components/ExecutiveThreatBriefingPanel.react');
-var IncidentProgressionPanel = require('./components/IncidentProgressionPanel.react');
-var TimelinePanel = require('./components/TimelinePanel.react');
+const ExecutiveThreatBriefingPanel = require('../../js/components/ExecutiveThreatBriefingPanel.react');
+const IncidentProgressionPanel = require('./components/IncidentProgressionPanel.react');
+const TimelinePanel = require('./components/TimelinePanel.react');
 
-var CommentsStore = require('./stores/CommentsStore');
+const CommentsStore = require('./stores/CommentsStore');
 
-React.render(
+ReactDOM.render(
   <div id="spot-content">
     <PanelRow maximized>
         <Panel className="col-md-4 spot-sidebar" title={SpotConstants.COMMENTS_PANEL} expandable>
             <ExecutiveThreatBriefingPanel store={CommentsStore} />
         </Panel>
         <Panel className="col-md-8 spot-stage" title={SpotConstants.INCIDENT_PANEL} container expandable>
-            <IncidentProgressionPanel className="spot-incident-progression"/>
+            <IncidentProgressionPanel className="spot-incident-progression" />
         </Panel>
         <Panel className="col-md-4 spot-sidebar timeline" title={SpotConstants.TIMELINE_PANEL} expandable>
             <TimelinePanel />
@@ -51,9 +52,7 @@ React.render(
 );
 
 // Set search criteria
-var date;
-
-date = SpotUtils.getCurrentDate();
+const date = SpotUtils.getCurrentDate();
 
 SpotActions.setDate(date);
 

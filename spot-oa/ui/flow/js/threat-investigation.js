@@ -1,11 +1,12 @@
-var React = require('react');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var SpotActions = require('../../js/actions/SpotActions');
-var SpotUtils = require('../../js/utils/SpotUtils');
+const SpotActions = require('../../js/actions/SpotActions');
+const SpotUtils = require('../../js/utils/SpotUtils');
 
-var DateInput = require('../../js/components/DateInput.react');
+const DateInput = require('../../js/components/DateInput.react');
 
-React.render(
+ReactDOM.render(
     (
       <form className="form-inline">
         <div className="form-group">
@@ -28,7 +29,7 @@ var IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.rea
 
 var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure('');
 
-React.render(
+ReactDOM.render(
   <div id="spot-content">
     <PanelRow maximized>
       <Panel title={ipynbClosure.getTitle()} container className="col-md-12" extraButtons={ipynbClosure.getButtons}>

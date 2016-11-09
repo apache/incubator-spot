@@ -1,13 +1,14 @@
-var React = require('react');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var SpotConstants = require('../../js/constants/SpotConstants');
-var SpotActions = require('../../js/actions/SpotActions');
-var EdInActions = require('../../js/actions/EdInActions');
-var SpotUtils = require('../../js/utils/SpotUtils');
+const SpotConstants = require('../../js/constants/SpotConstants');
+const SpotActions = require('../../js/actions/SpotActions');
+const EdInActions = require('../../js/actions/EdInActions');
+const SpotUtils = require('../../js/utils/SpotUtils');
 
 // Build and Render Toolbar
-var FilterInput = require('./components/FilterInput.react');
-var DateInput = require('../../js/components/DateInput.react');
+const FilterInput = require('./components/FilterInput.react');
+const DateInput = require('../../js/components/DateInput.react');
 
 function resetFilterAndReload()
 {
@@ -15,7 +16,7 @@ function resetFilterAndReload()
   EdInActions.reloadSuspicious();
 };
 
-React.render(
+ReactDOM.render(
   (
     <form className="form-inline">
       <div className="form-group">
@@ -46,17 +47,17 @@ React.render(
 );
 
 // Build and Render Edge Investigation's panels
-var PanelRow = require('../../js/components/PanelRow.react');
-var Panel = require('../../js/components/Panel.react');
+const PanelRow = require('../../js/components/PanelRow.react');
+const Panel = require('../../js/components/Panel.react');
 
-var SuspiciousPanel = require('./components/SuspiciousPanel.react');
-var NetworkViewPanel = require('./components/NetworkViewPanel.react');
-var IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
-var DetailsPanel = require('./components/DetailsPanel.react');
+const SuspiciousPanel = require('./components/SuspiciousPanel.react');
+const NetworkViewPanel = require('./components/NetworkViewPanel.react');
+const IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
+const DetailsPanel = require('./components/DetailsPanel.react');
 
-var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure(SpotConstants.NOTEBOOK_PANEL);
+const ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure(SpotConstants.NOTEBOOK_PANEL);
 
-React.render(
+ReactDOM.render(
   <div id="spot-content">
     <PanelRow>
       <Panel title={SpotConstants.SUSPICIOUS_PANEL} expandable reloadable onReload={EdInActions.reloadSuspicious}>
@@ -78,7 +79,7 @@ React.render(
   document.getElementById('spot-content-wrapper')
 );
 
-var initial_filter = SpotUtils.getCurrentFilter();
+const initial_filter = SpotUtils.getCurrentFilter();
 
 // Set search criteria
 SpotActions.setDate(SpotUtils.getCurrentDate());

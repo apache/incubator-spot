@@ -10,12 +10,10 @@ const DetailsDendrogramPanel = React.createClass({
     componentDidMount: function()
     {
         DendrogramStore.addChangeDataListener(this._onChange);
-        window.addEventListener('resize', this.buildChart);
     },
     componentWillUnmount: function ()
     {
         DendrogramStore.removeChangeDataListener(this._onChange);
-        window.removeEventListener('resize', this.buildChart);
     },
     _onChange: function ()
     {

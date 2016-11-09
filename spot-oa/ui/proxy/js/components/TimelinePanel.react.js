@@ -10,12 +10,10 @@ const TimelineChart = React.createClass({
     componentDidMount: function ()
     {
         TimelineStore.addChangeDataListener(this._onChange);
-        window.addEventListener('resize', this.buildChart);
     },
     componentWillUnmount: function ()
     {
         TimelineStore.removeChangeDataListener(this._onChange);
-        window.addEventListener('resize', this.buildChart);
     },
     _onChange() {
         const storeData = TimelineStore.getData();

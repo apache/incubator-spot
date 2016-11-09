@@ -1,14 +1,14 @@
-var React = require('react');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var SpotConstants = require('../../js/constants/SpotConstants');
-var SpotActions = require('../../js/actions/SpotActions');
-var EdInActions = require('../../js/actions/EdInActions');
-var StoryboardActions = require('../../js/actions/StoryboardActions');
-var SpotUtils = require('../../js/utils/SpotUtils');
+const SpotConstants = require('../../js/constants/SpotConstants');
+const SpotActions = require('../../js/actions/SpotActions');
+const EdInActions = require('../../js/actions/EdInActions');
+const StoryboardActions = require('../../js/actions/StoryboardActions');
+const SpotUtils = require('../../js/utils/SpotUtils');
 
 // Build and Render Toolbar
-var FilterInput = require('./components/FilterInput.react');
-var DateInput = require('../../js/components/DateInput.react');
+const DateInput = require('../../js/components/DateInput.react');
 
 function resetFilterAndReload()
 {
@@ -16,28 +16,15 @@ function resetFilterAndReload()
   StoryboardActions.reloadComments();
 };
 
-React.render(
+ReactDOM.render(
   (
     <form className="form-inline">
-      <div className="form-group">
-        <label htmlFor="ip_filter" className="control-label">IP:</label>
-        <div className="input-group input-group-xs">
-          <FilterInput id="ip_filter" />
-          <div className="input-group-btn">
-            <button className="btn btn-primary" type="button" id="btn_searchIp" title="Enter an IP Address and click the search button to filter the results." onClick={StoryboardActions.reloadComments}>
-              <span className="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </button>
-          </div>
-        </div>
-      </div>
       <div className="form-group">
         <label htmlFor="dataDatePicker" className="control-label">Data Date:</label>
         <div className="input-group input-group-xs">
           <DateInput id="dataDatePicker" onChange={resetFilterAndReload} />
-          <div className="input-group-btn">
-            <button className="btn btn-default" type="button" title="Reset filter" id="reset_ip_filter" onClick={resetFilterAndReload}>
-              <span className="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-            </button>
+          <div className="input-group-addon">
+            <span className="glyphicon glyphicon-calendar" aria-hidden="true"></span>
           </div>
         </div>
       </div>
@@ -47,18 +34,18 @@ React.render(
 );
 
 // Build and Render Edge Investigation's panels
-var PanelRow = require('../../js/components/PanelRow.react');
-var Panel = require('../../js/components/Panel.react');
+const PanelRow = require('../../js/components/PanelRow.react');
+const Panel = require('../../js/components/Panel.react');
 
-var ExecutiveThreatBriefingPanel = require('../../js/components/ExecutiveThreatBriefingPanel.react');
-var IncidentProgressionPanel = require('./components/IncidentProgressionPanel.react');
-var ImpactAnalysis = require('./components/ImpactAnalysisPanel.react');
-var MapView = require('./components/GlobeViewPanel.react');
-var TimelinePanel = require('./components/TimelinePanel.react');
+const ExecutiveThreatBriefingPanel = require('../../js/components/ExecutiveThreatBriefingPanel.react');
+const IncidentProgressionPanel = require('./components/IncidentProgressionPanel.react');
+const ImpactAnalysis = require('./components/ImpactAnalysisPanel.react');
+const MapView = require('./components/GlobeViewPanel.react');
+const TimelinePanel = require('./components/TimelinePanel.react');
 
-var CommentsStore = require('./stores/CommentsStore');
+const CommentsStore = require('./stores/CommentsStore');
 
-React.render(
+ReactDOM.render(
   <div id="spot-content" className="storyboard">
   <PanelRow>
       <Panel title={SpotConstants.COMMENTS_PANEL} expandable className="col-md-6" >
@@ -80,11 +67,11 @@ React.render(
       </Panel>
     </PanelRow>
   </div>,
-document.getElementById('spot-content-wrapper')
+  document.getElementById('spot-content-wrapper')
 );
 
 
-var initial_filter = SpotUtils.getCurrentFilter();
+const initial_filter = SpotUtils.getCurrentFilter();
 
 // Set search criteria
 SpotActions.setDate(SpotUtils.getCurrentDate());

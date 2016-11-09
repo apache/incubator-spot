@@ -10,12 +10,10 @@ const IncidentProgressionPanel = React.createClass({
     componentDidMount: function ()
     {
         IncidentProgressionStore.addChangeDataListener(this._onChange);
-        window.addEventListener('resize', this.buildChart);
     },
     componentWillUnmount: function ()
     {
         IncidentProgressionStore.removeChangeDataListener(this._onChange);
-        window.removeEventListener('resize', this.buildChart);
     },
     _onChange: function ()
     {

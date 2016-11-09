@@ -1,6 +1,7 @@
-var $ = require('jquery');
-var d3 = require('d3');
-var React = require('react');
+const $ = require('jquery');
+const d3 = require('d3');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
 var DateUtils = require('../../../js/utils/DateUtils');
 var InSumActions = require('../actions/InSumActions');
@@ -9,7 +10,7 @@ var IngestSummaryStore = require('../stores/IngestSummaryStore');
 function initialDraw() {
   var rootNode, format, x, y, xAxis, yAxis, area, svg, rect, total, minDate, maxDate, maxFlows, numberFormat;
 
-  rootNode = d3.select(this.getDOMNode());
+  rootNode = d3.select(ReactDOM.findDOMNode(this));
 
   // graph dimensions
   var m = [100, 50, 50, 80], // Margin

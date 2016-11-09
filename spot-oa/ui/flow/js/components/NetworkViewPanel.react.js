@@ -100,14 +100,12 @@ const NetworkViewPanel = React.createClass({
       SuspiciousStore.addThreatHighlightListener(this._onHighlight);
       SuspiciousStore.addThreatUnhighlightListener(this._onUnhighlight);
       SuspiciousStore.addThreatSelectListener(this._onSelect);
-      window.addEventListener('resize', this.buildChart);
     },
     componentWillUmount() {
       SuspiciousStore.removeChangeDataListener(this._onChange);
       SuspiciousStore.removeThreatHighlightListener(this._onHighlight);
       SuspiciousStore.removeThreatUnhighlightListener(this._onUnhighlight);
       SuspiciousStore.removeThreatSelectListener(this._onSelect);
-      window.removeEventListener('resize', this.buildChart);
     },
     // render is inherited from Mixins
     _onChange() {
