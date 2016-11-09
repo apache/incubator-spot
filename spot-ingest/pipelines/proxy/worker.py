@@ -37,7 +37,7 @@ class Worker(object):
         
 
         # spark job command.          
-         spark_job_cmd = ("spark-submit --master yarn "
+        spark_job_cmd = ("spark-submit --master yarn "
                         "--driver-memory 2g "
                         "--num-executors 20 "
                         "--conf spark.executor.memory=10g "
