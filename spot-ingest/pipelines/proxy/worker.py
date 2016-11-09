@@ -36,14 +36,18 @@ class Worker(object):
         parser = self._conf["parser"]
         
 
-        # spark job command.
+        # spark job command.          
         spark_job_cmd = ("spark-submit --master yarn "
+                        "--driver-memory 2g "
+                        "--num-executors 20 "
+                        "--conf spark.executor.memory=10g "
+                        "--conf spark.executor.cores=2 "
                         "--jars {0}/common/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar "
-                        "{1}/{2} " 
-                        "-zk {3} " 
+                        "{1}/{2} "
+                        "-zk {3} "
                         "-t {4} "
                         "-db {5} "
-                        "-dt {6} " 
+                        "-dt {6} "
                         "-w {7}".format(os.path.dirname(os.path.dirname(self._script_path)),self._script_path,parser,self._kafka_consumer.ZookeperServer,self._kafka_consumer.Topic,self._db_name,"proxy",self._processes))
 
         

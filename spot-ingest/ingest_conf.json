@@ -1,6 +1,8 @@
 {
     "dbname" : "database name",
     "hdfs_app_path" : "hdfs application path",
+    "collector_processes":5,
+    "ingestion_interval":1,
     "kafka":{
             "kafka_server":"kafka ip",
             "kafka_port":"kafka port",
@@ -11,22 +13,24 @@
     "pipelines":{
         "flow":{
             "type":"flow",
-            "collector_path":"/path_to_flow_collector",
+            "collector_path":"/collector_path/flow",
             "local_staging":"/tmp/",
+            "supported_files":["nfcapd."],
             "process_opt":""
         },
         "dns":{
             "type":"dns",
-            "collector_path":"/path_to_dns_collector",
-            "local_staging":"/tmp/",
+            "collector_path":"/collector_path/dns",
+            "local_staging":"/collector_path/dns/tmp",
+            "supported_files":[".pcap"],
             "pkt_num":"650000",
-            "pcap_split_staging":"/tmp",    
+            "pcap_split_staging":"/collector_path/dns/dns_staging",    
             "process_opt":"-E separator=, -E header=y -E occurrence=f -T fields -e frame.time -e frame.time_epoch -e frame.len -e ip.src -e ip.dst -e dns.resp.name -e dns.resp.type -e dns.resp.class -e dns.flags.rcode -e dns.a 'dns.flags.response == 1'"
         },   
         "proxy":{
             "type":"proxy",
-            "collector_path":"/path_to_proxy_collecor",
-            "supported_files":["log"],
+            "collector_path":"/collector_path/proxy",
+            "supported_files":[".log"],
             "parser":"bro_parser.py"
         }
     }

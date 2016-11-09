@@ -6,7 +6,9 @@ import os
 import sys
 import copy
 from common.utils import Util, NewFileEvent
-from multiprocessing import Process
+from common.kafka_client import KafkaTopic
+from multiprocessing import Pool
+from common.file_collector import FileWatcher
 import time
 
 class Collector(object):
@@ -20,7 +22,7 @@ class Collector(object):
         # getting parameters.
         self._logger = logging.getLogger('SPOT.INGEST.PROXY')
         self._hdfs_app_path = hdfs_app_path
-        self._kafka_topic = kafka_topic
+        self._kafka_topic= kafka_topic
 
         # get script path
         self._script_path = os.path.dirname(os.path.abspath(__file__))
@@ -34,60 +36,67 @@ class Collector(object):
         # get collector path.
         self._collector_path = self._conf['collector_path']
 
+        #get supported files
+        self._supported_files = self._conf['supported_files']
+
         # create collector watcher
-        self._watcher =  Util.create_watcher(self._collector_path,NewFileEvent(self),self._logger)
+        self._watcher = FileWatcher(self._collector_path,self._supported_files)
+
+        # Multiprocessing. 
+        self._processes = conf["collector_processes"]
+        self._ingestion_interval = conf["ingestion_interval"]
+        self._pool = Pool(processes=self._processes)
 
     def start(self):
 
-        self._logger.info("Starting PROXY ingest")
-        self._logger.info("Watching: {0}".format(self._collector_path))
-        self._watcher.start()
-
+        self._logger.info("Starting PROXY collector")
+        self._watcher.start()   
+    
         try:
             while True:
-                time.sleep(1)
+                #self._ingest_files()
+                self._ingest_files_pool()              
+                time.sleep(self._ingestion_interval)
         except KeyboardInterrupt:
-            self._logger.info("Stopping PROXY collector...")
+            self._logger.info("Stopping Proxy collector...")  
+            Util.remove_kafka_topic(self._kafka_topic.Zookeeper,self._kafka_topic.Topic,self._logger)          
             self._watcher.stop()
-            self._watcher.join()
+            self._pool.terminate()
+            self._pool.close()            
+            self._pool.join()
+             
 
-            # remove kafka topic
-            Util.remove_kafka_topic(self._kafka_topic.Zookeeper,self._kafka_topic.Topic,self._logger)
-     
-
-
-    def new_file_detected(self,file):
-
-        self._logger.info("-------------------------------------- New File detected --------------------------------------")
-        self._logger.info("File: {0}".format(file))
-
-        # get supported file extensions from configuration file.
-        supported_files = self._conf['supported_files']
-        if file.endswith(tuple(supported_files)):
-
-            self._logger.info("Sending new file to kafka; topic: {0}".format(self._kafka_topic.Topic))            
-            p = Process(target=self._ingest_file,args=(file,))
-            p.start()
-            p.join()
-
-        else:
-            self._logger.warning("File extension not supported: {0}".format(file))
-            self._logger.warning("File won't be ingested")
+    def _ingest_files_pool(self):
+            
+       
+        if self._watcher.HasFiles:
+            
+            for x in range(0,self._processes):
+                file = self._watcher.GetNextFile()
+                resutl = self._pool.apply_async(ingest_file,args=(file,self._message_size,self._kafka_topic.Topic,self._kafka_topic.BootstrapServers))
+                #resutl.get() # to debug add try and catch.
+                if  not self._watcher.HasFiles: break    
+        return True
 
 
-    def _ingest_file(self,file):
-
+def ingest_file(file,message_size,topic,kafka_servers):
+    
+    logger = logging.getLogger('SPOT.INGEST.PROXY.{0}'.format(os.getpid()))
+    try:        
         message = ""
+        logger.info("Ingesting file: {0} process:{1}".format(file,os.getpid())) 
         with open(file,"rb") as f:
-
             for line in f:
                 message += line
-                if len(message) > self._message_size:
-                    self._kafka_topic.send_message(message,self._kafka_topic.Partition)
+                if len(message) > message_size:
+                    KafkaTopic.SendMessage(message,kafka_servers,topic,0)
                     message = ""
-            # send the last package.
-            self._kafka_topic.send_message(message,self._kafka_topic.Partition)
+            #send the last package.        
+            KafkaTopic.SendMessage(message,kafka_servers,topic,0)            
         rm_file = "rm {0}".format(file)
-        Util.execute_cmd(rm_file,self._logger)
-        self._logger.info("File {0} has been successfully sent to Kafka Topic:{1}".format(file,self._kafka_topic.Topic))
+        Util.execute_cmd(rm_file,logger)
+        logger.info("File {0} has been successfully sent to Kafka Topic: {1}".format(file,topic))
 
+    except Exception as err:        
+        logger.error("There was a problem, please check the following error message:{0}".format(err.message))
+        logger.error("Exception: {0}".format(err))

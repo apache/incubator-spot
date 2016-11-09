@@ -6,7 +6,10 @@ import subprocess
 import json
 import logging
 from multiprocessing import Process
-from common.utils import Util, NewFileEvent
+from common.utils import Util
+from common.file_collector import FileWatcher
+from multiprocessing import Pool
+from common.kafka_client import KafkaTopic
 
 class Collector(object):
 
@@ -37,45 +40,52 @@ class Collector(object):
         # set configuration.
         self._pkt_num = self._conf['pkt_num']
         self._pcap_split_staging = self._conf['pcap_split_staging']
+        self._supported_files = self._conf['supported_files']  
 
-        # initialize message broker client.
-        self.kafka_topic = kafka_topic
+        # create collector watcher        
+        self._watcher = FileWatcher(self._collector_path,self._supported_files)
 
-        # create collector watcher
-        self._watcher =  Util.create_watcher(self._collector_path,NewFileEvent(self),self._logger)
+        # Multiprocessing. 
+        self._processes = conf["collector_processes"]
+        self._ingestion_interval = conf["ingestion_interval"]
+        self._pool = Pool(processes=self._processes)
 
     def start(self):
 
-        self._logger.info("Starting DNS ingest")
-        self._logger.info("Watching: {0}".format(self._collector_path))
+        self._logger.info("Starting DNS ingest")    
         self._watcher.start()
 
         try:
             while True:
-                time.sleep(1)
+                self._ingest_files_pool()              
+                time.sleep(self._ingestion_interval)
+
         except KeyboardInterrupt:
-            self._logger.info("Stopping DNS collector...")
+            self._logger.info("Stopping DNS collector...")  
+            Util.remove_kafka_topic(self._kafka_topic.Zookeeper,self._kafka_topic.Topic,self._logger)          
             self._watcher.stop()
-            self._watcher.join()
-
-            # remove kafka topic
-            Util.remove_kafka_topic(self._kafka_topic.Zookeeper,self._kafka_topic.Topic,self._logger)
-
-    def new_file_detected(self,file):
-
-        if not  ".current" in file and file.endswith(".pcap"):
-            self._logger.info("-------------------------------------- New File detected --------------------------------------")
-            self._logger.info("File: {0}".format(file))
+            self._pool.terminate()
+            self._pool.close()            
+            self._pool.join()
+            SystemExit("Ingest finished...")
 
 
-            # create new process for the new file.
-            partition = self._kafka_topic.Partition
-            p = Process(target=self._ingest_file, args=(file,partition,))
-            p.start()
-            p.join()
+    def _ingest_files_pool(self):            
+       
+        if self._watcher.HasFiles:
+            
+            for x in range(0,self._processes):
+                file = self._watcher.GetNextFile()
+                resutl = self._pool.apply_async(ingest_file,args=(file,self._pkt_num,self._pcap_split_staging,self._kafka_topic.Partition,self._hdfs_root_path ,self._kafka_topic.Topic,self._kafka_topic.BootstrapServers,))
+                #resutl.get() # to debug add try and catch.
+                if  not self._watcher.HasFiles: break    
+        return True
 
-    def _ingest_file(self,file,partition):
+def ingest_file(file,pkt_num,pcap_split_staging, partition,hdfs_root_path,topic,kafka_servers):
 
+    logger = logging.getLogger('SPOT.INGEST.FLOW.{0}'.format(os.getpid()))
+    
+    try:
         # get file name and date.
         org_file = file
         file_name_parts = file.split('/')
@@ -83,11 +93,11 @@ class Collector(object):
 
         # split file.
         name = file_name.split('.')[0]
-        split_cmd="editcap -c {0} {1} {2}/{3}_spot.pcap".format(self._pkt_num,file,self._pcap_split_staging,name)
-        self._logger.info("Splitting file: {0}".format(split_cmd))
-        Util.execute_cmd(split_cmd,self._logger)
+        split_cmd="editcap -c {0} {1} {2}/{3}_spot.pcap".format(pkt_num,file,pcap_split_staging,name)
+        logger.info("Splitting file: {0}".format(split_cmd))
+        Util.execute_cmd(split_cmd,logger)
 
-        for currdir,subdir,files in os.walk(self._pcap_split_staging):
+        for currdir,subdir,files in os.walk(pcap_split_staging):
             for file in files:
                 if file.endswith(".pcap") and "{0}_spot".format(name) in file:
 
@@ -97,22 +107,27 @@ class Collector(object):
                         pcap_date_path = file_date[-14:-6]
 
                         # hdfs path with timestamp.
-                        hdfs_path = "{0}/binary/{1}/{2}".format(self._hdfs_root_path,pcap_date_path,pcap_hour)
+                        hdfs_path = "{0}/binary/{1}/{2}".format(hdfs_root_path,pcap_date_path,pcap_hour)
 
- 			            # create hdfs path.
-                        Util.creat_hdfs_folder(hdfs_path,self._logger)
+                        # create hdfs path.
+                        Util.creat_hdfs_folder(hdfs_path,logger)
 
-  			            # load file to hdfs.
+                        # load file to hdfs.
                         hadoop_pcap_file = "{0}/{1}".format(hdfs_path,file)
-                        Util.load_to_hdfs(os.path.join(currdir,file),hadoop_pcap_file,self._logger)
+                        Util.load_to_hdfs(os.path.join(currdir,file),hadoop_pcap_file,logger)
 
                         # create event for workers to process the file.
-                        self._logger.info( "Sending split file to worker number: {0}".format(partition))
-                        self._kafka_topic.send_message(hadoop_pcap_file,partition)
-                        self._logger.info("File {0} has been successfully sent to Kafka Topic to: {1}".format(file,self._kafka_topic.Topic))
+                        logger.info( "Sending split file to worker number: {0}".format(partition))
+                        KafkaTopic.SendMessage(hadoop_pcap_file,kafka_servers,topic,partition)
+                        logger.info("File {0} has been successfully sent to Kafka Topic to: {1}".format(file,topic))
 
 
-        self._logger.info("Removing file: {0}".format(org_file))
+        logger.info("Removing file: {0}".format(org_file))
         rm_big_file = "rm {0}".format(org_file)
-        Util.execute_cmd(rm_big_file,self._logger)
+        Util.execute_cmd(rm_big_file,logger)
+    
+    except Exception as err:
+        
+        logger.error("There was a problem, please check the following error message:{0}".format(err.message))
+        logger.error("Exception: {0}".format(err))
 
