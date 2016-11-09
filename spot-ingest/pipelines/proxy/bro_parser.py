@@ -115,7 +115,7 @@ def bro_parse(zk,topic,db,db_table,num_of_workers):
 
     # create spark context
     sc = SparkContext(appName=app_name)
-    ssc = StreamingContext(sc,1)
+    ssc = StreamingContext(sc,300)
     sqc = HiveContext(sc)
 
     tp_stream = KafkaUtils.createStream(ssc, zk, app_name, {topic: wrks}, keyDecoder=spot_decoder, valueDecoder=spot_decoder)
