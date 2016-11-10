@@ -15,5 +15,4 @@ class Engine(object):
         else:
             hive_cmd = "hive -S -e \"{0} {1}\"".format(hive_config,query)
         
-        print hive_cmd
         check_output(hive_cmd,shell=True)
