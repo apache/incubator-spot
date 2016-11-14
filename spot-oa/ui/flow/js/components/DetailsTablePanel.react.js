@@ -6,9 +6,8 @@ var DetailsStore = require('../stores/DetailsStore');
 var DetailsTablePanel = React.createClass({
   mixins: [GridPanelMixin],
   emptySetMessage: 'Please select one row from Suspicious Connects',
-  getInitialState: function ()
-  {
-    return DetailsStore.getData();
+  getInitialState: function () {
+      return {iterator: DetailsStore.ITERATOR};
   },
   componentDidMount: function ()
   {
@@ -18,8 +17,6 @@ var DetailsTablePanel = React.createClass({
   {
     DetailsStore.removeChangeDataListener(this._onChange);
   },
-  // Hidden cells
-  _render_rip_cell: false,
   // Event handlers
   _onChange: function ()
   {
