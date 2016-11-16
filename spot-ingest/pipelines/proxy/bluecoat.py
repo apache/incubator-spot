@@ -47,7 +47,7 @@ proxy_schema = StructType([
 def main():
     
     # input Parameters
-    parser = argparse.ArgumentParser(description="Bro Parser")
+    parser = argparse.ArgumentParser(description="Bluecoat Parser")
     parser.add_argument('-zk','--zookeeper',dest='zk',required=True,help='Zookeeper IP and port (i.e. 10.0.0.1:2181)',metavar='')
     parser.add_argument('-t','--topic',dest='topic',required=True,help='Topic to listen for Spark Streaming',metavar='')
     parser.add_argument('-db','--database',dest='db',required=True,help='Hive database whete the data will be ingested',metavar='')
@@ -57,7 +57,7 @@ def main():
     args = parser.parse_args()
 
     # start collector based on data source type.
-    bro_parse(args.zk,args.topic,args.db,args.db_table,args.num_of_workers,args.batch_size)
+    bluecoat_parse(args.zk,args.topic,args.db,args.db_table,args.num_of_workers,args.batch_size)
 
 def spot_decoder(s):
 
@@ -109,7 +109,7 @@ def save_data(rdd,sqc,db,db_table,topic):
     else:
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
 
-def bro_parse(zk,topic,db,db_table,num_of_workers,batch_size):
+def bluecoat_parse(zk,topic,db,db_table,num_of_workers,batch_size):
     
     app_name = topic
     wrks = int(num_of_workers)
