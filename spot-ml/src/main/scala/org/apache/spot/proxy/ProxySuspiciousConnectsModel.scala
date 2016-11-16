@@ -6,11 +6,12 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
-import org.apache.spot.SpotLDACWrapper.{SpotLDACInput, SpotLDACOutput}
+import org.apache.spot.spotldacwrapper.{SpotLDACInput, SpotLDACOutput}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.proxy.ProxySchema._
 import org.apache.spot.utilities._
-import org.apache.spot.{SpotLDACWrapper, SuspiciousConnectsScoreFunction}
+import org.apache.spot.SuspiciousConnectsScoreFunction
+import org.apache.spot.spotldacwrapper.SpotLDACWrapper
 
 /**
   * Encapsulation of a proxy suspicious connections model.
@@ -118,7 +119,7 @@ object ProxySuspiciousConnectsModel {
       getIPWordCounts(sparkContext, sqlContext, logger, df, config.scoresFile, config.duplicationFactor, agentToCount, timeCuts, entropyCuts, agentCuts)
 
 
-    val SpotLDACOutput(documentResults, wordResults) = SpotLDACWrapper.runLDA(docWordCount,
+    val SpotLDACOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDACWrapper.runLDA(docWordCount,
       config.modelFile,
       config.hdfsModelFile,
       config.topicDocumentFile,
@@ -137,7 +138,18 @@ object ProxySuspiciousConnectsModel {
       sqlContext,
       logger)
 
-    new ProxySuspiciousConnectsModel(config.topicCount, documentResults, wordResults, timeCuts, entropyCuts, agentCuts)
+    // Since Proxy is still broadcasting ip to topic mix, we need to convert data frame to Map[String, Array[Double]]
+    val ipToTopicMix = ipToTopicMixDF
+      .rdd
+      .map({ case (ipToTopicMixRow: Row) => (ipToTopicMixRow.toSeq.toArray) })
+      .map({
+        case (ipToTopicMixSeq) => (ipToTopicMixSeq(0).asInstanceOf[String], ipToTopicMixSeq(1).asInstanceOf[Seq[Double]]
+          .toArray)
+      })
+      .collectAsMap
+      .toMap
+
+    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordToPerTopicProb, timeCuts, entropyCuts, agentCuts)
   }
 
   /**

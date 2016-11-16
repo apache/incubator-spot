@@ -1,9 +1,11 @@
 package org.apache.spot
 
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.functions._
-import org.apache.spot.SpotLDACWrapper.SpotLDACInput
+import org.apache.spot.spotldacwrapper.SpotLDACWrapper
+import org.apache.spot.spotldacwrapper.SpotLDACInput
+import org.apache.spot.spotldacwrapper.SpotLDACSchema._
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
 
@@ -36,9 +38,8 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
       "0.0124531442 0.0124531442 0.0124531442 23983.5532262138 0.0124531442 0.0124531442 0.0124531442 0.0124531442 " +
       "0.0124531442 0.0124531442 22999.4716800747 0.0124531442"
 
-    var (docOUT, topicMixOUT) = SpotLDACWrapper.getTopicDocument(document, line, topicCount)
+    var topicMixOUT = SpotLDACWrapper.getDocumentToTopicProbabilityArray(line, topicCount)
 
-    docOUT shouldBe document
     topicMixOUT shouldBe Array(2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7,
       2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7,
       2.6505498126219955E-7, 2.6505498126219955E-7, 0.5104702996191969, 2.6505498126219955E-7, 2.6505498126219955E-7,
@@ -51,9 +52,8 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
     val line = "0.0 0.0 1.0 -1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"
 
     val topicCount = 20
-    val (docOUT, topicMixOUT) = SpotLDACWrapper.getTopicDocument(document, line, topicCount)
+    val topicMixOUT = SpotLDACWrapper.getDocumentToTopicProbabilityArray(line, topicCount)
 
-    docOUT shouldBe document
     topicMixOUT shouldBe Array(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
   }
 
@@ -75,15 +75,15 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
 
     val modelDF: DataFrame = SpotLDACWrapper.createModel(documentWordData, wordDictionary, sparkContext, sqlContext, logger)
 
-    val model = modelDF.select(col("docWordCount")).rdd
+    val model = modelDF.select(col(DocumentNameWordNameWordCount)).rdd
       .map(
         x=> ( x.toString().replaceAll("\\[","").replaceAll("\\]","") )
       ).collect
 
-    val documentDictionary = modelDF.select(col("docID"))
+    val documentDictionary = modelDF.select(col(DocumentName))
       .rdd
       .map(x=>x.toString.replaceAll("\\]","").replaceAll("\\[",""))
-      .zipWithIndex.toDF("docName", "docIdx")
+      .zipWithIndex.toDF(DocumentName, DocumentId)
 
     println(documentDictionary.collect.foreach(println))
 
@@ -94,16 +94,17 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
 
   }
 
-  "getDocumentResults" should "return Array[String] of documents and its 20 values when the sum of each value in the line is bigger" +
+  "getDocumentResults" should "return DataFrame with two columns. One for document (document_name) and the other for the " +
+    "probabilities distribution (topic_prob_mix) when the sum of each value in the line is bigger" +
     "than 0. Each result value should be divided by the sum of all values and the result array order should be the same" +
-    "as incomming data (topicDocument Data)" in {
+    "as incoming data (topicDocument Data)" in {
 
     val testSqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
     import testSqlContext.implicits._
 
     val topicCount = 20
     val documentDictionary = sparkContext.parallelize(Array
-    (("10.10.98.123"->3), ( "66.23.45.11"->0), ( "192.168.1.1"->1 ), ("133.546.43.22" -> 2))).toDF("docName","docIdx")
+    (("10.10.98.123"->3), ( "66.23.45.11"->0), ( "192.168.1.1"->1 ), ("133.546.43.22" -> 2))).toDF(DocumentName,DocumentId)
 
     val topicDocumentData = Array("0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 " +
       "0.0124531442 0.0124531442 0.0124531442 0.0124531442 23983.5532262138 0.0124531442 0.0124531442 0.0124531442 " +
@@ -118,24 +119,35 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
       "0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 0.0124531442 12.0124531442 " +
       "0.0124531442 0.0124531442 0.0124531442 0.0124531442")
 
-    val results = SpotLDACWrapper.getDocumentResults(topicDocumentData, documentDictionary, topicCount, sparkContext)
+    val resultsDF = SpotLDACWrapper.getDocumentResults(topicDocumentData, documentDictionary, topicCount, sparkContext, testSqlContext)
 
-    results("66.23.45.11") shouldBe Array(2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7,
+    // Since DNS is still broadcasting ip to topic mix, we need to convert data frame to Map[String, Array[Double]]
+    val ipToTopicMix = resultsDF
+      .rdd
+      .map({ case (ipToTopicMixRow: Row) => (ipToTopicMixRow.toSeq.toArray) })
+      .map({
+        case (ipToTopicMixSeq) => (ipToTopicMixSeq(0).asInstanceOf[String], ipToTopicMixSeq(1).asInstanceOf[Seq[Double]]
+          .toArray)
+      })
+      .collectAsMap
+      .toMap
+
+    ipToTopicMix("66.23.45.11") shouldBe Array(2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7,
       2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7,
       2.6505498126219955E-7, 2.6505498126219955E-7, 0.5104702996191969, 2.6505498126219955E-7, 2.6505498126219955E-7,
       2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 2.6505498126219955E-7, 0.48952492939114034, 2.6505498126219955E-7)
 
-    results("192.168.1.1") shouldBe Array(5.28867235797652E-8, 5.28867235797652E-8, 0.19358837746391266, 5.28867235797652E-8,
+    ipToTopicMix("192.168.1.1") shouldBe Array(5.28867235797652E-8, 5.28867235797652E-8, 0.19358837746391266, 5.28867235797652E-8,
       0.10573081643228267, 5.28867235797652E-8, 5.28867235797652E-8, 5.28867235797652E-8, 0.1641818606776375, 5.28867235797652E-8,
       5.28867235797652E-8, 5.28867235797652E-8, 5.28867235797652E-8, 0.27521540117076093, 0.10685949951637365, 5.28867235797652E-8,
       5.28867235797652E-8, 0.15442330432490242, 5.28867235797652E-8, 5.28867235797652E-8)
 
-    results("133.546.43.22") shouldBe Array(5.346710724792232E-8, 5.346710724792232E-8, 0.2310572464680428, 5.346710724792232E-8,
+    ipToTopicMix("133.546.43.22") shouldBe Array(5.346710724792232E-8, 5.346710724792232E-8, 0.2310572464680428, 5.346710724792232E-8,
       0.1047799938827603, 5.346710724792232E-8, 5.346710724792232E-8, 5.346710724792232E-8, 0.12152213364300919, 5.346710724792232E-8,
       5.346710724792232E-8, 5.346710724792232E-8, 5.346710724792232E-8, 0.30548791503077616, 0.11202987324065357, 5.346710724792232E-8,
       5.346710724792232E-8, 0.12512208919525633, 5.346710724792232E-8, 5.346710724792232E-8)
 
-    results("10.10.98.123") shouldBe Array(0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624,
+    ipToTopicMix("10.10.98.123") shouldBe Array(0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624,
       0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624,
       0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624,
       0.0010166609738175624, 0.9806834414974662, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624, 0.0010166609738175624)

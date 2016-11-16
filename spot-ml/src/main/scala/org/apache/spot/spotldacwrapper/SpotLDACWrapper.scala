@@ -1,13 +1,14 @@
-package org.apache.spot
+package org.apache.spot.spotldacwrapper
 
-import org.apache.spark.rdd.RDD
-import java.io.PrintWriter
 import java.io.File
 
 import org.apache.log4j.Logger
-import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{DataFrame, SQLContext}
+
+import org.apache.spot.spotldacwrapper.SpotLDACSchema._
 
 import scala.collection.immutable.Map
 import scala.io.Source._
@@ -23,11 +24,32 @@ import scala.sys.process._
 
 object SpotLDACWrapper {
 
-
-  case class SpotLDACInput(doc: String, word: String, count: Int) extends Serializable
-
-  case class SpotLDACOutput(docToTopicMix: Map[String, Array[Double]], wordResults: Map[String, Array[Double]])
-
+  /**
+    * runLDA receives a RDD of SpotLDACInput and converts to Spot-LDA-C input model, then calls system process to run
+    * Spot-LDA-C. After that, reads local files final.gamma and final.beta to normalize ML results and
+    * return as SpotLDACOutput object.
+    *
+    * @param docWordCount RDD containing a list of documents or ips, each word they are related to and the count of
+    *                     each word.
+    * @param modelFile Final destination (local file system) for model so Spot-LDA-C can pick it up.
+    * @param hdfsModelFile HDFS temporary location for model.
+    * @param topicDocumentFile Location of Spot-LDA-C results file final.gamma (local file system).
+    * @param topicWordFile Location of Spot-LDA-C results file final.beta (local file system).
+    * @param mpiPreparationCmd MPI preparation command if required.
+    * @param mpiCmd MPI command.
+    * @param mpiProcessCount MPI process count.
+    * @param topicCount Number of topics for Spot-LDA-C
+    * @param localPath Local path where installation is located.
+    * @param ldaPath Spot-LDA-C local path.
+    * @param localUser Spot local path.
+    * @param dataSource Flow, DNS or Proxy.
+    * @param nodes  List of Nodes to distribute model.dat (LDA input).
+    * @param prgSeed Flag for LDA, seeded no seeded.
+    * @param sparkContext Application Spark Context.
+    * @param sqlContext Application SQL Context.
+    * @param logger Application Logger.
+    * @return
+    */
   def runLDA(docWordCount: RDD[SpotLDACInput],
              modelFile: String,
              hdfsModelFile: String,
@@ -45,7 +67,7 @@ object SpotLDACWrapper {
              prgSeed: Option[Long],
              sparkContext: SparkContext,
              sqlContext: SQLContext,
-             logger: Logger):   SpotLDACOutput =  {
+             logger: Logger): SpotLDACOutput =  {
 
     import sqlContext.implicits._
     val docWordCountCache = docWordCount.cache()
@@ -58,38 +80,26 @@ object SpotLDACWrapper {
       words.zipWithIndex.toMap
     }
 
-    // Create model for MPI
+    // Create model for LDA
     val modelDF = createModel(docWordCountCache, wordDictionary, sparkContext, sqlContext, logger)
 
     docWordCountCache.unpersist()
 
-    val documentDictionary = modelDF.select(col("docID"))
+    val documentDictionary = modelDF.select(col(DocumentName))
       .rdd
       .map(
         x=>  x.toString().replaceAll("\\[","").replaceAll("\\]","")
       )
-      .zipWithIndex.toDF("docName", "docIdx")
+      .zipWithIndex.toDF(DocumentName, DocumentId)
 
+    // Save model to HDFS and then getmerge to file system
 
-
-//    val model = modelDF.select(col("docWordCount"))
-//      .rdd
-//      .map(
-//        x=>  x.toString().replaceAll("\\[","").replaceAll("\\]","")
-//      ).collect
-//
-//    // Persist model.dat
-//    val modelWriter = new PrintWriter(new File(modelFile))
-//    model foreach (row => modelWriter.write("%s\n".format(row)))
-//    modelWriter.close()
-
-    modelDF.rdd.map(_.mkString).saveAsTextFile(hdfsModelFile)
-
+    modelDF.select(col(DocumentNameWordNameWordCount)).rdd.map(_.mkString).saveAsTextFile(hdfsModelFile)
     sys.process.Process(Seq("hadoop", "fs", "-getmerge", hdfsModelFile + "/part-*", modelFile)).!
     sys.process.Process(Seq("hadoop", "fs", "-rm", "-r", "-skipTrash", hdfsModelFile)).!
 
+    // Copy model.dat to each node in machinefile
 
-    // Copy model.dat to each machinefile node
     val nodeList = nodes.replace("'","").split(",")
     for (node <- nodeList){
       sys.process.Process(Seq("ssh", node, "mkdir -p " + localUser + "/ml/" + dataSource)).!
@@ -97,10 +107,11 @@ object SpotLDACWrapper {
     }
 
     // Execute Pre MPI command
+
     if(mpiPreparationCmd != "" && mpiPreparationCmd != null)
       stringToProcess(mpiPreparationCmd).!!
 
-    // Execute MPI
+    // Execute MPI-Spot-LDA-C
 
     val prgSeedString = if (prgSeed.nonEmpty) prgSeed.get.toString() else ""
 
@@ -120,16 +131,18 @@ object SpotLDACWrapper {
       else Array[String]()
     }
 
+    // Create document results
+
+    val docToTopicMix = getDocumentResults(documentTopicMixRawLines, documentDictionary, topicCount, sparkContext, sqlContext)
+
     // Read words per topic
+
     val topicWordData = {
       if (topicWordFileExists) {
         fromFile(topicWordFile).getLines().toArray
       }
       else Array[String]()
     }
-
-    // Create document results
-    val docToTopicMix = getDocumentResults(documentTopicMixRawLines, documentDictionary, topicCount, sparkContext)
 
     // Create word results
     val wordResults = getWordToProbPerTopicMap(topicWordData, wordDictionary)
@@ -154,20 +167,39 @@ object SpotLDACWrapper {
     wordProbs.map(_ / sumRawWord)
   }
 
-  def getTopicDocument(document: String, line: String, topicCount: Int) : (String, Array[Double])  = {
-    val topics = line.split(" ").map(_.toDouble)
+
+  /**
+    * getDocumentToTopicProbabilityArray returns an array with probability distribution given the number of topics
+    * @param documentTopicProbabilityMix a line with probability distribution. Its index matches a document in document
+    *                                    dictionary.
+    * @param topicCount number of topics.
+    * @return
+    */
+  def getDocumentToTopicProbabilityArray(documentTopicProbabilityMix: String, topicCount: Int) : Array[Double]  ={
+
+    val topics = documentTopicProbabilityMix.split(" ").map(_.toDouble)
     val topicsSum = topics.sum
 
-    if (topicsSum > 0) {
-      val topicsProb = topics.map(_ / topicsSum)
-      document -> topicsProb
+    val topicsProb = {
+      if (topicsSum > 0) {
+        topics.map(_ / topicsSum)
+      }
+      else {
+        Array.fill(topicCount)(0d)
+      }
     }
-    else {
-      val topicsProb = Array.fill(topicCount)(0d)
-      document ->  topicsProb
-    }
+    topicsProb
   }
 
+  /**
+    * createModel creates a new data frame with document names and document-word-count for further use in Spot-LDA-C
+    * @param documentWordData RDD with document-word data and the count of each word.
+    * @param wordToIndex  word dictionary with numeric index
+    * @param sparkContext Application Spark Context
+    * @param sqlContext Application Sql Context
+    * @param logger Application Logger
+    * @return
+    */
   def createModel(documentWordData: RDD[SpotLDACInput],
                   wordToIndex: Map[String, Int],
                   sparkContext: SparkContext,
@@ -185,69 +217,60 @@ object SpotLDACWrapper {
       .groupByKey()
       .map(x => (x._1, x._2.mkString(" ")))
 
-    val wordCountDF = wordIndexdocWordCount.toDF("docID","wordIDCount")
-    val distinctDocDF = documentCount.toDF("docID","docCount")
+    val wordCountDF = wordIndexdocWordCount.toDF(DocumentName,WordNameWordCount)
+    val distinctDocDF = documentCount.toDF(DocumentName,DocumentCount)
 
-    distinctDocDF.show()
-
-    val docWordCount = distinctDocDF.join(wordCountDF, wordCountDF("docID").equalTo(distinctDocDF("docID")))
-                              .drop(wordCountDF("docID"))
-
-    docWordCount.show()
+    val docWordCount = distinctDocDF.join(wordCountDF, wordCountDF(DocumentName).equalTo(distinctDocDF(DocumentName)))
+                              .drop(wordCountDF(DocumentName))
 
     def concatDocWordCount = {udf( (a: String, b: String) => a.concat(" ").concat(b))}
-    val modelDF = docWordCount.withColumn("docWordCount",
+
+    val modelDF = docWordCount.withColumn(DocumentNameWordNameWordCount,
               concatDocWordCount(
-                  docWordCount("docCount"),
-                  docWordCount("wordIDCount")))
-                  .drop(col("docCount")).drop(col("wordIDCount"))
-    modelDF.show()
-    modelDF.count()
+                  docWordCount(DocumentCount),
+                  docWordCount(WordNameWordCount)))
+                  .drop(col(DocumentCount)).drop(col(WordNameWordCount))
     modelDF
   }
 
+  /**
+    * getDocumentResults normalizes Spot-LDA-C results for further steps.
+    * @param ldaResults Spot-LDA-C results.
+    * @param docIndexToDocument data frame with information about document and its index. The position of each line in
+    *                           ldaResults corresponds to the index of each element in docIndexToDocument.
+    * @param topicCount number of topics.
+    * @param sparkContext Application Spark Context.
+    * @param sqlContext Application Sql Context.
+    * @return
+    */
   def getDocumentResults(ldaResults: Array[String],
-                         docIndexToDocument: DataFrame,// Map[Int, String],
-                         topicCount: Int, sc: SparkContext) : Map[String, Array[Double]] = {
+                         docIndexToDocument: DataFrame,
+                         topicCount: Int, sparkContext: SparkContext, sqlContext: SQLContext) : DataFrame = {
 
-      val sqlContext = new org.apache.spark.sql.SQLContext(sc)
       import sqlContext.implicits._
 
-      val topicDocumentData = sc.parallelize(ldaResults.zipWithIndex)
+      val topicDocumentData = sparkContext.parallelize(ldaResults.zipWithIndex)
         .map(
           {
-            case (topic, docIdx) => (getTopicDocumentArray(topic, topicCount), docIdx)
+            case (documentTopicProbabilityMix, documentTopicProbabilityMixId) =>
+              (getDocumentToTopicProbabilityArray(documentTopicProbabilityMix, topicCount), documentTopicProbabilityMixId)
           }
-        ).toDF("topicMix", "docIdx")
+        ).toDF(TopicProbabilityMix, DocumentId)
 
-      val docTopicDF = topicDocumentData.join(docIndexToDocument,
-        topicDocumentData("docIdx").equalTo(docIndexToDocument("docIdx")))
-        .drop(topicDocumentData("docIdx"))
-        .drop(docIndexToDocument("docIdx")).select(col("docName"), col("topicMix"))
+      val ipToTopicMix = topicDocumentData.join(docIndexToDocument,
+        topicDocumentData(DocumentId).equalTo(docIndexToDocument(DocumentId)))
+        .drop(topicDocumentData(DocumentId))
+        .drop(docIndexToDocument(DocumentId)).select(col(DocumentName), col(TopicProbabilityMix))
 
-
-    val results = docTopicDF.rdd.map({case(a: Row) => (a.toSeq.toArray)})
-                    .map({case (a) => (a(0).asInstanceOf[String], a(1).asInstanceOf[Seq[Double]].toArray)})
-                    .collectAsMap().toMap
-    results
+      ipToTopicMix
     }
 
-  def getTopicDocumentArray(line: String, topicCount: Int) : Array[Double]  ={
-
-    val topics = line.split(" ").map(_.toDouble)
-    val topicsSum = topics.sum
-
-    val topicsProb = {
-      if (topicsSum > 0) {
-        topics.map(_ / topicsSum)
-      }
-      else {
-        Array.fill(topicCount)(0d)
-      }
-    }
-    topicsProb
-  }
-
+  /**
+    * getWordToProbPerTopicMap normalizes Spot-LDA-C results for further steps.
+    * @param topicWordData
+    * @param wordToIndex
+    * @return
+    */
   def getWordToProbPerTopicMap(topicWordData: Array[String],
                                wordToIndex: Map[String, Int]): Map[String, Array[Double]] = {
 
@@ -256,7 +279,7 @@ object SpotLDACWrapper {
 
     val indexToWord = {
       val addedIndex = wordToIndex.size
-      val tempWordDictionary = wordToIndex + ("0_0_0_0_0" -> addedIndex)
+      val tempWordDictionary = wordToIndex + (_0_0_0_0_0 -> addedIndex)
       tempWordDictionary.map({
         case (k, v) => (v, k)
       })
@@ -267,6 +290,3 @@ object SpotLDACWrapper {
 
   }
 }
-
-
-
