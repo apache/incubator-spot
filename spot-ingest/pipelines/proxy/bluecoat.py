@@ -53,10 +53,11 @@ def main():
     parser.add_argument('-db','--database',dest='db',required=True,help='Hive database whete the data will be ingested',metavar='')
     parser.add_argument('-dt','--db-table',dest='db_table',required=True,help='Hive table whete the data will be ingested',metavar='')
     parser.add_argument('-w','--num_of_workers',dest='num_of_workers',required=True,help='Num of workers for Parallelism in Data Processing',metavar='')
+    parser.add_argument('-bs','--batch-size',dest='batch_size',required=True,help='Batch Size (Milliseconds)',metavar='')
     args = parser.parse_args()
 
     # start collector based on data source type.
-    bro_parse(args.zk,args.topic,args.db,args.db_table,args.num_of_workers)
+    bro_parse(args.zk,args.topic,args.db,args.db_table,args.num_of_workers,args.batch_size)
 
 def spot_decoder(s):
 
@@ -108,14 +109,14 @@ def save_data(rdd,sqc,db,db_table,topic):
     else:
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
 
-def bro_parse(zk,topic,db,db_table,num_of_workers):
+def bro_parse(zk,topic,db,db_table,num_of_workers,batch_size):
     
     app_name = topic
     wrks = int(num_of_workers)
 
     # create spark context
     sc = SparkContext(appName=app_name)
-    ssc = StreamingContext(sc,1)
+    ssc = StreamingContext(sc,int(batch_size))
     sqc = HiveContext(sc)
 
     tp_stream = KafkaUtils.createStream(ssc, zk, app_name, {topic: wrks}, keyDecoder=spot_decoder, valueDecoder=spot_decoder)
