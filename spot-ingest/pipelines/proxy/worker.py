@@ -57,8 +57,7 @@ class Worker(object):
                         "-db {9} "
                         "-dt {10} "
                         "-w {11} "
-			"-bs {12}".format(diver_memory,num_exec,exec_memory,exec_cores,jar_path,self._script_path,parser,self._kafka_consumer.ZookeperServer,self._kafka_consumer.Topic,self._db_name,"proxy",self._processes,batch_size))
-
+                        "-bs {12}".format(diver_memory,num_exec,exec_memory,exec_cores,jar_path,self._script_path,parser,self._kafka_consumer.ZookeperServer,self._kafka_consumer.Topic,self._db_name,"proxy",self._processes,batch_size))
         
         # start spark job.
         Util.execute_cmd(spark_job_cmd,self._logger)

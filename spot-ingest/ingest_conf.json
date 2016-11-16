@@ -8,7 +8,7 @@
                 "spark_exec":"",
                 "spark_executor_memory":"",
                 "spark_executor_cores":"",
-		"spark_batch_size":""
+                "spark_batch_size":""
     },
     "kafka":{
             "kafka_server":"kafka ip",
