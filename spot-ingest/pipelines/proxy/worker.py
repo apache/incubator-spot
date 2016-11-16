@@ -41,10 +41,11 @@ class Worker(object):
         num_exec = self._spark_conf["spark_exec"]
         exec_memory = self._spark_conf["spark_executor_memory"]
         exec_cores = self._spark_conf["spark_executor_cores"]
+        batch_size = self._spark_conf["spark_batch_size"]
         
         jar_path = os.path.dirname(os.path.dirname(self._script_path))
         # spark job command.          
-         spark_job_cmd = ("spark-submit --master yarn "
+        spark_job_cmd = ("spark-submit --master yarn "
                         "--driver-memory {0} "
                         "--num-executors {1} "
                         "--conf spark.executor.memory={2} "
@@ -55,7 +56,8 @@ class Worker(object):
                         "-t {8} "
                         "-db {9} "
                         "-dt {10} "
-                        "-w {11}".format(diver_memory,num_exec,exec_memory,exec_cores,jar_path,self._script_path,parser,self._kafka_consumer.ZookeperServer,self._kafka_consumer.Topic,self._db_name,"proxy",self._processes))
+                        "-w {11} "
+			"-bs {12}".format(diver_memory,num_exec,exec_memory,exec_cores,jar_path,self._script_path,parser,self._kafka_consumer.ZookeperServer,self._kafka_consumer.Topic,self._db_name,"proxy",self._processes,batch_size))
 
         
         # start spark job.
