@@ -7,14 +7,15 @@
                 "driver_memory":"",
                 "spark_exec":"",
                 "spark_executor_memory":"",
-                "spark_executor_cores":""
+                "spark_executor_cores":"",
+		"spark_batch_size":""
     },
     "kafka":{
             "kafka_server":"kafka ip",
             "kafka_port":"kafka port",
             "zookeper_server":"zk ip",
             "zookeper_port":"zk port",
-            "message_size":999999
+            "message_size":900000
         },
     "pipelines":{
         "flow":{
