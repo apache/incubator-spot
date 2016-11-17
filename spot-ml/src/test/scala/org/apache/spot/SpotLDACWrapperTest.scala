@@ -90,7 +90,7 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
     model should contain ("2 0:8 3:5")
     model should contain ("1 1:4")
     model should contain ("1 2:2")
-    //model shouldBe Array("2 0:8 3:5", "1 1:4", "1 2:2")
+    model shouldBe Array("1 2:2", "1 1:4", "2 0:8 3:5")
 
   }
 
