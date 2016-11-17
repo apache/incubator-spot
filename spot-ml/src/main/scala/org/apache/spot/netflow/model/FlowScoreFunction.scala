@@ -55,23 +55,29 @@ class FlowScoreFunction(timeCuts: Array[Double],
             srcTopicMix: Seq[Double],
             dstTopicMix: Seq[Double]): Double = {
 
-    val FlowWords(srcWord, dstWord) = flowWordCreator.flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, ipkt: Long, ibyt: Long)
 
+    val FlowWords(srcWord, dstWord) = flowWordCreator.flowWords(hour: Int, minute: Int, second: Int,
+      srcPort: Int, dstPort: Int, ipkt: Long, ibyt: Long)
 
+    val zeroProb = Array.fill(topicCount) { 0.0 }
 
-    val uniformProb = Array.fill(topicCount) {
-      1.0d / topicCount
+    /** A null value for srcTopicMix or dstTopicMix indicated the ip (source or dest respectively)
+      * were not seen in training.
+      */
+    if (srcTopicMix == null || dstTopicMix == null) {
+       0.0
+    } else {
+
+       val scoreOfConnectionFromSrcIP = srcTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(srcWord, zeroProb))
+         .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
+         .sum
+
+       val scoreOfConnectionsFromDstIP = dstTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(dstWord, zeroProb))
+         .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
+         .sum
+
+       Math.min(scoreOfConnectionFromSrcIP, scoreOfConnectionsFromDstIP)
+
     }
-
-    val scoreOfConnectionFromSrcIP = srcTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(srcWord, uniformProb))
-      .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
-      .sum
-
-
-    val scoreOfConnectionsFromDstIP = dstTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(dstWord, uniformProb))
-      .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
-      .sum
-
-    Math.min(scoreOfConnectionFromSrcIP,scoreOfConnectionsFromDstIP)
   }
 }

@@ -1,4 +1,5 @@
 var React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
 var GridPanelMixin = require('../../../js/components/GridPanelMixin.react');
 var SuspiciousMixin = require('../../../js/components/SuspiciousGridMixin.react.js');
@@ -44,7 +45,7 @@ var SuspiciousPanel = React.createClass({
 
         if (services.length===0) return '';
 
-        tooltipContent = React.renderToStaticMarkup(
+        tooltipContent = ReactDOMServer.renderToStaticMarkup(
             <div key={keyPrefix + '_list'}>
                 <ul className="list-unstyled">
                     {services}

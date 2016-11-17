@@ -46,23 +46,26 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                                   ipktCuts: Array[Double]) {
 
 
-  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame): DataFrame = {
+  def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame): DataFrame = {
 
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
 
+    /** A left outer join (below) takes rows from the left DF for which the join expression is not
+      * satisfied (for any entry in the right DF), and fills in 'null' values (for the additional columns).
+      */
     val dataWithSrcTopicMix = {
 
-      val joinedDF = inDF.join(ipToTopicMixDF, inDF(SourceIP) === ipToTopicMixDF(DocumentName), "left_outer")
-      val schemaWithSrcTopicMix = inDF.schema.fieldNames :+ TopicProbabilityMix
-      val dataWithSrcIpProb: DataFrame = joinedDF.selectExpr(schemaWithSrcTopicMix: _*)
+      val recordsWithSrcIPTopicMixes = flowRecords.join(ipToTopicMixDF,
+        flowRecords(SourceIP) === ipToTopicMixDF(DocumentName), "left_outer")
+      val schemaWithSrcTopicMix = flowRecords.schema.fieldNames :+ TopicProbabilityMix
+      val dataWithSrcIpProb: DataFrame = recordsWithSrcIPTopicMixes.selectExpr(schemaWithSrcTopicMix: _*)
         .withColumnRenamed(TopicProbabilityMix, SrcIpTopicMix)
 
-      val joinedDF2 = dataWithSrcIpProb.join(ipToTopicMixDF,
-        dataWithSrcIpProb(DestinationIP) === ipToTopicMixDF(DocumentName),
-      "left_outer")
+      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(ipToTopicMixDF,
+        dataWithSrcIpProb(DestinationIP) === ipToTopicMixDF(DocumentName), "left_outer")
       val schema = dataWithSrcIpProb.schema.fieldNames :+  TopicProbabilityMix
-      joinedDF2.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
+        recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
     }
 
     val scoreFunction =  new FlowScoreFunction(timeCuts,
@@ -171,7 +174,7 @@ object FlowSuspiciousConnectsModel {
 
     // simplify DNS log entries into "words"
 
-    val flowWordCreator = new FlowWordCreator(ibytCuts, ipktCuts, timeCuts)
+    val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts)
 
     val srcWordUDF = flowWordCreator.srcWordUDF
     val dstWordUDF = flowWordCreator.dstWordUDF

@@ -7,8 +7,8 @@ source /etc/spot.conf
 #
 # creating HDFS user's folder
 #
-sudo -u hdfs hadoop fs -mkdir ${HUSER}
-sudo -u hdfs hadoop fs -chown ${USER}:supergroup ${HUSER}
+hadoop fs -mkdir ${HUSER}
+hadoop fs -chown ${USER}:supergroup ${HUSER}
 
 for d in "${DSOURCES[@]}" 
 do 

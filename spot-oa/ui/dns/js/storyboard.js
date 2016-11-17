@@ -1,12 +1,13 @@
-var React = require('react');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var SpotActions = require('../../js/actions/SpotActions');
-var SpotConstants = require('../../js/constants/SpotConstants');
-var SpotUtils = require('../../js/utils/SpotUtils');
-var DateInput = require('../../js/components/DateInput.react');
-var StoryboardActions = require('../../js/actions/StoryboardActions');
+const SpotActions = require('../../js/actions/SpotActions');
+const SpotConstants = require('../../js/constants/SpotConstants');
+const SpotUtils = require('../../js/utils/SpotUtils');
+const DateInput = require('../../js/components/DateInput.react');
+const StoryboardActions = require('../../js/actions/StoryboardActions');
 
-React.render(
+ReactDOM.render(
   (
     <form className="form-inline">
       <div className="form-group">
@@ -23,15 +24,15 @@ React.render(
   document.getElementById('nav_form')
 );
 
-var PanelRow = require('../../js/components/PanelRow.react');
-var Panel = require('../../js/components/Panel.react');
+const PanelRow = require('../../js/components/PanelRow.react');
+const Panel = require('../../js/components/Panel.react');
 
-var ExecutiveThreatBriefingPanel = require('../../js/components/ExecutiveThreatBriefingPanel.react');
-var IncidentProgressionPanel = require('./components/IncidentProgressionPanel.react');
+const ExecutiveThreatBriefingPanel = require('../../js/components/ExecutiveThreatBriefingPanel.react');
+const IncidentProgressionPanel = require('./components/IncidentProgressionPanel.react');
 
-var CommentsStore = require('./stores/CommentsStore');
+const CommentsStore = require('./stores/CommentsStore');
 
-React.render(
+ReactDOM.render(
   <div id="spot-content">
     <PanelRow>
       <Panel title={SpotConstants.COMMENTS_PANEL} expandable>
@@ -46,9 +47,7 @@ React.render(
 );
 
 // Set search criteria
-var date;
-
-date = SpotUtils.getCurrentDate();
+const date = SpotUtils.getCurrentDate();
 
 SpotActions.setDate(date);
 

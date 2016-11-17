@@ -25,11 +25,15 @@ var DetailsStore = assign(new RestStore(NetflowConstants.API_DETAILS), {
     proto: 'Protocol',
     flags: 'Flags',
     tos: 'Type Of Service',
-    bytes: 'Bytes',
-    pkts: 'Packets',
-    input: 'Input',
-    output: 'Output'
+    ibytes: 'Input Bytes',
+    ipkts: 'Input Packets',
+    obytes:  'Output Bytes',
+    opkts: 'Output Packets',
+    rip: 'Router IP',
+    input: 'Input iface',
+    output: 'Output iface'
   },
+  ITERATOR: ['tstart', 'srcip', 'dstip', 'sport', 'dport', 'proto', 'flags', 'tos', 'ibytes', 'ipkts', 'obytes', 'opkts', 'rip', 'input', 'output'],
   setDate: function (date)
   {
     this.setRestFilter(DATE_FILTER, date.replace(/-/g, ''));

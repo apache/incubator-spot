@@ -1,5 +1,7 @@
 var $ = require('jquery');
 var React = require('react');
+var ReactDOM = require('react-dom');
+const ReactDOMServer = require('react-dom/server');
 
 var SpotActions = require('../actions/SpotActions');
 var EdInActions = require('../actions/EdInActions');
@@ -16,7 +18,7 @@ var SuspiciousGridMixin = {
     componentDidUpdate: function () {
         if (this.state.loading || this.state.data.length===0) return;
 
-        $(this.getDOMNode()).popover({
+        $(ReactDOM.findDOMNode(this)).popover({
             trigger: 'hover',
             html: true,
             selector: '[data-toggle="popover"]'
@@ -40,7 +42,7 @@ var SuspiciousGridMixin = {
             );
         });
 
-        tooltipContent = React.renderToStaticMarkup(
+        tooltipContent = ReactDOMServer.renderToStaticMarkup(
             <div>
                 {services}
             </div>

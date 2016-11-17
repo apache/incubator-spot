@@ -1,11 +1,12 @@
-var React = require('react');
-var ImpactAnalysisStore = require('../stores/ImpactAnalysisStore');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const ImpactAnalysisStore = require('../stores/ImpactAnalysisStore');
 
 var svg, xAxis, x, y, z;
 
 function buildGraph(root, ipsrc)
 {
-    var container = $(this.getDOMNode());
+    var container = $(ReactDOM.findDOMNode(this));
     $(container).html("");
     var m = [50, 50, 0, 100], // top right bottom left
            w = container.width() - m[1] - m[3], // width
@@ -28,6 +29,8 @@ function buildGraph(root, ipsrc)
         .append("svg:g")
         .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
+    $('svg', ReactDOM.findDOMNode(this)).off('parentUpdate').on('parentUpdate', () => buildGraph.call(this, root, ipsrc));
+
     svg.append("svg:rect")
         .attr("class", "background")
         .attr("width", w)
@@ -44,7 +47,7 @@ function buildGraph(root, ipsrc)
 
     hierarchy.nodes(root);
     x.domain([0, root.value]).nice();
-    down.call(this.getDOMNode(), root, 0);
+    down.call(ReactDOM.findDOMNode(this), root, 0);
 
 }
 

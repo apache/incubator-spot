@@ -1,54 +1,23 @@
-var $ = require('jquery');
-var assign = require('object-assign');
-var d3 = require('d3');
-var React = require('react');
+const $ = require('jquery');
+const assign = require('object-assign');
+const d3 = require('d3');
+const React = require('react');
 
-var EdInActions = require('../../../js/actions/EdInActions');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var SpotUtils = require('../../../js/utils/SpotUtils');
-var SuspiciousStore = require('../stores/SuspiciousStore');
+const EdInActions = require('../../../js/actions/EdInActions');
+const SpotConstants = require('../../../js/constants/SpotConstants');
+const SpotUtils = require('../../../js/utils/SpotUtils');
+const SuspiciousStore = require('../stores/SuspiciousStore');
+const ChartMixin = require('../../../js/components/ChartMixin.react');
+const ContentLoaderMixin = require('../../../js/components/ContentLoaderMixin.react');
 
 var NetworkViewPanel = React.createClass({
-    getInitialState: function ()
-    {
-        return {loading: true, data: []};
-    },
-    render:function()
-    {
-        var content;
-
-        if (this.state.error)
-        {
-            content = (
-                <div className="text-center text-danger">
-                    {this.state.error}
-                </div>
-            );
-        }
-        else if (this.state.loading)
-        {
-            content = (
-                <div className="spot-loader">
-                    Loading <span className="spinner"></span>
-                </div>
-            );
-        }
-        else
-        {
-            content = '';
-        }
-
-        return (
-            <div className="proxy-force">{content}</div>
-        )
-    },
+    mixins: [ContentLoaderMixin, ChartMixin],
     componentDidMount: function()
     {
         SuspiciousStore.addChangeDataListener(this._onChange);
         SuspiciousStore.addThreatHighlightListener(this._onHighlight);
         SuspiciousStore.addThreatUnhighlightListener(this._onUnhighlight);
         SuspiciousStore.addThreatSelectListener(this._onSelect);
-        window.addEventListener('resize', this.buildGraph);
     },
     componentWillUnmount: function ()
     {
@@ -56,80 +25,68 @@ var NetworkViewPanel = React.createClass({
         SuspiciousStore.removeThreatHighlightListener(this._onHighlight);
         SuspiciousStore.removeThreatUnhighlightListener(this._onUnhighlight);
         SuspiciousStore.removeThreatSelectListener(this._onSelect);
-        window.removeEventListener('resize', this.buildGraph);
     },
-    componentDidUpdate: function ()
-    {
-        if (!this.state.loading && !this.state.error)
-        {
-            this.buildGraph();
-        }
-    },
-    buildGraph: function () {
-        var node, width, height, zoom, svg;
-
-        node = this.getDOMNode();
-
-        width = $(node).width();
-        height = $(node).height();
-
+    buildChart: function () {
         this.state.root.fixed = true;
-        this.state.root.px = width / 2;
-        this.state.root.py = height / 2;
 
         this.force = d3.layout.force()
             .charge(d => (d.root?-15:-10)*this.sizeScale(d.size))
-            .size([width-100, height-100])
             .on('tick', this.tick);
 
-        svg = d3.select(node).select('svg');
-        if (svg.node()) {
-            this.canvas = svg.select('g');
-        }
-        else {
-            zoom = d3.behavior.zoom().on("zoom", this.onZoom);
+        const svgSel = d3.select(this.svg);
 
-            svg = d3.select(node).append('svg');
+        const zoom = d3.behavior.zoom().on("zoom", this.onZoom);
 
-            svg.call(zoom);
+        svgSel.call(zoom);
 
-            this.canvas = svg.append('g');
+        this.canvas = svgSel.append('g');
 
-            this.tip = d3.tip().attr('class', 'd3-tip').html(d => {
-                                        var html;
+        this.tip = d3.tip().attr('class', 'd3-tip').html(d => {
+                                    var html;
 
-                                        html = '<span class="d3-tip-label"><strong>' + d.type + ':</strong> ' + d.name + '</span>';
-                                        if (d.tooltip) html = html + '<br /><br /><p class="d3-tip-message">' + d.tooltip + '</p>';
+                                    html = '<span class="d3-tip-label"><strong>' + d.type + ':</strong> ' + d.name + '</span>';
+                                    if (d.tooltip) html = html + '<br /><br /><p class="d3-tip-message">' + d.tooltip + '</p>';
 
-                                        return html;
-                                    });
+                                    return html;
+                                });
 
-            this.canvas.call(this.tip);
-        }
+        this.canvas.call(this.tip);
 
-        // Tooltip margins
-        this.tip.box = [height*.4, width*.8, height*.8, width*.4];
+        $(this.svg).width('100%').height('100%');
 
-        svg.attr('width', width).attr('height', height);
-
-        this.sizeScale = d3.scale.linear().domain([0, SpotConstants.MAX_SUSPICIOUS_ROWS]).range([4.5, width/10]);
-
-        this.draw();
+        this.sizeScale = d3.scale.linear().domain([0, SpotConstants.MAX_SUSPICIOUS_ROWS]);
     },
     draw: function () {
         var nodes = this.flatten(this.state.root),
             links = d3.layout.tree().links(nodes),
             selectedThreat, ids, nodeEnter;
 
-        selectedThreat = SuspiciousStore.getSelectedThreat();
+        let width = $(this.svg).width();
+        let height = $(this.svg).height();
 
-        ids = selectedThreat ? this._getThreatIdChain(selectedThreat) : [];
+        // Center root node
+        this.state.root.px = width / 2;
+        this.state.root.py = height / 2;
+
+        this.force
+            .stop()
+            .size([width-100, height-100])
+            .start();
+
+        // Tooltip margins
+        this.tip.box = [height*.4, width*.8, height*.8, width*.4];
+
+        this.sizeScale.range([4.5, width/10]);
 
         // Restart the force layout
         this.force
             .nodes(nodes)
             .links(links)
             .start();
+
+        selectedThreat = SuspiciousStore.getSelectedThreat();
+
+        ids = selectedThreat ? this._getThreatIdChain(selectedThreat) : [];
 
         // Update links
         this.link = this.canvas.selectAll('.edge')

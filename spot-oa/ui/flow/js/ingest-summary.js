@@ -1,13 +1,14 @@
-var React = require('react');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var SpotActions = require('../../js/actions/SpotActions');
-var InSumActions = require('./actions/InSumActions');
-var NetflowConstants = require('./constants/NetflowConstants');
-var SpotUtils = require('../../js/utils/SpotUtils');
-var DateUtils = require('../../js/utils/DateUtils');
+const SpotActions = require('../../js/actions/SpotActions');
+const InSumActions = require('./actions/InSumActions');
+const NetflowConstants = require('./constants/NetflowConstants');
+const SpotUtils = require('../../js/utils/SpotUtils');
+const DateUtils = require('../../js/utils/DateUtils');
 
 // Build and Render Toolbar
-var DateInput = require('../../js/components/DateInput.react');
+const DateInput = require('../../js/components/DateInput.react');
 
 // Find out period
 var startDate, endDate, today;
@@ -40,7 +41,7 @@ if (endDate < startDate)
   endDate = today;
 }
 
-React.render(
+ReactDOM.render(
   (
     <form className="form-inline">
       <div className="form-group">
@@ -69,12 +70,12 @@ React.render(
 );
 
 // Build and Render Edge Investigation's panels
-var PanelRow = require('../../js/components/PanelRow.react');
-var Panel = require('../../js/components/Panel.react');
+const PanelRow = require('../../js/components/PanelRow.react');
+const Panel = require('../../js/components/Panel.react');
 //
-var IngestSummaryPanel = require('./components/IngestSummaryPanel.react');
+const IngestSummaryPanel = require('./components/IngestSummaryPanel.react');
 
-React.render(
+ReactDOM.render(
   <div id="spot-content">
     <PanelRow maximized>
       <Panel title="Ingest Summary" container header={false} className="col-md-12">

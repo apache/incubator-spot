@@ -247,37 +247,31 @@ prevent the active panel from collapsing
 }
 
 /**       TIMELINE         **/
-.sb_timeline svg, .sb_timeline #legend{
+
+.timeline .spot-chart {
+    overflow-x: hidden;
+}
+
+.timeline svg {
     font: 10px sans-serif;
 }
 
-.sb_timeline .zoom {
+.timeline .zoom {
     fill: transparent;
     cursor: pointer;
 }
 
-.sb_timeline .y-axis path,
-.sb_timeline .y-axis line,
-.sb_timeline .x-axis path,
-.sb_timeline .x-axis line,
-{
-path,
-line {
-    stroke: black;
-    fill: none;
-    stroke-width: 1px;
-}
-}
-
-.sb_timeline .y-axis g line {
+.timeline .y-axis g line {
     stroke: grey;
     fill: none;
     stroke-width: 1px;
 }
 
-.sb_timeline .graph-body .line circle {
+.timeline .graph-body .line circle {
     opacity: 0.4;
 }
+
+/* TOOLTIP */
 
 .spot-tooltip .tooltip-inner {
     word-wrap: break-word;

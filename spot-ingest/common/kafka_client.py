@@ -55,8 +55,15 @@ class KafkaTopic(object):
         kafka_brokers = '{0}:{1}'.format(self._server,self._port)             
         producer = KafkaProducer(bootstrap_servers=[kafka_brokers],api_version_auto_timeout_ms=3600000)
         future = producer.send(self._topic,message,partition=topic_partition)
-        producer.flush()
+        producer.flush(timeout=3600000)
         producer.close()
+    
+    @classmethod
+    def SendMessage(cls,message,kafka_servers,topic,partition=0):
+        producer = KafkaProducer(bootstrap_servers=kafka_servers,api_version_auto_timeout_ms=3600000)
+        future = producer.send(topic,message,partition=partition)
+        producer.flush(timeout=3600000)
+        producer.close()  
 
     @property
     def Topic(self):
@@ -71,6 +78,10 @@ class KafkaTopic(object):
         zk = "{0}:{1}".format(self._zk_server,self._zk_port)
         return zk
 
+    @property
+    def BootstrapServers(self):
+        servers = "{0}:{1}".format(self._server,self._port) 
+        return servers
 
 
 class KafkaConsumer(object):

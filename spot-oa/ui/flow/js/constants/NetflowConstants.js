@@ -13,8 +13,7 @@ var NetflowConstants = {
   API_INGEST_SUMMARY: '../../data/flow/ingest_summary/is_${year}${month}.csv',
   API_IMPACT_ANALYSIS: '../../data/flow/${date}/stats-${id}.json',
   API_GLOBE_VIEW: '../../data/flow/${date}/globe-${id}.json',
-  API_TIMELINE: '../../data/flow/${date}/sbdet-${id}.tsv', 
+  API_TIMELINE: '../../data/flow/${date}/sbdet-${ip}.tsv',
 };
 
 module.exports = NetflowConstants;
-

@@ -24,7 +24,7 @@ object ProxySuspiciousConnectsAnalysis {
 
     logger.info("Starting proxy suspicious connects analysis.")
 
-    logger.info("Loading data")
+    logger.info("Loading data from: " + config.inputPath)
 
     val rawDataDF = sqlContext.read.parquet(config.inputPath).
       filter(Date + " is not null and " + Time + " is not null and " + ClientIP + " is not null").

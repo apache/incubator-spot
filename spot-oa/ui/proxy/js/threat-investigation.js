@@ -1,11 +1,12 @@
-var React = require('react');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var SpotActions = require('../../js/actions/SpotActions');
-var SpotUtils = require('../../js/utils/SpotUtils');
+const SpotActions = require('../../js/actions/SpotActions');
+const SpotUtils = require('../../js/utils/SpotUtils');
 
-var DateInput = require('../../js/components/DateInput.react');
+const DateInput = require('../../js/components/DateInput.react');
 
-React.render(
+ReactDOM.render(
     (
       <form className="form-inline">
         <div className="form-group">
@@ -22,13 +23,13 @@ React.render(
   document.getElementById('nav_form')
 );
 
-var PanelRow = require('../../js/components/PanelRow.react');
-var Panel = require('../../js/components/Panel.react');
-var IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
+const PanelRow = require('../../js/components/PanelRow.react');
+const Panel = require('../../js/components/Panel.react');
+const IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
 
-var ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure('');
+const ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure('');
 
-React.render(
+ReactDOM.render(
   <div id="spot-content">
     <PanelRow maximized>
       <Panel title={ipynbClosure.getTitle()} container className="col-md-12" extraButtons={ipynbClosure.getButtons}>
@@ -39,8 +40,6 @@ React.render(
   document.getElementById('spot-content-wrapper')
 );
 // Set search criteria
-var date;
-
-date = SpotUtils.getCurrentDate();
+const date = SpotUtils.getCurrentDate();
 
 SpotActions.setDate(date);

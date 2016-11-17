@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var SpotActions = require('../actions/SpotActions');
 var SpotUtils = require('../utils/SpotUtils');
@@ -21,14 +22,14 @@ var DateInput = React.createClass({
         return {date: this.props.value || SpotUtils.getCurrentDate(this.props.name)};
     },
     componentDidMount: function () {
-        $(this.getDOMNode()).datepicker({
+        $(ReactDOM.findDOMNode(this)).datepicker({
             format: "yyyy-mm-dd",
             autoclose: true
         })
             .on("changeDate", this._onChange);
     },
     componentWillUnmount: function () {
-        $(this.getDOMNode()).datepicker('remove');
+        $(ReactDOM.findDOMNode(this)).datepicker('remove');
     },
     render: function () {
         return (

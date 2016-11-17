@@ -1,149 +1,108 @@
-var $ = require('jquery');
-var d3 = require('d3');
-var React = require('react');
+const $ = require('jquery');
+const d3 = require('d3');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-function buildGraph(root, ipsrc) {
-    var legend = root.legend == undefined? true : root.legend;
-    var chartPlaceholder = $(this.getDOMNode()).find("#graph");
-    chartPlaceholder.html("");
-    $(this.getDOMNode()).find("#legend").html("");
-    var names = [];
-    var data = [];
-    var dataDate = root.date.split(' ')[0];
-    var endTime = Date.parse(dataDate + " 23:59");
+const colorScale = d3.scale.category10();
 
-    var startTime = Date.parse(dataDate + " 00:00");
-    var csvdata = root.children;
+const locale = d3.locale({
+    "decimal": ",",
+    "thousands": " ",
+    "grouping": [3],
+    "dateTime": "%A %e %B %Y, %X",
+    "date": "%d/%m/%Y",
+    "time": "%H:%M:%S",
+    "periods": ["AM", "PM"],
+    "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+});
 
-    names = [];
+/*
+    TODO: Upgrade to EventDrops 2.0 or later
 
-    csvdata.forEach(function (d) {
-        if (names.indexOf(d.srcip) == -1) {
-            names.push(d.srcip);
+    At the momment EventDrops 2.0 is out but the version on npm has a bug that
+    prevents event counter from being displayed.
+ */
+
+const TimelineMixin = {
+    buildChart() {
+        this.canvas = d3.select(ReactDOM.findDOMNode(this)).select('*').datum(this.state.data);
+
+        const dataDate = this.state.date;
+        const startTime = Date.parse(dataDate + " 00:00");
+        const endTime = Date.parse(dataDate + " 23:59");
+
+        this.eventDropsChart = d3.chart.eventDrops()
+            .start(startTime)
+            .end(endTime)
+            .locale(locale)
+            .axisFormat(xAxis => xAxis.ticks(5))
+            .eventLineColor(e => colorScale(e.name));
+
+        if (this.getTooltipContent) {
+            // Create a tooltip
+            this.tooltip = d3.tip()
+                .attr('class', 'd3-tip')
+                .html(d => this.getTooltipContent(d));
+
+            this.eventDropsChart.eventHover((e) => {
+                const eventData = d3.select(e).data()[0];
+                // Get data from event's parent. Super relying on eventDrops implementation
+                const parentData = d3.select($(e).parent().get(0)).data()[0];
+
+                // Show tooltip
+                const tooltipData = {
+                    context: parentData,
+                    date: eventData.toLocaleTimeString()
+                };
+
+                this.tooltip.show(tooltipData, e);
+            });
         }
-        if (names.indexOf(d.dstip) == -1) {
-            names.push(d.dstip);
-        }
-    });
-
-    function createEvent(name) {
-        var event = {};
-        event.name = name;
-        event.dates = [];
-        event.ports = [];
-
-        csvdata.filter(function (d) {
-            if (d.srcip == name) {
-                event.dates.push(parseddate(d.tstart));
-                event.ports.push(parseInt(d.sport));
-            }
-            return;
-        });
-
-        return event;
-    }
-
-    function parseddate(sdate) {
-        let dtpart = sdate.split(" ")
-        let dpart = dtpart[0].split("-")
-        let tpart = dtpart[1].split(":")
-        //The 7 numbers specify the year, month, day, hour, minute, second, in that order:
-        //2014-07-08 02:38:59
-        return new Date(parseInt(dpart[0]), parseInt(dpart[1]) - 1, parseInt(dpart[2]), parseInt(tpart[0]) - 1, parseInt(tpart[1]) - 1, parseInt(tpart[2]) - 1);
-    }
-
-    for (var i = 0; i < names.length; i++) {
-        var event = createEvent(names[i])
-        if (event.dates.length > 0) {
-            data.push(event);
-        }
-    }
-
-    var color = d3.scale.category10();
-
-    var locale = d3.locale({
-        "decimal": ",",
-        "thousands": " ",
-        "grouping": [3],
-        "dateTime": "%A %e %B %Y, %X",
-        "date": "%d/%m/%Y",
-        "time": "%H:%M:%S",
-        "periods": ["AM", "PM"],
-        "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    });
-
-    var width = chartPlaceholder.width()-5; // 5 is the magic number to avoid having horizontal scroll bar
-
-    var graph = d3.chart.eventDrops()
-        .start(new Date(startTime))
-        .end(new Date(endTime))
-        .locale(locale)
-        .eventColor(function (datum) {
-            return color(datum.ports);
-        })
-        .width(width-30)
-        .margin({ top: 70, left: 140, bottom: 5, right: 5 })
-        .axisFormat(function (xAxis) {
-            xAxis.ticks(5);
-        })
-        .eventHover(function (el) {
-            var series = el.parentNode.firstChild.innerHTML.replace(/\(\d+\)/g, "");
-            var port = el.parentNode.__data__.ports[0];
-            var timestamp = d3.select(el).data()[0];
-            if (legend)
-                $(this.getDOMNode()).find("#legend").html('Hovering [' + timestamp + '] <br /> in series "' + series + '" at port ' + port);
-        }.bind(this)
-
-        );
-
-    var element = d3.select(chartPlaceholder[0]).append('div').datum(data);
-
-    graph(element);
-}
-
-
-var TimelineMixin = {
-  getInitialState: function ()
-  {
-    return {loading: false, root: {}};
-  },
-   render:function()
-    {
-        var content;
-
-        if (this.state.error)
-        {
-            content = (
-                <div className="text-center text-danger">
-                    {this.state.error}
-                </div>
-            );
-        }
-        else if (this.state.loading)
-        {
-            content = (
-            <div className="spot-loader">
-                Loading <span className="spinner"></span>
-            </div>
-          );
-        }
-        else
-        {
-            content = [<div id="graph" key="timeline_graph"></div>, <div id="legend" key="timeline_legend"></div>];
-        }
-        return (
-                <div>{content}</div>
-        )
     },
-    componentDidUpdate: function ()
-    {
-        if (!this.state.loading && !this.state.error)
-        {
-            buildGraph.call(this, this.state.root);
+    draw() {
+        const rootNode = $(ReactDOM.findDOMNode(this));
+        // Get current viewport width
+        this.eventDropsChart.width(rootNode.width());
+
+        // Create svg element and draw eventDropsChart
+        this.canvas.call(this.eventDropsChart);
+        // TODO: Find a better way to re-render childrens when panel toggles
+        // Make sure we don't listen twice for the same event
+        $('svg', rootNode).off('parentUpdate').on('parentUpdate', this.draw);
+
+        // Add a tooltip
+        if (this.getTooltipContent) {
+            this.canvas.select('svg').call(this.tooltip);
         }
+
+        /*
+            EventDrops takes a very weird approach to handle de event hover
+            event.
+
+            We follow the same approach to try to hide our tooltip when mouse
+            has leave an event
+        */
+        const tooltipRef = this.tooltip;
+        d3.select(ReactDOM.findDOMNode(this)).select('rect.zoom')
+            .on('mousemove.timeline', function () {
+                const zoomRect = d3.select(this);
+
+                zoomRect.attr('display', 'none');
+                const el = document.elementFromPoint(d3.event.clientX, d3.event.clientY);
+                zoomRect.attr('display', 'block');
+
+                if (el.tagName !== 'circle') {
+                    tooltipRef.hide();
+                }
+            })
+            .on('mouseleave.timeline', function () {
+                // Fast movements of the mouse point don't hide the tooltip :(
+                // Use mouseleave as a last resort to hide our tooltip
+                tooltipRef.hide();
+            });
     }
 };
 
