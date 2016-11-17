@@ -85,8 +85,6 @@ class SpotLDACWrapperTest extends TestingSparkContextFlatSpec with Matchers{
       .map(x=>x.toString.replaceAll("\\]","").replaceAll("\\[",""))
       .zipWithIndex.toDF(DocumentName, DocumentId)
 
-    println(documentDictionary.collect.foreach(println))
-
     model should contain ("2 0:8 3:5")
     model should contain ("1 1:4")
     model should contain ("1 2:2")
