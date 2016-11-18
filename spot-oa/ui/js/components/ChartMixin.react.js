@@ -22,7 +22,7 @@ var ChartMixin = {
         prevState = prevState || {};
         state = this.state || {};
 
-        if (state.error) return;
+        if (state.error || !state.data) return;
 
         if (!state.loading) {
             if (prevState.loading) {

@@ -61,10 +61,11 @@ body {
 .d3-tip {
     line-height: 1;
     padding: 12px;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     color: #fff;
     border-radius: 5px;
     font-size: 12px;
+    z-index: 10000;
 }
 
 .d3-tip .d3-tip-label {

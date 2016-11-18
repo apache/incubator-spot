@@ -27,7 +27,7 @@ var ChordsDiagramStore = assign(new RestStore(NetflowConstants.API_VISUAL_DETAIL
   },
   getIp: function ()
   {
-    return this.getRestFilter(IP_FILTER);
+    return this.getRestFilter(IP_FILTER).replace(/_/g, '.');
   }
 });
 

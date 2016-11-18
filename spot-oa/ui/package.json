@@ -31,7 +31,7 @@
     "browserify-shim": "^3.8.12",
     "jest": "^16.0.2",
     "react-test-renderer": "^15.3.2",
-    "watchify": "~2.1.0"
+    "watchify": "^2.1.0"
   },
   "scripts": {
     "test": "jest",
