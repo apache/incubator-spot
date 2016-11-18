@@ -14,6 +14,7 @@
     "d3-tip": "^0.6.7",
     "event-drops": "^0.1.1",
     "flux": "^2.0.0",
+    "font-awesome": "^4.7.0",
     "jquery": "^2.0.0",
     "js-base64": "^2.1.9",
     "object-assign": "^1.0.0",

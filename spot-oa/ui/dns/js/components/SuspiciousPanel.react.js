@@ -53,7 +53,7 @@ var SuspiciousPanel = React.createClass({
     if (item.network_context)
     {
       ip_dst_info = (
-        <span className={'fa fa-lg fa-info-circle text-primary'}
+        <span className={'fa fa-lg fa-info-circle text-info'}
             data-container="body" data-toggle="popover" data-placement="right" data-content={item.network_context}>
         </span>
       );

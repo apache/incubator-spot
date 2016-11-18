@@ -27,7 +27,7 @@ var SuspiciousPanel = React.createClass({
     _renderIpCell: function (keyPrefix, ip, isInternal) {
         var internalCssCls;
 
-        internalCssCls = isInternal ? 'label label-primary' : '';
+        internalCssCls = isInternal ? 'label label-info' : '';
 
         return (
             <span key={keyPrefix + '_label'} className={internalCssCls}>{ip} </span>

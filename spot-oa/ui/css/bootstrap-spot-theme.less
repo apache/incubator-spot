@@ -1,43 +1,24 @@
-body {
-  font-size: 14px;
-}
-
-.navbar {
-    margin-bottom: 0px;
-    border-radius: 0px;
-    border: 0px none transparent;
-}
+/*****************************************
+ **              Spot Header            **
+ *****************************************/
 
 #spot-nav {
-    background-color:#0071C5;
+  border: none;
 }
 
-#spot-nav .navbar-brand {
-    color: #ffffff;
-}
-#spot-nav .navbar-nav>li>a {
-    color: #ffffff;
-}
-
-.navbar #search-box {
-  background-color: #edeff0;
+#search-box {
+  background-color: rgb(224, 224, 224);
+  color: @gray-base;
   padding: 5px 0;
-  min-height: 44px;
 }
 
-.navbar #nav_form label {
-  margin: 0 10px;
+#search-box .form-group {
+    margin-left: 10px;
 }
 
-.spot-frame-content > .panel {
-    border-color: #0071C5;
-}
-
-.spot-frame-content > .panel > .panel-heading {
-    color: #fff;
-    background-color: #0071C5;
-    border-color: #0071C5;
-}
+/*****************************************
+ **         Spot loading spinner        **
+ *****************************************/
 
 .spot-loader
 {
@@ -54,9 +35,9 @@ body {
     background-image: url(../images/ajax-loader.gif);
 }
 
-.spot-grid-panel > table > thead th {
-    vertical-align: middle;
-}
+/*****************************************
+ **             Spot Tooltip            **
+ *****************************************/
 
 .d3-tip {
     line-height: 1;
@@ -161,7 +142,7 @@ body {
 }
 
 /*****************************************
- **           Network View              **
+ **          Spot Network View          **
  *****************************************/
 .edge {
     stroke-width: 3px;
@@ -169,12 +150,12 @@ body {
 }
 
 .edge.active {
-    stroke: #FDB813 !important;
+    stroke: @brand-warning !important;
     stroke-opacity: 1 !important;
 }
 
 .edge.highlight {
-    stroke: #FDB813 !important;
+    stroke: @brand-warning !important;
     stroke-opacity: 1 !important;
 }
 
@@ -190,21 +171,7 @@ body {
 .node {
     stroke: hsl(0,60%,100%);
     stroke-width: 2.5px;
-    fill: hsl(0,601,40%);
-}
-
-.node-label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    visibility: hidden;
-    background: white;
-    border-style: solid;
-    border-color: black;
-    border-radius: 10px;
-    font-family: verdana, san-serif;
-    padding: 10px;
+    fill: @brand-warning;
 }
 
 /*-------------------------- Flashing/ blinker Animation----------------------*/
@@ -224,7 +191,7 @@ body {
 }
 
 .proxy-force .edge.blink_me {
-    stroke: #FDB813;
+    stroke: @brand-warning;
 }
 
 @-moz-keyframes blinker {
@@ -279,8 +246,9 @@ body {
 }
 
 /*************************************
- **         Chords Diagram          **
+ **      Spot Chords Diagram        **
  *************************************/
+
 .chord path {
     fill-opacity: .67;
     stroke: #000;
@@ -288,9 +256,8 @@ body {
 }
 
 /*************************************
- **         Ingest Summary          **
+ **      Spot Ingest Summary        **
  *************************************/
-
 
 .x.axis path {
     stroke: #000;
