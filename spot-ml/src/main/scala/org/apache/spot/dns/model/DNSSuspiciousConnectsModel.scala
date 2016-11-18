@@ -6,14 +6,14 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
-import org.apache.spot.SpotLDACWrapper
-import org.apache.spot.SpotLDACWrapper.{SpotLDACInput, SpotLDACOutput}
+import org.apache.spot.spotldacwrapper.{SpotLDACInput, SpotLDACOutput}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.DNSWordCreation
 import org.apache.spot.utilities.{CountryCodes, DomainProcessor, Quantiles, TopDomains}
 import org.apache.spot.utilities.DomainProcessor.DomainInfo
 import org.apache.log4j.Logger
+import org.apache.spot.spotldacwrapper.SpotLDACWrapper
 
 
 /**
@@ -193,8 +193,9 @@ object DNSSuspiciousConnectsModel {
         .map({ case ((ipDst, word), count) => SpotLDACInput(ipDst, word, count) })
 
 
-    val SpotLDACOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDACWrapper.runLDA(ipDstWordCounts,
+    val SpotLDACOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDACWrapper.runLDA(ipDstWordCounts,
       config.modelFile,
+      config.hdfsModelFile,
       config.topicDocumentFile,
       config.topicWordFile,
       config.mpiPreparationCmd,
@@ -206,8 +207,21 @@ object DNSSuspiciousConnectsModel {
       config.localUser,
       config.analysis,
       config.nodes,
-      config.ldaPRGSeed)
+      config.ldaPRGSeed,
+      sparkContext,
+      sqlContext,
+      logger)
 
+    // Since DNS is still broadcasting ip to topic mix, we need to convert data frame to Map[String, Array[Double]]
+    val ipToTopicMix = ipToTopicMixDF
+      .rdd
+      .map({ case (ipToTopicMixRow: Row) => (ipToTopicMixRow.toSeq.toArray) })
+      .map({
+        case (ipToTopicMixSeq) => (ipToTopicMixSeq(0).asInstanceOf[String], ipToTopicMixSeq(1).asInstanceOf[Seq[Double]]
+          .toArray)
+      })
+      .collectAsMap
+      .toMap
 
     new DNSSuspiciousConnectsModel(topicCount,
       ipToTopicMix,

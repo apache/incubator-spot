@@ -22,6 +22,7 @@ object SuspiciousConnectsArgumentParser {
                                       ldaPath: String = "",
                                       nodes: String = "",
                                       hdfsScoredConnect: String = "",
+                                      hdfsModelFile: String = "",
                                       threshold: Double = 1.0d,
                                       maxResults: Int = -1,
                                       outputDelimiter: String = "\t",
@@ -94,6 +95,10 @@ object SuspiciousConnectsArgumentParser {
     opt[String]("scored").required().valueName("<hdfs path>").
       action((x, c) => c.copy(hdfsScoredConnect = x)).
       text("HDFS path for results")
+
+    opt[String]("tempmodel").required().valueName("<hdfs path>").
+      action((x, c) => c.copy(hdfsModelFile = x)).
+      text("HDFS path for model (temporary location)")
 
     opt[Double]("threshold").required().valueName("float64").
       action((x, c) => c.copy(threshold = x)).
