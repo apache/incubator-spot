@@ -3,12 +3,19 @@
     "hdfs_app_path" : "hdfs application path",
     "collector_processes":5,
     "ingestion_interval":1,
+    "spark-streaming":{
+                "driver_memory":"",
+                "spark_exec":"",
+                "spark_executor_memory":"",
+                "spark_executor_cores":"",
+                "spark_batch_size":""
+    },
     "kafka":{
             "kafka_server":"kafka ip",
             "kafka_port":"kafka port",
             "zookeper_server":"zk ip",
             "zookeper_port":"zk port",
-            "message_size":999999
+            "message_size":900000
         },
     "pipelines":{
         "flow":{
@@ -31,7 +38,7 @@
             "type":"proxy",
             "collector_path":"/collector_path/proxy",
             "supported_files":[".log"],
-            "parser":"bro_parser.py"
-        }
+            "parser":"bluecoat.py"            
+        }     
     }
 }
