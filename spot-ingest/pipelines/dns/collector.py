@@ -83,7 +83,7 @@ class Collector(object):
 
 def ingest_file(file,pkt_num,pcap_split_staging, partition,hdfs_root_path,topic,kafka_servers):
 
-    logger = logging.getLogger('SPOT.INGEST.FLOW.{0}'.format(os.getpid()))
+    logger = logging.getLogger('SPOT.INGEST.DNS.{0}'.format(os.getpid()))
     
     try:
         # get file name and date.
