@@ -1,14 +1,13 @@
-var assign = require('object-assign');
+const assign = require('object-assign');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var FlowConstants = require('../constants/NetflowConstants');
-var RestStore = require('../../../js/stores/JsonStore');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
+const FlowConstants = require('../constants/NetflowConstants');
+const JsonStore = require('../../../js/stores/JsonStore');
 
-var fields = ['title', 'summary'];
-var filterName;
+const IP_FILTER_NAME = 'ip';
 
-var IncidentProgressionStore = assign(new RestStore(FlowConstants.API_INCIDENT_PROGRESSION), {
+const IncidentProgressionStore = assign(new JsonStore(FlowConstants.API_INCIDENT_PROGRESSION), {
     errorMessages: {
         404: 'Please choose a different date, no data has been found'
     },
@@ -16,22 +15,13 @@ var IncidentProgressionStore = assign(new RestStore(FlowConstants.API_INCIDENT_P
     {
         this.setEndpoint(FlowConstants.API_INCIDENT_PROGRESSION.replace('${date}', date.replace(/-/g, '')));
     },
-    setFilter: function (name, value)
+    setIp: function (value)
     {
-        filterName = name;
-        this.setRestFilter('id', value);
+        this.setRestFilter(IP_FILTER_NAME, value);
     },
-    getFilterName: function ()
+    getIp: function ()
     {
-        return filterName;
-    },
-    getFilterValue: function ()
-    {
-        return this.getRestFilter('id');
-    },
-    clearFilter: function ()
-    {
-       this.removeRestFilter('id');
+        return this.getRestFilter(IP_FILTER_NAME);
     }
 });
 
@@ -40,28 +30,11 @@ SpotDispatcher.register(function (action) {
         case SpotConstants.UPDATE_DATE:
             IncidentProgressionStore.setDate(action.date);
             break;
+        case SpotConstants.RELOAD_COMMENTS:
+            IncidentProgressionStore.resetData();
+            break;
         case SpotConstants.SELECT_COMMENT:
-            var comment, filterParts, key;
-
-            IncidentProgressionStore.clearFilter();
-
-            comment = action.comment;
-
-            filterParts = [];
-
-            for (key in comment)
-            {
-                // Skip comment fields
-                if (fields.indexOf(key)>=0) continue;
-
-                if (comment[key])
-                {
-                    IncidentProgressionStore.setFilter(key, comment[key]);
-
-                    break;
-                }
-            }
-
+            IncidentProgressionStore.setIp(action.comment.ip);
             IncidentProgressionStore.reload();
 
             break;

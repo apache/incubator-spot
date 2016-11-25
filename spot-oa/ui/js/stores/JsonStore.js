@@ -79,7 +79,7 @@ assign(JsonStore.prototype, EventEmitter.prototype, {
             error: function (response)
             {
                 this.setData({error: this.errorMessages[response.status] || this.defaultErrorMessage});
-            }          
+            }
         });
     }
 });

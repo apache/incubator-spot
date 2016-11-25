@@ -45,8 +45,7 @@ var DendrogramMixin = {
       nodeSel.exit = nodeSel.update.exit();
 
       const nodeEl = nodeSel.enter.append('g')
-                                .attr('class', n => `node depth_${n.depth}`)
-                                .attr('transform', n => `translate(${n.y},${n.x})`);
+                                .attr('class', n => `node depth_${n.depth}`);
 
       nodeEl.append('circle')
                         .attr('r', 4.5)
@@ -70,6 +69,8 @@ var DendrogramMixin = {
                       .attr('fill', 'black')
                       .text(n => n.name);
 
+    nodeSel.update.attr('transform', n => `translate(${n.y},${n.x})`);
+
     nodeSel.exit.remove();
   },
   drawLinks(links) {
@@ -82,7 +83,6 @@ var DendrogramMixin = {
 
       linkSel.enter.append('path', '.node')
         .attr('class', 'link')
-        .attr('d', this.diagonal)
         .on('mouseover', function (l)
         {
             d3.select(this)
@@ -104,8 +104,10 @@ var DendrogramMixin = {
                         .style('fill', null);
       });
 
-    // Remove old nodes
-    linkSel.exit.remove();
+      linkSel.update.attr('d', this.diagonal);
+
+      // Remove old nodes
+      linkSel.exit.remove();
   }
 };
 

@@ -18,14 +18,15 @@ const TimelineChart = React.createClass({
     _onChange() {
         const storeData = TimelineStore.getData();
 
-        if (storeData.loading || storeData.error) {
-            this.setState(storeData);
+        let state = {loading: storeData.loading};
+        if (storeData.error) {
+            state.error = storeData.error;
         }
-        else {
-            const state = this._getStateFromStoreData(storeData.data);
+        else if (!storeData.loading && storeData.data.length) {
+            state = this._getStateFromStoreData(storeData.data);
+        }
 
-            this.setState(state);
-        }
+        this.replaceState(state);
     },
     _getStateFromStoreData(data)
     {
@@ -63,7 +64,7 @@ const TimelineChart = React.createClass({
             array of object values. Turn objects into arrays
         */
 
-        const skipedIp = TimelineStore.getFilter();
+        const skipedIp = TimelineStore.getIp();
         data.forEach(item => {
             [
                 {ipField:'srcip', portField:'sport'},

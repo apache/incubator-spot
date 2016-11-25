@@ -6,7 +6,7 @@ const FlowConstants = require('../constants/NetflowConstants');
 const SpotConstants = require('../../../js/constants/SpotConstants');
 const RestStore = require('../../../js/stores/RestStore');
 
-const FILTER_NAME = 'ip';
+const IP_FILTER_NAME = 'ip';
 
 const TimelineStore = assign(new RestStore(FlowConstants.API_TIMELINE), {
     _parser: d3.tsv,
@@ -21,17 +21,13 @@ const TimelineStore = assign(new RestStore(FlowConstants.API_TIMELINE), {
     getDate() {
         return this._date;
     },
-    setFilter: function (value)
+    setIp: function (value)
     {
-        this.setRestFilter(FILTER_NAME, value);
+        this.setRestFilter(IP_FILTER_NAME, value);
     },
-    getFilter: function ()
+    getIp: function ()
     {
-        return this.getRestFilter(FILTER_NAME);
-    },
-    clearFilter: function ()
-    {
-       this.removeRestFilter(FILTER_NAME);
+        return this.getRestFilter(IP_FILTER_NAME);
     }
 });
 
@@ -42,8 +38,11 @@ SpotDispatcher.register(function (action) {
             TimelineStore.setDate(action.date);
 
             break;
+        case SpotConstants.RELOAD_COMMENTS:
+            TimelineStore.resetData();
+            break;
         case SpotConstants.SELECT_COMMENT:
-            TimelineStore.setFilter(action.comment.ip);
+            TimelineStore.setIp(action.comment.ip);
 
             TimelineStore.reload();
 

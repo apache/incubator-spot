@@ -1,14 +1,13 @@
-var assign = require('object-assign');
+const assign = require('object-assign');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var FlowConstants = require('../constants/NetflowConstants');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var RestStore = require('../../../js/stores/JsonStore');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const FlowConstants = require('../constants/NetflowConstants');
+const SpotConstants = require('../../../js/constants/SpotConstants');
+const JsonStore = require('../../../js/stores/JsonStore');
 
-var fields = ['title', 'summary'];
-var filterName;
+const IP_FILTER_NAME = 'ip';
 
-var ImpactAnalysisStore = assign(new RestStore(FlowConstants.API_IMPACT_ANALYSIS), {
+const ImpactAnalysisStore = assign(new JsonStore(FlowConstants.API_IMPACT_ANALYSIS), {
     errorMessages: {
         404: 'Please choose a different date, no data has been found'
     },
@@ -16,22 +15,13 @@ var ImpactAnalysisStore = assign(new RestStore(FlowConstants.API_IMPACT_ANALYSIS
     {
         this.setEndpoint(FlowConstants.API_IMPACT_ANALYSIS.replace('${date}', date.replace(/-/g, '')));
     },
-    setFilter: function (name, value)
+    setIp(value)
     {
-        filterName = name;
-        this.setRestFilter('id', value);
+        this.setRestFilter(IP_FILTER_NAME, value);
     },
-    getFilterName: function ()
+    getIp()
     {
-        return filterName;
-    },
-    getFilterValue: function ()
-    {
-        return this.getRestFilter('id');
-    },
-    clearFilter: function ()
-    {
-       this.removeRestFilter('id');
+        this.getRestFilter(IP_FILTER_NAME);
     }
 });
 
@@ -41,28 +31,11 @@ SpotDispatcher.register(function (action) {
             ImpactAnalysisStore.setDate(action.date);
 
             break;
+        case SpotConstants.RELOAD_COMMENTS:
+            ImpactAnalysisStore.resetData();
+            break;
         case SpotConstants.SELECT_COMMENT:
-            var comment, filterParts, key;
-
-            ImpactAnalysisStore.clearFilter();
-
-            comment = action.comment;
-
-            filterParts = [];
-
-            for (key in comment)
-            {
-                // Skip comment fields
-                if (fields.indexOf(key)>=0) continue;
-
-                if (comment[key])
-                {
-                    ImpactAnalysisStore.setFilter(key, comment[key]);
-
-                    break;
-                }
-            }
-
+            ImpactAnalysisStore.setIp(action.comment.ip);
             ImpactAnalysisStore.reload();
 
             break;

@@ -1,6 +1,7 @@
-var React = require('react');
+const React = require('react');
+const $ = require('jquery');
 
-var ChartMixin = {
+const ChartMixin = {
     propTypes: {
         className: React.PropTypes.string
     },
@@ -10,7 +11,7 @@ var ChartMixin = {
         };
     },
     componentWillUpdate() {
-        window.removeEventListener('resize', this._onViewportResize);
+        window.removeEventListener('resize', this.draw);
         if (this.svg) {
             $(this.svg).off('parentUpdate');
         }

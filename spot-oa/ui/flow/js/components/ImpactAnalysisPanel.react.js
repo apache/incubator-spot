@@ -29,7 +29,14 @@ function buildGraph(root, ipsrc)
         .append("svg:g")
         .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-    $('svg', ReactDOM.findDOMNode(this)).off('parentUpdate').on('parentUpdate', () => buildGraph.call(this, root, ipsrc));
+    function resizeHandler() {
+        buildGraph.call(this, root, ipsrc);
+    }
+
+    window.removeEventListener('resize', resizeHandler.bind(this));
+    window.addEventListener('resize', resizeHandler.bind(this));
+
+    $('svg', ReactDOM.findDOMNode(this)).off('parentUpdate').on('parentUpdate', resizeHandler.bind(this));
 
     svg.append("svg:rect")
         .attr("class", "background")
@@ -217,34 +224,29 @@ var ImpactAnalysisPanel = React.createClass({
     },
     _onChange: function ()
     {
-        var state, filterName, root;
+        const storeData = ImpactAnalysisStore.getData();
 
-        state = ImpactAnalysisStore.getData();
+        const state = {loading: storeData.loading};
 
-        root = {
-            name: ImpactAnalysisStore.getFilterValue(),
-            size: 0,
-            children: []
-        };
+        if (storeData.error) {
+            state.error = storeData.error;
+        }
+        else if(!storeData.loading && storeData.data) {
+            state.root = {
+                name: ImpactAnalysisStore.getIp(),
+                size: 0
+            };
 
-        if (!state.loading)
-        {
-            filterName = ImpactAnalysisStore.getFilterName();
-
-            state.data.children.forEach(function (item)
-            {
-                root.children.push({
-                    name: item['name'],
-                    size: item['size'],
-                    children: item['children']
-                });
-            }.bind(this));
+            state.root.children = storeData.data.children.map((item) => {
+                return {
+                    name: item.name,
+                    size: item.size,
+                    children: item.children
+                };
+            });
         }
 
-        state.root = root;
-        delete state.data;
-
-        this.setState(state);
+        this.replaceState(state);
     },
     getInitialState: function ()
     {
@@ -282,7 +284,12 @@ var ImpactAnalysisPanel = React.createClass({
     {
         if (!this.state.loading && !this.state.error)
         {
-          buildGraph.call(this, this.state.root);
+          if (this.state.root) {
+              buildGraph.call(this, this.state.root);
+          }
+          else {
+              d3.select(ReactDOM.findDOMNode(this)).selectAll('*').remove();
+          }
         }
     }
 });

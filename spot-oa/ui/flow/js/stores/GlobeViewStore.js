@@ -5,8 +5,7 @@ var FlowConstants = require('../constants/NetflowConstants');
 var SpotConstants = require('../../../js/constants/SpotConstants');
 var JsonStore = require('../../../js/stores/JsonStore');
 
-var fields = ['title', 'summary'];
-var filterName;
+const IP_FILTER_NAME = 'ip';
 
 var GlobeViewStore = assign(new JsonStore(FlowConstants.API_GLOBE_VIEW), {
     errorMessages: {
@@ -16,28 +15,19 @@ var GlobeViewStore = assign(new JsonStore(FlowConstants.API_GLOBE_VIEW), {
     {
         this.setEndpoint(FlowConstants.API_GLOBE_VIEW.replace('${date}', date.replace(/-/g, '')));
     },
-    setFilter: function (name, value)
+    setIp: function (value)
     {
-        filterName = name;
-        this.setRestFilter('id', value);
+        this.setRestFilter(IP_FILTER_NAME, value);
     },
-    getFilterName: function ()
+    getIp: function ()
     {
-        return filterName;
-    },
-    getFilterValue: function ()
-    {
-        return this.getRestFilter('id');
+        return this.getRestFilter(IP_FILTER_NAME);
     },
     setData: function (data)
     {
         this._data = data;
 
         this.emitChangeData();
-    },
-    clearFilter: function ()
-    {
-       this.removeRestFilter('id');
     }
 });
 
@@ -47,28 +37,11 @@ SpotDispatcher.register(function (action) {
             GlobeViewStore.setDate(action.date);
 
             break;
+        case SpotConstants.RELOAD_COMMENTS:
+            GlobeViewStore.resetData();
+            break;
         case SpotConstants.SELECT_COMMENT:
-            var comment, filterParts, key;
-
-            GlobeViewStore.clearFilter();
-
-            comment = action.comment;
-
-            filterParts = [];
-
-            for (key in comment)
-            {
-                // Skip comment fields
-                if (fields.indexOf(key)>=0) continue;
-
-                if (comment[key])
-                {
-                    GlobeViewStore.setFilter(key, comment[key]);
-
-                    break;
-                }
-            }
-
+            GlobeViewStore.setIp(action.comment.ip);
             GlobeViewStore.reload();
 
             break;
