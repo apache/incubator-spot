@@ -96,7 +96,7 @@ Before running DNS OA users need to configure components for the first time. It 
 - dns_scores_bu.csv: The backup file of suspicious connects in case user wants to roll back any changes made during analysis. Schema is same as dns_scores.csv.
 
 
-- dendro-\<DNS query name>.csv: One file for each source IP. This file includes information about all the queries made to a particular DNS query name. 
+- dendro-\<DNS query name>.csv: One file for each source IP. This file includes information about all the queries made to a particular DNS query name. The number of retrieved rows is limited by the value of "\_details\_limit" parameter
 
 		Schema with zero-indexed columns:
 		

@@ -174,7 +174,7 @@ This is not a function, but more like global code to set up styles and widgets t
 `start_investigation():` - This function cleans the notebook from previous executions, then loops through the _flow_scores.csv_ file to get the 'srcIp' and 'dstIP' values from connections scored as high risk (sev = 1), ignoring IPs
 already saved in the _threats.csv_ file. 
 
-`display_controls():` - This function will display the ipython widgets with the listbox of high risk IP's and the "Search" button.
+`display_controls(threat_list):` - This function will display the ipython widgets with the listbox of high risk IP's and the "Search" button.
 
 `search_ip()` - This function is triggered by the onclick event of the "Search" button after selecting an IP from the listbox. This will perform a query to the _flow_ table to find all connections involving the selected IP.
  The results are stored in the _ir-\<ip>.tsv_ file. If the file is not empty, this will immediately execute the following functions:  
@@ -187,9 +187,15 @@ already saved in the _threats.csv_ file.
 - All unique ‘inbound’ connected IP's (Where the internal sought IP appears only as destination, or the opposite if the IP is external)  
 - All unique ‘outbound’ connected IP's (Where the internal sought IP appears only as source, or the opposite if the IP is external)
 - All unique ‘two way’ connected IP's (Where the sought IP appears as both source and destination)
-This function will also call the _get_top_bytes()_ and _get_top_conns()_ functions to create sub dictionaries for each type of connection. 
+This function will also call the _get_top_bytes()_ and _get_top_conns()_ functions to create sub dictionaries for each type of connection and use those to generate the storyboard.
+To aid on the analysis, this function displays four html tables each containing the following data:
+- Top n source IP by connections
+- Top n source IP per bytes transfered
+- Top n destination IP by connections
+- Top n destination IP per bytes transfered
 
-`display_threat_box(anchor):` - Displays the widgets for "Title", "Comments" textboxes and the "Save" button on the notebook, so the user can add comments related to the threat and save them to continue with the analysis.  
+
+`display_threat_box(ip):` - Displays the widgets for "Title", "Comments" textboxes and the "Save" button on the notebook, so the user can add comments related to the threat and save them to continue with the analysis.  
 
 `add_network_context()` - This function depends on the existence of the _networkcontext\_1.csv_ file, otherwise this step will be skipped.
 This function will loop through all dictionaries updating each IP with its context depending on the ranges defined in the networkcontext.
@@ -204,6 +210,12 @@ This function will loop through all dictionaries updating each IP with its conte
 - details_inbound()
 - add_threat() 
 
+`display_results(cols, dataframe, top)` - 
+*cols*: List of columns to display from the dataframe
+*dataframe*: Dataframe to display
+*top*: Number of top rows to display.
+This function will create a formatted html table to display the provided dataframe.
+
 `generate_attack_map_file(ip, inbound, outbound, twoway): `- This function depends on the existence of the _iploc.csv_ file. Using the geospatial info previously added to the dictionaries, this function will create the _globe.json_ file. If the iploc file doesn't exist, this function will be skipped.
 
 `generate_stats(ip, inbound, outbound, twoway, threat_name):` - This function reads through each of the dictionaries to group the connections by type. The results are stored in the _stats-&lt;ip&gt;.json_ file. 
@@ -211,7 +223,7 @@ This function will loop through all dictionaries updating each IP with its conte
 `generate_dendro(ip, inbound, outbound, twoway, date):` - This function groups the results from all three dictionaries into a json file, adding additionals level if the dictionaries include network context for each IP. 
 The results are stored in the _threat-dendro-&lt;ip&gt;.json_ file.
 
-`details_inbound(ip, inbound):` -  This function executes a query to the _flow_ table looking for all additional information between the shought IP (threat) and the IP's in the 'top_n' dictionaries. The results will be stored in the _sbdet-&lt;ip&gt;.tsv_ file.
+`details_inbound(anchor, inbound, outbond, twoway):` -  This function executes a query to the _flow_ table looking for all additional information between the shought IP (threat) and the IP's in the 'top_n' dictionaries. The results will be stored in the _sbdet-&lt;ip&gt;.tsv_ file.
  
 `add_threat(ip,threat_title):`- Creates or updates the _threats.csv_ file, appending the IP and Title from the web form. This will serve as the menu for the Story Board.
 

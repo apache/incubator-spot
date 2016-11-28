@@ -23,18 +23,18 @@ This file is required by the following modules:
    
 Schema with zero-indexed columns:
 
-        0. IP Range start (long)
-        1. IP Range end (long)
+        0. IP Range start (string)
+        1. IP Range end (string)
         2. Country code (string)
-        3. Country (String)
+        3. Country (string)
         4. State (string)
         5. City (string)
-        6. Latitude (float)
-        7. Longitude (float)
+        6. Latitude (string)
+        7. Longitude (string)
         8. Owner or Register (string)
         9. Domain name (string)        
 
-The schema is based on the GeoIP database by [MAXMIND](https://www.maxmind.com). Either users acquire MAXMIND database or any other database or even create their own, it should always comply the schema above.
+The schema is based on the GeoIP database by [MAXMIND](https://www.maxmind.com). Either users acquire MAXMIND database or any other database or even create their own, it should always comply the schema above. This includes enclosing every field in double quotes.
 
 Ip ranges are defined by Ips converted into integers. To calculate the integer value from an IP first you need to split the string by "." into four values or octets. Then apply the following formula: (1st octet * 256^3) + (2nd octet * 256^2) + (3th octet * 256) + (4th octet).
 

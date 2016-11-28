@@ -58,20 +58,22 @@ Before running Flow OA users need to configure components for the first time. It
         4.   sport:          int
         5.   dport:          int
         6.   proto:          string
-        7.   flag:           string
-        8.   ipkt:           bigint
-        9.   ibyt:           bigint
-        10.  lda_score:      double
-        11.  rank:           int
-        12.  srcIpInternal:  bit
-        13.  destIpInternal: bit
-        14.  srcGeo:         string
-        15.  dstGeo:         string
-        16.  srcDomain:      string
-        17.  dstDomain:      string
-        18.  srcIP_rep:      string
-        29.  dstIP_rep:      string
-       
+        7.   ipkt:           bigint
+        8.   ibyt:           bigint
+        9.   opkt:           bigint
+        10.  obyt:           bigint
+        11.  score:          double
+        12.  rank:           int
+        13.  srcIpInternal:  bit
+        14.  destIpInternal: bit
+        15.  srcGeo:         string
+        16.  dstGeo:         string
+        17.  srcDomain:      string
+        18.  dstDomain:      string
+        19.  srcIP_rep:      string
+        20.  dstIP_rep:      string
+
+
 - flow_scores_bu.csv. Backup file for flow_scores.csv in case user needs to roll back the scoring or the changes made during analysis. Schema it's same as flow_scores.csv.
 
 - edge-\<source IP>-\<destination IP>-\<HH>-\<MM>.tsv. Edge files. One for each suspicious connection containing the details for each comunication occurred during the same specific minute between source IP and destination IP.
@@ -91,15 +93,13 @@ Before running Flow OA users need to configure components for the first time. It
         11. output:     int
         12. rip:        string
 
-- chord-\<client ip>.tsv. Chord files. One for each distinct client ip. These files contain details of packets and data transferred between the client ip and every other IP it connected to.
+- chord-\<client ip>.tsv. Chord files. One for each distinct client ip. These files contain the sum of input packets and bytes transferred between the client ip and every other IP it connected to.
 
         Schema with zero-indexed columns:
         0.  srcip:      string
         1.  dstip:      string
-        2.  maxbyte:    bigint
-        3.  avgbyte:    double
-        4.  maxpkt:     bigint
-        5.  avgpkt:     double
+        2.  ibytes:     bigint
+        3.  ipkts:      double
         
 ### flow_config.json
 
