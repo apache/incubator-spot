@@ -81,7 +81,7 @@ In order to execute this process there are a few prerequisites:
             
             
  3. The spot-setup project contains scripts to install the hive database and also includes the main configuration file for this tool.
-     The main file is called spot.conf and it which contains different variables that the user can set up to customize their installation. Some variables are
+     The main file is called spot.conf which contains different variables that the user can set up to customize their installation. Some variables
      must be updated in order to have spot-ml and spot-oa working.
      
      To run the OA process it's required to install spot-setup. If it's already installed just make sure the following configuration are set up in spot.conf file.

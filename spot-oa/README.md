@@ -10,7 +10,7 @@ Some of the technologies used are:
  - [Bootstrap](http://getbootstrap.com/)
  - [ReactJS](https://facebook.github.io/react/)  
 
-* For more specific requirements, please refer to each specific pipeline readme file before running OA.
+* For more specific requirements, please refer to each specific pipeline readme file before running OA.*
 ----------
 
 

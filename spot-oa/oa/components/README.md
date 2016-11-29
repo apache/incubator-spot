@@ -30,7 +30,7 @@ This document will explain the necessary steps to configure the spot-oa componen
 _Data source module._
 
 This module needs to be configured correctly to avoid errors during the spot-oa execution. Here you need to select the correct database engine to obtain the correct results while creating additional details files.
-Currently spot-oa is prepared to work with Impala, but you can always configure any other database engine and make the corresponding updates in the code.
+Currently spot-oa includes the modules to work with either Hive or Impala. By default is set to work with Impala, but you can always configure any other database engine, create the corresponding python module and make the corresponding changes in the code.
 
 **Configuration**
 

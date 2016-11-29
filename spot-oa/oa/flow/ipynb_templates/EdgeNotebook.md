@@ -67,7 +67,7 @@ Each of these lists will populate a listbox widget and then they will be display
 
 `apply_css_to_select(select)` - Defines a set of css styles that can be applied to any listbox widget. 
 
-`update_sconnects(list_control,source):` -   
+`update_sconnects(b):` -   
 This function is executed on the onclick event of the ‘Assign’ button. The notebook will first try to get the value from the 'Quick IP Scoring' textbox ignoring the selections from the listboxes; in case the textbox is empty, it will then
  get the selected values from each of the listboxes to look them up in the `flow_scores.csv` file. 
 A binary search on the file is then performed:  
@@ -81,6 +81,8 @@ Every row will be then appended to the `flow_scores.csv.tmp` file, which will re
 The scored rows will also be appended to the `flow_scores_fb.csv` file, which will later be used for the ML feedback.   
 
 `set_rules():` - Predefined function where the user can define custom rules to be initally applied to the dataset. By default this function is commented out.
+
+`create_feedback_file(scored_rows):` - Appends the updated rows to the _flow_scores_fb.csv_ everytime a connection is scored. This file is used as feedback for the ML process.
 
 `apply_rules(rops,rvals,risk):` - This function applies the rules defined by `set_rules()` and updates the `flow_scores.csv` file following a similar process to the `update_sconnects()` function. By default this function is commented out.
 
