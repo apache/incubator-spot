@@ -232,7 +232,7 @@ class OA(object):
         # add new headers (gtiSrcRep/gtiDstRep).
         self._logger.info("Adding reputation headers")
         flow_headers_rep = self._flow_scores[0]
-        flow_headers_rep.extend(["srcIp_rep","dstIp_rep"])
+        flow_headers_rep.extend(["srcIP_rep","dstIP_rep"])
         
         # read configuration.
         self._logger.info("Reading reputation configuration file: {0}".format(reputation_conf_file))
