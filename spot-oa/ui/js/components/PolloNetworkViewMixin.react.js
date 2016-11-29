@@ -212,7 +212,7 @@ const PolloNetworkViewMixin = {
     selectNodes(ids) {
         ids = ids instanceof Array ? ids : [ids];
 
-        this.canvas.selectAll('.node').classed('blink_me', false);
+        this.canvas.selectAll('.node.blink_me').classed('blink_me', false);
 
         ids.forEach((id) => {
             id = SpotUtils.encodeId(id);
@@ -221,6 +221,9 @@ const PolloNetworkViewMixin = {
     },
     selectEdge(id) {
         id = SpotUtils.encodeId(id);
+
+        this.canvas.selectAll('.edge.blink_me,.edge.active').classed('blink_me', false).classed('active', false);
+
         this.canvas.selectAll('.edge')
             .classed('blink_me', false)
             .filter(`#${id}`)
