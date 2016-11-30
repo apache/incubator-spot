@@ -66,6 +66,7 @@ class OA(object):
         self._add_reputation()        
         self._create_flow_scores_csv()
         self._get_oa_details()
+        self._ingest_summary()
 
         ##################
         end = time.time()
