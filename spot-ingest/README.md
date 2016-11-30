@@ -22,7 +22,7 @@ Ingest data is captured or transferred into the Hadoop cluster, where they are t
 
 Ingest framework needs Kafka to work in real-time streaming. Add Kafka service using Cloudera Manager. If you are using a Cloudera Manager version < 5.4.1 you will need to add the kafka parcel manually.
 
-Ingest module uses a default configuration for the message size (999999 bytes), if you modify this size in the ingest configuration file you will need to modify the following configuration properties in kafka:
+Ingest module uses a default configuration for the message size (900000 bytes), if you modify this size in the ingest configuration file you will need to modify the following configuration properties in kafka:
 
 * message.max.bytes
 * replica.fetch.max.bytes
@@ -48,19 +48,30 @@ The file **ingest_conf.json** contains all the required configuration to start t
 *  **dbname:** Name of HIVE database where all the ingested data will be stored in avro-parquet format.
 *  **hdfs_app_path:** Application path in HDFS where the pipelines will be stored (i.e /user/_application_user_/). 
 *  **kafka:** Kafka and Zookeeper server information required to create/listen topics and partitions.
+*  **collector_processes:** Ingest framework uses  multiprocessing to collect files (different from workers), this configuration key defines the numbers of collector processes to use.
+*  **spark-streaming:** Proxy pipeline uses spark streaming to ingest data, this configuration is required to setup the spark application for more details please check : [how to configure spark](https://github.com/Open-Network-Insight/open-network-insight/blob/spot/spot-ml/SPARKCONF.md)
 *  **pipelines:** In this section you can add multiple configurations for either the same pipeline or different pipelines. The configuration name must be lowercase without spaces (i.e. flow_internals).
 
 **Configuration example:**
 
-      "dbname" : "database name",
-      "hdfs_app_path" : "hdfs application path",
+     "dbname" : "database name",
+     "hdfs_app_path" : "hdfs application path",
+     "collector_processes":5,
+     "ingestion_interval":1,
+     "spark-streaming":{
+                "driver_memory":"",
+                "spark_exec":"",
+                "spark_executor_memory":"",
+                "spark_executor_cores":"",
+                "spark_batch_size":""
+      },
       "kafka":{
             "kafka_server":"kafka ip",
             "kafka_port":"kafka port",
             "zookeper_server":"zk ip",
             "zookeper_port":"zk port",
-            "message_size":999999
-       },
+            "message_size":900000
+        },
       "pipelines":{
       
          "flow_internals":{
