@@ -66,6 +66,7 @@ class OA(object):
         self._add_reputation()        
         self._create_flow_scores_csv()
         self._get_oa_details()
+        self._ingest_summary()
 
         ##################
         end = time.time()
@@ -284,17 +285,17 @@ class OA(object):
 
     def _get_oa_details(self):
 
-	self._logger.info("Getting OA Flow suspicious details/chord diagram")
-	# start suspicious connects details process.
-	p_sp = Process(target=self._get_suspicious_details)
-	p_sp.start()
+        self._logger.info("Getting OA Flow suspicious details/chord diagram")
+        # start suspicious connects details process.
+        p_sp = Process(target=self._get_suspicious_details)
+        p_sp.start()
 
-	# start chord diagram process.
-	p_ch = Process(target=self._get_chord_details)
-	p_ch.start()
+        # start chord diagram process.
+        p_ch = Process(target=self._get_chord_details)
+        p_ch.start()
 
-	p_sp.join()
-	p_ch.join()
+        p_sp.join()
+        p_ch.join()
 
 	
     def _get_suspicious_details(self,bar=None):
@@ -385,6 +386,47 @@ class OA(object):
                     self._engine.query(ch_query.format(self._db,self._table_name,yr,mn,dy,ip,ips_filter),chord_file,delimiter="\\t")
 
      
- 
+    def _ingest_summary(self):
+        
+        # get date parameters.
+        yr = self._date[:4]
+        mn = self._date[4:6]
+        dy = self._date[6:]
 
+        # get ingest summary.           
+        ingest_summary_qry = ("SELECT tryear, trmonth, trday, trhour, trminute, COUNT(*) flows"
+                              " FROM onidb.flow "
+                              " WHERE "
+                              " y={0} "
+                              " AND m={1} "
+                              " AND d={2} "
+                              " AND unix_tstamp IS NOT NULL "
+                              " GROUP BY tryear, trmonth, trday, trhour, trminute;")
+
+        ingest_summary_qry = ingest_summary_qry.format(yr,mn,dy)
+
+        results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)
+        self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
+        
+        result_rows = []        
+        with open(results_file, 'rb') as rf:
+            csv_reader = csv.reader(rf, delimiter = ",")
+            result_rows = list(csv_reader)
+        
+        result_rows = iter(result_rows)
+        next(result_rows)
+
+        ingest_summary_results = [ ["date","flows"] ]
+        ingest_summary_results.extend([ ["{0}/{1}/{2} {3}:{4}".format(mn,dy,yr,row[3].zfill(2) ,row[4].zfill(2)), row[5]] for row in result_rows ])
+        ingest_summay_file = "{0}/is_{1}.csv".format(self._ingest_summary_path,self._date)
+
+
+        write_format =  'a' if os.path.isfile(ingest_summay_file) else 'w+'
+        with open(ingest_summay_file, write_format) as u_file:
+            writer = csv.writer(u_file, quoting=csv.QUOTE_NONE, delimiter=",")
+            writer.writerows(ingest_summary_results)
+
+        rm_big_file = "rm {0}".format(results_file)
+        os.remove(results_file)
+       
 
