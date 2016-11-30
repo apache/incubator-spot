@@ -395,15 +395,15 @@ class OA(object):
 
         # get ingest summary.           
         ingest_summary_qry = ("SELECT tryear, trmonth, trday, trhour, trminute, COUNT(*) flows"
-                              " FROM onidb.flow "
+                              " FROM {0}.flow "
                               " WHERE "
-                              " y={0} "
-                              " AND m={1} "
-                              " AND d={2} "
+                              " y={1} "
+                              " AND m={2} "
+                              " AND d={3} "
                               " AND unix_tstamp IS NOT NULL "
                               " GROUP BY tryear, trmonth, trday, trhour, trminute;")
 
-        ingest_summary_qry = ingest_summary_qry.format(yr,mn,dy)
+        ingest_summary_qry = ingest_summary_qry.format(self._db, yr, mn, dy)
 
         results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)
         self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
