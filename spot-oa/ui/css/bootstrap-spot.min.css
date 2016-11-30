@@ -1468,6 +1468,7 @@ td.visible-print,th.visible-print{display:table-cell!important}
 .edge-faded,.faded,.node-faded{stroke-opacity:.2!important}
 .faded,.node-faded{fill-opacity:.2!important}
 .node{stroke:#fff;stroke-width:2.5px;fill:#f7a706}
+.node.internal{stroke:#fff;stroke-width:2.5px;fill:#5bc0de}
 .blink_me{-webkit-animation-name:blinker;-webkit-animation-duration:1.5s;-webkit-animation-timing-function:linear;-webkit-animation-iteration-count:infinite;-moz-animation-name:blinker;-moz-animation-duration:1.5s;-moz-animation-timing-function:linear;-moz-animation-iteration-count:infinite;animation-name:blinker;animation-duration:1.5s;animation-timing-function:linear;animation-iteration-count:infinite}
 .proxy-force .edge.blink_me{stroke:#f7a706}
 @-moz-keyframes blinker{0%,100%{stroke-opacity:1;fill-opacity:1}

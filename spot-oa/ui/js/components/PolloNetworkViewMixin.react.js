@@ -21,7 +21,6 @@ const PolloNetworkViewMixin = {
         this.nodeSizeScale = d3.scale.linear().domain(hitsDomain);
         this.chargeScale = d3.scale.linear().domain(hitsDomain);
         this.typeScale = d3.scale.ordinal().domain(ipDomain).range(["circle", "diamond"]);
-        this.colorScale = d3.scale.ordinal().domain(ipDomain).range(["#fdb813", "#0071C5"]);
 
         // Link related scales
         this.opacityScale = d3.scale.threshold().domain([13]).range([0.1, 1]);
@@ -108,12 +107,12 @@ const PolloNetworkViewMixin = {
         this.nodesSel.enter
             .append('path', '.edge')
             .classed('node', true)
+            .classed('internal', n => n.internalIp=='1')
             .attr("id", n => SpotUtils.encodeId(n.id))
             .attr("d", d3.svg.symbol()
                .size(n => this.nodeSizeScale(n.hits))
                .type(n => this.typeScale(n.internalIp))
             )
-            .attr('fill', n => this.colorScale(n.internalIp))
             .call(this.force.drag)
             .on('mouseover', (n) => {
                 var direction = '';
