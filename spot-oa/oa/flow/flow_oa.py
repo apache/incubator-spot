@@ -404,7 +404,7 @@ class OA(object):
 
         ingest_summary_qry = ingest_summary_qry.format(yr,mn,dy)
 
-        results_file = "{0}/results_{1}.csv".format(self._data_path,self._date)
+        results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)
         self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
         
         result_rows = []        
@@ -414,13 +414,16 @@ class OA(object):
         
         result_rows = iter(result_rows)
         next(result_rows)
-        ingest_summary_results2 = [ ["{0}-{1}-{2} {3}:{4}".format(yr,mn,dy,row[3],row[4]), row[5]] for row in result_rows ]
-        ingest_summay_file = "{0}/is_{1}.csv".format(self._data_path,self._date)
+
+        ingest_summary_results = [ ["date","flows"] ]
+        ingest_summary_results.extend([ ["{0}/{1}/{2} {3}:{4}".format(mn,dy,yr,row[3].zfill(2) ,row[4].zfill(2)), row[5]] for row in result_rows ])
+        ingest_summay_file = "{0}/is_{1}.csv".format(self._ingest_summary_path,self._date)
+
 
         write_format =  'a' if os.path.isfile(ingest_summay_file) else 'w+'
         with open(ingest_summay_file, write_format) as u_file:
             writer = csv.writer(u_file, quoting=csv.QUOTE_NONE, delimiter=",")
-            writer.writerows(ingest_summary_results2)
+            writer.writerows(ingest_summary_results)
 
         rm_big_file = "rm {0}".format(results_file)
         os.remove(results_file)
