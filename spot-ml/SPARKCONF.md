@@ -29,7 +29,7 @@ When running _Spark_ on _Yarn_ users can set up a set of properties in order to 
 effective way. Since not all clusters are the same and not all users are planning to have the same capacity of computation, we have created
 variables that users need to configure before running oni-ml.
 
-After installing oni-setup users will find the [duxbay.conf](https://github.com/Open-Network-Insight/oni-setup/blob/master/duxbay.conf) 
+After installing oni-setup users will find the [spot.conf](https://github.com/Open-Network-Insight/open-network-insight/blob/spot/spot-setup/spot.conf) 
 file under /etc folder. This file contains all the required configuration to run oni-ml, as explained in [INSTALL.md](https://github.com/Open-Network-Insight/oni-ml/blob/master/INSTALL.md). In this
 file exist a section for _Spark_ properties, below is the explanation for each of those variables:
 
