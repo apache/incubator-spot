@@ -1463,6 +1463,7 @@ td.visible-print,th.visible-print{display:table-cell!important}
 .d3-tip.ne:after{content:"\25E3";margin:-5px 0 0;top:100%;left:-4px}
 .d3-tip.se:after{content:"\25E4";top:-4px;left:-4px}
 .d3-tip.sw:after{content:"\25E5";margin:0 0 0 -5px;top:-4px;left:100%}
+.spot-grid-panel .label{font-size:100%}
 .edge{stroke-width:3px;transition:stroke .5s linear}
 .edge.active,.edge.highlight{stroke:#f7a706!important;stroke-opacity:1!important}
 .edge-faded,.faded,.node-faded{stroke-opacity:.2!important}

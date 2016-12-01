@@ -24,13 +24,11 @@ var SuspiciousPanel = React.createClass({
       </span>
         );
     },
-    _renderIpCell: function (keyPrefix, ip, isInternal) {
-        var internalCssCls;
-
-        internalCssCls = isInternal ? 'label label-info' : '';
+    _renderIpCell: function (keyPrefix, repClassName, ip, isInternal) {
+        const cssClassName = isInternal ? 'label label-info' : `text-${repClassName}`;
 
         return (
-            <span key={keyPrefix + '_label'} className={internalCssCls}>{ip} </span>
+            <span key={keyPrefix} className={cssClassName}>{ip}</span>
         );
     },
     /**
@@ -50,13 +48,8 @@ var SuspiciousPanel = React.createClass({
         reps = SpotUtils.parseReputation(item.srcIP_rep);
         highestRep = SpotUtils.getHighestReputation(reps);
 
-        srcIpContent = this._renderIpCell('src_' + idx, item.srcIP, +item.srcIpInternal);
-
-        return (
-            <p key={'srcIP_' + idx} className={'srcIP text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
-                {srcIpContent}
-            </p>
-        );
+        const repClassName = SpotUtils.CSS_RISK_CLASSES[highestRep];
+        return this._renderIpCell('src_' + idx, repClassName, item.srcIP, +item.srcIpInternal);
     },
     /**
      *  Renders the destination IP cell.
@@ -73,13 +66,8 @@ var SuspiciousPanel = React.createClass({
         reps = SpotUtils.parseReputation(item.dstIP_rep);
         highestRep = SpotUtils.getHighestReputation(reps);
 
-        dstIpContent = this._renderIpCell('dst_' + idx, item.dstIP, +item.destIpInternal);
-
-        return (
-            <p key={'dstIP_' + idx} className={'srcIP text-' + SpotUtils.CSS_RISK_CLASSES[highestRep]}>
-                {dstIpContent}
-            </p>
-        );
+        const repClassName = SpotUtils.CSS_RISK_CLASSES[highestRep];
+        return this._renderIpCell('dst_' + idx, repClassName, item.dstIP, +item.destIpInternal);
     },
     _renderInfoCell: function (keyPrefix, isInternal, geo, domain, reps) {
         if (isInternal) return [];
