@@ -417,8 +417,8 @@ class OA(object):
         next(result_rows)
 
         ingest_summary_results = [ ["date","flows"] ]
-        ingest_summary_results.extend([ ["{0}/{1}/{2} {3}:{4}".format(mn,dy,yr,row[3].zfill(2) ,row[4].zfill(2)), row[5]] for row in result_rows ])
-        ingest_summay_file = "{0}/is_{1}.csv".format(self._ingest_summary_path,self._date)
+        ingest_summary_results.extend([ ["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy, row[3].zfill(2) ,row[4].zfill(2)), row[5]] for row in result_rows ])
+        ingest_summay_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)
 
 
         write_format =  'a' if os.path.isfile(ingest_summay_file) else 'w+'
