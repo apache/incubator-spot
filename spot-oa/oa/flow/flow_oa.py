@@ -395,15 +395,15 @@ class OA(object):
 
         # get ingest summary.           
         ingest_summary_qry = ("SELECT tryear, trmonth, trday, trhour, trminute, COUNT(*) flows"
-                              " FROM onidb.flow "
+                              " FROM {0}.flow "
                               " WHERE "
-                              " y={0} "
-                              " AND m={1} "
-                              " AND d={2} "
+                              " y={1} "
+                              " AND m={2} "
+                              " AND d={3} "
                               " AND unix_tstamp IS NOT NULL "
                               " GROUP BY tryear, trmonth, trday, trhour, trminute;")
 
-        ingest_summary_qry = ingest_summary_qry.format(yr,mn,dy)
+        ingest_summary_qry = ingest_summary_qry.format(self._db, yr, mn, dy)
 
         results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)
         self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
@@ -417,8 +417,8 @@ class OA(object):
         next(result_rows)
 
         ingest_summary_results = [ ["date","flows"] ]
-        ingest_summary_results.extend([ ["{0}/{1}/{2} {3}:{4}".format(mn,dy,yr,row[3].zfill(2) ,row[4].zfill(2)), row[5]] for row in result_rows ])
-        ingest_summay_file = "{0}/is_{1}.csv".format(self._ingest_summary_path,self._date)
+        ingest_summary_results.extend([ ["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy, row[3].zfill(2) ,row[4].zfill(2)), row[5]] for row in result_rows ])
+        ingest_summay_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)
 
 
         write_format =  'a' if os.path.isfile(ingest_summay_file) else 'w+'
