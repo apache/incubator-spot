@@ -28,7 +28,7 @@ const IncidentProgressionPanel = React.createClass({
     if (!storeData.loading) {
         state.error = storeData.error;
 
-        if (storeData.data.length) {
+        if (storeData.data && storeData.data.length) {
           let filterName = IncidentProgressionStore.getFilterName();
 
           state.data = {

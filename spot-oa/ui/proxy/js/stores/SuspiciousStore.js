@@ -44,24 +44,27 @@ var SuspiciousStore = assign(new RestStore(ProxyConstants.API_SUSPICIOUS), {
         else {
             state = assign(
                 {},
-                this._data,
-                {
-                    data: this._data.data.filter((item) => {
-                        return filterName === URI_FILTER ?
-                                                    // Only look on URI field
-                                                    item[URI_FILTER].indexOf(filter) >= 0 :
-                                                    // Look on clientip and URI fields
-                                                    item.clientip == filter || item.fulluri.indexOf(filter) >= 0;
-                    })
-                }
+                this._data
             );
+
+            if (state.data) {
+                state.data = state.data.filter((item) => {
+                    return filterName === URI_FILTER ?
+                                                // Only look on URI field
+                                                item[URI_FILTER].indexOf(filter) >= 0 :
+                                                // Look on clientip and URI fields
+                                                item.clientip == filter || item.fulluri.indexOf(filter) >= 0;
+                });
+            }
         }
 
-        state.data = state.data.filter(function (item) {
-            return item.uri_sev == "0";
-        });
+        if (state.data) {
+            state.data = state.data.filter(function (item) {
+                return item.uri_sev == "0";
+            });
 
-        if (state.data.length > SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
+            if (state.data.length > SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
+        }
 
         return state;
     },

@@ -15,7 +15,7 @@ var DetailsGridMixin = {
     // Event handler
     _onChange: function ()
     {
-        this.setState(this.store.getData());
+        this.replaceState(this.store.getData());
     }
 };
 

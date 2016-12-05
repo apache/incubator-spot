@@ -16,7 +16,7 @@ var SuspiciousGridMixin = {
         this.store.addChangeDataListener(this._onChange);
     },
     componentDidUpdate: function () {
-        if (this.state.loading || this.state.data.length===0) return;
+        if (this.state.loading || !this.state.data || this.state.data.length===0) return;
 
         $(ReactDOM.findDOMNode(this)).popover({
             trigger: 'hover',
@@ -60,7 +60,7 @@ var SuspiciousGridMixin = {
 
         state = this.store.getData();
 
-        this.setState(state);
+        this.replaceState(state);
     },
     _onClickRow: function (item) {
         this.selectItems(item);

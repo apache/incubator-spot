@@ -47,21 +47,23 @@ var SuspiciousStore = assign(new RestStore(DnsConstants.API_SUSPICIOUS), {
     {
         state = assign(
             {},
-            unfilteredData,
-            {
-                data: unfilteredData.data.filter(function (item)
-                {
-                    return filterName===IP_FILTER ? item[filterName]==filter : item[filterName].indexOf(filter)>=0;
-                })
-            }
+            unfilteredData
         );
+
+        if (unfilteredData.data) {
+            state.data = unfilteredData.data.filter(function (item) {
+                return filterName===IP_FILTER ? item[filterName]==filter : item[filterName].indexOf(filter)>=0;
+            });
+        }
     }
 
-    state.data = state.data.filter(function (item) {
-        return item.dns_sev=="0";
-    });
+    if (state.data) {
+        state.data = state.data.filter(function (item) {
+            return item.dns_sev=="0";
+        });
 
-    if (state.data.length>SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
+        if (state.data.length>SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
+    }
 
     return state;
   },

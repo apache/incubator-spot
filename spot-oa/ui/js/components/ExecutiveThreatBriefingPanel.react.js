@@ -51,7 +51,7 @@ var ExecutiveThreatBriefingPanel = React.createClass({
     },
     _onChange: function ()
     {
-        this.setState(this.props.store.getData());
+        this.replaceState(this.props.store.getData());
     },
     _onSelect: function (comment)
     {

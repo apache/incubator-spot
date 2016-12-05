@@ -47,20 +47,23 @@ var SuspiciousStore = assign(new RestStore(NetflowConstants.API_SUSPICIOUS), {
         else {
             state = assign(
                 {},
-                unfilteredData,
-                {
-                    data: unfilteredData.data.filter(function (item) {
-                        return item['srcIP'] == filter || item['dstIP'] == filter;
-                    })
-                }
+                unfilteredData
             );
+
+            if (unfilteredData.data) {
+                state.data = unfilteredData.data.filter(function (item) {
+                    return item['srcIP'] == filter || item['dstIP'] == filter;
+                });
+            }
         }
 
-        state.data = state.data.filter(function (item) {
-            return item.sev == '0';
-        });
+        if (state.data) {
+            state.data = state.data.filter(function (item) {
+                return item.sev == '0';
+            });
 
-        if (state.data.length > SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
+            if (state.data.length > SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
+        }
 
         return state;
     },

@@ -20,7 +20,7 @@ var DetailsTablePanel = React.createClass({
   // Event handlers
   _onChange: function ()
   {
-    this.setState(DetailsStore.getData());
+    this.replaceState(DetailsStore.getData());
   }
 });
 

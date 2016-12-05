@@ -43,6 +43,10 @@ SpotDispatcher.register(function (action) {
             TimelineStore.setDate(action.date);
 
             break;
+        case SpotConstants.RELOAD_COMMENTS:
+            TimelineStore.clearFilter();
+            TimelineStore.resetData();
+            break;
         case SpotConstants.SELECT_COMMENT:
             TimelineStore.setFilter(action.comment.hash);
 

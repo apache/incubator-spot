@@ -45,7 +45,7 @@ var DetailsTablePanel = React.createClass({
   _render_dns_qry_type_cell: false,
   _onChange: function ()
   {
-    this.setState(DetailsStore.getData());
+    this.replaceState(DetailsStore.getData());
   }
 });
 
