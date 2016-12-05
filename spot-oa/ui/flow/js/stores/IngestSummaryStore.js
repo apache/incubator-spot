@@ -90,7 +90,7 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
         if (data.error) {
             requestErrors.push(data);
         }
-        else {
+        else if (data.data) {
             parse = d3.time.format("%Y-%m-%d %H:%M").parse; // Date formatting parser
             startDate = DateUtils.parseDate(this.getRestFilter(START_DATE_FILTER));
             endDate = DateUtils.parseDate(this.getRestFilter(END_DATE_FILTER));
@@ -121,6 +121,7 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
                 return a.date - b.date;
             });
 
+            if (!this._data.data) this._data.data = [];
             this._data.data.push(data.data);
         }
 

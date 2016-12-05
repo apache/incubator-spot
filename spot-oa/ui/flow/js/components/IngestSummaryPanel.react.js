@@ -221,14 +221,14 @@ var IngestSummaryPanel = React.createClass({
   },
   componentDidUpdate: function ()
   {
-    if (!this.state.loading && !this.state.error)
+    if (!this.state.loading && !this.state.error && this.state.data)
     {
       this.buildGraph();
     }
   },
   buildGraph: initialDraw,
   _onChange: function () {
-    this.setState(IngestSummaryStore.getData());
+    this.replaceState(IngestSummaryStore.getData());
   }
 });
 
