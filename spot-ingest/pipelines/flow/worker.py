@@ -44,8 +44,9 @@ class Worker(object):
         self._logger.info("-------------------------------------- New File received --------------------------------------")
         self._logger.info("File: {0} ".format(file))        
         p = Process(target=self._process_new_file, args=(file,))
-        p.start()        
-
+        p.start()
+        p.join()
+        
     def _process_new_file(self,file):
 
         # get file from hdfs
