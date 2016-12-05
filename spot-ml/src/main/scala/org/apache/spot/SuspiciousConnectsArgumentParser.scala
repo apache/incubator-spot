@@ -11,6 +11,11 @@ object SuspiciousConnectsArgumentParser {
                                       feedbackFile: String = "",
                                       duplicationFactor: Int = 1,
                                       topicCount: Int = 20,
+                                      localPath: String = "",
+                                      localUser: String = "",
+                                      userDomain: String = "",
+                                      ldaPath: String = "",
+                                      nodes: String = "",
                                       hdfsScoredConnect: String = "",
                                       threshold: Double = 1.0d,
                                       maxResults: Int = -1,
@@ -44,6 +49,26 @@ object SuspiciousConnectsArgumentParser {
     opt[String]("ldatopiccount").required().valueName("number of topics in topic model").
       action((x, c) => c.copy(topicCount = x.toInt)).
       text("topic count")
+
+    opt[String]("lpath").required().valueName("<local path>").
+      action((x, c) => c.copy(localPath = x)).
+      text("Local Path")
+
+    opt[String]("ldapath").required().valueName("<local path>").
+      action((x, c) => c.copy(ldaPath = x)).
+      text("LDA Path")
+
+    opt[String]("luser").required().valueName("<local path>").
+      action((x, c) => c.copy(localUser = x)).
+      text("Local user path")
+
+    opt[String]("userDomain").required().valueName("<user domain>").
+      action((x, c) => c.copy(userDomain = x)).
+      text("Domain of spot user (example: intel)")
+
+    opt[String]("nodes").required().valueName("<input param>").
+      action((x, c) => c.copy(nodes = x)).
+      text("Node list")
 
     opt[String]("scored").required().valueName("<hdfs path>").
       action((x, c) => c.copy(hdfsScoredConnect = x)).

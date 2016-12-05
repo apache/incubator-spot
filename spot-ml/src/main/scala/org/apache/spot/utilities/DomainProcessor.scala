@@ -48,9 +48,10 @@ object DomainProcessor extends Serializable {
     * Extract domain info from a url.
     * @param url Incoming url.
     * @param topDomainsBC Broadcast variable containing the top domains set.
+    * @param userDomain Domain of the spot user (example:'intel').
     * @return New [[DomainInfo]] object containing extracted domain information.
     */
-  def extractDomainInfo(url: String, topDomainsBC: Broadcast[Set[String]]): DomainInfo = {
+  def extractDomainInfo(url: String, topDomainsBC: Broadcast[Set[String]], userDomain: String): DomainInfo = {
 
     val spliturl = url.split('.')
     val numParts = spliturl.length
@@ -64,7 +65,7 @@ object DomainProcessor extends Serializable {
       0
     }
 
-    val topDomainClass = if (domain == "intel") {
+    val topDomainClass = if (domain == userDomain) {
       2
     } else if (topDomainsBC.value contains domain) {
       1

@@ -158,6 +158,7 @@ object DNSSuspiciousConnectsModel {
 
     val countryCodesBC = sparkContext.broadcast(CountryCodes.CountryCodes)
     val topDomainsBC = sparkContext.broadcast(TopDomains.TopDomains)
+    val userDomain = config.userDomain
 
     // create quantile cut-offs
 
@@ -180,7 +181,13 @@ object DNSSuspiciousConnectsModel {
 
     // simplify DNS log entries into "words"
 
-    val dnsWordCreator = new DNSWordCreation(frameLengthCuts, timeCuts, subdomainLengthCuts, entropyCuts, numberPeriodsCuts, topDomainsBC)
+    val dnsWordCreator = new DNSWordCreation(frameLengthCuts,
+                                             timeCuts,
+                                             subdomainLengthCuts,
+                                             entropyCuts,
+                                             numberPeriodsCuts,
+                                             topDomainsBC,
+                                             userDomain)
 
     val dataWithWordDF = totalDataDF.withColumn(Word, dnsWordCreator.wordCreationUDF(modelColumns: _*))
 
