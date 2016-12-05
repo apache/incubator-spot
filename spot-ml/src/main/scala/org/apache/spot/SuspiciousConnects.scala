@@ -19,8 +19,6 @@ import org.apache.spot.proxy.ProxySuspiciousConnectsAnalysis
 
 object SuspiciousConnects {
 
-  val OutputDelimiter = "\t"
-
   /**
     * Execute suspicious connections analysis on network data.
     *
@@ -43,7 +41,7 @@ object SuspiciousConnects {
         val sparkConfig = new SparkConf().setAppName("Spot ML:  " + analysis + " suspicious connects analysis")
         val sparkContext = new SparkContext(sparkConfig)
         val sqlContext = new SQLContext(sparkContext)
-        implicit val outputDelimiter = OutputDelimiter
+        implicit val outputDelimiter = config.outputDelimiter
 
         analysis match {
           case "flow" => FlowSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger)

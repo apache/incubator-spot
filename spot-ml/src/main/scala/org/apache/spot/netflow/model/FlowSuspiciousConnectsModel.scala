@@ -2,17 +2,17 @@ package org.apache.spot.netflow.model
 
 import org.apache.log4j.Logger
 import org.apache.spark.SparkContext
+import org.apache.spark.sql.WideUDFs.udf
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, Row, SQLContext, WideUDFs}
-import org.apache.spot.spotldacwrapper.{SpotLDACInput, SpotLDACOutput}
-import org.apache.spot.spotldacwrapper.SpotLDACSchema._
+import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
+import org.apache.spot.lda.SpotLDAWrapper
+import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
+import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
 import org.apache.spot.utilities.Quantiles
-import WideUDFs.udf
-import org.apache.spot.spotldacwrapper.SpotLDACWrapper
 
 /**
   * A probabilistic model of the netflow traffic observed in a network.
@@ -139,7 +139,7 @@ object FlowSuspiciousConnectsModel {
 
     val totalDataDF = selectedDF.unionAll(FlowFeedback.loadFeedbackDF(sparkContext,
       sqlContext,
-      config.scoresFile,
+      config.feedbackFile,
       config.duplicationFactor))
 
 
@@ -194,29 +194,18 @@ object FlowSuspiciousConnectsModel {
     val ipWordCounts =
       sparkContext.union(srcWordCounts, dstWordCounts)
         .reduceByKey(_ + _)
-        .map({ case ((ip, word), count) => SpotLDACInput(ip, word, count) })
+        .map({ case ((ip, word), count) => SpotLDAInput(ip, word, count) })
 
 
-    val SpotLDACOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDACWrapper.runLDA(ipWordCounts,
-      config.modelFile,
-      config.hdfsModelFile,
-      config.topicDocumentFile,
-      config.topicWordFile,
-      config.mpiPreparationCmd,
-      config.mpiCmd,
-      config.mpiProcessCount,
-      config.topicCount,
-      config.localPath,
-      config.ldaPath,
-      config.localUser,
-      config.analysis,
-      config.nodes,
-      config.ldaPRGSeed,
-      sparkContext,
+    val SpotLDAOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
       sqlContext,
-      logger
-    )
-
+      ipWordCounts,
+      config.topicCount,
+      logger,
+      config.ldaPRGSeed,
+      config.ldaAlpha,
+      config.ldaBeta,
+      config.ldaMaxiterations)
 
     new FlowSuspiciousConnectsModel(topicCount,
       ipToTopicMixDF,
@@ -224,6 +213,7 @@ object FlowSuspiciousConnectsModel {
       timeCuts,
       ibytCuts,
       ipktCuts)
+
   }
 
 }

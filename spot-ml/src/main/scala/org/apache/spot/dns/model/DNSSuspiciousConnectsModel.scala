@@ -1,19 +1,19 @@
 package org.apache.spot.dns.model
 
+import org.apache.log4j.Logger
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
-import org.apache.spot.spotldacwrapper.{SpotLDACInput, SpotLDACOutput}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.DNSWordCreation
-import org.apache.spot.utilities.{CountryCodes, DomainProcessor, Quantiles, TopDomains}
+import org.apache.spot.lda.SpotLDAWrapper
+import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
 import org.apache.spot.utilities.DomainProcessor.DomainInfo
-import org.apache.log4j.Logger
-import org.apache.spot.spotldacwrapper.SpotLDACWrapper
+import org.apache.spot.utilities.{CountryCodes, DomainProcessor, Quantiles, TopDomains}
 
 
 /**
@@ -153,7 +153,7 @@ object DNSSuspiciousConnectsModel {
 
     val totalDataDF = selectedDF.unionAll(DNSFeedback.loadFeedbackDF(sparkContext,
       sqlContext,
-      config.scoresFile,
+      config.feedbackFile,
       config.duplicationFactor))
 
     val countryCodesBC = sparkContext.broadcast(CountryCodes.CountryCodes)
@@ -178,7 +178,6 @@ object DNSSuspiciousConnectsModel {
     val numberPeriodsCuts = Quantiles.computeQuintiles(domainStatsDF.filter(NumPeriods + " > 0")
       .select(NumPeriods).rdd.map({ case Row(numberPeriods: Int) => numberPeriods.toDouble }))
 
-
     // simplify DNS log entries into "words"
 
     val dnsWordCreator = new DNSWordCreation(frameLengthCuts, timeCuts, subdomainLengthCuts, entropyCuts, numberPeriodsCuts, topDomainsBC)
@@ -186,31 +185,21 @@ object DNSSuspiciousConnectsModel {
     val dataWithWordDF = totalDataDF.withColumn(Word, dnsWordCreator.wordCreationUDF(modelColumns: _*))
 
     // aggregate per-word counts at each IP
-
     val ipDstWordCounts =
       dataWithWordDF.select(ClientIP, Word).map({ case Row(destIP: String, word: String) => (destIP, word) -> 1 })
         .reduceByKey(_ + _)
-        .map({ case ((ipDst, word), count) => SpotLDACInput(ipDst, word, count) })
+        .map({ case ((ipDst, word), count) => SpotLDAInput(ipDst, word, count) })
 
 
-    val SpotLDACOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDACWrapper.runLDA(ipDstWordCounts,
-      config.modelFile,
-      config.hdfsModelFile,
-      config.topicDocumentFile,
-      config.topicWordFile,
-      config.mpiPreparationCmd,
-      config.mpiCmd,
-      config.mpiProcessCount,
-      config.topicCount,
-      config.localPath,
-      config.ldaPath,
-      config.localUser,
-      config.analysis,
-      config.nodes,
-      config.ldaPRGSeed,
-      sparkContext,
+    val SpotLDAOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
       sqlContext,
-      logger)
+      ipDstWordCounts,
+      config.topicCount,
+      logger,
+      config.ldaPRGSeed,
+      config.ldaAlpha,
+      config.ldaBeta,
+      config.ldaMaxiterations)
 
     // Since DNS is still broadcasting ip to topic mix, we need to convert data frame to Map[String, Array[Double]]
     val ipToTopicMix = ipToTopicMixDF
@@ -223,6 +212,7 @@ object DNSSuspiciousConnectsModel {
       .collectAsMap
       .toMap
 
+
     new DNSSuspiciousConnectsModel(topicCount,
       ipToTopicMix,
       wordToPerTopicProb,
@@ -231,6 +221,7 @@ object DNSSuspiciousConnectsModel {
       subdomainLengthCuts,
       numberPeriodsCuts,
       entropyCuts)
+
   }
 
   /**
