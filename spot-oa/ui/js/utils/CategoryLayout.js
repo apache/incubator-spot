@@ -37,8 +37,8 @@ class CategoryLayout {
     nodes(rawNodes) {
         let catKeys, categories = {};
 
-        if (this._categories || this._categoriesFn) {
-            catKeys = this._categories || this._categoriesFn();
+        if (this._categories) {
+            catKeys = this._categories;
         }
         else {
             catKeys = [];
@@ -100,8 +100,7 @@ class CategoryLayout {
 
     categories(categories) {
         if (categories) {
-            this._categories = categories instanceof Array ? categories : null;
-            this._categoriesFn = categories instanceof Function ? categories : null;
+            this._categories = categories instanceof Function ? categories() : categories instanceof Array ? categories : null;
 
             return this;
         }

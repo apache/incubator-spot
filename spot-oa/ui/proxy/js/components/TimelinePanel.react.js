@@ -18,14 +18,15 @@ const TimelineChart = React.createClass({
     _onChange() {
         const storeData = TimelineStore.getData();
 
-        if (storeData.loading || storeData.error) {
-            this.setState(storeData);
+        let state = {loading: storeData.loading};
+        if (storeData.error) {
+            state.error = storeData.error;
         }
-        else {
-            const state = this._getStateFromStoreData(storeData.data);
+        else if (!storeData.loading && storeData.data) {
+            state = this._getStateFromStoreData(storeData.data);
+        }
 
-            this.setState(state);
-        }
+        this.replaceState(state);
     },
     _getStateFromStoreData(data)
     {

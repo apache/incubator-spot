@@ -9,9 +9,7 @@ var RestStore = function (endpoint, data) {
     this.setEndpoint(endpoint);
     this._filters = {};
     this._data = assign({
-            loading: false,
-            headers: [],
-            data: []
+            loading: false
         }, data
     );
 
@@ -35,7 +33,7 @@ assign(RestStore.prototype, EventEmitter.prototype, {
         this.endpoint = endpoint;
     },
     resetData: function () {
-        this._data = {loading: false, headers: [], data: [], error: undefined};
+        this._data = {loading: false};
 
         this.emitChangeData();
     },
@@ -59,7 +57,7 @@ assign(RestStore.prototype, EventEmitter.prototype, {
     reload: function () {
         var url, name;
 
-        this.setData({loading: true, headers: [], data: [], error: undefined});
+        this.setData({loading: true});
 
         url = this.endpoint;
 
@@ -102,15 +100,12 @@ assign(RestStore.prototype, EventEmitter.prototype, {
                 this.setData({
                     loading: false,
                     headers: headers,
-                    data: csv,
-                    error: undefined
+                    data: csv
                 });
             },
             error: function (response) {
                 this.setData({
                     loading: false,
-                    headers: [],
-                    data: [],
                     error: this.errorMessages[response.status] || this.defaultErrorMessage
                 });
             }

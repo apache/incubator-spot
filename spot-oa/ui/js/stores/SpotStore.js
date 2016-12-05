@@ -49,7 +49,7 @@ var SpotStore = assign({}, EventEmitter.prototype, {
   },
   removePanelRestoreListener: function (callback)
   {
-    this.removeListener(PANEL_EXPAND_EVENT, callback);
+    this.removeListener(PANEL_RESTORE_EVENT, callback);
   },
   emitPanelRestore: function (panel)
   {

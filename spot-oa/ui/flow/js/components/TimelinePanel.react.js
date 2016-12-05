@@ -22,7 +22,7 @@ const TimelineChart = React.createClass({
         if (storeData.error) {
             state.error = storeData.error;
         }
-        else if (!storeData.loading && storeData.data.length) {
+        else if (!storeData.loading && storeData.data) {
             state = this._getStateFromStoreData(storeData.data);
         }
 
