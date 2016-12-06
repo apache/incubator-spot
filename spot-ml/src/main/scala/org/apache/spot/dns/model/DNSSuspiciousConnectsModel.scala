@@ -64,10 +64,11 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     * @param sc         Spark Context
     * @param sqlContext Spark SQL context
     * @param inDF       Dataframe of DNS log events, containing at least the columns of [[DNSSuspiciousConnectsModel.ModelSchema]]
+    * @param userDomain Domain associated to network data (ex: 'intel')
     * @return Dataframe with a column named [[org.apache.spot.dns.DNSSchema.Score]] that contains the
     *         probability estimated for the network event at that row
     */
-  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame): DataFrame = {
+  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String): DataFrame = {
 
     val countryCodesBC = sc.broadcast(CountryCodes.CountryCodes)
     val topDomainsBC = sc.broadcast(TopDomains.TopDomains)
@@ -84,7 +85,8 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
         topicCount,
         ipToTopicMixBC,
         wordToPerTopicProbBC,
-        topDomainsBC)
+        topDomainsBC,
+        userDomain)
 
 
     val scoringUDF = udf((timeStamp: String,
@@ -168,7 +170,7 @@ object DNSSuspiciousConnectsModel {
     val frameLengthCuts = Quantiles.computeDeciles(totalDataDF.select(FrameLength).rdd
       .map({ case Row(frameLen: Int) => frameLen.toDouble }))
 
-    val domainStatsDF = createDomainStatsDF(sparkContext, sqlContext, countryCodesBC, topDomainsBC, totalDataDF)
+    val domainStatsDF = createDomainStatsDF(sparkContext, sqlContext, countryCodesBC, topDomainsBC, userDomain, totalDataDF)
 
     val subdomainLengthCuts = Quantiles.computeQuintiles(domainStatsDF.filter(SubdomainLength + " > 0")
       .select(SubdomainLength).rdd.map({ case Row(subdomainLength: Int) => subdomainLength.toDouble }))
@@ -238,6 +240,7 @@ object DNSSuspiciousConnectsModel {
     * @param sqlContext     Spark SQL context.
     * @param countryCodesBC Broadcast of the country codes set.
     * @param topDomainsBC   Broadcast of the most-popular domains set.
+    * @param userDomain     Domain associated to network data (ex: 'intel')
     * @param inDF           Incoming dataframe. Schema is expected to provide the field [[QueryName]]
     * @return A new dataframe with the new columns added. The new columns have the schema [[DomainStatsSchema]]
     */
@@ -246,11 +249,12 @@ object DNSSuspiciousConnectsModel {
                           sqlContext: SQLContext,
                           countryCodesBC: Broadcast[Set[String]],
                           topDomainsBC: Broadcast[Set[String]],
+                          userDomain: String,
                           inDF: DataFrame): DataFrame = {
     val queryNameIndex = inDF.schema.fieldNames.indexOf(QueryName)
 
     val domainStatsRDD: RDD[Row] = inDF.rdd.map(row =>
-      Row.fromTuple(createTempFields(countryCodesBC, topDomainsBC, row.getString(queryNameIndex))))
+      Row.fromTuple(createTempFields(countryCodesBC, topDomainsBC, userDomain, row.getString(queryNameIndex))))
 
     sqlContext.createDataFrame(domainStatsRDD, DomainStatsSchema)
   }
@@ -262,15 +266,17 @@ object DNSSuspiciousConnectsModel {
     *
     * @param countryCodesBC Broadcast of the country codes set.
     * @param topDomainsBC   Broadcast of the most-popular domains set.
+    * @param userDomain     Domain associated to network data (ex: 'intel')
     * @param url            URL string to anlayze for domain and subdomain information.
     * @return [[TempFields]]
     */
   def createTempFields(countryCodesBC: Broadcast[Set[String]],
                        topDomainsBC: Broadcast[Set[String]],
+                       userDomain: String,
                        url: String): TempFields = {
 
     val DomainInfo(_, topDomainClass, subdomain, subdomainLength, subdomainEntropy, numPeriods) =
-      DomainProcessor.extractDomainInfo(url, topDomainsBC)
+      DomainProcessor.extractDomainInfo(url, topDomainsBC, userDomain)
 
 
     TempFields(topDomainClass = topDomainClass,

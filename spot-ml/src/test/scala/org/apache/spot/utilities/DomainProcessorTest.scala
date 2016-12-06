@@ -57,8 +57,10 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
 
     val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
 
+    val userDomain = "intel"
+
     // case class DerivedFields(topDomain: String, subdomainLength: Double, subdomainEntropy: Double, numPeriods: Double)
-    val result = extractDomainInfo(url, topDomains)
+    val result = extractDomainInfo(url, topDomains, userDomain)
 
     result shouldBe DomainInfo(domain = "None", topDomain = 0, subdomain = "None", subdomainLength = 0, subdomainEntropy = 0, numPeriods = 6)
   }
@@ -69,7 +71,9 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
 
     val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
 
-    val result = extractDomainInfo(url, topDomains)
+    val userDomain = "intel"
+
+    val result = extractDomainInfo(url, topDomains, userDomain)
 
     result shouldBe DomainInfo(domain = "amazon", topDomain = 1, subdomain = "services",
       subdomainLength = 8, subdomainEntropy = 2.5, numPeriods = 4)
@@ -80,8 +84,9 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
     val url = "amazon.com.mx"
     val countryCodes = sparkContext.broadcast(countryCodesSet)
     val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val userDomain = "intel"
 
-    val result = extractDomainInfo(url, topDomains)
+    val result = extractDomainInfo(url, topDomains, userDomain)
 
     result shouldBe DomainInfo(domain = "amazon", subdomain = "None", topDomain = 1, subdomainLength = 0, subdomainEntropy = 0, numPeriods = 3)
   }
@@ -91,8 +96,9 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
     val url = "services.amazon.com"
     val countryCodes = sparkContext.broadcast(countryCodesSet)
     val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val userDomain = "intel"
 
-    val result = extractDomainInfo(url, topDomains)
+    val result = extractDomainInfo(url, topDomains, userDomain)
 
     result shouldBe DomainInfo(domain = "amazon", subdomain = "services", topDomain = 1, subdomainLength = 8, subdomainEntropy = 2.5, numPeriods = 3)
   }
@@ -103,7 +109,9 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
     val url = "amazon.com"
     val countryCodes = sparkContext.broadcast(countryCodesSet)
     val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
-    val result = extractDomainInfo(url, topDomains)
+    val userDomain = "intel"
+
+    val result = extractDomainInfo(url, topDomains, userDomain)
 
     result shouldBe DomainInfo(domain = "amazon", subdomain = "None", topDomain = 1, subdomainLength = 0, subdomainEntropy = 0, numPeriods = 2)
   }

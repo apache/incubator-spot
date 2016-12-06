@@ -28,10 +28,10 @@ object DomainProcessor extends Serializable {
 
   /**
     * Commonly extracted domain features.
-    * @param domain Domain (if any) of a url.
-    * @param topDomain Numerical class of domain: 2 for Intel, 1 for Alexa top domains, 0 for others.
-    * @param subdomain Subdomain (if any) in the url.
-    * @param subdomainLength Length of the subdomain. 0 if there is none.
+    * @param domain           Domain (if any) of a url.
+    * @param topDomain        Numerical class of domain: 2 for Intel, 1 for Alexa top domains, 0 for others.
+    * @param subdomain        Subdomain (if any) in the url.
+    * @param subdomainLength  Length of the subdomain. 0 if there is none.
     * @param subdomainEntropy Entropy of the subdomain viewed as a distribution on its character set.
     *                         0 if there is no subdomain.
     * @param numPeriods Number of periods + 1 in the url. (Number of sub-strings where url is split by periods.)
@@ -46,9 +46,9 @@ object DomainProcessor extends Serializable {
 
   /**
     * Extract domain info from a url.
-    * @param url Incoming url.
-    * @param topDomainsBC Broadcast variable containing the top domains set.
-    * @param userDomain Domain of the spot user (example:'intel').
+    * @param url           Incoming url.
+    * @param topDomainsBC  Broadcast variable containing the top domains set.
+    * @param userDomain    Domain of the spot user (example:'intel').
     * @return New [[DomainInfo]] object containing extracted domain information.
     */
   def extractDomainInfo(url: String, topDomainsBC: Broadcast[Set[String]], userDomain: String): DomainInfo = {

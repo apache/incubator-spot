@@ -62,7 +62,7 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(localUser = x)).
       text("Local user path")
 
-    opt[String]("userDomain").required().valueName("<user domain>").
+    opt[String]("userdomain").required().valueName("<user domain>").
       action((x, c) => c.copy(userDomain = x)).
       text("Domain of spot user (example: intel)")
 
