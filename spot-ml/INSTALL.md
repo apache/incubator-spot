@@ -12,13 +12,8 @@ The spot-ml routines must be built into a jar stored at `target/scala-2.10/spot-
 Names and language that we will use from the configuration variables for Spot (that are set in the file [spot.conf])
 
 - MLNODE The node from which the spot-ml routines are invoked
-- NODES The list of MPI worker nodes that execute the topic modelling analysis
 - HUSER An HDFS user path that will be the base path for the solution; this is usually the same user that you created to run the solution
-- LPATH The local path for the ML intermediate and final results, dynamically created and populated when the pipeline runs
 - HPATH Location for storing intermediate results of the analysis on HDFS.
-- MPI_CMD : command for executing MPI on your system, eg. `mpiexec` or `mpiexec.hydra` This will vary with your MPI installation!
-- MPI_PREP_CMD : a command that must be run before executing MPI on your system, such as sourcing a file of environment variables or exporting a path. May be empty. Will vary with your MPI installation.
-- PROCESS_COUNT : Number of processes executing in MPI.
 
 ### Prepare data for input 
 
