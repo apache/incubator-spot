@@ -30,6 +30,11 @@ var SpotConstants = {
   // Storyboard
   RELOAD_COMMENTS: 'RELOAD_COMMENTS',
   SELECT_COMMENT: 'SELECT_COMMENT',
+  // INGEST SUMMARY
+  START_DATE: 'start-date',
+  END_DATE: 'end-date',
+  // Ingest summary Actions
+  RELOAD_INGEST_SUMMARY: 'RELOAD_INGEST_SUMMARY',
   // Server Paths
   NOTEBOOKS_PATH: '/notebooks/ipynb'
 };
