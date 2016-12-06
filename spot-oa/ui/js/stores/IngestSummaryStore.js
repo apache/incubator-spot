@@ -1,20 +1,20 @@
-const assign = require('object-assign');
-const d3 = require('d3');
+var assign = require('object-assign');
+var d3 = require('d3');
 
-const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-const SpotConstants = require('../../../js/constants/SpotConstants');
-const NetflowConstants = require('../constants/NetflowConstants');
-const DateUtils = require('../../../js/utils/DateUtils');
-const RestStore = require('../../../js/stores/RestStore');
+var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+var SpotConstants = require('../../../js/constants/SpotConstants');
+var NetflowConstants = require('../constants/NetflowConstants');
+var DateUtils = require('../../../js/utils/DateUtils');
+var RestStore = require('../../../js/stores/RestStore');
 
-const START_DATE_FILTER = SpotConstants.START_DATE;
-const END_DATE_FILTER = SpotConstants.END_DATE;
-const CURRENT_DATE_FILTER = 'current_date';
+var START_DATE_FILTER = NetflowConstants.START_DATE;
+var END_DATE_FILTER = NetflowConstants.END_DATE;
+var CURRENT_DATE_FILTER = 'current_date';
 
-const requestQueue = [];
-const requestErrors = [];
+var requestQueue = [];
+var requestErrors = [];
 
-const IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMARY), {
+var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMARY), {
     errorMessages: {
         404: 'No details available'
     },
@@ -128,7 +128,7 @@ const IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMM
         this._data.loading = requestQueue.length > 0;
 
         if (!this._data.loading) {
-            if (this._data.data && this._data.data.length==0) {
+            if (this._data.data.length==0) {
                 // Broadcast first found error
                 this._data = requestErrors[0];
             }
@@ -144,15 +144,15 @@ SpotDispatcher.register(function (action) {
     switch (action.actionType) {
         case SpotConstants.UPDATE_DATE:
             switch (action.name) {
-                case SpotConstants.START_DATE:
+                case NetflowConstants.START_DATE:
                     IngestSummaryStore.setStartDate(action.date);
                     break;
-                case SpotConstants.END_DATE:
+                case NetflowConstants.END_DATE:
                     IngestSummaryStore.setEndDate(action.date);
                     break;
             }
             break;
-        case SpotConstants.RELOAD_INGEST_SUMMARY:
+        case NetflowConstants.RELOAD_INGEST_SUMMARY:
             IngestSummaryStore.requestSummary();
             break;
     }
