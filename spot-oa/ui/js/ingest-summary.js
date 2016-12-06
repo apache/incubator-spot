@@ -1,21 +1,21 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const SpotActions = require('../../js/actions/SpotActions');
+const SpotActions = require('./actions/SpotActions');
 const InSumActions = require('./actions/InSumActions');
-const NetflowConstants = require('./constants/NetflowConstants');
-const SpotUtils = require('../../js/utils/SpotUtils');
-const DateUtils = require('../../js/utils/DateUtils');
+const SpotConstants = require('./constants/SpotConstants');
+const SpotUtils = require('./utils/SpotUtils');
+const DateUtils = require('./utils/DateUtils');
 
 // Build and Render Toolbar
-const DateInput = require('../../js/components/DateInput.react');
+const DateInput = require('./components/DateInput.react');
 
 // Find out period
 var startDate, endDate, today;
 
 today = new Date();
-startDate = SpotUtils.getUrlParam(NetflowConstants.START_DATE);
-endDate = SpotUtils.getUrlParam(NetflowConstants.END_DATE);
+startDate = SpotUtils.getUrlParam(SpotConstants.START_DATE);
+endDate = SpotUtils.getUrlParam(SpotConstants.END_DATE);
 
 if (!startDate && endDate)
 {
@@ -50,13 +50,13 @@ ReactDOM.render(
           <div className="input-group-addon">
             <span className="glyphicon glyphicon-calendar" aria-hidden="true"></span>
           </div>
-          <DateInput id="startDatePicker" name={NetflowConstants.START_DATE} value={startDate}/>
+          <DateInput id="startDatePicker" name={SpotConstants.START_DATE} value={startDate}/>
         </div>
       </div>
       <div className="form-group">
         <label htmlFor="endDatePicker"> - </label>
         <div className="input-group input-group-xs">
-          <DateInput id="endDatePicker" name={NetflowConstants.END_DATE} value={endDate} />
+          <DateInput id="endDatePicker" name={SpotConstants.END_DATE} value={endDate} />
           <div className="input-group-btn">
             <button className="btn btn-default" type="button" title="Reload" onClick={InSumActions.reloadSummary}>
               <span className="glyphicon glyphicon-repeat" aria-hidden="true"></span>
@@ -70,8 +70,8 @@ ReactDOM.render(
 );
 
 // Build and Render Edge Investigation's panels
-const PanelRow = require('../../js/components/PanelRow.react');
-const Panel = require('../../js/components/Panel.react');
+const PanelRow = require('./components/PanelRow.react');
+const Panel = require('./components/Panel.react');
 //
 const IngestSummaryPanel = require('./components/IngestSummaryPanel.react');
 
@@ -87,8 +87,8 @@ ReactDOM.render(
 );
 
 // Set period
-SpotActions.setDate(startDate, NetflowConstants.START_DATE);
-SpotActions.setDate(endDate, NetflowConstants.END_DATE);
+SpotActions.setDate(startDate, SpotConstants.START_DATE);
+SpotActions.setDate(endDate, SpotConstants.END_DATE);
 
 // Load data
 InSumActions.reloadSummary();

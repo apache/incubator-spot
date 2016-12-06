@@ -3,9 +3,10 @@ const d3 = require('d3');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-var DateUtils = require('../../../js/utils/DateUtils');
-var InSumActions = require('../actions/InSumActions');
-var IngestSummaryStore = require('../stores/IngestSummaryStore');
+const DateUtils = require('../utils/DateUtils');
+const InSumActions = require('../actions/InSumActions');
+
+const NetflowIngestSummaryStore = require('../../flow/js/stores/IngestSummaryStore');
 
 function initialDraw() {
   var rootNode, format, x, y, xAxis, yAxis, area, svg, rect, total, minDate, maxDate, maxFlows, numberFormat;
@@ -32,8 +33,8 @@ function initialDraw() {
         })
         .y0(h)
         .y1(function (d) {
-            if (!isNaN(d.flows))
-                return y(d.flows);
+            if (!isNaN(d.total))
+                return y(d.total);
             else
                 return y(0);
         });
@@ -80,11 +81,11 @@ function initialDraw() {
     minDate = d3.min(a, function (d) { return d.date; });
     a[0] = {date: maxDate, flows: maxFlows};
     maxDate = d3.max(a, function (d) { return d.date; });
-    maxFlows = d3.max(a, function (d) { return d.flows; })
+    maxFlows = d3.max(a, function (d) { return d.total; })
   });
 
-  !minDate && (minDate = DateUtils.parseDate(IngestSummaryStore.getStartDate()));
-  !maxDate && (maxDate = DateUtils.parseDate(IngestSummaryStore.getEndDate()));
+  !minDate && (minDate = DateUtils.parseDate(NetflowIngestSummaryStore.getStartDate()));
+  !maxDate && (maxDate = DateUtils.parseDate(NetflowIngestSummaryStore.getEndDate()));
 
   // bind the data to the X and Y generators
   x.domain([minDate, maxDate]);
@@ -130,7 +131,7 @@ function initialDraw() {
       {
         // Discard records outside displayed date range
         if (record.date >= minDate && record.date <= maxDate) {
-          total += +record.flows;
+          total += +record.total;
         }
       });
     });
@@ -211,12 +212,12 @@ var IngestSummaryPanel = React.createClass({
   },
   componentDidMount: function()
   {
-    IngestSummaryStore.addChangeDataListener(this._onChange);
+    NetflowIngestSummaryStore.addChangeDataListener(this._onChange);
     window.addEventListener('resize', this.buildGraph);
   },
   componentWillUnmount: function ()
   {
-    IngestSummaryStore.removeChangeDataListener(this._onChange);
+    NetflowIngestSummaryStore.removeChangeDataListener(this._onChange);
     window.removeEventListener('resize', this.buildGraph);
   },
   componentDidUpdate: function ()
@@ -228,7 +229,7 @@ var IngestSummaryPanel = React.createClass({
   },
   buildGraph: initialDraw,
   _onChange: function () {
-    this.replaceState(IngestSummaryStore.getData());
+    this.replaceState(NetflowIngestSummaryStore.getData());
   }
 });
 
