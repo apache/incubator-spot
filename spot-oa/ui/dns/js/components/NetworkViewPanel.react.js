@@ -116,7 +116,7 @@ const NetworkViewPanel = React.createClass({
             state.data.maxNodes = SpotConstants.MAX_SUSPICIOUS_ROWS;
         }
 
-        this.setState(state);
+        this.replaceState(state);
     },
     _onHighlight() {
         const threat = SuspiciousStore.getHighlightedThreat();

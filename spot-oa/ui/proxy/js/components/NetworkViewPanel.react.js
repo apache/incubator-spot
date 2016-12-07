@@ -249,9 +249,9 @@ var NetworkViewPanel = React.createClass({
         // Flatern data. In Store?
         var state, data, refs;
 
-        state = assign({}, {data: {}}, SuspiciousStore.getData());
+        state = assign({}, SuspiciousStore.getData());
 
-        if (!state.loading)
+        if (!state.loading && state.data)
         {
             data = {
                 id: 'spot_proxy',
@@ -358,7 +358,7 @@ var NetworkViewPanel = React.createClass({
             state.root = data;
         }
 
-        this.setState(state);
+        this.replaceState(state);
     },
     flatten: function (root) {
         var nodes = [];
