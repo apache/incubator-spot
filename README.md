@@ -52,40 +52,27 @@ While inspecting specific, unique flows of data that may be important for indivi
 2. Run the container: `docker run -it -p 8889:8889 opennetworkinsight/oni-demo`
 3. visit [http://localhost:8889/files/ui/flow/suspicious.html#date=2016-07-08](http://localhost:8889/files/ui/proxy/suspicious.html#date=2016-07-08) in your browser to get started
 
-For the full instructions visit the [opennetworkinsight](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on Docker hub
-
-*Running the standalone demo*
-
-pull the code from [oni-demo repo](https://github.com/Open-Network-Insight/oni-demo) and install it yourself
+For the full instructions visit the [spot](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on Docker hub
 
 ## **Getting Started**
 
 Apache Spot can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](https://github.com/Open-Network-Insight/open-network-insight/wiki).
 
-## If you want all of the Apache Spot code at once, just clone it!
-        git clone --recursive https://github.com/Open-Network-Insight/open-network-insight.git
-
-## **Roadmap**
-
-TBD
-
 ## **Documentation (Developer Guide)**
 
-Apache Spot functionality is divided into different repositories, go to each repository for developer documentation:
+Apache Spot functionality is divided into different modules, go to each module for developer documentation:
 
-* [oni-ingest](https://github.com/Open-Network-Insight/oni-ingest)
-* [oni-ml](https://github.com/Open-Network-Insight/oni-ml)
-* [oni-oa](https://github.com/Open-Network-Insight/oni-oa)
-* [oni-setup](https://github.com/Open-Network-Insight/oni-setup)
-* [oni-nfdump](https://github.com/Open-Network-Insight/oni-nfdump)
-* [oni-lda-c](https://github.com/Open-Network-Insight/oni-lda-c)
+* [spot-ingest](spot-ingest/README.md)
+* [spot-ml](spot-ml/README.md)
+* [spot-oa](spot-oa/README.md)
+* [spot-setup](spot-setup/README.md)
 
 ## **Community Support**
 
 Our Central repository for our Apache Spot solution is found here. If you find a bug, have question or something to discuss please contact us:
 
-* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for Apache Spot please go to: [How to create an Issue](ISSUES.md)
-* [Go to our Slack channel](https://opennetworkinsights.slack.com/messages/general/). 
+* [Create an Issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT). 
+* [Go to our Slack channel](https://spot.slack.com/messages/general/). 
 
 ## **Contributing to Apache Spot**
 
@@ -99,20 +86,7 @@ and join our community.
 * Fork the repo of the module that you wish to commit to.
 * Create a Branch, we use [topic branches](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches) for our commits. 
 * Push your commit(s) to your repository.
-* Create a pull request to the original repo in Apache Spot organization
-TBD
-## **Documentation (Developer Guide)**
-Apache Spot functionality is divided into different repositories, go to each repository for developer documentation:
-* [oni-ingest](https://github.com/Open-Network-Insight/oni-ingest)
-* [oni-ml](https://github.com/Open-Network-Insight/oni-ml)
-* [oni-oa](https://github.com/Open-Network-Insight/oni-oa)
-* [oni-setup](https://github.com/Open-Network-Insight/oni-setup)
-* [oni-nfdump](https://github.com/Open-Network-Insight/oni-nfdump)
-* [oni-lda-c](https://github.com/Open-Network-Insight/oni-lda-c)
-## **Community Support**
-Our Central repository for our Open Network Insight solution is found here. If you find a bug, have question or something to discuss please contact us:
-* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for ONI please go to: [How to create an Issue](ISSUES.md)
- organization.
+* Create a pull request to the original repo in Apache Spot organization.
 
 ### **Commit Guidelines**
 
@@ -122,12 +96,6 @@ Our Central repository for our Open Network Insight solution is found here. If y
 
 ### **Merge approval**
 
-* [Create an Issue](https://github.com/Open-Network-Insight/open-network-insight/issues). For issue creation guidelines and how to create an issue for Apache Spot please go to: [How to create an Issue](ISSUES.md)
- organization.
-### **Commit Guidelines**
-* Bug fixes should be a single commit.
-* Please be clear with the commit messages about what you are fixing or adding to the code base. If you code is addressing an open issue please add the reference to the issue in the comments with: Fix: Issue's URL. 
-### **Merge approval**
 ONI maintainers use LGTM (Looks Good to Me) in a comments on the code review to indicate acceptance, 
 at least 3 "LGTM" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
 
@@ -137,7 +105,6 @@ at least 3 "LGTM" from maintainers are required to approve the merge. If you hav
 Apache Spot is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
 
 * oni-nfdump [License](https://github.com/Open-Network-Insight/oni-nfdump/blob/master/BSD-license.txt)
-* oni-lda-c [License](https://github.com/Open-Network-Insight/oni-lda-c/blob/1.0.1/license.txt)
 
 ## **Maintainers**
 

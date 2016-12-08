@@ -38,10 +38,6 @@ The following roles are required in all the nodes where the Ingest Framework wil
 * [HDFS gateway (i.e. Edge Server)](https://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/HdfsNfsGateway.html)
 * Kafka Broker
 
-**Get the code:**
-
-     git clone https://github.com/Open-Network-Insight/spot-ingest.git
-
 **Ingest Configuration:**
 
 The file **ingest_conf.json** contains all the required configuration to start the ingest module

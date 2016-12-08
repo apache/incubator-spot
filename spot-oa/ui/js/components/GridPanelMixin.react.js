@@ -9,17 +9,19 @@ var GridPanelMixin = {
   },
   render: function ()
   {
-    var content, gridHeaders, gridBody, iterator, selectedRows, key, eventHandlers;
+    var state, content, gridHeaders, gridBody, iterator, selectedRows, key, eventHandlers;
 
-    if (this.state.error)
+    state = this.state || {};
+
+    if (state.error)
     {
       content = (
         <div className="text-center text-danger">
-          {this.state.error}
+          {state.error}
         </div>
       );
     }
-    else if (this.state.loading)
+    else if (state.loading)
     {
       content = (
         <div className="spot-loader">
@@ -27,7 +29,7 @@ var GridPanelMixin = {
         </div>
       );
     }
-    else if (!this.state.data || this.state.data.length===0)
+    else if (!state.data || state.data.length===0)
     {
         content = (
             <div className="text-center">
@@ -37,9 +39,9 @@ var GridPanelMixin = {
     }
     else
     {
-      iterator = this.state.iterator || Object.keys(this.state.headers);
+      iterator = this.props.iterator || Object.keys(state.headers);
 
-      selectedRows = this.state.selectedRows || [];
+      selectedRows = state.selectedRows || [];
 
       gridHeaders = [];
       iterator.forEach(key => {
@@ -47,12 +49,12 @@ var GridPanelMixin = {
         if (this['_render_' + key + '_cell']===false) return;
 
         gridHeaders.push(
-          <th key={'th_' + key} className={'text-center ' + key}>{this.state.headers[key]}</th>
+          <th key={'th_' + key} className={'text-center ' + key}>{state.headers[key]}</th>
         );
       });
 
       gridBody = [];
-      this.state.data.forEach((item, index) => {
+      state.data.forEach((item, index) => {
         var key, cells, className, cellRenderer, cellContent;
 
         cells = [];
