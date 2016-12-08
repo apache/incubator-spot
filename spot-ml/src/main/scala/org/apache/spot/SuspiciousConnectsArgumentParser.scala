@@ -50,10 +50,6 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(userDomain = x)).
       text("Domain of spot user (example: intel)")
 
-    opt[String]("nodes").required().valueName("<input param>").
-      action((x, c) => c.copy(nodes = x)).
-      text("Node list")
-
     opt[String]("scored").required().valueName("<hdfs path>").
       action((x, c) => c.copy(hdfsScoredConnect = x)).
       text("HDFS path for results")
