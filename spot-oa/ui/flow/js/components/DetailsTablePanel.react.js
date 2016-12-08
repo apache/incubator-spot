@@ -6,7 +6,7 @@ var DetailsStore = require('../stores/DetailsStore');
 var DetailsTablePanel = React.createClass({
   mixins: [GridPanelMixin],
   emptySetMessage: 'Please select one row from Suspicious Connects',
-  getInitialState: function () {
+  getDefaultProps: function () {
       return {iterator: DetailsStore.ITERATOR};
   },
   componentDidMount: function ()

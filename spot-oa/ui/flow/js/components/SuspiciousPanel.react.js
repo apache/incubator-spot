@@ -8,7 +8,7 @@ var SuspiciousStore = require('../stores/SuspiciousStore');
 var SuspiciousPanel = React.createClass({
     mixins: [GridPanelMixin, SuspiciousGridMixin],
     store: SuspiciousStore,
-    getInitialState: function () {
+    getDefaultProps: function () {
         return {iterator: SuspiciousStore.ITERATOR};
     },
     _renderGeoCell: function (keyPrefix, geo, domain) {

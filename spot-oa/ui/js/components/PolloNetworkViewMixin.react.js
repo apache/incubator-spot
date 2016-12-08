@@ -34,6 +34,11 @@ const PolloNetworkViewMixin = {
 
         // Add and update nodes and links on every tick event from the force layout
         this.force.on('tick', () => {
+            if (this.state.loading) {
+                this.force.stop();
+                return;
+            }
+
             this.drawLinks();
             this.drawNodes();
         });
