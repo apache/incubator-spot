@@ -65,7 +65,7 @@ object DomainProcessor extends Serializable {
       0
     }
 
-    val topDomainClass = if (domain == userDomain) {
+    val topDomainClass = if (userDomain != "" && domain == userDomain) {
       2
     } else if (topDomainsBC.value contains domain) {
       1

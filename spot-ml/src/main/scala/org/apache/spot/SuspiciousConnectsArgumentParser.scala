@@ -46,7 +46,7 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(topicCount = x.toInt)).
       text("topic count")
 
-    opt[String]("userdomain").required().valueName("<user domain>").
+    opt[String]("userdomain").valueName("<user domain>").
       action((x, c) => c.copy(userDomain = x)).
       text("Domain of spot user (example: intel)")
 
