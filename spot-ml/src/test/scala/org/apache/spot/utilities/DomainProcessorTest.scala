@@ -115,4 +115,14 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
 
     result shouldBe DomainInfo(domain = "amazon", subdomain = "None", topDomain = 1, subdomainLength = 0, subdomainEntropy = 0, numPeriods = 2)
   }
+  it should "not identify the domain as the users domain when both are empty strings" in {
+    val url = "ab..com"
+    val countryCodes = sparkContext.broadcast(countryCodesSet)
+    val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val userDomain = ""
+
+    val result = extractDomainInfo(url, topDomains, userDomain)
+
+    result shouldBe DomainInfo(domain = "", subdomain = "ab", topDomain = 0, subdomainLength = 2, subdomainEntropy = 1, numPeriods = 3)
+  }
 }
