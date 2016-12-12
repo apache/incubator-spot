@@ -39,7 +39,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     dstWord shouldBe "-1_23_5_2_0"
-    srcWord shouldBe "23_5_2_0"
+    srcWord shouldBe  "23_5_2_0"
 
   }
 

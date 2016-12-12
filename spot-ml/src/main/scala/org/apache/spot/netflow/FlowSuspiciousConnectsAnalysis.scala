@@ -17,7 +17,7 @@ import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel
 
 object FlowSuspiciousConnectsAnalysis {
 
-  def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger)(implicit outputDelimiter: String) = {
+  def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger) = {
 
     logger.info("Loading data")
 
@@ -28,11 +28,7 @@ object FlowSuspiciousConnectsAnalysis {
 
     logger.info("Training the model")
 
-    val model =
-      FlowSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, rawDataDF, config.topicCount)
-
-    logger.info("Scoring")
-    val scoredDF = model.score(sparkContext, sqlContext, rawDataDF)
+    val scoredDF = detectFlowAnomalies(rawDataDF, config, sparkContext, sqlContext, logger)
 
     val filteredDF = scoredDF.filter(Score + " <= " + config.threshold)
 
@@ -44,6 +40,31 @@ object FlowSuspiciousConnectsAnalysis {
     logger.info("Netflow  suspicious connects analysis completed.")
     logger.info("Saving results to : " + config.hdfsScoredConnect)
     outputDF.map(_.mkString(config.outputDelimiter)).saveAsTextFile(config.hdfsScoredConnect)
+  }
+
+  /**
+    * Identify anomalous netflow log entries in in the provided data frame.
+    *
+    * @param data Data frame of netflow entries
+    * @param config
+    * @param sparkContext
+    * @param sqlContext
+    * @param logger
+    * @return
+    */
+  def detectFlowAnomalies(data: DataFrame,
+                          config: SuspiciousConnectsConfig,
+                         sparkContext: SparkContext,
+                         sqlContext: SQLContext,
+                         logger: Logger) : DataFrame = {
+
+
+    logger.info("Fitting probabilistic model to data")
+    val model =
+      FlowSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, data, config.topicCount)
+
+    logger.info("Identifying outliers")
+    model.score(sparkContext, sqlContext, data)
   }
 
   val inSchema = StructType(List(TimeReceivedField,
