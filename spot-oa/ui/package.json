@@ -1,36 +1,75 @@
-<HTML><HEAD>
-<TITLE>Network Error</TITLE>
-</HEAD>
-<BODY>
-<FONT face="Helvetica">
-<big><strong></strong></big><BR>
-</FONT>
-<blockquote>
-<TABLE border=0 cellPadding=1 width="80%">
-<TR><TD>
-<FONT face="Helvetica">
-<big>Network Error (dns_unresolved_hostname)</big>
-<BR>
-<BR>
-</FONT>
-</TD></TR>
-<TR><TD>
-<FONT face="Helvetica">
-Your requested host "spot-oa" could not be resolved by DNS.
-</FONT>
-</TD></TR>
-<TR><TD>
-<FONT face="Helvetica">
-
-</FONT>
-</TD></TR>
-<TR><TD>
-<FONT face="Helvetica" SIZE=2>
-<BR>
-For assistance, contact your network support team.
-</FONT>
-</TD></TR>
-</TABLE>
-</blockquote>
-</FONT>
-</BODY></HTML>
+{
+  "name": "spot_ui",
+  "version": "1.1.0",
+  "description": "Apache Spot :: UI",
+  "repository": "https://github.com/Open-Network-Insight/open-network-insight",
+  "license": "Apache License, Version 2.0",
+  "dependencies": {
+    "bootstrap": "3.3.5",
+    "bootstrap-datepicker": "1.6.0",
+    "bootstrap-jquery": "^3.3.2",
+    "d3": "^3.5.17",
+    "d3-interpolate": "^1.1.0",
+    "d3-tip": "^0.6.7",
+    "event-drops": "^0.1.1",
+    "flux": "^2.0.0",
+    "font-awesome": "^4.7.0",
+    "jquery": "^2.0.0",
+    "js-base64": "^2.1.9",
+    "object-assign": "^1.0.0",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "babel-jest": "^16.0.0",
+    "babel-polyfill": "^6.13.0",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "babelify": "^7.3.0",
+    "browserify": "~6.2.0",
+    "browserify-shim": "^3.8.12",
+    "jest": "^16.0.2",
+    "react-test-renderer": "^15.3.2",
+    "watchify": "^2.1.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "postinstall": "npm run build-all",
+    "watch-ingest-summary": "NODE_ENV=development watchify js/ingest-summary.js -o js/ingest-summary.bundle.min.js -v -d",
+    "build-all": "npm run build-flow && npm run build-dns && npm run build-proxy && npm run build-ingest-summary",
+    "build-flow": "cd flow/ && npm run build-all && cd ../",
+    "build-dns": "cd dns/ && npm run build-all && cd ../",
+    "build-proxy": "cd proxy/ && npm run build-all && cd ../",
+    "build-ingest-summary": "browserify js/ingest-summary.js | uglifyjs -cm > js/ingest-summary.bundle.min.js"
+  },
+  "browserify": {
+    "transform": [
+      "babelify",
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "global:$",
+    "d3": "global:d3",
+    "react": "global:React",
+    "react-dom": "global:ReactDOM",
+    "react-dom/server": "global:ReactDOMServer"
+  },
+  "jest": {
+    "verbose": false,
+    "collectCoverage": false,
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/flow/js/",
+      "<rootDir>/dns/js/",
+      "<rootDir>/proxy/js/",
+      "<rootDir>/ipython/custom/",
+      "/node_modules/",
+      "/coverage/",
+      ".*.bundle.min.js$"
+    ]
+  }
+}
