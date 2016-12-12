@@ -5,7 +5,7 @@ import json
 import shutil
 import sys
 import datetime
-import csv
+import csv, math
 from tld import get_tld
 
 from collections import OrderedDict
@@ -14,7 +14,7 @@ from components.data.data import Data
 from components.iana.iana_transform import IanaTransform
 from components.nc.network_context import NetworkContext 
 from multiprocessing import Process
-
+import pandas as pd 
 import time
 
 class OA(object):
@@ -70,6 +70,7 @@ class OA(object):
         self._add_network_context()
         self._create_dns_scores_csv()
         self._get_oa_details()
+        self._ingest_summary()
 
         ##################
         end = time.time()
@@ -151,7 +152,15 @@ class OA(object):
 
     def _add_tld_column(self):
         qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
-        self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ] 
+        for conn in self._dns_scores: 
+            try:
+               tld =  get_tld("http://" + str(conn[qry_name_col]))
+            except ValueError:
+                print conn[qry_name_col]
+
+
+        # self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ]
+         
   
     def _add_reputation(self):
 
@@ -326,3 +335,62 @@ class OA(object):
             dndro_qry = ("SELECT dns_a, dns_qry_name, ip_dst FROM (SELECT susp.ip_dst, susp.dns_qry_name, susp.dns_a FROM {0}.{1} as susp WHERE susp.y={2} AND susp.m={3} AND susp.d={4} AND susp.ip_dst='{5}' LIMIT {6}) AS tmp GROUP BY dns_a, dns_qry_name, ip_dst").format(db,table,year,month,day,ip_dst,limit)
             # execute query
             self._engine.query(dndro_qry,dendro_file)
+
+        
+    def _ingest_summary(self):
+        # get date parameters.
+        yr = self._date[:4]
+        mn = self._date[4:6]
+        dy = self._date[6:]
+
+        self._logger.info("Getting ingest summary data for the day")
+        
+        ingest_summary_cols = ["date","total"]		
+        result_rows = []        
+        df_filtered =  pd.DataFrame()
+
+        ingest_summary_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)			
+        ingest_summary_tmp = "{0}.tmp".format(ingest_summary_file)
+
+        if os.path.isfile(ingest_summary_file):
+        	df = pd.read_csv(ingest_summary_file, delimiter=',')
+            #discards previous rows from the same date
+        	df_filtered = df[df['date'].str.contains("{0}-{1}-{2}".format(yr, mn, dy)) == False] 
+        else:
+        	df = pd.DataFrame()
+            
+        # get ingest summary.
+        ingest_summary_qry = ("SELECT frame_time, COUNT(*) as total "
+                                    " FROM {0}.{1}"
+                                    " WHERE y={2} AND m={3} AND d={4} "
+                                    " AND unix_tstamp IS NOT NULL AND frame_time IS NOT NULL"
+                                    " AND frame_len IS NOT NULL AND dns_qry_name IS NOT NULL"
+                                    " AND ip_src IS NOT NULL " 
+                                    " AND (dns_qry_class IS NOT NULL AND dns_qry_type IS NOT NULL AND dns_qry_rcode IS NOT NULL ) "
+                                    " GROUP BY frame_time;") 
+
+        ingest_summary_qry = ingest_summary_qry.format(self._db,self._table_name, yr, mn, dy)
+        
+        results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)
+        self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
+
+
+        if os.path.isfile(results_file):        
+            df_results = pd.read_csv(results_file, delimiter=',') 
+
+            # Forms a new dataframe splitting the minutes from the time column
+            df_new = pd.DataFrame([["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy,val['frame_time'].split(" ")[3].split(":")[0].zfill(2),val['frame_time'].split(" ")[3].split(":")[1].zfill(2)), int(val['total']) if not math.isnan(val['total']) else 0 ] for key,val in df_results.iterrows()],columns = ingest_summary_cols)
+    
+            #Groups the data by minute 
+            sf = df_new.groupby(by=['date'])['total'].sum()
+        
+            df_per_min = pd.DataFrame({'date':sf.index, 'total':sf.values})
+            
+            df_final = df_filtered.append(df_per_min, ignore_index=True)
+            df_final.to_csv(ingest_summary_tmp,sep=',', index=False)
+
+            os.remove(results_file)
+            os.rename(ingest_summary_tmp,ingest_summary_file)
+        else:
+            self._logger.info("No data found for the ingest summary")
+        
