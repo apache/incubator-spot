@@ -15,13 +15,15 @@ import org.apache.spot.utilities.Quantiles
   * @param entropyCuts
   * @param numberPeriodsCuts
   * @param topDomainsBC
+  * @param userDomain
   */
 class DNSWordCreation(frameLengthCuts: Array[Double],
                       timeCuts: Array[Double],
                       subdomainLengthCuts: Array[Double],
                       entropyCuts: Array[Double],
                       numberPeriodsCuts: Array[Double],
-                      topDomainsBC: Broadcast[Set[String]]) extends Serializable {
+                      topDomainsBC: Broadcast[Set[String]],
+                      userDomain: String) extends Serializable {
 
 
   /**
@@ -79,7 +81,7 @@ class DNSWordCreation(frameLengthCuts: Array[Double],
 
 
     val DomainInfo(domain, topDomain, subdomain, subdomainLength, subdomainEntropy, numPeriods) =
-      extractDomainInfo(queryName, topDomainsBC)
+      extractDomainInfo(queryName, topDomainsBC, userDomain)
 
     Seq(topDomain,
       Quantiles.bin(frameLength.toDouble, frameLengthCuts),
