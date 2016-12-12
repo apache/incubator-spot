@@ -7,6 +7,7 @@ import json
 import numpy as np
 import linecache, bisect
 import csv
+import pandas as pd
 
 from collections import OrderedDict
 from multiprocessing import Process
@@ -51,7 +52,7 @@ class OA(object):
         # initialize data engine
         self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
         self._engine = Data(self._db, self._table_name,self._logger)
-              
+                      
     def start(self):       
         
         ####################
@@ -386,47 +387,55 @@ class OA(object):
                     self._engine.query(ch_query.format(self._db,self._table_name,yr,mn,dy,ip,ips_filter),chord_file,delimiter="\\t")
 
      
-    def _ingest_summary(self):
-        
+    def _ingest_summary(self): 
         # get date parameters.
         yr = self._date[:4]
         mn = self._date[4:6]
         dy = self._date[6:]
 
+        self._logger.info("Getting ingest summary data for the day")
+        
+        ingest_summary_cols = ["date","total"]		
+        result_rows = []       
+        df_filtered =  pd.DataFrame() 
+
+        ingest_summary_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)			
+        ingest_summary_tmp = "{0}.tmp".format(ingest_summary_file)
+        if os.path.isfile(ingest_summary_file):
+            df = pd.read_csv(ingest_summary_file, delimiter=',',names=ingest_summary_cols, skiprows=1)
+            df_filtered = df[df['date'].str.contains("{0}-{1}-{2}".format(yr, mn, dy)) == False] 
+        else:
+            df = pd.DataFrame()
+        
         # get ingest summary.           
-        ingest_summary_qry = ("SELECT tryear, trmonth, trday, trhour, trminute, COUNT(*) flows"
-                              " FROM {0}.flow "
-                              " WHERE "
-                              " y={1} "
-                              " AND m={2} "
-                              " AND d={3} "
-                              " AND unix_tstamp IS NOT NULL "
-                              " GROUP BY tryear, trmonth, trday, trhour, trminute;")
+        ingest_summary_qry = ("SELECT tryear, trmonth, trday, trhour, trminute, COUNT(*) total"
+                            " FROM {0}.{1} "
+                            " WHERE "
+                            " y={2} "
+                            " AND m={3} "
+                            " AND d={4} "
+                            " AND unix_tstamp IS NOT NULL AND sip IS NOT NULL "
+                            " AND sport IS NOT NULL AND dip IS NOT NULL "
+                            " AND dport IS NOT NULL AND ibyt IS NOT NULL "
+                            " AND ipkt IS NOT NULL "
+                            " GROUP BY tryear, trmonth, trday, trhour, trminute;")
 
-        ingest_summary_qry = ingest_summary_qry.format(self._db, yr, mn, dy)
 
+        ingest_summary_qry = ingest_summary_qry.format(self._db,self._table_name, yr, mn, dy)
         results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)
         self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
+
+        if os.path.isfile(results_file):
+            result_rows = pd.read_csv(results_file, delimiter=',') 
+
+            df_new = pd.DataFrame([["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy, str(val['trhour']).zfill(2), str(val['trminute']).zfill(2)), int(val[5])] for key,val in result_rows.iterrows()],columns = ingest_summary_cols)						
+
+            df_filtered = df_filtered.append(df_new, ignore_index=True)
+            df_filtered.to_csv(ingest_summary_tmp,sep=',', index=False)
+
+            os.remove(results_file)
+            os.rename(ingest_summary_tmp,ingest_summary_file)
+        else:
+            self._logger.info("No data found for the ingest summary")
+
         
-        result_rows = []        
-        with open(results_file, 'rb') as rf:
-            csv_reader = csv.reader(rf, delimiter = ",")
-            result_rows = list(csv_reader)
-        
-        result_rows = iter(result_rows)
-        next(result_rows)
-
-        ingest_summary_results = [ ["date","flows"] ]
-        ingest_summary_results.extend([ ["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy, row[3].zfill(2) ,row[4].zfill(2)), row[5]] for row in result_rows ])
-        ingest_summay_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)
-
-
-        write_format =  'a' if os.path.isfile(ingest_summay_file) else 'w+'
-        with open(ingest_summay_file, write_format) as u_file:
-            writer = csv.writer(u_file, quoting=csv.QUOTE_NONE, delimiter=",")
-            writer.writerows(ingest_summary_results)
-
-        rm_big_file = "rm {0}".format(results_file)
-        os.remove(results_file)
-       
-

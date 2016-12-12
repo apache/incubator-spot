@@ -5,13 +5,14 @@ import json
 import shutil
 import sys
 import datetime
-import csv
+import csv, math
 from collections import OrderedDict
 from utils import Util
 from components.data.data import Data
 from components.iana.iana_transform import IanaTransform
 from components.nc.network_context import NetworkContext
 from multiprocessing import Process
+import pandas as pd 
 
 import time
 import md5
@@ -70,6 +71,7 @@ class OA(object):
         self._add_hash()
         self._create_proxy_scores_csv()
         self._get_oa_details()
+        self._ingest_summary()
 
 
         ##################
@@ -292,3 +294,57 @@ class OA(object):
             except OSError:
                 pass
 
+
+    def _ingest_summary(self): 
+        # get date parameters.
+        yr = self._date[:4]
+        mn = self._date[4:6]
+        dy = self._date[6:]
+
+        self._logger.info("Getting ingest summary data for the day")
+        
+        ingest_summary_cols = ["date","total"]		
+        result_rows = []        
+        df_filtered =  pd.DataFrame()
+
+        ingest_summary_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)			
+        ingest_summary_tmp = "{0}.tmp".format(ingest_summary_file)
+
+        if os.path.isfile(ingest_summary_file):
+        	df = pd.read_csv(ingest_summary_file, delimiter=',')
+            #discards previous rows from the same date
+        	df_filtered = df[df['date'].str.contains("{0}-{1}-{2}".format(yr, mn, dy)) == False] 
+        else:
+        	df = pd.DataFrame()
+            
+        # get ingest summary.
+        ingest_summary_qry = ("SELECT p_date, p_time, COUNT(*) as total "
+                                    " FROM {0}.{1}"
+                                    " WHERE y='{2}' AND m='{3}' AND d='{4}' "
+                                    " AND p_date IS NOT NULL AND p_time IS NOT NULL " 
+                                    " AND clientip IS NOT NULL AND p_time != '' "
+                                    " AND host IS NOT NULL AND fulluri IS NOT NULL "
+                                    " GROUP BY p_date, p_time;") 
+
+        ingest_summary_qry = ingest_summary_qry.format(self._db,self._table_name, yr, mn, dy)
+        results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)        
+        self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
+        
+        if os.path.isfile(results_file):
+            df_results = pd.read_csv(results_file, delimiter=',')  
+            
+            #Forms a new dataframe splitting the minutes from the time column/
+            df_new = pd.DataFrame([["{0} {1}:{2}".format(val['p_date'], val['p_time'].split(":")[0].zfill(2), val['p_time'].split(":")[1].zfill(2)), int(val['total']) if not math.isnan(val['total']) else 0 ] for key,val in df_results.iterrows()],columns = ingest_summary_cols)
+            
+            #Groups the data by minute 
+            sf = df_new.groupby(by=['date'])['total'].sum()
+            df_per_min = pd.DataFrame({'date':sf.index, 'total':sf.values})
+            
+            df_final = df_filtered.append(df_per_min, ignore_index=True)
+            df_final.to_csv(ingest_summary_tmp,sep=',', index=False)
+
+            os.remove(results_file)
+            os.rename(ingest_summary_tmp,ingest_summary_file)
+        else:
+            self._logger.info("No data found for the ingest summary")
+        
