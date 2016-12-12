@@ -1,34 +1,55 @@
-var assign = require('object-assign');
-var d3 = require('d3');
+const assign = require('object-assign');
+const d3 = require('d3');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var NetflowConstants = require('../constants/NetflowConstants');
-var DateUtils = require('../../../js/utils/DateUtils');
-var RestStore = require('../../../js/stores/RestStore');
+const SpotDispatcher = require('../dispatchers/SpotDispatcher');
+const SpotConstants = require('../constants/SpotConstants');
+const DateUtils = require('../utils/DateUtils');
+const RestStore = require('../stores/RestStore');
 
-var START_DATE_FILTER = NetflowConstants.START_DATE;
-var END_DATE_FILTER = NetflowConstants.END_DATE;
-var CURRENT_DATE_FILTER = 'current_date';
+const PIPELINE_FILTER = 'pipeline';
+const CURRENT_YEAR_FILTER = 'year';
+const CURRENT_MONTH_FILTER = 'month';
 
-var requestQueue = [];
-var requestErrors = [];
+const requestQueue = [];
+const requestErrors = [];
 
-var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMARY), {
+const IngestSummaryStore = assign(new RestStore(SpotConstants.API_INGEST_SUMMARY), {
+    PIPELINES: {
+        [SpotConstants.PIPELINE_NETFLOW]: 'Netflow',
+        [SpotConstants.PIPELINE_DNS]: 'Dns',
+        [SpotConstants.PIPELINE_PROXY]: 'Proxy'
+    },
     errorMessages: {
         404: 'No details available'
     },
-    setStartDate: function (date) {
-        this.setRestFilter(START_DATE_FILTER, date);
+    setStartDate(date) {
+        this._startDate = date;
     },
-    getStartDate: function () {
-        return this.getRestFilter(START_DATE_FILTER);
+    getStartDate() {
+        return this._startDate;
     },
-    setEndDate: function (date) {
-        this.setRestFilter(END_DATE_FILTER, date);
+    setEndDate(date) {
+        this._endDate = date;
     },
-    getEndDate: function () {
-        return this.getRestFilter(END_DATE_FILTER);
+    getEndDate() {
+        return this._endDate;
+    },
+    setPipeline(pipeline) {
+        this.setRestFilter(PIPELINE_FILTER, pipeline);
+    },
+    getPipeline() {
+        return this.getRestFilter(PIPELINE_FILTER);
+    },
+    setCurrentDate(date) {
+        this.setRestFilter(CURRENT_YEAR_FILTER, date.getFullYear())
+
+        const month = date.getMonth() + 1 + "";
+        this.setRestFilter(CURRENT_MONTH_FILTER, month.length==1 ? `0${month}`:month);
+
+        this._currentDate = date;
+    },
+    getCurrentDate() {
+        return this._currentDate;
     },
     /**
      *  Start asking the server for CSV data to create the chart
@@ -36,8 +57,8 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
     requestSummary: function () {
         var startDate, endDate, date, delta, startRequests, i, month;
 
-        startDate = DateUtils.parseDate(this.getRestFilter(START_DATE_FILTER));
-        endDate = DateUtils.parseDate(this.getRestFilter(END_DATE_FILTER));
+        startDate = DateUtils.parseDate(this.getStartDate());
+        endDate = DateUtils.parseDate(this.getEndDate());
 
         // Find out how many request need to be made
         delta = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
@@ -58,17 +79,10 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
         startRequests && this.dequeue();
     },
     dequeue: function () {
-        var date, year, month;
-
         if (requestQueue.length == 0) return;
 
-        date = requestQueue.shift();
-        this.setRestFilter(CURRENT_DATE_FILTER, date);
-        year = date.getFullYear();
-        month = date.getMonth() + 1 + "";
-        month = month.length == 1 ? "0" + month : month;
-
-        this.setEndpoint(NetflowConstants.API_INGEST_SUMMARY.replace('${year}', year).replace('${month}', month));
+        const date = requestQueue.shift();
+        this.setCurrentDate(date);
 
         this.reload();
     },
@@ -91,10 +105,10 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
             requestErrors.push(data);
         }
         else if (data.data) {
-            parse = d3.time.format("%Y-%m-%d %H:%M").parse; // Date formatting parser
-            startDate = DateUtils.parseDate(this.getRestFilter(START_DATE_FILTER));
-            endDate = DateUtils.parseDate(this.getRestFilter(END_DATE_FILTER));
-            date = DateUtils.parseDate(this.getRestFilter(CURRENT_DATE_FILTER));
+            parse = d3.time.format("%Y-%m-%d %H:%M:%S%Z").parse; // Date formatting parser
+            startDate = DateUtils.parseDate(this.getStartDate());
+            endDate = DateUtils.parseDate(this.getEndDate());
+            date = DateUtils.parseDate(this.getCurrentDate());
 
             if (date.getFullYear() == startDate.getFullYear() && date.getMonth() == startDate.getMonth()) {
                 dayFilter = startDate.getDate();
@@ -112,8 +126,8 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
 
             // Parse dates and numbers.
             data.data.forEach(function (d) {
-                d.date = parse(d.date);
-                d.flows = +d.flows;
+                d.date = parse(`${d.date}:00-0000`);
+                d.total = +d.total;
             });
 
             // Sort the data by date ASC
@@ -122,13 +136,14 @@ var IngestSummaryStore = assign(new RestStore(NetflowConstants.API_INGEST_SUMMAR
             });
 
             if (!this._data.data) this._data.data = [];
+
             this._data.data.push(data.data);
         }
 
         this._data.loading = requestQueue.length > 0;
 
         if (!this._data.loading) {
-            if (this._data.data.length==0) {
+            if (this._data.data && this._data.data.length==0) {
                 // Broadcast first found error
                 this._data = requestErrors[0];
             }
@@ -144,15 +159,15 @@ SpotDispatcher.register(function (action) {
     switch (action.actionType) {
         case SpotConstants.UPDATE_DATE:
             switch (action.name) {
-                case NetflowConstants.START_DATE:
+                case SpotConstants.START_DATE:
                     IngestSummaryStore.setStartDate(action.date);
                     break;
-                case NetflowConstants.END_DATE:
+                case SpotConstants.END_DATE:
                     IngestSummaryStore.setEndDate(action.date);
                     break;
             }
             break;
-        case NetflowConstants.RELOAD_INGEST_SUMMARY:
+        case SpotConstants.RELOAD_INGEST_SUMMARY:
             IngestSummaryStore.requestSummary();
             break;
     }

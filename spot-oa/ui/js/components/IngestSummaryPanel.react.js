@@ -3,234 +3,216 @@ const d3 = require('d3');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+const ContentLoaderMixin = require('./ContentLoaderMixin.react');
+const ChartMixin = require('./ChartMixin.react');
 const DateUtils = require('../utils/DateUtils');
 const InSumActions = require('../actions/InSumActions');
 
-const NetflowIngestSummaryStore = require('../../flow/js/stores/IngestSummaryStore');
+const IngestSummaryStore = require('../stores/IngestSummaryStore');
 
-function initialDraw() {
-  var rootNode, format, x, y, xAxis, yAxis, area, svg, rect, total, minDate, maxDate, maxFlows, numberFormat;
+const MARGIN = [80, 50, 50, 100];
+const TIME_FORMATER = d3.time.format('%Y-%m-%d %H:%M');
+const NUMBER_FORMATER = d3.format(',d');
 
-  rootNode = d3.select(ReactDOM.findDOMNode(this));
+const IngestSummaryPanel = React.createClass({
+    mixins: [ContentLoaderMixin, ChartMixin],
+    buildChart() {
+        // Scales
+        this.xScale = d3.time.scale();
+        this.yScale = d3.scale.linear();
 
-  // graph dimensions
-  var m = [100, 50, 50, 80], // Margin
-      w = $(rootNode.node()).width() - m[1] - m[3], // Width
-      h = $(rootNode.node()).height() - m[0] - m[2]; // Height
+        // Axis
+        this.xAxis = d3.svg.axis().scale(this.xScale).orient('bottom'); // Time
+        this.yAxis = d3.svg.axis().scale(this.yScale).orient('left'); // Totals
 
-  format = d3.time.format("%Y-%m-%d %H:%M");
+        // An area generator.
+        this.area = d3.svg.area()
+              .x(d => this.xScale(d.date))
+              .y1(d => (isNaN(d.total) ? this.yScale(0) : this.yScale(d.total)));
 
-  // Scales.
-  x = d3.time.scale().range([0, w]); // get X function
-  y = d3.scale.linear().range([h, 0]); // get Y function
-  xAxis = d3.svg.axis().scale(x).orient("bottom"); // Get the X axis (Time)
-  yAxis = d3.svg.axis().scale(y).orient("left"); // Get Y Axis (Netflows)
+        let d3svg = d3.select(this.svg);
 
-  // An area generator.
-  area = d3.svg.area()
-        .x(function (d) {
-            return x(d.date);
-        })
-        .y0(h)
-        .y1(function (d) {
-            if (!isNaN(d.total))
-                return y(d.total);
-            else
-                return y(0);
+        const d3header = d3svg.append('g').attr('class', 'header');
+
+        d3header.append('text')
+            .attr('transform', 'translate(0,15)')
+            .html('Seeing data <tspan class="bold">from</tspan > <tspan class="min-date" /> <tspan class="bold"> to </tspan> <tspan class="max-date" />');
+
+        d3header.append('text')
+            .attr('transform', 'translate(0,30)')
+            .html('<tspan class="bold">Total</tspan> records ingested: <tspan class="total" />');
+
+        d3header.append('text')
+            .attr('transform', 'translate(0,45)')
+            .text('** Zoom in/out using mouse wheel or two fingers in track pad');
+        d3header.append('text')
+            .attr('transform', 'translate(0,60)')
+            .text('** ** Move across the x-axis by clicking anywhere in the graph and dragging to left or right');
+
+        this.updateLegends(this.state.minDate, this.state.maxDate, this.state.total);
+
+        this.canvas = d3svg.append('g')
+            .attr('transform', `translate(${MARGIN[3]},${MARGIN[0]})`);
+
+        // Append the clipPath to avoid drawing not seen data
+        this.clipRect = d3svg.append('defs')
+            .append('clipPath')
+                .attr('id', 'clip')
+                .append('rect')
+                    .attr('x',0)
+                    .attr('y', 0);
+
+        this.d3xAxis = this.canvas.append('g').attr('class', 'x axis');
+        this.d3yAxis = this.canvas.append('g').attr('class', 'y axis');
+        this.pipelineCanvas = this.canvas.append('g').attr('class', 'pipeline');
+
+        this.d3zoom = d3.behavior.zoom()
+            .scaleExtent([0.3, 2300]) // these are magic numbers to avoid the grap be zoomable in/out to the infinity
+            .on('zoom', this.zoom)
+
+        this.pipelineCanvas.call(this.d3zoom);
+
+        this.pipelineColor = d3.scale.category10().domain(Object.keys(IngestSummaryStore.PIPELINES));
+    },
+    draw() {
+        let $svg = $(this.svg);
+
+        this.width = $svg.width() - MARGIN[1] - MARGIN[3];
+        this.height = $svg.height() - MARGIN[0] - MARGIN[2];
+
+        d3.select(this.svg).select('.header').attr('transform', `translate(${this.width/2},0)`);
+
+        this.xScale.range([0, this.width]).domain([this.state.minDate, this.state.maxDate]);
+        this.yScale.range([this.height, 0]).domain([0, this.state.maxTotal]);
+
+        this.d3zoom.x(this.xScale)
+
+        this.area.y0(this.height);
+
+        this.clipRect
+            .attr('width', this.width)
+            .attr('height', this.height);
+
+        this.d3xAxis.attr('transform', `translate(0,${this.height})`);
+
+        this.drawPaths();
+    },
+    drawPaths() {
+        this.d3xAxis.call(this.xAxis);
+        this.d3yAxis.call(this.yAxis);
+
+        let total = 0;
+        const [minDate, maxDate] = this.xScale.domain();
+
+        // Go to the first millisecond on dates
+        minDate.setSeconds(0);minDate.setMilliseconds(0);
+        maxDate.setSeconds(59);maxDate.setMilliseconds(0);
+
+        const pipelineData = this.state.data.map(currentMonthData => {
+            // Filter records outside current date range
+            return currentMonthData.filter(record => {
+                const included = record.date>=minDate && record.date<=maxDate;
+
+                // Sum records included in range only
+                if (included) total += record.total;
+
+                return included;
+            });
+        }).filter(monthData => monthData.length>0); // Filter out empty months
+
+        this.drawPipeline(pipelineData);
+
+        this.updateLegends(minDate, maxDate, total);
+    },
+    drawPipeline(data) {
+        const pipelineSel = {};
+
+        pipelineSel.update = this.pipelineCanvas.selectAll('path.area').data(data);
+
+        pipelineSel.enter = pipelineSel.update.enter();
+        pipelineSel.exit = pipelineSel.update.exit();
+
+        pipelineSel.enter.append('path')
+            .attr('class', 'area')
+            .style('fill', this.pipelineColor(IngestSummaryStore.getPipeline()));
+
+        pipelineSel.update.attr('d', d => this.area(d));
+
+        pipelineSel.exit.remove();
+    },
+    updateLegends(minDate, maxDate, total) {
+        const minDateStr = TIME_FORMATER(minDate);
+        const maxDateStr = TIME_FORMATER(maxDate);
+        const totalStr = NUMBER_FORMATER(total);
+
+        const d3header = d3.select(this.svg).select('.header');
+
+        d3header.select('.min-date').text(minDateStr);
+        d3header.select('.max-date').text(maxDateStr);
+        d3header.select('.total').text(totalStr);
+    },
+    zoom() {
+        if (d3.event.sourceEvent.type == 'wheel') {
+            this.pipelineCanvas.classed('zoom-out', d3.event.sourceEvent.wheelDelta < 0);
+            this.pipelineCanvas.classed('zoom-in', d3.event.sourceEvent.wheelDelta >= 0);
+            this.pipelineCanvas.classed('e-resize', false);
+      }
+      else if (d3.event.sourceEvent.type == 'mousemove') {
+        this.pipelineCanvas.classed('e-resize', true);
+        this.pipelineCanvas.classed('zoom-out', false);
+        this.pipelineCanvas.classed('zoom-in', false);
+      }
+
+      this.drawPaths();
+  },
+    componentDidMount() {
+        IngestSummaryStore.addChangeDataListener(this._onChange);
+    },
+    componentWillUnmount() {
+        IngestSummaryStore.removeChangeDataListener(this._onChange);
+    },
+    _onChange() {
+        const storeData = IngestSummaryStore.getData();
+
+        if (storeData.error) {
+            this.replaceState({error: storeData.error});
+        }
+        else if (!storeData.loading && storeData.data) {
+            this.replaceState(this._getStateFromData(storeData.data));
+        }
+        else {
+            this.replaceState({loading: storeData.loading});
+        }
+    },
+    _getStateFromData(data) {
+        let total, maxTotal, minDate, maxDate;
+
+        total = 0;
+        maxTotal = 0;
+        minDate = null;
+        maxDate = null;
+
+        data.forEach(function (monthData) {
+          monthData.forEach(function (record) {
+              minDate = d3.min([minDate, record.date]);
+              maxDate = d3.max([maxDate, record.date]);
+              maxTotal = d3.max([maxTotal, +record.total]);
+              total += +record.total;
+          });
         });
 
-  rootNode.select('svg').remove();
+        !minDate && (minDate = DateUtils.parseDate(IngestSummaryStore.getStartDate()));
+        !maxDate && (maxDate = DateUtils.parseDate(IngestSummaryStore.getEndDate()));
 
-  // define the Main SVG
-  svg = rootNode.select('#' + this.props.id + '-summary').append("svg")
-    .attr("width", w + m[1] + m[3])
-    .attr("height", h + m[0] + m[2])
-        .append("g")
-        .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
-
-  // Append the clipPath to avoid the Area overlapping
-  svg.append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-          .attr("x", x(0))
-          .attr("y", y(1))
-          .attr("width", x(1) - x(0))
-          .attr("height", y(0) - y(1));
-
-  // Append the Y Axis group
-  svg.append("g")
-    .attr("class", "y axis");
-
-  // Append the X axis group
-  svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + h + ")");
-
-  // Append a pane rect, which will help us to add the zoom functionality
-  rect = svg.append("rect")
-        .attr("class", "pane")
-        .attr("width", w)
-        .attr("height", h);
-
-  this.state.data.forEach(function (dataSet)
-  {
-    var a;
-
-    a = [{date: minDate}];
-    a.push.apply(a, dataSet);
-    minDate = d3.min(a, function (d) { return d.date; });
-    a[0] = {date: maxDate, flows: maxFlows};
-    maxDate = d3.max(a, function (d) { return d.date; });
-    maxFlows = d3.max(a, function (d) { return d.total; })
-  });
-
-  !minDate && (minDate = DateUtils.parseDate(NetflowIngestSummaryStore.getStartDate()));
-  !maxDate && (maxDate = DateUtils.parseDate(NetflowIngestSummaryStore.getEndDate()));
-
-  // bind the data to the X and Y generators
-  x.domain([minDate, maxDate]);
-  y.domain([0, maxFlows]);
-
-  // Bind the data to our path element.
-  svg.selectAll("path.area").data(this.state.data).enter().insert('path', 'g')
-                                                .attr('class', 'area')
-                                                .attr('clip-path', 'url(#clip)')
-                                                .style('fill', '#0071c5')
-                                                .attr('d', function (d) {
-                                                    return area(d);
-                                                });
-
-  //Add the pane rect the zoom behavior
-  rect.call(d3.behavior.zoom().x(x)
-      .scaleExtent([0.3, 2300]) // these are magic numbers to avoid the grap be zoomable in/out to the infinity
-      .on("zoom", zoom.bind(this)));
-
-  function draw () {
-    var total, minDate, maxDate, numberFormat;
-
-    svg.select("g.x.axis").call(xAxis);
-    svg.select("g.y.axis").call(yAxis);
-    svg.selectAll("path.area").attr("d", function (d) { return area(d); });
-    numberFormat = d3.format(",d"); // number formatter (comma separated number i.e. 100,000,000)
-
-    rootNode.select('#' + this.props.id + '-range').html("Seeing total flows <strong>from:</strong> " + x.domain().map(format).join(" <strong>to:</strong> "));
-
-    //Calculate the total flows between the displayed date range
-
-    total = 0;
-    minDate = x.domain()[0];
-    maxDate = x.domain()[1];
-
-    // Go to the first millisecond on dates
-    minDate.setSeconds(0);minDate.setMilliseconds(0);
-    maxDate.setSeconds(59);maxDate.setMilliseconds(0);
-
-    svg.selectAll("path.area").data().forEach(function (pathData)
-    {
-      pathData.forEach(function (record)
-      {
-        // Discard records outside displayed date range
-        if (record.date >= minDate && record.date <= maxDate) {
-          total += +record.total;
-        }
-      });
-    });
-
-    rootNode.select('#' + this.props.id + '-total').html("<strong>Total netflows in range:</strong> " + numberFormat(total));
-  }
-
-  /*
-      Zoom event handler
-  */
-  function zoom() {
-    if (d3.event.sourceEvent.type == "wheel") {
-      if (d3.event.sourceEvent.wheelDelta < 0)
-         rect.style("cursor", "zoom-out");
-      else
-         rect.style("cursor", "zoom-in");
+        return {
+            loading: false,
+            total,
+            maxTotal,
+            minDate,
+            maxDate,
+            data: data
+        };
     }
-    else if (d3.event.sourceEvent.type == "mousemove") {
-      rect.style("cursor", "e-resize");
-    }
-
-    draw.call(this);
-  }
-
-  draw.call(this);
-}
-
-var IngestSummaryPanel = React.createClass({
-  propTypes: {
-    id: React.PropTypes.string
-  },
-  getDefaultProperties: function () {
-    return {
-      id: 'spot-is'
-    };
-  },
-  getInitialState: function ()
-  {
-    return {loading: true};
-  },
-  render:function()
-  {
-    var content;
-
-    if (this.state.error)
-    {
-      content = (
-        <div className="text-center text-danger">
-          {this.state.error}
-        </div>
-      );
-    }
-    else if (this.state.loading)
-    {
-      content = (
-        <div className="spot-loader">
-            Loading <span className="spinner"></span>
-        </div>
-      );
-    }
-    else
-    {
-      content = (
-        <div id={this.props.id} className="text-center">
-          <div id={this.props.id + '-header'}>
-            <p id={this.props.id + '-range'}></p>
-            <p id={this.props.id + '-total'}></p>
-            <p id={this.props.id + '-istructions'} className="small">** Zoom in/out using mouse wheel or two fingers in track pad <br /> ** Move across the x-axis by clicking anywhere in the graph and dragging to left or right</p>
-          </div>
-          <div id={this.props.id + '-summary'}></div>
-        </div>
-      );
-    }
-
-    return (
-      <div>{content}</div>
-    )
-  },
-  componentDidMount: function()
-  {
-    NetflowIngestSummaryStore.addChangeDataListener(this._onChange);
-    window.addEventListener('resize', this.buildGraph);
-  },
-  componentWillUnmount: function ()
-  {
-    NetflowIngestSummaryStore.removeChangeDataListener(this._onChange);
-    window.removeEventListener('resize', this.buildGraph);
-  },
-  componentDidUpdate: function ()
-  {
-    if (!this.state.loading && !this.state.error && this.state.data)
-    {
-      this.buildGraph();
-    }
-  },
-  buildGraph: initialDraw,
-  _onChange: function () {
-    this.replaceState(NetflowIngestSummaryStore.getData());
-  }
 });
 
 module.exports = IngestSummaryPanel;
