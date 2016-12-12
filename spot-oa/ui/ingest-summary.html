@@ -34,31 +34,42 @@
             height: 100%;
         }
 
-        #spot-is-header {
+        .is-chart svg {
             width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
-            height: auto;
-        }
-
-        #spot-is, #spot-is-summary {
             height: 100%;
         }
 
-        .axis {
+        .is-chart svg .header text {
+            text-anchor: middle;
+            fill: #82837e;
+        }
+
+        .is-chart svg .header text tspan.bold {
+            font-weight: bold;
+        }
+
+        .is-chart .axis {
             shape-rendering: crispEdges;
         }
 
-        .axis path, .axis line {
+        .is-chart .axis path, .is-chart .axis line {
             fill: none;
         }
 
-        rect.pane {
-            cursor: e-resize;
-            fill: none;
+        .is-chart .pipeline {
             pointer-events: all;
+        }
+
+        .is-chart .pipeline.zoom-in {
+            cursor: zoom-in;
+        }
+
+        .is-chart .pipeline.zoom-out {
+            cursor: zoom-out;
+        }
+
+        .is-chart .pipeline.e-resize {
+            cursor: e-resize;
         }
     </style>
 </head>
