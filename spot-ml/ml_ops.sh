@@ -45,6 +45,14 @@ else
     RAWDATA_PATH=${PROXY_PATH}
 fi
 
+# pass the user domain designation if not empty
+
+if [ ! -z $USER_DOMAIN ] ; then
+    USER_DOMAIN_PARSER_CMD="--userdomain $USER_DOMAIN"
+else
+    USER_DOMAIN_PARSER_CMD=''
+fi
+
 FEEDBACK_PATH=${LPATH}/${DSOURCE}_scores.csv
 DUPFACTOR=1000
 
@@ -97,7 +105,7 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --dupfactor ${DUPFACTOR} \
   --feedback ${FEEDBACK_PATH} \
   --ldatopiccount ${TOPIC_COUNT} \
-  --userdomain ${USER_DOMAIN}\
+  $USER_DOMAIN_PARSER_CMD \
   --scored ${HDFS_SCORED_CONNECTS} \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
