@@ -1,4 +1,7 @@
-var SpotConstants = {
+const SpotConstants = {
+  PIPELINE_NETFLOW: 'flow',
+  PIPELINE_DNS: 'dns',
+  PIPELINE_PROXY: 'proxy',
   // Search Actions
   UPDATE_FILTER: 'UPDATE_FILTER',
   UPDATE_DATE: 'UPDATE_DATE',
@@ -18,6 +21,7 @@ var SpotConstants = {
   IMPACT_ANALYSIS_PANEL:'Impact Analysis',
   GLOBE_VIEW_PANEL:'Map View | Globe',
   TIMELINE_PANEL:'Timeline',
+  INGEST_SUMMARY_PANEL:'Ingest Summary',
   // Edge Investigation
   MAX_SUSPICIOUS_ROWS: 250,
   RELOAD_SUSPICIOUS: 'RELOAD_SUSPICIOUS',
@@ -30,6 +34,11 @@ var SpotConstants = {
   // Storyboard
   RELOAD_COMMENTS: 'RELOAD_COMMENTS',
   SELECT_COMMENT: 'SELECT_COMMENT',
+  // INGEST SUMMARY
+  API_INGEST_SUMMARY: '../data/${pipeline}/ingest_summary/is_${year}${month}.csv',
+  RELOAD_INGEST_SUMMARY: 'RELOAD_INGEST_SUMMARY',
+  START_DATE: 'start-date',
+  END_DATE: 'end-date',
   // Server Paths
   NOTEBOOKS_PATH: '/notebooks/ipynb'
 };
