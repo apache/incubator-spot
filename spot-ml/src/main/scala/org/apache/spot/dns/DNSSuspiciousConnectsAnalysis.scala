@@ -54,6 +54,7 @@ object DNSSuspiciousConnectsAnalysis {
 
     logger.info("Loading data")
 
+
     val rawDataDF = sqlContext.read.parquet(config.inputPath)
       .filter(Timestamp + " is not null and " + UnixTimestamp + " is not null")
       .select(inColumns:_*)
@@ -61,6 +62,7 @@ object DNSSuspiciousConnectsAnalysis {
 
 
     val scoredDF = detectDNSAnomalies(rawDataDF, config, sparkContext, sqlContext, logger)
+
 
 
     val filteredDF = scoredDF.filter(Score + " <= " + config.threshold)
@@ -88,12 +90,12 @@ object DNSSuspiciousConnectsAnalysis {
                          sqlContext: SQLContext,
                          logger: Logger) : DataFrame = {
 
-
+    val userDomain = config.userDomain
     logger.info("Fitting probabilistic model to data")
     val model =
       DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, data, config.topicCount)
 
     logger.info("Identifying outliers")
-    model.score(sparkContext, sqlContext, data)
+    model.score(sparkContext, sqlContext, data, userDomain)
   }
 }

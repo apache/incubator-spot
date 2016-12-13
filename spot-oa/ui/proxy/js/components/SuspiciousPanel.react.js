@@ -9,7 +9,7 @@ var SuspiciousStore = require('../stores/SuspiciousStore');
 var SuspiciousPanel = React.createClass({
     mixins: [GridPanelMixin, SuspiciousMixin],
     store: SuspiciousStore,
-    getInitialState: function () {
+    getDefaultProps: function () {
         return {iterator: SuspiciousStore.ITERATOR};
     },
     _renderCatCell: function (keyPrefix, reps) {

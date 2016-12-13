@@ -6,9 +6,9 @@ var DetailsStore = require('../stores/DetailsStore');
 var DetailsTablePanel = React.createClass({
   mixins: [GridPanelMixin],
   emptySetMessage: 'Please select one row from Suspicious DNS',
-  getInitialState: function ()
+  getDefaultProps: function ()
   {
-    return DetailsStore.getData();
+    return {iterator: DetailsStore.ITERATOR};
   },
   componentDidMount: function ()
   {

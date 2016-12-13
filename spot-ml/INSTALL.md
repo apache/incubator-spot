@@ -14,6 +14,7 @@ Names and language that we will use from the configuration variables for Spot (t
 - MLNODE The node from which the spot-ml routines are invoked
 - HUSER An HDFS user path that will be the base path for the solution; this is usually the same user that you created to run the solution
 - HPATH Location for storing intermediate results of the analysis on HDFS.
+- USER_DOMAIN Web domain associated to the user's network (for the DNS suspicous connects analysis). For example: USER_DOMAIN='intel'.
 
 ### Prepare data for input 
 
