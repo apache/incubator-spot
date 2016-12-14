@@ -108,7 +108,7 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --scored ${HDFS_SCORED_CONNECTS} \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
-  --ldamaxiterations 20 \ 
+  --ldamaxiterations 20 \
   $USER_DOMAIN_PARSER_CMD
 
 wait
