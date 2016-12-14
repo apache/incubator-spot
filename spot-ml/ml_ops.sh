@@ -48,9 +48,9 @@ fi
 # pass the user domain designation if not empty
 
 if [ ! -z $USER_DOMAIN ] ; then
-    USER_DOMAIN_PARSER_CMD="--userdomain $USER_DOMAIN"
+    USER_DOMAIN_CMD="--userdomain $USER_DOMAIN"
 else
-    USER_DOMAIN_PARSER_CMD=''
+    USER_DOMAIN_CMD=''
 fi
 
 FEEDBACK_PATH=${LPATH}/${DSOURCE}_scores.csv
@@ -109,7 +109,7 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
   --ldamaxiterations 20 \
-  $USER_DOMAIN_PARSER_CMD
+  $USER_DOMAIN_CMD
 
 wait
 
