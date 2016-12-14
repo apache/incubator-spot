@@ -105,11 +105,11 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --dupfactor ${DUPFACTOR} \
   --feedback ${FEEDBACK_PATH} \
   --ldatopiccount ${TOPIC_COUNT} \
-  $USER_DOMAIN_PARSER_CMD \
   --scored ${HDFS_SCORED_CONNECTS} \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
-  --ldamaxiterations 20
+  --ldamaxiterations 20 \ 
+  $USER_DOMAIN_PARSER_CMD
 
 wait
 
