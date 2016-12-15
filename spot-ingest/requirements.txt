@@ -1,3 +1,2 @@
 watchdog
 kafka-python
-boto3
