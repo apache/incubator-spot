@@ -30,7 +30,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
 
 
-  val testConfig = SuspiciousConnectsConfig(analysis = "proxy",
+  val testConfigProxy = SuspiciousConnectsConfig(analysis = "proxy",
     inputPath = "",
     feedbackFile = "",
     duplicationFactor = 1,
@@ -48,8 +48,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
   "proxy supicious connects analysis" should "estimate correct probabilities in toy data with top domain anomaly" in {
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
-    logger.setLevel(Level.INFO)
-    val testSqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
+    logger.setLevel(Level.WARN)
 
     val anomalousRecord = ProxyInput("2016-10-03",	"04:57:36", "127.0.0.1",	"intel.com",	"PUT",
       "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
@@ -65,12 +64,11 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
       "-",	"127.0.0.1",	338,	647,
       "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle")
 
-    import testSqlContext.implicits._
 
-    val data = sparkContext.parallelize(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
-      typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord)).toDF
+    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+      typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val scoredData = ProxySuspiciousConnectsAnalysis.detectProxyAnomalies(data, testConfig,
+    val scoredData = ProxySuspiciousConnectsAnalysis.detectProxyAnomalies(data, testConfigProxy,
       sparkContext,
       sqlContext,
       logger)

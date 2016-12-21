@@ -28,15 +28,12 @@ class DNSSuspiciousConnectsAnalysisTest  extends TestingSparkContextFlatSpec wit
   "dns supicious connects analysis" should "estimate correct probabilities in toy data with framelength anomaly" in {
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
-    logger.setLevel(Level.INFO)
-    val testSqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
+    logger.setLevel(Level.WARN)
 
     val anomalousRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT",	1463735425L,	1,	"172.16.9.132",	"turner.com.122.2o7.net",	"0x00000001",	1,	0)
     val typicalRecord   = DNSInput("May 20 2016 02:10:25.970987000 PDT",	1463735425L,	168,	"172.16.9.132",	"turner.com.122.2o7.net",	"0x00000001",	1,	0)
 
-    import testSqlContext.implicits._
-
-    val data = sparkContext.parallelize(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord)).toDF
+    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
     val scoredData = DNSSuspiciousConnectsAnalysis.detectDNSAnomalies(data, testConfig,
       sparkContext,
@@ -54,6 +51,4 @@ class DNSSuspiciousConnectsAnalysisTest  extends TestingSparkContextFlatSpec wit
     Math.abs(typicalScores(2) - 0.8d)  should be <= 0.01d
     Math.abs(typicalScores(3) - 0.8d)  should be <= 0.01d
   }
-
-
 }
