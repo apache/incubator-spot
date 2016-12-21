@@ -47,20 +47,19 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
     logger.setLevel(Level.OFF)
-    val testSqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
 
     val anomalousRecord = FlowRecord("2016-05-05 00:11:01", 2016, 5, 5, 0, 0, 1, 0.972f, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39, 12522, 0, 0)
     val typicalRecord = FlowRecord("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972f, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39, 12522, 0, 0)
 
-    import testSqlContext.implicits._
 
-    val data = sparkContext.parallelize(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
-      typicalRecord, typicalRecord, typicalRecord, typicalRecord)).toDF()
+    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+      typicalRecord, typicalRecord, typicalRecord, typicalRecord))
+
 
     val scoredData : DataFrame = FlowSuspiciousConnectsAnalysis.detectFlowAnomalies(data,
       testConfig,
       sparkContext,
-      testSqlContext,
+      sqlContext,
       logger)
 
 
