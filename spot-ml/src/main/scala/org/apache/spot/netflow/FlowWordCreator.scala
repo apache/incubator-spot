@@ -74,9 +74,9 @@ class FlowWordCreator(timeCuts: Array[Double],
 
     val timeOfDay: Double = hour.toDouble + minute.toDouble / 60 + second.toDouble / 3600
 
-    val timeBin = Quantiles.bin(timeOfDay, timeCuts).toString()
-    val ibytBin = Quantiles.bin(ibyt, ibytCuts).toString()
-    val ipktBin = Quantiles.bin(ipkt, ipktCuts).toString()
+    val timeBin = Quantiles.bin(timeOfDay, timeCuts)
+    val ibytBin = Quantiles.bin(ibyt, ibytCuts)
+    val ipktBin = Quantiles.bin(ipkt, ipktCuts)
 
 
     val LowToLowPortEncoding = 111111
