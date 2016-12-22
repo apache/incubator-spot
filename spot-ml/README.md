@@ -3,7 +3,7 @@
 Machine learning routines for Apache Spot (incubating).
 
 At present, spot-ml contains routines for performing *suspicious connections* analyses on netflow, DNS or proxy data gathered from a network. These
-analyses consume a (possibly very lage) collection of network events and produces a list of the events that considered to be the least probable (or most suspicious).
+analyses consume a (possibly very lage) collection of network events and produces a list of the events that considered to be the least probable (most suspicious).
 
 spot-ml is designed to be run as a component of Spot. It relies on the ingest component of Spot to collect and load
 netflow and DNS records, and spot-ml will try to load data to the operational analytics component of Spot.  It is suggested that when experimenting with spot-ml, you do so as a part of the unified Spot system: Please see [the Spot wiki]
@@ -19,9 +19,8 @@ The data format and location where the data is stored differs for netflow and DN
 
 **Netflow Data**
 
-Netflow data for the year YEAR, month  MONTH, and day DAY is stored in HDFS at `HUSER/flow/csv/y=YEAR/m=MONTH/d=DAY/*`
-
-Data for spot-ml netflow analyses is currently stored in text csv files using the following schema:
+Netflow data for the year YEAR, month  MONTH, and day DAY is stored in in a Parquet table  at `HUSER/flow/csv/y=YEAR/m=MONTH/d=DAY/*` according to
+ the following schema:
 
 - time: String
 - year: Double
@@ -53,9 +52,7 @@ Data for spot-ml netflow analyses is currently stored in text csv files using th
 
 **DNS Data**
 
-DNS data for the year YEAR, month MONTH and day DAY is stored in Hive at `HUSER/dns/hive/y=YEAR/m=MONTH/d=DAY/`
-
-The Hive tables containing DNS data for spot-ml analyses have the following schema:
+DNS data for the year YEAR, month MONTH and day DAY is stored in Parquet at `HUSER/dns/hive/y=YEAR/m=MONTH/d=DAY/` using the following schema:
 
 - frame_time: STRING
 - unix_tstamp: BIGINT
@@ -68,6 +65,7 @@ The Hive tables containing DNS data for spot-ml analyses have the following sche
 - dns_a: STRING
 
 **PROXY DATA**
+Proxy data for the year YEAR, month MONTH and day DAY is stored in Parquet at `HUSER/dns/hive/y=YEAR/m=MONTH/d=DAY/` using the following schema:
 
 - p_date: STRING
 - p_time: STRING  
@@ -137,18 +135,6 @@ spot-ml output will be found under the ``HPATH`` at one of
 
 
 It is a csv file in which network events annotated with estimated probabilities and sorted in ascending order.
-
-A successful run of spot-ml will also create and populate a directory at `LPATH/<source>/YYYYMMDD` where `<source>` is one of flow, dns or proxy, and
-`YYYYMMDD` is the date argument provided to `ml_ops.sh` 
-This directory will contain the following files generated during the LDA procedure used for topic-modelling:
-
-- model.dat An intermediate file in which each line corresponds to a "document" (the flow traffic about an IP, or the DNS queries of a client IP), and contains the size of the document and the list of "words" (simplified network events) occurring in the document with their frequencies. Words are encoded as integers per the file words.dat. 
-- final.beta  A space-separated text file that contains the logs of the probabilities of each word given each topic. Each line corresponds to a topic and the words are columns. 
-- final.gamma A space-separated text file that contains the unnormalized probabilities of each topic given each document. Each line corresponds to a document and the topics are the columns.
-- final.other  Auxilliary information from the LDA run: Number of topics, number of terms, alpha.
-- likelihood.dat Convergence information for the LDA run.
-
-In addition, on each worker node identified in NODES, in the `LPATH/<source>/YYYYMMDD` directory files of the form `<worker index>.beta` and `<workder index>.gamma`, these are local temporary files that are combined to form `final.beta` and `final.gamma`, respectively.
 
 ## Licensing
 

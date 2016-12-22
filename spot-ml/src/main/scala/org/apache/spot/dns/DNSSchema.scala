@@ -1,8 +1,6 @@
 package org.apache.spot.dns
 
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
-import org.apache.spot.dns.model.DNSSuspiciousConnectsModel.ModelSchema
 
 /**
   * Data frame schemas and column names used in the DNS suspicious connects analysis.

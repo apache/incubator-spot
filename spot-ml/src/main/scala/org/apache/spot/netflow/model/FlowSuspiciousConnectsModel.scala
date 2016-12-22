@@ -13,6 +13,9 @@ import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
 import org.apache.spot.utilities.Quantiles
+import org.apache.spot.utilities.data.validation.InvalidDataHandler
+
+import scala.util.{Failure, Success, Try}
 
 /**
   * A probabilistic model of the netflow traffic observed in a network.
@@ -30,7 +33,7 @@ import org.apache.spot.utilities.Quantiles
   * Create these models using the  factory in the companion object.
   *
   * @param topicCount Number of topics (profiles of common traffic patterns) used in the topic modelling routine.
-  * @param ipToTopicMixDF DataFrame assigning a distribution on topics to each document or IP.
+  * @param ipToTopicMix DataFrame assigning a distribution on topics to each document or IP.
   * @param wordToPerTopicProb Map assigning to each word it's per-topic probabilities.
   *                           Ie. Prob [word | t ] for t = 0 to topicCount -1
   * @param timeCuts Quantile cut-offs for binning time-of-day values when forming words from netflow records.
@@ -39,12 +42,11 @@ import org.apache.spot.utilities.Quantiles
   */
 
 class FlowSuspiciousConnectsModel(topicCount: Int,
-                                  ipToTopicMixDF: DataFrame,
+                                  ipToTopicMix: DataFrame,
                                   wordToPerTopicProb: Map[String, Array[Double]],
                                   timeCuts: Array[Double],
                                   ibytCuts: Array[Double],
                                   ipktCuts: Array[Double]) {
-
 
   def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame): DataFrame = {
 
@@ -56,14 +58,14 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
       */
     val dataWithSrcTopicMix = {
 
-      val recordsWithSrcIPTopicMixes = flowRecords.join(ipToTopicMixDF,
-        flowRecords(SourceIP) === ipToTopicMixDF(DocumentName), "left_outer")
+      val recordsWithSrcIPTopicMixes = flowRecords.join(ipToTopicMix,
+        flowRecords(SourceIP) === ipToTopicMix(DocumentName), "left_outer")
       val schemaWithSrcTopicMix = flowRecords.schema.fieldNames :+ TopicProbabilityMix
       val dataWithSrcIpProb: DataFrame = recordsWithSrcIPTopicMixes.selectExpr(schemaWithSrcTopicMix: _*)
         .withColumnRenamed(TopicProbabilityMix, SrcIpTopicMix)
 
-      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(ipToTopicMixDF,
-        dataWithSrcIpProb(DestinationIP) === ipToTopicMixDF(DocumentName), "left_outer")
+      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(ipToTopicMix,
+        dataWithSrcIpProb(DestinationIP) === ipToTopicMix(DocumentName), "left_outer")
       val schema = dataWithSrcIpProb.schema.fieldNames :+  TopicProbabilityMix
         recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
     }
@@ -129,46 +131,61 @@ object FlowSuspiciousConnectsModel {
                     sqlContext: SQLContext,
                     logger: Logger,
                     config: SuspiciousConnectsConfig,
-                    inDF: DataFrame,
+                    inputRecords: DataFrame,
                     topicCount: Int): FlowSuspiciousConnectsModel = {
 
     logger.info("Training netflow suspicious connects model from " + config.inputPath)
 
-    val selectedDF = inDF.select(ModelColumns: _*)
+    val selectedRecords = inputRecords.select(ModelColumns: _*)
 
 
-    val totalDataDF = selectedDF.unionAll(FlowFeedback.loadFeedbackDF(sparkContext,
+    val totalRecords = selectedRecords.unionAll(FlowFeedback.loadFeedbackDF(sparkContext,
       sqlContext,
       config.feedbackFile,
       config.duplicationFactor))
 
-
-
     // create quantile cut-offs
 
-    val timeCuts = Quantiles.computeDeciles(totalDataDF
+    val timeCuts = Quantiles.computeDeciles(totalRecords
       .select(Hour, Minute, Second)
       .rdd
-      .map({ case Row(hours: Int, minutes: Int, seconds: Int) => 3600 * hours + 60 * minutes + seconds }))
+      .flatMap({ case Row(hours: Int, minutes: Int, seconds: Int) => {
+          Try {  (3600 * hours + 60 * minutes + seconds).toDouble } match{
+            case Failure(_) => Seq()
+            case Success(time) => Seq(time)
+          }
+        }
+      }))
 
     logger.info(timeCuts.mkString(","))
 
     logger.info("calculating byte cuts ...")
 
-    val ibytCuts = Quantiles.computeDeciles(totalDataDF
+    val ibytCuts = Quantiles.computeDeciles(totalRecords
       .select(Ibyt)
       .rdd
-      .map({ case Row(ibyt: Long) => ibyt.toDouble }))
+      .flatMap({ case Row(ibyt: Long) => {
+          Try {  ibyt.toDouble } match{
+            case Failure(_) => Seq()
+            case Success(ibyt) => Seq(ibyt)
+          }
+        }
+      }))
 
     logger.info(ibytCuts.mkString(","))
 
     logger.info("calculating pkt cuts")
 
-    val ipktCuts = Quantiles.computeQuintiles(totalDataDF
+    val ipktCuts = Quantiles.computeQuintiles(totalRecords
       .select(Ipkt)
       .rdd
-      .map({ case Row(ipkt: Long) => ipkt.toDouble }))
-
+      .flatMap({ case Row(ipkt: Long) => {
+          Try { ipkt.toDouble } match {
+            case Failure(_) => Seq()
+            case Success(ipkt) => Seq(ipkt)
+          }
+        }
+      }))
 
     logger.info(ipktCuts.mkString(","))
 
@@ -176,18 +193,19 @@ object FlowSuspiciousConnectsModel {
 
     val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts)
 
-    val srcWordUDF = flowWordCreator.srcWordUDF
-    val dstWordUDF = flowWordCreator.dstWordUDF
-
-    val dataWithWordsDF = totalDataDF.withColumn(SourceWord, flowWordCreator.srcWordUDF(ModelColumns: _*))
+    val dataWithWords = totalRecords.withColumn(SourceWord, flowWordCreator.srcWordUDF(ModelColumns: _*))
       .withColumn(DestinationWord, flowWordCreator.dstWordUDF(ModelColumns: _*))
 
     // Aggregate per-word counts at each IP
-    val srcWordCounts = dataWithWordsDF.select(SourceIP, SourceWord)
+    val srcWordCounts = dataWithWords
+      .filter(dataWithWords(SourceWord).notEqual(InvalidDataHandler.WordError))
+      .select(SourceIP, SourceWord)
       .map({ case Row(sourceIp: String, sourceWord: String) => (sourceIp, sourceWord) -> 1 })
       .reduceByKey(_ + _)
 
-    val dstWordCounts = dataWithWordsDF.select(DestinationIP, DestinationWord)
+    val dstWordCounts = dataWithWords
+      .filter(dataWithWords(DestinationWord).notEqual(InvalidDataHandler.WordError))
+      .select(DestinationIP, DestinationWord)
       .map({ case Row(destinationIp: String, destinationWord: String) => (destinationIp, destinationWord) -> 1 })
       .reduceByKey(_ + _)
 
@@ -197,7 +215,7 @@ object FlowSuspiciousConnectsModel {
         .map({ case ((ip, word), count) => SpotLDAInput(ip, word, count) })
 
 
-    val SpotLDAOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
+    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
       sqlContext,
       ipWordCounts,
       config.topicCount,
@@ -208,12 +226,11 @@ object FlowSuspiciousConnectsModel {
       config.ldaMaxiterations)
 
     new FlowSuspiciousConnectsModel(topicCount,
-      ipToTopicMixDF,
+      ipToTopicMix,
       wordToPerTopicProb,
       timeCuts,
       ibytCuts,
       ipktCuts)
-
   }
 
 }

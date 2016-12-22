@@ -3,6 +3,7 @@ package org.apache.spot.netflow.model
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spot.SuspiciousConnectsScoreFunction
 import org.apache.spot.netflow.{FlowWordCreator, FlowWords}
+import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
 
 /**
@@ -61,10 +62,14 @@ class FlowScoreFunction(timeCuts: Array[Double],
 
     val zeroProb = Array.fill(topicCount) { 0.0 }
 
-    /** A null value for srcTopicMix or dstTopicMix indicated the ip (source or dest respectively)
+    /** WordError indicates there was a problem creating a word and should not be used for scoring.
+
+      A null value for srcTopicMix or dstTopicMix indicated the ip (source or dest respectively)
       * were not seen in training.
       */
-    if (srcTopicMix == null || dstTopicMix == null) {
+    if(srcWord == InvalidDataHandler.WordError || dstWord == InvalidDataHandler.WordError){
+      InvalidDataHandler.ScoreError
+    } else if (srcTopicMix == null || dstTopicMix == null) {
        0.0
     } else {
 
