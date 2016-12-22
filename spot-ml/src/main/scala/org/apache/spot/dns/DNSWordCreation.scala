@@ -4,6 +4,9 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.functions._
 import org.apache.spot.utilities.DomainProcessor.{DomainInfo, extractDomainInfo}
 import org.apache.spot.utilities.Quantiles
+import org.apache.spot.utilities.data.validation.InvalidDataHandler
+
+import scala.util.{Failure, Success, Try}
 
 
 /**
@@ -79,18 +82,23 @@ class DNSWordCreation(frameLengthCuts: Array[Double],
               dnsQueryType: Int,
               dnsQueryRcode: Int): String = {
 
+    Try {
+      val DomainInfo(domain, topDomain, subdomain, subdomainLength, subdomainEntropy, numPeriods) =
+        extractDomainInfo(queryName, topDomainsBC, userDomain)
 
-    val DomainInfo(domain, topDomain, subdomain, subdomainLength, subdomainEntropy, numPeriods) =
-      extractDomainInfo(queryName, topDomainsBC, userDomain)
+      Seq(topDomain,
+        Quantiles.bin(frameLength.toDouble, frameLengthCuts),
+        Quantiles.bin(unixTimeStamp.toDouble, timeCuts),
+        Quantiles.bin(subdomainLength.toDouble, subdomainLengthCuts),
+        Quantiles.bin(subdomainEntropy, entropyCuts),
+        Quantiles.bin(numPeriods.toDouble, numberPeriodsCuts),
+        dnsQueryType,
+        dnsQueryRcode).mkString("_")
+    } match {
+      case Success(word) => word
+      case _ => InvalidDataHandler.WordError
+    }
 
-    Seq(topDomain,
-      Quantiles.bin(frameLength.toDouble, frameLengthCuts),
-      Quantiles.bin(unixTimeStamp.toDouble, timeCuts),
-      Quantiles.bin(subdomainLength.toDouble, subdomainLengthCuts),
-      Quantiles.bin(subdomainEntropy, entropyCuts),
-      Quantiles.bin(numPeriods.toDouble, numberPeriodsCuts),
-      dnsQueryType,
-      dnsQueryRcode).mkString("_")
   }
 }
 

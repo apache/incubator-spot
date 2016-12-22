@@ -46,32 +46,10 @@ else
 fi
 
 FEEDBACK_PATH=${LPATH}/${DSOURCE}_scores.csv
-DUPFACTOR=1000
-
-PREPROCESS_STEP=${DSOURCE}_pre_lda
-POSTPROCESS_STEP=${DSOURCE}_post_lda
-
-HDFS_WORDCOUNTS=${HPATH}/word_counts
-
-# paths for intermediate files
-HDFS_DOCRESULTS=${HPATH}/doc_results.csv
-LOCAL_DOCRESULTS=${LPATH}/doc_results.csv
-
-HDFS_WORDRESULTS=${HPATH}/word_results.csv
-LOCAL_WORDRESULTS=${LPATH}/word_results.csv
 
 HDFS_SCORED_CONNECTS=${HPATH}/scores
-HDFS_MODEL=${HPATH}/model
 
 LDA_OUTPUT_DIR=${DSOURCE}/${FDATE}
-
-TOPIC_COUNT=20
-
-nodes=${NODES[0]}
-for n in "${NODES[@]:1}" ; do nodes+=",${n}"; done
-
-hdfs dfs -rm -R -f ${HDFS_WORDCOUNTS}
-wait
 
 mkdir -p ${LPATH}
 rm -f ${LPATH}/*.{dat,beta,gamma,other,pkl} # protect the flow_scores.csv file
@@ -91,7 +69,7 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --conf spark.kryoserializer.buffer.max=512m \
   --conf spark.yarn.am.waitTime=100s \
   --conf spark.yarn.am.memoryOverhead=${SPK_DRIVER_MEM_OVERHEAD} \
-  --conf spark.yarn.executor.memoryOverhead=${SPAK_EXEC_MEM_OVERHEAD} target/scala-2.10/spot-ml-assembly-1.1.jar \
+  --conf spark.yarn.executor.memoryOverhead=${SPK_EXEC_MEM_OVERHEAD} target/scala-2.10/spot-ml-assembly-1.1.jar \
   --analysis ${DSOURCE} \
   --input ${RAWDATA_PATH}  \
   --dupfactor ${DUPFACTOR} \
@@ -102,10 +80,3 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
   --ldamaxiterations 20
-
-wait
-
-# move results to hdfs.
-cd ${LPATH}
-hadoop fs -getmerge ${HDFS_SCORED_CONNECTS}/part-* ${DSOURCE}_results.csv && hadoop fs -moveFromLocal \
-    ${DSOURCE}_results.csv  ${HDFS_SCORED_CONNECTS}/${DSOURCE}_results.csv

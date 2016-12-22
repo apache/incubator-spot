@@ -1,7 +1,5 @@
-package org.apache.spot
+package org.apache.spot.netflow
 
-
-import org.apache.spot.netflow.{FlowWordCreator, FlowWords}
 import org.scalatest.{FlatSpec, Matchers}
 
 
