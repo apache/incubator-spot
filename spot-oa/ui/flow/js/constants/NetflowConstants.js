@@ -13,6 +13,7 @@ var NetflowConstants = {
   API_INGEST_SUMMARY: '../../data/flow/ingest_summary/is_${year}${month}.csv',
   API_IMPACT_ANALYSIS: '../../data/flow/${date}/stats-${ip}.json',
   API_GLOBE_VIEW: '../../data/flow/${date}/globe-${ip}.json',
+  API_WORLD_110M: '../flow/world-110m.json',
   API_TIMELINE: '../../data/flow/${date}/sbdet-${ip}.tsv',
 };
 

@@ -1,19 +1,21 @@
-var assign = require('object-assign');
+const assign = require('object-assign');
+const d3 = require('d3');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var FlowConstants = require('../constants/NetflowConstants');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var JsonStore = require('../../../js/stores/JsonStore');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const NetflowConstants = require('../constants/NetflowConstants');
+const SpotConstants = require('../../../js/constants/SpotConstants');
+const JsonStore = require('../../../js/stores/JsonStore');
 
 const IP_FILTER_NAME = 'ip';
+let WORLD_DATA = null;
 
-var GlobeViewStore = assign(new JsonStore(FlowConstants.API_GLOBE_VIEW), {
+const GlobeViewStore = assign(new JsonStore(NetflowConstants.API_GLOBE_VIEW), {
     errorMessages: {
         404: 'Please choose a different date, no data has been found'
     },
     setDate: function (date)
     {
-        this.setEndpoint(FlowConstants.API_GLOBE_VIEW.replace('${date}', date.replace(/-/g, '')));
+        this.setEndpoint(NetflowConstants.API_GLOBE_VIEW.replace('${date}', date.replace(/-/g, '')));
     },
     setIp: function (value)
     {
@@ -28,6 +30,24 @@ var GlobeViewStore = assign(new JsonStore(FlowConstants.API_GLOBE_VIEW), {
         this._data = data;
 
         this.emitChangeData();
+    },
+    getWorldData() {
+        return WORLD_DATA;
+    },
+    reload() {
+        if (WORLD_DATA instanceof Object) {
+            Object.getPrototypeOf(GlobeViewStore).reload.call(this);
+        }
+        else if (WORLD_DATA===true) {
+            // Do nothing, already loading world data
+        }
+        else {
+            WORLD_DATA = true; // Signal world data is loading
+            d3.json(NetflowConstants.API_WORLD_110M, (error, response) => {
+                WORLD_DATA = response;
+                Object.getPrototypeOf(GlobeViewStore).reload.call(this);
+            });
+        }
     }
 });
 
