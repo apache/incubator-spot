@@ -1,3 +1,0 @@
-[submodule "spot-ml/spot-lda-c"]
-	path = spot-ml/spot-lda-c
-	url = https://github.com/Open-Network-Insight/spot-lda-c.git
