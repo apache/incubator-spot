@@ -22,23 +22,23 @@ import scala.util.{Failure, Success, Try}
   *
   * The model uses a topic-modelling approach that:
   * 1. Simplifies netflow records into words, one word at the source IP and another (possibly different) at the
-  *    destination IP.
+  * destination IP.
   * 2. The netflow words about each IP are treated as collections of thes words.
   * 3. A topic modelling approach is used to infer a collection of "topics" that represent common profiles
-  *    of network traffic. These "topics" are probability distributions on words.
+  * of network traffic. These "topics" are probability distributions on words.
   * 4. Each IP has a mix of topics corresponding to its behavior.
   * 5. The probability of a word appearing in the traffic about an IP is estimated by simplifying its netflow record
-  *    into a word, and then combining the word probabilities per topic using the topic mix of the particular IP.
+  * into a word, and then combining the word probabilities per topic using the topic mix of the particular IP.
   *
   * Create these models using the  factory in the companion object.
   *
-  * @param topicCount Number of topics (profiles of common traffic patterns) used in the topic modelling routine.
-  * @param ipToTopicMix DataFrame assigning a distribution on topics to each document or IP.
+  * @param topicCount         Number of topics (profiles of common traffic patterns) used in the topic modelling routine.
+  * @param ipToTopicMix       DataFrame assigning a distribution on topics to each document or IP.
   * @param wordToPerTopicProb Map assigning to each word it's per-topic probabilities.
   *                           Ie. Prob [word | t ] for t = 0 to topicCount -1
-  * @param timeCuts Quantile cut-offs for binning time-of-day values when forming words from netflow records.
-  * @param ibytCuts Quantile cut-offs for binning ibyt values when forming words from netflow records.
-  * @param ipktCuts Quantile cut-offs for binning ipkt values when forming words from netflow records.
+  * @param timeCuts           Quantile cut-offs for binning time-of-day values when forming words from netflow records.
+  * @param ibytCuts           Quantile cut-offs for binning ibyt values when forming words from netflow records.
+  * @param ipktCuts           Quantile cut-offs for binning ipkt values when forming words from netflow records.
   */
 
 class FlowSuspiciousConnectsModel(topicCount: Int,
@@ -66,15 +66,15 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
 
       val recordsWithIPTopicMixes = dataWithSrcIpProb.join(ipToTopicMix,
         dataWithSrcIpProb(DestinationIP) === ipToTopicMix(DocumentName), "left_outer")
-      val schema = dataWithSrcIpProb.schema.fieldNames :+  TopicProbabilityMix
-        recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
+      val schema = dataWithSrcIpProb.schema.fieldNames :+ TopicProbabilityMix
+      recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
     }
 
-    val scoreFunction =  new FlowScoreFunction(timeCuts,
-        ibytCuts,
-        ipktCuts,
-        topicCount,
-        wordToPerTopicProbBC)
+    val scoreFunction = new FlowScoreFunction(timeCuts,
+      ibytCuts,
+      ipktCuts,
+      topicCount,
+      wordToPerTopicProbBC)
 
 
     val scoringUDF = udf((hour: Int,
@@ -149,11 +149,12 @@ object FlowSuspiciousConnectsModel {
     val timeCuts = Quantiles.computeDeciles(totalRecords
       .select(Hour, Minute, Second)
       .rdd
-      .flatMap({ case Row(hours: Int, minutes: Int, seconds: Int) => {
-          Try {  (3600 * hours + 60 * minutes + seconds).toDouble } match{
-            case Failure(_) => Seq()
-            case Success(time) => Seq(time)
-          }
+      .flatMap({ case Row(hours: Int, minutes: Int, seconds: Int) =>
+        Try {
+          (3600 * hours + 60 * minutes + seconds).toDouble
+        } match {
+          case Failure(_) => Seq()
+          case Success(time) => Seq(time)
         }
       }))
 
@@ -164,11 +165,12 @@ object FlowSuspiciousConnectsModel {
     val ibytCuts = Quantiles.computeDeciles(totalRecords
       .select(Ibyt)
       .rdd
-      .flatMap({ case Row(ibyt: Long) => {
-          Try {  ibyt.toDouble } match{
-            case Failure(_) => Seq()
-            case Success(ibyt) => Seq(ibyt)
-          }
+      .flatMap({ case Row(ibyt: Long) =>
+        Try {
+          ibyt.toDouble
+        } match {
+          case Failure(_) => Seq()
+          case Success(ibyt) => Seq(ibyt)
         }
       }))
 
@@ -179,11 +181,12 @@ object FlowSuspiciousConnectsModel {
     val ipktCuts = Quantiles.computeQuintiles(totalRecords
       .select(Ipkt)
       .rdd
-      .flatMap({ case Row(ipkt: Long) => {
-          Try { ipkt.toDouble } match {
-            case Failure(_) => Seq()
-            case Success(ipkt) => Seq(ipkt)
-          }
+      .flatMap({ case Row(ipkt: Long) =>
+        Try {
+          ipkt.toDouble
+        } match {
+          case Failure(_) => Seq()
+          case Success(ipkt) => Seq(ipkt)
         }
       }))
 
@@ -232,5 +235,4 @@ object FlowSuspiciousConnectsModel {
       ibytCuts,
       ipktCuts)
   }
-
 }

@@ -3,8 +3,15 @@ package org.apache.spot
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
-
-
+/**
+  * Base class for scoring suspicious connects models.
+  * Assumes that distribution of words is independent of the IP when conditioned on the topic
+  * and performs a simple sum over a partition of the space by topic.
+  *
+  * @param topicCount Number of topics produced by the topic modelling analysis.
+  * @param ipToTopicMixBC Broadcast of map assigning IPs to topic mixes.
+  * @param wordToPerTopicProbBC Broadcast of map assigning words to per-topic conditional probability.
+  */
 class SuspiciousConnectsScoreFunction(topicCount: Int,
                                       ipToTopicMixBC: Broadcast[Map[String, Array[Double]]],
                                       wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]]) extends Serializable {
@@ -25,5 +32,4 @@ class SuspiciousConnectsScoreFunction(topicCount: Int,
         .sum
     }
   }
-
 }

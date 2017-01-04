@@ -39,7 +39,6 @@ object DNSSchema {
   val AnswerAddress = "dns_a"
   val AnswerAddressField = StructField(AnswerAddress, StringType, nullable= true)
 
-
   // intermediate and derived fields
 
   val Domain = "domain"
@@ -67,8 +66,4 @@ object DNSSchema {
 
   val Score = "score"
   val ScoreField = StructField(Score, DoubleType)
-
-
-  val ScoreSchema = StructType(List(ScoreField))
-
 }

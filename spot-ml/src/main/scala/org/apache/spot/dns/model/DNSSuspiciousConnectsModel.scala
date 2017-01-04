@@ -73,7 +73,6 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     */
   def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String): DataFrame = {
 
-    val countryCodesBC = sc.broadcast(CountryCodes.CountryCodes)
     val topDomainsBC = sc.broadcast(TopDomains.TopDomains)
     val ipToTopicMixBC = sc.broadcast(ipToTopicMix)
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
@@ -139,10 +138,10 @@ object DNSSuspiciousConnectsModel {
     * @param sparkContext
     * @param sqlContext
     * @param logger
-    * @param config     Analysis configuration object containing CLI parameters.
-    *                   Contains the path to the feedback file in config.scoresFile
-    * @param inputRecords       Data used to train the model.
-    * @param topicCount Number of topics (traffic profiles) used to build the model.
+    * @param config       Analysis configuration object containing CLI parameters.
+    *                     Contains the path to the feedback file in config.scoresFile
+    * @param inputRecords Data used to train the model.
+    * @param topicCount   Number of topics (traffic profiles) used to build the model.
     * @return A new [[DNSSuspiciousConnectsModel]] instance trained on the dataframe and feedback file.
     */
   def trainNewModel(sparkContext: SparkContext,
@@ -171,11 +170,12 @@ object DNSSuspiciousConnectsModel {
       Quantiles.computeDeciles(totalRecords
         .select(UnixTimestamp)
         .rdd
-        .flatMap({ case Row(unixTimeStamp: Long) => {
-          Try {unixTimeStamp.toDouble} match {
-              case Failure(_) => Seq()
-              case Success(timestamp) => Seq(timestamp)
-            }
+        .flatMap({ case Row(unixTimeStamp: Long) =>
+          Try {
+            unixTimeStamp.toDouble
+          } match {
+            case Failure(_) => Seq()
+            case Success(timestamp) => Seq(timestamp)
           }
         }))
 
@@ -183,11 +183,12 @@ object DNSSuspiciousConnectsModel {
       Quantiles.computeDeciles(totalRecords
         .select(FrameLength)
         .rdd
-        .flatMap({case Row(frameLen: Int) => {
-            Try{frameLen.toDouble} match{
-              case Failure(_) => Seq()
-              case Success(frameLen) => Seq(frameLen)
-            }
+        .flatMap({ case Row(frameLen: Int) =>
+          Try {
+            frameLen.toDouble
+          } match {
+            case Failure(_) => Seq()
+            case Success(frameLength) => Seq(frameLength)
           }
         }))
 
@@ -198,11 +199,12 @@ object DNSSuspiciousConnectsModel {
         .filter(domainStatsRecords(SubdomainLength).gt(0))
         .select(SubdomainLength)
         .rdd
-        .flatMap({ case Row(subdomainLength: Int) => {
-            Try{subdomainLength.toDouble} match {
-              case Failure(_) => Seq()
-              case Success(subdomainLength) => Seq(subdomainLength)
-            }
+        .flatMap({ case Row(subdomainLength: Int) =>
+          Try {
+            subdomainLength.toDouble
+          } match {
+            case Failure(_) => Seq()
+            case Success(subdomainLength) => Seq(subdomainLength)
           }
         }))
 
@@ -211,11 +213,12 @@ object DNSSuspiciousConnectsModel {
         .filter(domainStatsRecords(SubdomainEntropy).gt(0))
         .select(SubdomainEntropy)
         .rdd
-        .flatMap({ case Row(subdomainEntropy: Double) => {
-          Try{subdomainEntropy.toDouble} match {
+        .flatMap({ case Row(subdomainEntropy: Double) =>
+          Try {
+            subdomainEntropy.toDouble
+          } match {
             case Failure(_) => Seq()
             case Success(subdomainEntropy) => Seq(subdomainEntropy)
-            }
           }
         }))
 
@@ -224,23 +227,24 @@ object DNSSuspiciousConnectsModel {
         .filter(domainStatsRecords(NumPeriods).gt(0))
         .select(NumPeriods)
         .rdd
-        .flatMap({ case Row(numberPeriods: Int) => {
-          Try {numberPeriods.toDouble} match {
+        .flatMap({ case Row(numberPeriods: Int) =>
+          Try {
+            numberPeriods.toDouble
+          } match {
             case Failure(_) => Seq()
             case Success(numberPeriods) => Seq(numberPeriods)
-            }
           }
         }))
 
     // simplify DNS log entries into "words"
 
     val dnsWordCreator = new DNSWordCreation(frameLengthCuts,
-                                             timeCuts,
-                                             subdomainLengthCuts,
-                                             entropyCuts,
-                                             numberPeriodsCuts,
-                                             topDomainsBC,
-                                             userDomain)
+      timeCuts,
+      subdomainLengthCuts,
+      entropyCuts,
+      numberPeriodsCuts,
+      topDomainsBC,
+      userDomain)
 
     val dataWithWord = totalRecords.withColumn(Word, dnsWordCreator.wordCreationUDF(modelColumns: _*))
 
@@ -267,7 +271,7 @@ object DNSSuspiciousConnectsModel {
     // Since DNS is still broadcasting ip to topic mix, we need to convert data frame to Map[String, Array[Double]]
     val ipToTopicMix = ipToTopicMixDF
       .rdd
-      .map({ case (ipToTopicMixRow: Row) => (ipToTopicMixRow.toSeq.toArray) })
+      .map({ case (ipToTopicMixRow: Row) => ipToTopicMixRow.toSeq.toArray })
       .map({
         case (ipToTopicMixSeq) => (ipToTopicMixSeq(0).asInstanceOf[String], ipToTopicMixSeq(1).asInstanceOf[Seq[Double]]
           .toArray)

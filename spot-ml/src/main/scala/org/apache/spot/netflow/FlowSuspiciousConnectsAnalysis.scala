@@ -33,7 +33,7 @@ object FlowSuspiciousConnectsAnalysis {
     val orderedFlowRecords = filteredFlowRecords.orderBy(Score)
 
     val mostSuspiciousFlowRecords =
-      if(config.maxResults > 0 ) orderedFlowRecords.limit(config.maxResults) else orderedFlowRecords
+      if (config.maxResults > 0) orderedFlowRecords.limit(config.maxResults) else orderedFlowRecords
 
     val outputFlowRecords = mostSuspiciousFlowRecords.select(OutSchema: _*)
 
@@ -60,9 +60,9 @@ object FlowSuspiciousConnectsAnalysis {
     */
   def detectFlowAnomalies(data: DataFrame,
                           config: SuspiciousConnectsConfig,
-                         sparkContext: SparkContext,
-                         sqlContext: SQLContext,
-                         logger: Logger) : DataFrame = {
+                          sparkContext: SparkContext,
+                          sqlContext: SQLContext,
+                          logger: Logger): DataFrame = {
 
 
     logger.info("Fitting probabilistic model to data")
@@ -78,7 +78,7 @@ object FlowSuspiciousConnectsAnalysis {
     * @param inputFlowRecords raw flow records
     * @return
     */
-  def filterAndSelectCleanFlowRecords(inputFlowRecords: DataFrame): DataFrame ={
+  def filterAndSelectCleanFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
 
     val cleanFlowRecordsFilter = inputFlowRecords(Hour).between(0, 23) &&
       inputFlowRecords(Minute).between(0, 59) &&
@@ -104,9 +104,9 @@ object FlowSuspiciousConnectsAnalysis {
     */
   def filterAndSelectInvalidFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
 
-    val invalidFlowRecordsFilter = inputFlowRecords(Hour).between(0,23) &&
-      inputFlowRecords(Minute).between(0,59) &&
-      inputFlowRecords(Second).between(0,59) &&
+    val invalidFlowRecordsFilter = inputFlowRecords(Hour).between(0, 23) &&
+      inputFlowRecords(Minute).between(0, 59) &&
+      inputFlowRecords(Second).between(0, 59) &&
       inputFlowRecords(TimeReceived).isNull ||
       inputFlowRecords(SourceIP).isNull ||
       inputFlowRecords(DestinationIP).isNull ||
@@ -123,7 +123,7 @@ object FlowSuspiciousConnectsAnalysis {
   /**
     *
     * @param scoredFlowRecords scored flow records.
-    * @param threshold score tolerance.
+    * @param threshold         score tolerance.
     * @return
     */
   def filterScoredFlowRecords(scoredFlowRecords: DataFrame, threshold: Double): DataFrame = {
@@ -148,7 +148,6 @@ object FlowSuspiciousConnectsAnalysis {
       .select(OutSchema: _*)
 
   }
-
 
 
   val InSchema = StructType(List(TimeReceivedField,
