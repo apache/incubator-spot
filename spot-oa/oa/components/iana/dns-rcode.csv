@@ -1,4 +1,5 @@
 RCODE,Name,Description,Reference
+-1,UNKNOWN,UNKNOWN,
 0,NoError,No Error,[RFC1035]
 1,FormErr,Format Error,[RFC1035]
 2,ServFail,Server Failure,[RFC1035]

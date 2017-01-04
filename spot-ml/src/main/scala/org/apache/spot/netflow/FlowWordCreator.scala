@@ -2,6 +2,9 @@ package org.apache.spot.netflow
 
 import org.apache.spark.sql.functions._
 import org.apache.spot.utilities.Quantiles
+import org.apache.spot.utilities.data.validation.InvalidDataHandler
+
+import scala.util.{Failure, Success, Try}
 
 
 /**
@@ -71,55 +74,58 @@ class FlowWordCreator(timeCuts: Array[Double],
     */
   def flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, ipkt: Long, ibyt: Long): FlowWords = {
 
+    Try {
+      val timeOfDay: Double = hour.toDouble + minute.toDouble / 60 + second.toDouble / 3600
 
-    val timeOfDay: Double = hour.toDouble + minute.toDouble / 60 + second.toDouble / 3600
+      val timeBin = Quantiles.bin(timeOfDay, timeCuts)
+      val ibytBin = Quantiles.bin(ibyt, ibytCuts)
+      val ipktBin = Quantiles.bin(ipkt, ipktCuts)
 
-    val timeBin = Quantiles.bin(timeOfDay, timeCuts)
-    val ibytBin = Quantiles.bin(ibyt, ibytCuts)
-    val ipktBin = Quantiles.bin(ipkt, ipktCuts)
+      val LowToLowPortEncoding = 111111
+      val HighToHighPortEncoding = 333333
 
+      if (dstPort == 0 && srcPort == 0) {
 
-    val LowToLowPortEncoding = 111111
-    val HighToHighPortEncoding = 333333
+        val baseWord = Array("0", timeBin, ibytBin, ipktBin).mkString("_")
+        FlowWords(srcWord = baseWord, dstWord = baseWord)
 
-    if (dstPort == 0 && srcPort == 0) {
+      } else if (dstPort == 0 && srcPort > 0) {
 
-      val baseWord = Array("0", timeBin, ibytBin, ipktBin).mkString("_")
-      FlowWords(srcWord = baseWord, dstWord = baseWord)
+        val baseWord = Array(srcPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
 
-    } else if (dstPort == 0 && srcPort > 0) {
+      } else if (srcPort == 0 && dstPort > 0) {
 
-      val baseWord = Array(srcPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
-      FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
+        val baseWord = Array(dstPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
-    } else if (srcPort == 0 && dstPort > 0) {
+      } else if (srcPort <= 1024 && dstPort <= 1024) {
 
-      val baseWord = Array(dstPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
-      FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
+        val baseWord = Array(LowToLowPortEncoding, timeBin, ibytBin, ipktBin).mkString("_")
+        FlowWords(srcWord = baseWord, dstWord = baseWord)
 
-    } else if (srcPort <= 1024 && dstPort <= 1024) {
+      } else if (srcPort <= 1024 && dstPort > 1024) {
 
-      val baseWord = Array(LowToLowPortEncoding, timeBin, ibytBin, ipktBin).mkString("_")
-      FlowWords(srcWord = baseWord, dstWord = baseWord)
+        val baseWord = Array(srcPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
 
-    } else if (srcPort <= 1024 && dstPort > 1024) {
+      } else if (srcPort > 1024 && dstPort <= 1024) {
 
-      val baseWord = Array(srcPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
-      FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
+        val baseWord = Array(dstPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
-    } else if (srcPort > 1024 && dstPort <= 1024) {
+      } else {
 
-      val baseWord = Array(dstPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
-      FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
+        // this is the srcPort > 1024 && dstPort > 1024 case
 
-    } else {
+        val baseWord = Array(HighToHighPortEncoding, timeBin, ibytBin, ipktBin).mkString("_")
+        FlowWords(srcWord = baseWord, dstWord = baseWord)
+      }
 
-      // this is the srcPort > 1024 && dstPort > 1024 case
-
-      val baseWord = Array(HighToHighPortEncoding, timeBin, ibytBin, ipktBin).mkString("_")
-      FlowWords(srcWord = baseWord, dstWord = baseWord)
+    } match {
+      case Success(flowWords) => flowWords
+      case _ => FlowWords(InvalidDataHandler.WordError, InvalidDataHandler.WordError)
     }
-
   }
 
 }

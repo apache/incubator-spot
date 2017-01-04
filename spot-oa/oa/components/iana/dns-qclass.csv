@@ -6,5 +6,6 @@ Decimal,Hexadecimal,Name,Reference
 Technology Artificial Intelligence Laboratory, June 1981.]"
 4,0x00000004,Hesiod (HS),"[Dyer, S., and F. Hsu, ""Hesiod"", Project Athena Technical
 Plan - Name Service, April 1987.]"
+5,unknown,UNKNOWN,
 254,0x000000FE,QCLASS NONE,[RFC2136]
 255,0x000000FF,QCLASS * (ANY),[RFC1035]

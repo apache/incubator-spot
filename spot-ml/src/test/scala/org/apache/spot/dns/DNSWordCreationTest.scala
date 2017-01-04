@@ -1,6 +1,4 @@
-package org.apache.spot
-
-
+package org.apache.spot.dns
 
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.apache.spot.utilities.Entropy

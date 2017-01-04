@@ -18,6 +18,7 @@ import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataVali
 
 object FlowSuspiciousConnectsAnalysis {
 
+
   def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
           inputFlowRecords: DataFrame) = {
 
@@ -147,6 +148,8 @@ object FlowSuspiciousConnectsAnalysis {
       .select(OutSchema: _*)
 
   }
+
+
 
   val InSchema = StructType(List(TimeReceivedField,
     YearField,

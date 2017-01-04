@@ -2,7 +2,10 @@ package org.apache.spot.proxy
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.functions._
-import org.apache.spot.utilities.{Entropy, Quantiles, DomainProcessor, TimeUtilities}
+import org.apache.spot.utilities.data.validation.InvalidDataHandler
+import org.apache.spot.utilities.{DomainProcessor, Entropy, Quantiles, TimeUtilities}
+
+import scala.util.{Success, Try}
 
 
 object ProxyWordCreation {
@@ -39,15 +42,19 @@ object ProxyWordCreation {
                 timeCuts: Array[Double],
                 entropyCuts: Array[Double],
                 agentCuts: Array[Double]): String = {
-
-    List(topDomain(proxyHost, topDomains.value).toString,
-      Quantiles.bin(TimeUtilities.getTimeAsDouble(time), timeCuts).toString,
-      reqMethod,
-      Quantiles.bin(Entropy.stringEntropy(uri), entropyCuts),
-      if (contentType.split('/').length > 0) contentType.split('/')(0) else "unknown_content_type",
-          // just the top level content type for now
-      Quantiles.bin(agentCounts.value(userAgent), agentCuts),
-      responseCode(0)).mkString("_")
+    Try{
+      List(topDomain(proxyHost, topDomains.value).toString,
+        Quantiles.bin(TimeUtilities.getTimeAsDouble(time), timeCuts).toString,
+        reqMethod,
+        Quantiles.bin(Entropy.stringEntropy(uri), entropyCuts),
+        if (contentType.split('/').length > 0) contentType.split('/')(0) else "unknown_content_type",
+        // just the top level content type for now
+        Quantiles.bin(agentCounts.value(userAgent), agentCuts),
+        if (responseCode != null) responseCode(0) else "unknown_response_code").mkString("_")
+    } match {
+      case Success(proxyWord) => proxyWord
+      case _ => InvalidDataHandler.WordError
+    }
   }
 
 

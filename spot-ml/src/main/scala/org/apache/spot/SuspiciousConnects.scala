@@ -9,6 +9,7 @@ import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis
 import org.apache.spot.proxy.ProxySuspiciousConnectsAnalysis
 import org.apache.spot.utilities.data.InputOutputDataHandler
 
+
 /**
   * Top level entrypoint to execute suspicious connections analysis on network data.
   * Supported analyses:
@@ -51,8 +52,6 @@ object SuspiciousConnects {
           System.exit(0)
         }
 
-
-
         analysis match {
           case "flow" => FlowSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
           case "dns" => DNSSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
@@ -64,7 +63,7 @@ object SuspiciousConnects {
 
         sparkContext.stop()
 
-      case None => logger.error("Error parsing arguments")
+      case None => logger.error("Error parsing arguments.")
     }
 
     System.exit(0)

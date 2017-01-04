@@ -13,13 +13,13 @@ import org.apache.spot.dns.model.DNSSuspiciousConnectsModel.ModelSchema
 import org.apache.spot.proxy.ProxySchema.Score
 import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataValidation}
 
-
 /**
   * The suspicious connections analysis of DNS log data develops a probabilistic model the DNS queries
   * made by each client IP and flags
   */
 
 object DNSSuspiciousConnectsAnalysis {
+
 
 
   /**
@@ -64,6 +64,7 @@ object DNSSuspiciousConnectsAnalysis {
     dataValidation.showAndSaveCorruptRecords(corruptDNSRecords, config.hdfsScoredConnect, logger)
   }
 
+
   /**
     * Identify anomalous DNS log entries in in the provided data frame.
     *
@@ -74,6 +75,7 @@ object DNSSuspiciousConnectsAnalysis {
     * @param logger
     * @return
     */
+
   def detectDNSAnomalies(data: DataFrame, config: SuspiciousConnectsConfig,
                          sparkContext: SparkContext,
                          sqlContext: SQLContext,
@@ -87,6 +89,7 @@ object DNSSuspiciousConnectsAnalysis {
     logger.info("Identifying outliers")
     model.score(sparkContext, sqlContext, data, userDomain)
   }
+
 
   /**
     *
@@ -121,6 +124,7 @@ object DNSSuspiciousConnectsAnalysis {
       .na.fill(DefaultQueryResponseCode, Seq(QueryResponseCode))
   }
 
+
   /**
     *
     * @param inputDNSRecords raw DNS records.
@@ -151,6 +155,7 @@ object DNSSuspiciousConnectsAnalysis {
       .select(InSchema: _*)
   }
 
+
   /**
     *
     * @param scoredDNSRecords scored DNS records.
@@ -158,6 +163,7 @@ object DNSSuspiciousConnectsAnalysis {
     * @return
     */
   def filterScoredDNSRecords(scoredDNSRecords: DataFrame, threshold: Double): DataFrame ={
+
 
     val filteredDNSRecordsFilter = scoredDNSRecords(Score).leq(threshold) &&
       scoredDNSRecords(Score).gt(dataValidation.ScoreError)

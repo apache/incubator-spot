@@ -1,4 +1,5 @@
 TYPE,Value,Meaning,Reference,Template,Registration Date
+0,-1,UNKNOWN,,,
 A,1,a host address,[RFC1035],,
 NS,2,an authoritative name server,[RFC1035],,
 MD,3,a mail destination (OBSOLETE - use MX),[RFC1035],,
