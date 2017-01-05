@@ -42,7 +42,6 @@ object SuspiciousConnects {
         val sparkConfig = new SparkConf().setAppName("Spot ML:  " + analysis + " suspicious connects analysis")
         val sparkContext = new SparkContext(sparkConfig)
         val sqlContext = new SQLContext(sparkContext)
-        implicit val outputDelimiter = config.outputDelimiter
 
         val inputDataFrame = InputOutputDataHandler.getInputDataFrame(sqlContext, config.inputPath, logger)
           .getOrElse(sqlContext.emptyDataFrame)

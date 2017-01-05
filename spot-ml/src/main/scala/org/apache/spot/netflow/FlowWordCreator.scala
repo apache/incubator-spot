@@ -4,7 +4,7 @@ import org.apache.spark.sql.functions._
 import org.apache.spot.utilities.Quantiles
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 
 /**
@@ -30,6 +30,7 @@ class FlowWordCreator(timeCuts: Array[Double],
 
   /**
     * Spark SQL UDF for calculating the word summarizing a netflow transaction at the source IP
+    *
     * @return String "word" summarizing a netflow connection.
     */
   def srcWordUDF = udf((hour: Int,
@@ -46,6 +47,7 @@ class FlowWordCreator(timeCuts: Array[Double],
 
   /**
     * Spark SQL UDF for calculating the word summarizing a netflow transaction at the destination IP
+    *
     * @return String "word" summarizing a netflow connection.
     */
   def dstWordUDF = udf((hour: Int,
@@ -81,7 +83,6 @@ class FlowWordCreator(timeCuts: Array[Double],
       val ibytBin = Quantiles.bin(ibyt, ibytCuts)
       val ipktBin = Quantiles.bin(ipkt, ipktCuts)
 
-
       val LowToLowPortEncoding = 111111
       val HighToHighPortEncoding = 333333
 
@@ -97,7 +98,7 @@ class FlowWordCreator(timeCuts: Array[Double],
 
       } else if (srcPort == 0 && dstPort > 0) {
 
-        val baseWord = Array(dstPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(dstPort.toString, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
       } else if (srcPort <= 1024 && dstPort <= 1024) {
@@ -107,12 +108,12 @@ class FlowWordCreator(timeCuts: Array[Double],
 
       } else if (srcPort <= 1024 && dstPort > 1024) {
 
-        val baseWord = Array(srcPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(srcPort.toString, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
 
       } else if (srcPort > 1024 && dstPort <= 1024) {
 
-        val baseWord = Array(dstPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(dstPort.toString, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
       } else {

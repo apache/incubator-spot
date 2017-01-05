@@ -13,5 +13,4 @@ class DNSWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
 
     result shouldBe 2.807354922057604
   }
-
 }

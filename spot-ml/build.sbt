@@ -31,3 +31,5 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
 }
 }
 
+// super important with multiple tests running spark Contexts
+parallelExecution in Test := false

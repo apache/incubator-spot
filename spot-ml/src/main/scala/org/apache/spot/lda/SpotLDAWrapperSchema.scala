@@ -1,10 +1,16 @@
 package org.apache.spot.lda
 
+import org.apache.spark.sql.types.{LongType, StringType, StructField}
+
 object SpotLDAWrapperSchema {
 
   // modelDF columns
   val DocumentName = "document_name"
+  val DocumentNameField = StructField(DocumentName, StringType)
+
   val DocumentNumber = "document_number"
+  val DocumentNumberField = StructField(DocumentNumber, LongType)
+
   val DocumentCount = "document_count"
   val DocumentNameWordNameWordCount = "document_word_count"
 

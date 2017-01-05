@@ -7,11 +7,11 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
-import org.apache.spot.proxy.ProxySchema._
-import org.apache.spot.utilities._
 import org.apache.spot.SuspiciousConnectsScoreFunction
 import org.apache.spot.lda.SpotLDAWrapper
 import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
+import org.apache.spot.proxy.ProxySchema._
+import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
 import scala.util.{Failure, Success, Try}
@@ -88,7 +88,7 @@ object ProxySuspiciousConnectsModel {
     * @param sqlContext   SQL context.
     * @param logger       Logge object.
     * @param config       SuspiciousConnetsArgumnetParser.Config object containg CLI arguments.
-    * @param inputRecords         Dataframe for training data, with columns Host, Time, ReqMethod, FullURI, ResponseContentType,
+    * @param inputRecords Dataframe for training data, with columns Host, Time, ReqMethod, FullURI, ResponseContentType,
     *                     UserAgent, RespCode (as defined in ProxySchema object).
     * @return ProxySuspiciousConnectsModel
     */
@@ -108,23 +108,27 @@ object ProxySuspiciousConnectsModel {
       Quantiles.computeDeciles(selectedRecords
         .select(Time)
         .rdd
-        .flatMap({ case Row(t: String) => {
-            Try {TimeUtilities.getTimeAsDouble(t)} match {
-              case Failure(_) => Seq()
-              case Success(time) =>  Seq(time)
-            }
+        .flatMap({ case Row(t: String) =>
+          Try {
+            TimeUtilities.getTimeAsDouble(t)
+          } match {
+            case Failure(_) => Seq()
+            case Success(time) => Seq(time)
+
           }
         }))
 
     val entropyCuts = Quantiles.computeQuintiles(selectedRecords
       .select(FullURI)
       .rdd
-      .flatMap({ case Row(uri: String) => {
-          Try {Entropy.stringEntropy(uri)} match {
-            case Failure(_) => Seq()
-            case Success(entropy) => Seq(entropy)
-          }
+      .flatMap({ case Row(uri: String) =>
+        Try {
+          Entropy.stringEntropy(uri)
+        } match {
+          case Failure(_) => Seq()
+          case Success(entropy) => Seq(entropy)
         }
+
       }))
 
     val agentToCount: Map[String, Long] =

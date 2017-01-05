@@ -6,19 +6,19 @@ import org.apache.spot.utilities.DomainProcessor.{DomainInfo, extractDomainInfo}
 import org.apache.spot.utilities.Quantiles
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 
 /**
   * Convert DNS log entries into "words" for topic modelling analyses.
   *
-  * @param frameLengthCuts
-  * @param timeCuts
-  * @param subdomainLengthCuts
-  * @param entropyCuts
-  * @param numberPeriodsCuts
-  * @param topDomainsBC
-  * @param userDomain
+  * @param frameLengthCuts Quantile cut-offs for discretizing frame length in word construction.
+  * @param timeCuts Quantile cut-offs for discretizing the time of day in word construction.
+  * @param subdomainLengthCuts Quantile cut-offs for discretizing subdomain length in word construction.
+  * @param entropyCuts Quantile cut-offs for discretizing entropy in word construction.
+  * @param numberPeriodsCuts Quantile cut-offs for discretizing the number of periods in word construction.
+  * @param topDomainsBC List of most popular top level domain names.
+  * @param userDomain User's domain for internal network.
   */
 class DNSWordCreation(frameLengthCuts: Array[Double],
                       timeCuts: Array[Double],
