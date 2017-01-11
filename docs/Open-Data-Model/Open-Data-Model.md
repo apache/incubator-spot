@@ -858,6 +858,7 @@ which attributes and values hold predictive power for threat detection?
  
 
 **Example - Singular Data View for Complete Context**
+-----------------------------------------------------
 
 The table below demonstrates a logical, “denormalized” view of what is offered
 by the ODM. In this example, the raw DNS event is mapped to the ODM, which is
@@ -875,7 +876,7 @@ representation is feasible with Apache Spot (incubating).
 
  
 
-**DNS EVENT + ODM**
+**DNS EVENT + Open Data Model**
 
 | **ODM Attribute** | **Value**       | **Description**                      | **ODM Context Attributes**                                                                                                                                                                                |
 |-------------------|-----------------|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
