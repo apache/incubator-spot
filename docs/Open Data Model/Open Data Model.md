@@ -1,137 +1,54 @@
-Overview............................................................................ 2
-
-Apache Spot Open Data Model Strategy.................................................................................... 2
-
-Apache Spot Enabled Use Cases................................................................................................... 3
-
-Data Model..................................................................................................................................... 4
-
-Naming Convention....................................................................................................................... 5
-
-Prefixes......................................................................................................................................................... 5
-
-Security Event Log/Alert Data Model.......................................................................................... 6
-
-Common.......................................................................................................................................................... 7
-
-Network........................................................................................................................................................... 9
-
-File................................................................................................................................................................ 10
-
-Endpoint........................................................................................................................................................ 11
-
-User............................................................................................................................................................... 11
-
-DNS............................................................................................................................................................. 11
-
-Proxy......................................................................................................................................................... 12
-
-HTTP.............................................................................................................................................................. 13
-
-SMTP............................................................................................................................................................ 14
-
-FTP............................................................................................................................................................. 15
-
-SNMP.................................................................................................................................................... 16
-
-TLS........................................................................................................................................................... 16
-
-SSH............................................................................................................................................................... 17
-
-DHCP............................................................................................................................................................. 17
-
-IRC................................................................................................................................................................ 17
-
-Flow............................................................................................................................................................ 17
-
-Context Models............................................................................................................................ 18
-
-User Context Model....................................................................................................................... 18
-
-Endpoint Context Model.......................................................................................................................... 20
-
-Network Context Model............................................................................................................................22
-
-Extensibility of Data Model......................................................................................................... 23
-
-Model Relationships.................................................................................................................... 24
-
-Data Ingestion Framework.......................................................................................................... 24
-
-Data Formats................................................................................................................................ 25
-
-Avro............................................................................................................................................................... 25
-
-JSON...................................................................................................................................................... 27
-
-Parquet................................................................................................................................................... 27
-
-ODM Resultant Capability - A Singular View............................................................................ 28
-
-**Example - Advanced Threat Modeling**................................................................................................... 28
-
-**Example - Singular Data View for Complete Context**................................................................. 29
-
-
+**Open Data Model (ODM)**
+===================
 
 **Overview**
 ----
-
 This document describes a strategy for creating an open data model (ODM) for Apache Spot (incubating) (formerly known as “Open Network Insight (ONI)”) in support of cyber security analytic use cases. It also describes the use cases for which Apache Spot (incubating) running on the Cloudera platform is uniquely capable of addressing along with the data model.
-
-
 
 **Apache Spot (incubating) Open Data Model Strategy**
 ------------------------------------
-
 The Apache Spot (incubating) Open Data Model (ODM) strategy aims to extend Apache Spot (incubating) capabilities to support a broader set of cyber security use cases than initially supported. The primary use case initially supported by Apache Spot (incubating) includes Network Traffic Analysis for network flows (Netflow, sflow, etc.), DNS and Proxy; primarily the identification of threats through anomalous event detection using both supervised and unsupervised machine learning.
 
 In order to support a broader set of use cases, Spot must be extended to collect and analyze other common
 “event-oriented” data sources analyzed for cyber threats, including but not limited to the following log types:
 
-> ●Proxy
+> Proxy
 > 
-> ●Web server
+> Web server
 > 
-> ●Operating system
+> Operating system
 > 
-> ●Firewall
+> Firewall
 > 
-> ●Intrusion Prevention/Detection (IDS/ IPS)
+> Intrusion Prevention/Detection (IDS/ IPS)
 > 
-> ●Data Loss Prevention
+> Data Loss Prevention
 > 
-> ●Active Directory / Identity Management
+> Active Directory / Identity Management
 > 
-> ●User/Entity Behavior Analysis
+> User/Entity Behavior Analysis
 > 
-> ●Endpoint Protection/Asset Management
+> Endpoint Protection/Asset Management
 > 
-> ●Network Metadata/Session and PCAP files
+> Network Metadata/Session and PCAP files
 > 
-> ●Network Access Control
+> Network Access Control
 > 
-> ●Mail
+> Mail
 > 
-> ●VPN
+> VPN
 > 
-> ● etc..
+> etc..
 
-One of the biggest challenges organizations face today in combating cyber threats is collecting and normalizing data from the myriad of security event data sources (hundreds) in order to build the needed analytics. This often results in the analytics being dependent upon the specific technologies used by an organization to detect threats and prevents the needed flexibility and agility to keep up with these ever-increasing (and complex) threats.&nbsp; Technology lock-in is sometimes a byproduct of today’s status quo, as it’s extremely costly to add new technologies (or replace existing ones) because of the downstream analytic dependencies.
+One of the biggest challenges organizations face today in combating cyber threats is collecting and normalizing data from the myriad of security event data sources (hundreds) in order to build the needed analytics. This often results in the analytics being dependent upon the specific technologies used by an organization to detect threats and prevents the needed flexibility and agility to keep up with these ever-increasing (and complex) threats. Technology lock-in is sometimes a byproduct of today’s status quo, as it’s extremely costly to add new technologies (or replace existing ones) because of the downstream analytic dependencies.
 
 To achieve the goal of extending Apache Spot (incubating) to support additional use cases, it is necessary to create an open data model for the most relevant security event and contextual data sources; Security event logs or alerts, Network context, User details and information that comes from the endpoints or any other console that are being use to manage the security / administration of our endpoints. The presence of an open data model, which can be applied “on-read” or “on-write”, in batch or stream, will allow for the separation of security analytics from the specific data sources on which they are built. This “separation of duties” will enable organizations to build analytics that are not dependent upon specific technologies and provide the flexibility to change underlying data sources and also provide segmentation of this information, without impacting the analytics. This will also afford security vendors the opportunity to build additional products on top of the Open Data Model to drive new revenue streams and also to design new ways to detect threats and APT.
 
 
-**Apache Spot (incubating) Enabled**
+**Apache Spot (incubating) Enabled Use Cases**
 ----
-
-**Use Cases**
--------------
-
 Spot on the Cloudera platform is uniquely positioned to help address the following cyber security use cases,
 which are not effectively addressed by legacy technologies:
-
- 
 
  **- Detection of known & unknown threats leveraging machine learning and advanced analytic modeling**
 
@@ -158,7 +75,7 @@ analyze standard security event logs/alerts and contextual data regarding the en
 
 In the diagram below, the raw event tells us that user “jsmith” successfully logged in to an Oracle database from the IP address 10:1.1.3. Based on the raw event only, we don’t know if this event is a legitimate threat or not. After injecting user and endpoint context, the enriched event tells us this event is a potential threat that requires further investigation.
 
-![Screen Shot 2016-09-22 at 1.11.28 PM.png](CybersecurityOpenDataModel0%204-3_files/image001.jpg)
+![](https://lh3.googleusercontent.com/-Q8TasmY-vRQ/WHVnoXAK44I/AAAAAAAAAtw/XBDy3PC98k800iaWpNIzAYoQ8S9zc5NBQCLcB/s0/ODMimage1.jpg "ODMimage1.jpg")
 
 Based on the need to collect and analyze both security events, logs or alerts and contextual data, support for
 the following types of security information are planned for inclusion in the Spot Open Data Model:
@@ -175,8 +92,8 @@ This data type includes information from user and identity management systems in
  - Endpoint context data
 This data includes information about endpoint systems (servers, workstations, routers, switches, etc.) and can be sourced from asset management systems, vulnerability scanners, and endpoint  management/detection/response systems such as Webroot, Tanium, Sophos, Endgame, CarbonBlack, Intel Security ePO and others.
 
- - File context data** (ROADMAP ITEM)**
-This data includes contextual information about files and can be sourced from systems such as FireEye, Application Control and others.
+ - File context data **(ROADMAP ITEM)**
+This data includes contextual information about files and can be sourced from systems such as FireEye, Application Control , Intel Security McAfee Threat Intelligence Exchange (TIE).
 
  - Threat intelligence context data **(ROADMAP ITEM)**
 This data includes contextual information about URLs, domains, websites, files and others.
@@ -219,14 +136,13 @@ The data model for security event logs/alerts is detailed in the below. The attr
  - User- attributes that are applicable to the user referenced in the event
  - Proxy - attributes that are applicable to proxy events
  - Protocol
+* DNS - attributes that are specific to DNS events
+* HTTP - attributes that are specific to HTTP events
+* SMTP, SSH, TLS, DHCP, IRC, SNMP and FTP
 
-> DNS - attributes that are specific to DNS events
-> HTTP - attributes that are specific to HTTP events
-> SMTP, SSH, TLS, DHCP, IRC, SNMP and FTP
+Note: The model will evolve to include reserved attributes for additional device types that are not currently represented. The model can currently be extended to support ANY attribute for ANY device type by following the guidance outlined in the section titled [**“Extensibility of Data Model”.**](#extensibility)
 
-Note: The model will evolve to include reserved attributes for additional device types that are not currently represented. The model can currently be extended to support ANY attribute for ANY device type by following the guidance outlined in the section titled **“Extensibility of Data Model”.**
-
-Note: Attributes denoted in BLUE represent those that are listed in the model multiple times for the purpose of
+Note: Attributes denoted in **Bold**, represent those that are listed in the model multiple times for the purpose of
 demonstrating attribute coverage for a particular entity (endpoint, user, network, etc.) or log type (Proxy, DNS, etc.).
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
@@ -284,8 +200,8 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 ||dst_lat|int|Source latitude|
 ||dst_long|int|Source longitude|
 ||asn|int|Autonomous system number|33
-||in_bytes|int|Bytes in|987
-||out_bytes|int|Bytes out|1222
+||**in_bytes**|int|Bytes in|987
+||**out_bytes**|int|Bytes out|1222
 ||direction|string|Direction|In, inbound, outbound, ingress, egress
 ||flags|string|TCP flags|.AP.SF
 
@@ -305,7 +221,7 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 |---|---|---|---|---|
 |**Endpoint**|object|string|File/Process/Registry|File, Registry, Process
 ||action|string|Action taken on object (open/delete/edit)|Open, Edit
-||msg|string|Message (details of action taken on object)|Some long string
+||**msg**|string|Message (details of action taken on object)|Some long string
 ||app|string|Application|Microsoft Powerpoint
 ||location|string|Location|Atlanta, GA
 ||proc|string|Process|SSHD
@@ -320,32 +236,32 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|---|
-|DNS|dns_class|string|DNS class|1
+|**DNS**|dns_class|string|DNS class|1
 ||dns_length|int|DNS frame length|188
-||dns_qry|string|Requested DNS query|test.test.com
-||dns_code|string|Response code|0x00000001
+||**dns_qry**|string|Requested DNS query|test.test.com
+||**dns_code**|string|Response code|0x00000001
 ||dns_response_qry|string|Response to DNS Query|178.2.1.99
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|---|
-|Proxy|category|string|Event category|SG-HTTP-SERVICE
+|**Proxy**|**category**|string|Event category|SG-HTTP-SERVICE
 ||browser|string|Web browser|Internet Explorer
-||code|string|Error or response code|404
-||in_bytes|int|Bytes in|1025
-||out_bytes|int|Bytes out|1288
+||**code**|string|Error or response code|404
+||**in_bytes**|int|Bytes in|1025
+||**out_bytes**|int|Bytes out|1288
 ||referrer|string|Referrer|www.usatoday.com
-||request_uri|string|Requested URI|/wcm/assets/images/imagefileicon.gif
+||**request_uri**|string|Requested URI|/wcm/assets/images/imagefileicon.gif
 ||filter_rule|string|Applied filter or rule|Internet, Rule 6 
 ||filter_result|string|Result of applied filter or rule|Proxied, Blocked
-||qry|string|URI query|?func=S_senseHTML&Page=a26815a313504697a126279
-||action|string|Action taken on object |TCP_HIT, TCP_MISS, TCP_TUNNELED
+||**qry**|string|URI query|?func=S_senseHTML&Page=a26815a313504697a126279
+||**action**|string|Action taken on object |TCP_HIT, TCP_MISS, TCP_TUNNELED
 ||method|string|HTTP method|GET, CONNECT, POST
-||type|string|Type of request|image/gif
+||**type**|string|Type of request|image/gif
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|---|
-|HTTP|request_method|string|HTTP method|GET, CONNECT, POST
-||request_uri |string|Requested URI|/wcm/assets/images/imagefileicon.gif
+|**HTTP**|request_method|string|HTTP method|GET, CONNECT, POST
+||**request_uri**|string|Requested URI|/wcm/assets/images/imagefileicon.gif
 ||request_body_len|int|Length of request body|98
 ||request_user_name |string|username from event|mhicks
 ||request_password|string|Password from event|abc123
@@ -384,7 +300,7 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|---|
-|**FTP**|user_name|string|Username|Coming soon
+|**FTP**|**user_name**|string|Username|Coming soon
 ||password|string|Password|Coming soon
 ||command|string|FTP command|Coming soon
 ||arg|string|Argument|Coming soon
@@ -397,7 +313,7 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 ||cwd|string|Current working directory|Coming soon
 ||cmdarg_ts|float||Coming soon
 ||cmdarg_cmd|string|Command|Coming soon
-|cmdarg_arg|string|Command argument|Coming soon
+||cmdarg_arg|string|Command argument|Coming soon
 ||cmdarg_seq|int|Sequence|Coming soon
 ||pending_commands|string|Pending commands|Coming soon
 ||is_passive|boolean|Passive mode enabled|Coming soon
@@ -406,7 +322,7 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|---|
-|**SNMP**|version|string|Coming soon|Coming soon
+|**SNMP**|**version**|string|Coming soon|Coming soon
 ||community|string|Coming soon|Coming soon
 ||get_requests|int|Coming soon|Coming soon
 ||get_bulk_requests|int|Coming soon|Coming soon
@@ -417,7 +333,7 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|---|
-|**TLS**|version|string|Coming soon|Coming soon
+|**TLS**|**version**|string|Coming soon|Coming soon
 ||cipher|string|Coming soon|Coming soon
 ||curve|string|Coming soon|Coming soon
 ||server_name|string|Coming soon|Coming soon
@@ -431,7 +347,7 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 
 |**Category**|**Attribute**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|---|
-|**SSH**|version|string|Coming soon|Coming soon
+|**SSH**|**version**|string|Coming soon|Coming soon
 ||auth_success|boolean|Coming soon|Coming soon
 ||client|string|Coming soon|Coming soon
 ||server|string|Coming soon|Coming soon
@@ -459,8 +375,8 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 |---|---|---|---|---|
 |**Flow**|in_packets|int|Coming soon|Coming soon
 ||out_packets|int|Coming soon|Coming soon
-||in_bytes|int|Coming soon|Coming soon
-||out_bytes|int|Coming soon|Coming soon
+||**in_bytes**|int|Coming soon|Coming soon
+||**out_bytes**|int|Coming soon|Coming soon
 ||conn_state|string|Coming soon|Coming soon
 ||history|string|Coming soon|Coming soon
 ||duration|float|Coming soon|Coming soon
@@ -470,7 +386,7 @@ demonstrating attribute coverage for a particular entity (endpoint, user, networ
 Note: It is not necessary to populate all of the attributes within the model.  For attributes not populated in a single security event log/alert, contextual data may not be available. For example, the sample event below can be enriched with contextual data about the referenced endpoints (10.1.1.1 and 192.168.10.10), but not a user, because username is not populated.
 
 > **date,time,source_ip,source_port,protocol,destination_ip,destination_port,bytes**
-12/12/2015,23:14:56,10.1.1.1,1025,tcp,192.168.10.10,443,1183
+**12/12/2015,23:14:56,10.1.1.1,1025,tcp,192.168.10.10,443,1183**
 
 
 **Context Models**
@@ -511,13 +427,13 @@ The data model for user context information is as follows:
 |dvc_version|string|Version |8.1.2
 |additional_attrs|string|Additional attributes of user|Key value pairs
 
-
 **Endpoint Context Model**
-------------------
+--------------------------
+
 The data model for endpoint context information is as follows:
 |**Abbreviation**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|
-|dvc_time|bigint|Timestamp from when the endpoint context information is obtained|1472653952
+|dvc_time|bigint|Timestamp from when the endpoint context information is obtained|1472653952|
 |ip4|bigint|IP address of endpoint |Integer representaion of 10.1.1.1
 |ip6|bigint|IP address of endpoint |Integer representaion of 10.1.1.1
 |os|string|Operating system|Redhat Linux 6.5.1
@@ -610,12 +526,9 @@ The data model for network context information is based on “whois” informati
 |registrant_email|string|Registrant Email
 |registry_admin_id|string|Registry Admin ID
 |name_server|string|Name Server
-|dnssec|string|DNSSEC
+|dnssec|string|DNSSEC|
 
-
-**Extensibility of Data Model**
-==================
-
+###<a name="extensibility"></a>**Extensibility of Data Model**
 The aforementioned data model can be extended to accommodate custom attributes by embedding key-value pairs within the log/alert/context entries. 
 Each model will support an additional attribute by the name of additional_attrs whose value would be a JSON string. This JSON string will contain a Map (and only a Map) of additional attributes that can’t be expressed in the specified model description. Regardless of the type of these additional attributes, they will always be interpreted as String. It’s up to the user, to translate them to appropriate types, if necessary, in the analytics layer. It is also the user’s responsibility to populate the aforementioned attribute as a Map, by presumably parsing out these attributes from the original message.
 For example, if a user wanted to extend the user context model to include a string attribute for “Desk Location” and “City”, the following string would be set for additional_attrs:
@@ -627,13 +540,13 @@ For example, if a user wanted to extend the user context model to include a stri
 
 Something similar can be done for endpoint context model, security event log/alert model and other entities.
 
-	Note: This [UDF library](https://github.com/klout/brickhouse) can be used for converting to/from JSON.
+**Note:** This [UDF library](https://github.com/klout/brickhouse) can be used for converting to/from JSON.
 
 ##**Model Relationships**##
 
 The relationships between the data model entities are illustrated below.
 
-Image here
+![enter image description here](https://lh3.googleusercontent.com/-SxEubiTPzFE/WHVo0uxgJtI/AAAAAAAAAt8/3su9v3h0MsovJ0Mhy08EbuFTvRvKEoIwQCLcB/s0/ODMimage2.jpg "ODMimage2.jpg")
 
 
 ##**Data Ingestion Framework**##
@@ -646,9 +559,7 @@ Streamsets is an ingest framework that provides the needed functionality outline
 
 **Avro**
 ----
-
 Avro is the recommended data format due to its schema representation, compatibility checks, and interoperability with Hadoop.  Avro supports a pure JSON representation for readability and ease of use but also a binary representation of the data for efficient storage.   Avro is the optimal format for streaming-based analytic use cases.
-
 A sample event and corresponding schema representation are detailed below.
 
 **Event**
@@ -670,10 +581,10 @@ A sample event and corresponding schema representation are detailed below.
 
 **Schema**
 {
-  "type": "record",
-  "doc":"This event records SSHD activity",
-  "name": "auth",
-  "fields" : [
+"type": "record",
+"doc":"This event records SSHD activity",
+"name": "auth",
+"fields" : [
 {"name":"eventtime", "type":"long", "doc":"Stop time of event""},
 {"name":"src_ip4", "type":"long", "doc":”Source IP Address"},
 {"name":"src_host", "type":"string",”doc”:”Source hostname},
@@ -682,13 +593,12 @@ A sample event and corresponding schema representation are detailed below.
 {"name":"dst_host", "type":"string", "doc":”Destination IP Address"},
 {"name":"dst_port", "type":"int", ”doc”:”Destination port”},
 {"name":"dvc_type", "type":"string", “doc”:”Source device type”},
- {"name":"category", "type":"string",”doc”:”category/type of event message”},
- {"name":"aproto", "type":"string",”doc”:”Application or network protocol”},
-    {"name":"msg", "type":"string",”doc”:”event message”},
-    {"name":"username", "type":"string",”doc”:”username”},
-    {"name":"severity", "type":"int",”doc”:”severity of event on scale of 1-10”},
+{"name":"category", "type":"string",”doc”:”category/type of event message”},
+{"name":"aproto", "type":"string",”doc”:”Application or network protocol”},
+{"name":"msg", "type":"string",”doc”:”event message”},
+{"name":"username", "type":"string",”doc”:”username”},
+{"name":"severity", "type":"int",”doc”:”severity of event on scale of 1-10”},
 }
-
 
 **JSON**
 ----
@@ -706,16 +616,13 @@ JSON is commonly used as a data-interchange format due to it’s ease of use and
 “username”:”mhicks”,
 }
 
-
 **Parquet**
 -------
-
-Parquet is a columnar storage format that offers the benefits of compression and efficient columnar data representation and is optimal for batch analytic use cases.  More information on parquet can be found here:  https://parquet.apache.org/documentation/latest/ 
+Parquet is a columnar storage format that offers the benefits of compression and efficient columnar data representation and is optimal for batch analytic use cases.  More information on parquet can be found here:  https://parquet.apache.org/documentation/latest/
 It should be noted that conversion from Avro to Parquet is supported. This allows for data collected and analyzed for stream-based use cases to be easily converted to Parquet for longer-term batch analytics.
 
 **Example - Advanced Threat Modeling**
 ----------------------------------
-
 In this example, the ODM is leveraged to build an “event” table for a threat model that uses attributes native to the ODM and derived attributes, which are calculations based on the aggregate data stored in the model.  In this context, an “event” table is defined by the attributes to be evaluated for predictive power in identifying threats and the actual attribute values (i.e rows in the table).  In the example below, the event table is composed of the following attributes, which are then leveraged to identify threats via a Risk Score analytic model:
 
  - “src_ipv4” - This attribute is native to the security event log component of the ODM and represents the source IP address of the corresponding table row
@@ -723,14 +630,12 @@ In this example, the ODM is leveraged to build an “event” table for a threat
  - SUM (in_bytes + out_bytes) for the last 7 days - “in_bytes” and “out_bytes” are native to the security event log component of the ODM.  This derived attribute represents a summation of bytes between the source address and destination domain over the last 7 days
  - “dst_domain” - This attribute is native to the security event log component of the ODM and represents the destination domain 
  - Days since “creation_date” - “creation_date” is native to the network context component of the ODM and represents the date the referenced domain was registered. This derived attribute calculates the days since the domain was created/registered.
-
 |**src_ipv4**|**os**|**dst domain**|**Days since “creation_date”**|**SUM (in_bytes + out_bytes)**|**Risk Score (1-100)**|
 |---|---|---|---|---|---|
-|10.1.1.10|Microsoft|dajdkwk.com|39|3021 MB|99
-|192.168.8.9|Redhat|usatoday.com|3027|2 MB|2
-|172.16.32.3|Apple|box.com|1532|76 MB|10
-|192.168.4.4|Microsoft|kzjkeljr.ru|3|0.9 MB|92
-
+|10.1.1.10|Microsoft|dajdkwk.com|39|3021 MB|99|
+|192.168.8.9|Redhat|usatoday.com|3027|2 MB|2|
+|172.16.32.3|Apple|box.com|1532|76 MB|10|
+|192.168.4.4|Microsoft|kzjkeljr.ru|3|0.9 MB|92|
 
 The **“Risk Score”**  attribute represents potential output from a threat detection model based on the attributes and values represented in the “event” table and is provided as an example of what is enabled by the ODM.  Can you tell which attributes and values hold predictive power for threat detection?
 
@@ -752,4 +657,3 @@ The table below demonstrates a logical, “denormalized” view of what is offer
 |class|1|DNS query class|
 |code|0x00000001|DNS response code|
 |response_qry|49.52.46.49|A record, DNS query response|
-
