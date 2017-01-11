@@ -1,4 +1,4 @@
-**Open Data Model (ODM)**
+﻿**Open Data Model (ODM)**
 ===================
 
 **Overview**
@@ -429,8 +429,8 @@ The data model for user context information is as follows:
 
 **Endpoint Context Model**
 --------------------------
-
 The data model for endpoint context information is as follows:
+
 |**Abbreviation**|**Data Type**|**Description**|**Sample Values**|
 |---|---|---|---|
 |dvc_time|bigint|Timestamp from when the endpoint context information is obtained|1472653952|
@@ -563,9 +563,8 @@ Avro is the recommended data format due to its schema representation, compatibil
 A sample event and corresponding schema representation are detailed below.
 
 **Event**
-{
-“eventtime”:1469562994,
-“src_ip4”:”192.168.1.1”,
+{"eventtime":1469562994,
+"src_ip4":”192.168.1.1”,
 “src_host”:”test1.clouera.com”,
 “src_port”:1029,
 “dst_ip4”:”192.168.21.22”,
@@ -584,7 +583,7 @@ A sample event and corresponding schema representation are detailed below.
 "type": "record",
 "doc":"This event records SSHD activity",
 "name": "auth",
-"fields" : [
+"fields" : {
 {"name":"eventtime", "type":"long", "doc":"Stop time of event""},
 {"name":"src_ip4", "type":"long", "doc":”Source IP Address"},
 {"name":"src_host", "type":"string",”doc”:”Source hostname},
@@ -603,6 +602,7 @@ A sample event and corresponding schema representation are detailed below.
 **JSON**
 ----
 JSON is commonly used as a data-interchange format due to it’s ease of use and familiarity within the development community.  The corresponding JSON object for the sample event described previously is noted below.
+
 {
 “eventtime”:1469562994,
 “src_ip4”:”192.168.1.1”,
@@ -630,6 +630,7 @@ In this example, the ODM is leveraged to build an “event” table for a threat
  - SUM (in_bytes + out_bytes) for the last 7 days - “in_bytes” and “out_bytes” are native to the security event log component of the ODM.  This derived attribute represents a summation of bytes between the source address and destination domain over the last 7 days
  - “dst_domain” - This attribute is native to the security event log component of the ODM and represents the destination domain 
  - Days since “creation_date” - “creation_date” is native to the network context component of the ODM and represents the date the referenced domain was registered. This derived attribute calculates the days since the domain was created/registered.
+
 |**src_ipv4**|**os**|**dst domain**|**Days since “creation_date”**|**SUM (in_bytes + out_bytes)**|**Risk Score (1-100)**|
 |---|---|---|---|---|---|
 |10.1.1.10|Microsoft|dajdkwk.com|39|3021 MB|99|
@@ -647,6 +648,7 @@ The table below demonstrates a logical, “denormalized” view of what is offer
 1463702961,169,10.0.0.101,172.16.36.157,www.kzjkeljr.ru,1,0x00000001,0,49.52.46.49
 
 **DNS EVENT + ODM**
+
 |**ODM Attribute**|**Value**|**Description**|**ODM Context Attributes**|
 |---|---|---|---|
 |eventtime|1463702961|UTC timestamp of DNS query|
@@ -657,3 +659,5 @@ The table below demonstrates a logical, “denormalized” view of what is offer
 |class|1|DNS query class|
 |code|0x00000001|DNS response code|
 |response_qry|49.52.46.49|A record, DNS query response|
+
+**EOF**
