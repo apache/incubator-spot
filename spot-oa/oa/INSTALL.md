@@ -1,10 +1,10 @@
-# ONI Operational Analytics
+# Apache Spot Operational Analytics
 
-ONI Operational Analytics (OA) is a set of python modules and utilities with routines to extract and transform data, loading the results into output files.
+Apache Spot Operational Analytics (OA) is a set of python modules and utilities with routines to extract and transform data, loading the results into output files.
 OA represents the last step before users can score connections and analyze data in the UI.
 
 The three supported data types are Flow, DNS and Proxy. For more information about the type of information and insights
-that can be found for each data source please visit ONI [wiki](https://github.com/Open-Network-Insight/open-network-insight/wiki).
+that can be found for each data source please visit Apache Spot [wiki](https://github.com/Open-Network-Insight/open-network-insight/wiki).
 
 OA scripts are very similar for the different data types supported however the code is divided into 3 
 main modules due to differences in the data model and what context information is required for each data type.
@@ -49,7 +49,7 @@ In order to execute this process there are a few prerequisites:
          If users want to implement their own machine learning piece to detect suspicious connections they need to refer
          to each data type module to know more about input format and schema.
  4. spot-setup project installed. Spot-setup project contains scripts to install hive database and the main configuration
-        file for Open Network Insights project.
+        file for Apache Spots project.
  
 
 ##Operational Analytics installation and usage
@@ -103,7 +103,7 @@ In order to execute this process there are a few prerequisites:
   for only one data type (Flow, DNS or Proxy) at a time. If users need to process multiple data types at the same time, multiple
   instances of the same script needs to be executed. 
   
-  To execute Operational Analytics in ONI 1.1 go to folder spot-oa/oa and execute the following command:
+  To execute Operational Analytics in Apache Spot go to folder spot-oa/oa and execute the following command:
         
         [solution-user@edge-server] python2.7 start_oa.py -d YYYYMMDD -t [flow, dns, proxy] -l <integer>
     
