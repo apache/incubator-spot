@@ -171,14 +171,19 @@ class OA(object):
         # get reputation per column.
         self._logger.info("Getting reputation for each service in config")
         rep_services_results = []
-        for key,value in rep_cols.items():
-            rep_services_results = [ rep_service.check(None,value,True) for rep_service in self._rep_services]
-            rep_results = {}
+        if self._rep_services :
+            for key,value in rep_cols.items():
+                rep_services_results = [ rep_service.check(None,value,True) for rep_service in self._rep_services]
+                rep_results = {}
 
-            for result in rep_services_results:
-                rep_results = {k: "{0}::{1}".format(rep_results.get(k, ""), result.get(k, "")).strip('::') for k in set(rep_results) | set(result)}
+                for result in rep_services_results:
+                    rep_results = {k: "{0}::{1}".format(rep_results.get(k, ""), result.get(k, "")).strip('::') for k in set(rep_results) | set(result)}
 
-            self._proxy_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._proxy_scores  ]
+                self._proxy_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._proxy_scores  ]
+        else:
+            self._proxy_scores = [ conn + [""] for conn in self._proxy_scores  ]
+
+
 
     def _add_severity(self):
         # Add severity column
