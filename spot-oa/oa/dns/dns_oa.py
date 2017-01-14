@@ -143,25 +143,39 @@ class OA(object):
         dns_scores_csv = "{0}/dns_scores.csv".format(self._data_path)
         dns_scores_final =  self._move_time_stamp(self._dns_scores)
         dns_scores_final.insert(0,self._dns_scores_headers)
-        Util.create_csv_file(dns_scores_csv,dns_scores_final)   
+        Util.create_csv_file(dns_scores_csv,dns_scores_final,',',0)   
 
         # create bk file
         dns_scores_bu_csv = "{0}/dns_scores_bu.csv".format(self._data_path)
-        Util.create_csv_file(dns_scores_bu_csv,dns_scores_final)  
+        Util.create_csv_file(dns_scores_bu_csv,dns_scores_final,',',0)     
 
 
     def _add_tld_column(self):
         qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
-        self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ]
+        self._dns_scores = [conn + [ self._get_valid_tld(str(conn[qry_name_col])) ] for conn in self._dns_scores ]
          
   
+    def _get_valid_tld(self, qry_name):
+        tld = ""
+        try:
+            if "http://" not in qry_name: 
+                tld = get_tld("http://" + qry_name)
+            else:
+                tld = get_tld(qry_name)
+        except ValueError:
+            self._logger.error("Unable to get top level domain from query: {0}".format(qry_name))
+            tld = "UNKNOWN"
+        return tld
+    
+
     def _add_reputation(self):
 
         # read configuration.
         reputation_conf_file = "{0}/components/reputation/reputation_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self._logger.info("Reading reputation configuration file: {0}".format(reputation_conf_file))
         rep_conf = json.loads(open(reputation_conf_file).read())
-       
+        
+        
         # initialize reputation services.
         self._rep_services = []
         self._logger.info("Initializing reputation services.")
@@ -183,13 +197,18 @@ class OA(object):
         # get reputation per column.
         self._logger.info("Getting reputation for each service in config")        
         rep_services_results = []
-        for key,value in rep_cols.items():
-            rep_services_results = [ rep_service.check(None,value) for rep_service in self._rep_services]
-            rep_results = {}            
-            for result in rep_services_results:            
-                rep_results = {k: "{0}::{1}".format(rep_results.get(k, ""), result.get(k, "")).strip('::') for k in set(rep_results) | set(result)}
 
-            self._dns_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._dns_scores  ]
+ 
+        if self._rep_services :
+            for key,value in rep_cols.items():
+                rep_services_results = [ rep_service.check(None,value) for rep_service in self._rep_services]
+                rep_results = {}            
+                for result in rep_services_results:            
+                    rep_results = {k: "{0}::{1}".format(rep_results.get(k, ""), result.get(k, "")).strip('::') for k in set(rep_results) | set(result)}
+
+                self._dns_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._dns_scores  ]
+        else:
+            self._dns_scores = [ conn + [""]   for conn in self._dns_scores  ]
 
 
 
