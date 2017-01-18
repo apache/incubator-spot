@@ -1,0 +1,81 @@
+
+img{
+    width: 95%;
+}
+
+p.terminal 
+{
+    border-radius: 25px;
+    border: 2px solid #000000;
+    background: #000000;
+    color: #FFFFFF;
+    padding: 20px;
+    margin-left: 50px;
+    margin-right: 100px; 
+}
+
+table.configuration
+{
+     width: 90%;
+     margin-left: 20px;
+     margin-right: 20px;
+}
+
+table.configuration th 
+{
+    background-color: #212F3C;
+    color: white;
+}
+
+table.configuration td
+{
+    text-align: center;
+    padding: 8px;
+}
+
+table.configuration tr:nth-child(even){background-color: #f2f2f2}
+
+
+.sidenav {
+    height: 100%; 
+    width: 200px; 
+    position: fixed; 
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #212F3C; 
+    overflow-x: hidden; 
+    padding-top: 60px; 
+    transition: 0.5s; 
+}
+
+
+.sidenav a{
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s
+}
+
+.sidenav li {
+    color: #818181 ;    
+}
+.sidenav a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    margin-left: 200px;
+    padding: 20px;
+}
