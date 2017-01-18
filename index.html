@@ -18,148 +18,82 @@
         <meta name="MobileOptimized" content="320">
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-        <link rel="apple-touch-icon" href="wp-content/themes/oni/library/images/apple-touch-icon.png">
-        <link rel="icon" href="wp-content/themes/oni/favicon.png">
+        <link rel="apple-touch-icon" href="library/images/apple-touch-icon.png">
+        <link rel="icon" href="favicon.png">
         <!--[if IE]>
-        <link rel="shortcut icon" href="wp-content/themes/oni/favicon.ico">
+        <link rel="shortcut icon" href="http://spot.incubator.apache.org/favicon.ico">
         <![endif]-->
         <meta name="msapplication-TileColor" content="#f01d4f">
-        <meta name="msapplication-TileImage" content="wp-content/themes/oni/library/images/win8-tile-icon.png">
+        <meta name="msapplication-TileImage" content="library/images/win8-tile-icon.png">
         <meta name="theme-color" content="#121212">
-
-        <link rel="pingback" href="xmlrpc.php">
 
         <link rel='dns-prefetch' href='//fonts.googleapis.com' />
         <link rel='dns-prefetch' href='//s.w.org' />
         <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Feed" href="feed/" />
-        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Comments Feed" href="comments/feed/" />
-        <script type="text/javascript">
-			window._wpemojiSettings = {
-				"baseUrl" : "https:\/\/s.w.org\/images\/core\/emoji\/2\/72x72\/",
-				"ext" : ".png",
-				"svgUrl" : "https:\/\/s.w.org\/images\/core\/emoji\/2\/svg\/",
-				"svgExt" : ".svg",
-				"source" : {
-					"concatemoji" : "http:\/\/spot.incubator.apache.org\/wp-includes\/js\/wp-emoji-release.min.js"
-				}
-			};
-			! function(a, b, c) {
-				function d(a) {
-					var c,
-					    d,
-					    e,
-					    f,
-					    g,
-					    h = b.createElement("canvas"),
-					    i = h.getContext && h.getContext("2d"),
-					    j = String.fromCharCode;
-					if (!i || !i.fillText)
-						return !1;
-					switch(i.textBaseline="top",i.font="600 32px Arial",a) {
-					case"flag":
-						return i.fillText(j(55356, 56806, 55356, 56826), 0, 0), !(h.toDataURL().length < 3e3) && (i.clearRect(0, 0, h.width, h.height), i.fillText(j(55356, 57331, 65039, 8205, 55356, 57096), 0, 0),
-						c = h.toDataURL(), i.clearRect(0, 0, h.width, h.height), i.fillText(j(55356, 57331, 55356, 57096), 0, 0),
-						d = h.toDataURL(), c !== d);
-					case"diversity":
-						return i.fillText(j(55356, 57221), 0, 0),
-						e = i.getImageData(16, 16, 1, 1).data,
-						f = e[0] + "," + e[1] + "," + e[2] + "," + e[3], i.fillText(j(55356, 57221, 55356, 57343), 0, 0),
-						e = i.getImageData(16, 16, 1, 1).data,
-						g = e[0] + "," + e[1] + "," + e[2] + "," + e[3], f !== g;
-					case"simple":
-						return i.fillText(j(55357, 56835), 0, 0), 0 !== i.getImageData(16,16,1,1).data[0];
-					case"unicode8":
-						return i.fillText(j(55356, 57135), 0, 0), 0 !== i.getImageData(16,16,1,1).data[0];
-					case"unicode9":
-						return i.fillText(j(55358, 56631), 0, 0), 0 !== i.getImageData(16,16,1,1).data[0]
-					}
-					return !1
-				}
 
-				function e(a) {
-					var c = b.createElement("script");
-					c.src = a, c.type = "text/javascript", b.getElementsByTagName("head")[0].appendChild(c)
-				}
-
-				var f,
-				    g,
-				    h,
-				    i;
-				for ( i = Array("simple", "flag", "unicode8", "diversity", "unicode9"), c.supports = {
-					everything : !0,
-					everythingExceptFlag : !0
-				},
-				h = 0; h < i.length; h++)
-					c.supports[i[h]] = d(i[h]), c.supports.everything = c.supports.everything && c.supports[i[h]], "flag" !== i[h] && (c.supports.everythingExceptFlag = c.supports.everythingExceptFlag && c.supports[i[h]]);
-				c.supports.everythingExceptFlag = c.supports.everythingExceptFlag && !c.supports.flag, c.DOMReady = !1, c.readyCallback = function() {
-					c.DOMReady = !0
-				}, c.supports.everything || ( g = function() {
-					c.readyCallback()
-				}, b.addEventListener ? (b.addEventListener("DOMContentLoaded", g, !1), a.addEventListener("load", g, !1)) : (a.attachEvent("onload", g), b.attachEvent("onreadystatechange", function() {
-					"complete" === b.readyState && c.readyCallback()
-				})),
-				f = c.source || {}, f.concatemoji ? e(f.concatemoji) : f.wpemoji && f.twemoji && (e(f.twemoji), e(f.wpemoji)))
-			}(window, document, window._wpemojiSettings);
-        </script>
-        <style type="text/css">
-			img.wp-smiley, img.emoji {
-				display: inline !important;
-				border: none !important;
-				box-shadow: none !important;
-				height: 1em !important;
-				width: 1em !important;
-				margin: 0 .07em !important;
-				vertical-align: -0.1em !important;
-				background: none !important;
-				padding: 0 !important;
-			}
-        </style>
         <link rel='stylesheet' id='googleFonts-css'  href='http://fonts.googleapis.com/css?family=Lato%3A400%2C700%2C400italic%2C700italic' type='text/css' media='all' />
-        <link rel='stylesheet' id='bones-stylesheet-css'  href='wp-content/themes/oni/library/css/style.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='bones-stylesheet-css'  href='library/css/style.css' type='text/css' media='all' />
         <!--[if lt IE 9]>
-        <link rel='stylesheet' id='bones-ie-only-css'  href='wp-content/themes/oni/library/css/ie.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='bones-ie-only-css'  href='http://spot.incubator.apache.org/library/css/ie.css' type='text/css' media='all' />
         <![endif]-->
-        <link rel='stylesheet' id='mm-css-css'  href='wp-content/themes/oni/library/css/meanmenu.css' type='text/css' media='all' />
-        <script type='text/javascript' src='wp-content/themes/oni/library/js/libs/modernizr.custom.min.js'></script>
-        <script type='text/javascript' src='wp-includes/js/jquery/jquery.js'></script>
-        <script type='text/javascript' src='wp-includes/js/jquery/jquery-migrate.min.js'></script>
-        <script type='text/javascript' src='wp-content/themes/oni/library/js/jquery.meanmenu.js'></script>
-        <link rel='https://api.w.org/' href='wp-json/' />
-        <link rel="canonical" href="" />
-        <link rel='shortlink' href='' />
-        <link rel="alternate" type="application/json+oembed" href="wp-json/oembed/1.0/embed?url=http%3A%2F%2Fnolamarketing.com%2Fclient%2Foni%2F" />
-        <link rel="alternate" type="text/xml+oembed" href="wp-json/oembed/1.0/embed?url=http%3A%2F%2Fnolamarketing.com%2Fclient%2Foni%2F&#038;format=xml" />
+        <link rel='stylesheet' id='mm-css-css'  href='library/css/meanmenu.css' type='text/css' media='all' />
+        <script type='text/javascript' src='library/js/libs/modernizr.custom.min.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type='text/javascript' src='library/js/jquery-migrate.min.js'></script>
+        <script type='text/javascript' src='/library/js/jquery.meanmenu.js'></script>
 
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		
+		  ga('create', 'UA-87470508-1', 'auto');
+		  ga('send', 'pageview');
+		
+		</script>
     </head>
 
-    <body class="home page page-id-8 page-template-default" itemscope itemtype="http://schema.org/WebPage">
+    <body class="home">
 
         <div id="container">
-
-            <header class="header" role="banner" itemscope itemtype="http://schema.org/WPHeader">
-
+			<div class="social-sidebar">
+				<a href="mailto:info@open-network-insight.org"><span class="icon-envelope"></span></a>
+				<a href="https://twitter.com/ApacheSpot" target="_blank"><span class="icon-twitter"></span></a>
+				<a href="http://slack.apache-spot.io/" target="_blank"><span class="icon-slack"></span></a>				
+			</div>
+            <header class="header">
                 <div id="inner-header" class="wrap cf">
 
                     <p id="logo" class="h1" itemscope itemtype="http://schema.org/Organization">
-                        <a href="http://spot.incubator.apache.org" rel="nofollow"><img src="wp-content/themes/oni/library/images/logo.png" alt="Open Network Insight" /></a>
+                        <a href="http://spot.incubator.apache.org/" rel="nofollow"><img src="library/images/logo.png" alt="Apache Spot" /></a>
                     </p>
 
-                    <nav role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                    <nav>
                         <ul id="menu-main-menu" class="nav top-nav cf">
                             <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight/tree/spot">Get Started</a>
+                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
                             </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight/tree/spot#if-you-want-all-of-the-apache-spot-code-at-once-just-clone-it">Download</a>
+                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">Download</a>
                             </li>
                             <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight/tree/spot#contributing-to-apache-spot">Contribute</a>
+                                <a href="contribute">Contribute</a>
                             </li>
                             <li id="menu-item-106" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-106">
-                                <a target="_blank" href="https://github.com/Open-Network-Insight/open-network-insight/wiki">Wiki</a>
+                                <a href="doc">Documentation</a>
+                            </li>
+                            <li class="menu-item menu-item-has-children">
+                                <a href="#">Project Components</a>
+                                <ul class="sub-menu">
+                                	<li><a href="project-components/open-data-models">Open Data Models</a></li>
+                                	<li><a href="project-components/ingestion">Ingestion</a></li>
+                                	<li><a href="project-components/machine-learning">Machine Learning</a></li>
+                                	<li><a href="project-components/visualization">Visualization</a></li>
+                                </ul>
                             </li>
                             <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13">
-                                <a href="blog/">Blog</a>
+                                <a href="blog">Blog</a>
                             </li>
                         </ul>
                     </nav>
@@ -169,30 +103,32 @@
             </header>
 
             <div id="mobile-nav"></div>
+
             <div id="masthead">
                 <div class="wrap cf">
-                    <div class="m-all t-1of2 d-1of2 oni-guy">
-                        <img src="wp-content/uploads/2016/03/spot470.png" class="oniguy" alt="" />
-                    </div>
                     <div class="m-all t-1of2 d-1of2">
-                        <h2>Apache Spot (Incubating)
-                        <br>
-                        at a Glance</h2>
-                        <p>
-                            For organizations with dynamic data centers and networks, Apache Spot is an advanced threat detection solution that uses big data analytics, that perform at cloud scale, to provide actionable insights into operational and security threats. Running on Apache Hadoop, Apache Spot can analyze billions of events in order to detect unknown threats, insider threats, and gain a new level of visibility into the network.
-                        </p>
-                        <p class="btn-margin">
-                            <a href="https://github.com/Open-Network-Insight" class="y-btn">More Info</a>
-                        </p>
+                        <h1>Apache Spot (Incubating)</h1>
+                        <h1 class="thin">A Community Approach to Fighting Cyber Threats</h1>
+                    </div>
+                    <div class="m-all t-1of2 d-1of2 contribute">
+                        <h3>Help Spot expand his hunting ground to see deeper into the darkness of cyber threats.</h3>
+                        <p class="btn-margin"><a href="contribute" class="y-btn">Become a Contributor</a></p>
                     </div>
                 </div>
+            </div>
+            
+            <div id="at-a-glance">
+            	<div class="wrap cf">
+            		<h1>Apache Spot at a Glance</h1>
+            		<p>Apache Spot is a community-driven cybersecurity project, built from the ground up, to bring advanced analytics to all IT Telemetry data on an open, scalable platform. Spot expedites threat detection, investigation, and remediation via machine learning and consolidates all enterprise security data into a comprehensive IT telemetry hub based on open data models. Spot’s scalability and machine learning capabilities support an ecosystem of ML-based applications that can run simultaneously on a single, shared, enriched data set to provide organizations with maximum analytic flexibility. Spot harnesses a diverse community of expertise from Centrify, Cloudera, Cybraics, Endgame, Intel, Jask, Streamsets, and Webroot.</p>
+            	</div>
             </div>
 
             <div id="content">
                 <div id="inner-content" class="wrap cf">
                     <main id="main" class="m-all t-all d-all cf" role="main" itemscope itemprop="mainContentOfPage" itemtype="http://schema.org/Blog">
                         <h1 class="center">Apache Spot Advantages</h1>
-                        <p style="text-align: center;"><img src="wp-content/uploads/2016/03/advantages-1.png" alt="advantages" width="958" height="433" class="aligncenter size-full wp-image-139" srcset="wp-content/uploads/2016/03/advantages-1.png 958w, wp-content/uploads/2016/03/advantages-1-300x136.png 300w, wp-content/uploads/2016/03/advantages-1-768x347.png 768w" sizes="(max-width: 958px) 100vw, 958px" />
+                        <p style="text-align: center;"><img src="library/images/advantages-1.png" alt="advantages" width="958" height="433" class="aligncenter size-full" />
                         </p>
                     </main>
                 </div>
@@ -202,7 +138,7 @@
                 <div class="wrap cf">
                     <div class="and-row">
                         <div class="and-cell">
-                            <img src="wp-content/themes/oni/library/images/and.png" alt="" />
+                            <img src="library/images/and.png" alt="" />
                         </div>
                         <div class="and-cell">
                             <p>
@@ -221,11 +157,11 @@
                             Apache Spot uses machine learning as a filter for separating bad traffic from benign and to characterize the unique behavior of network traffic. A proven process, of context enrichment, noise filtering, whitelisting and heuristics, is also applied to network data to produce a shortlist of most likely security threats.
                         </p>
                         <p class="btn-margin">
-                            <a href="https://github.com/Open-Network-Insight" class="y-btn">More Info</a>
+                            <a href="https://github.com/apache/incubator-spot" class="y-btn">More Info</a>
                         </p>
                     </div>
                     <div class="m-all t-2of3 d-2of3">
-                        <img src="wp-content/uploads/2016/03/how-it-works.png" alt="" />
+                        <img src="library/images/how-it-works.png" alt="" />
                     </div>
                 </div>
             </div>
@@ -237,7 +173,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell">
-                                    <img src="wp-content/uploads/2016/03/magnify-icon.png" alt="" />
+                                    <img src="library/images/magnify-icon.png" alt="" />
                                 </div>
                                 <div class="table-cell">
                                     <h3>Suspicious DNS packets</h3>
@@ -252,7 +188,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell">
-                                    <img src="wp-content/uploads/2016/03/threat-icon.png" alt="" />
+                                    <img src="library/images/threat-icon.png" alt="" />
                                 </div>
                                 <div class="table-cell">
                                     <h3>Threat Incident and Response</h3>
@@ -267,7 +203,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell">
-                                    <img src="wp-content/uploads/2016/03/connects.png" alt="" />
+                                    <img src="library/images/connects.png" alt="" />
                                 </div>
                                 <div class="table-cell">
                                     <h3>Suspicious Connects</h3>
@@ -282,7 +218,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell">
-                                    <img src="wp-content/uploads/2016/03/storyboard-icon.png" alt="" />
+                                    <img src="library/images/storyboard-icon.png" alt="" />
                                 </div>
                                 <div class="table-cell">
                                     <h3>Storyboard</h3>
@@ -297,7 +233,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell">
-                                    <img src="wp-content/uploads/2016/03/SPOT_OpenDataModel-Icon_v1.png" alt="" />
+                                    <img src="library/images/SPOT_OpenDataModel-Icon_v1.png" alt="" />
                                 </div>
                                 <div class="table-cell">
                                     <h3>Open Data Models</h3>
@@ -312,7 +248,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell">
-                                    <img src="wp-content/uploads/2016/03/SPOT_Collabration-Icon_v2.png" alt="" />
+                                    <img src="library/images/SPOT_Collabration-Icon_v2.png" alt="" />
                                 </div>
                                 <div class="table-cell">
                                     <h3>Collaboration</h3>
@@ -326,9 +262,28 @@
 
                     <div class="cf"></div>
                     <p class="btn-margin">
-                        <a href="https://github.com/Open-Network-Insight" class="y-btn">More Info</a>
+                        <a href="https://github.com/apache/incubator-spot" class="y-btn">More Info</a>
                     </p>
                 </div>
+            </div>
+            
+            <div id="open-data-models">
+            	<div class="wrap cf">
+            		<h1 class="center">Apache Spot Open Data Models (ODM)</h1>
+            		<div class="m-all t-1of2 d-1of2 center">
+            			<img src="library/images/odm.png" alt="Apache Spot Open Data Models">
+            		</div>
+            		<div class="m-all t-1of2 d-1of2">
+            			<p>The primary use case initially supported by Spot includes Network Traffic Analysis for network flows (Netflow, sflow, etc.), DNS and Proxy.  The Spot open data model strategy aims to extend Spot capabilities to support a broader set of cybersecurity use cases.</p>
+            			<h3>ODM at a Glance</h3>
+            			<ul>
+            				<li>Includes a growing catalog of packaged ingestion pipelines for common data sources</li>
+            				<li>Enriched events provide full context leading to better analytics and faster incident response</li>
+            				<li>Organizations maintain and control a single copy of their security data</li>
+            			</ul>
+            			<p class="btn-margin"><a href="project-components/open-data-models/" class="y-btn">Read More</a></p>
+            		</div>
+            	</div>
             </div>
 
             <div id="user-stories">
@@ -337,6 +292,23 @@
                     <p class="btn-margin center">
                         Spot accelerates the development of cybersecurity applications by providing a cybersecurity analytics framework.  This means more solutions can be created faster. This is because Spot allows organizations to focus developing the analytics and visualizations for applications that discover cybercrime rather than spending time building systems to ingest, integrate, store, and process myriad volumes or varieties of security data.
                     </p>
+                    
+                    <p class="center">Join the Apache Spot community and collaborate with us using a common framework.</p>
+                    
+                    <div class="community">
+                    	<img src="library/images/community/endgame.png" alt="Endgame" />
+                    	<img src="library/images/community/intel.png" alt="Intel" />
+                    	<img src="library/images/community/webroot.png" alt="Webroot" />
+                    	<img src="library/images/community/jask.png" alt="Jask" />
+                    	<img src="library/images/community/cloudera.png" alt="Cloudera" />
+                    	<img src="library/images/community/cloudwick.png" alt="Cloudwick" />
+                    	<img src="library/images/community/cybraics.png" alt="Cybraics" />
+                    	<img src="library/images/community/centrify.png" alt="Centrify" />
+                    	<img src="library/images/community/ebay.png" alt="Ebay" />
+                    	<img src="library/images/community/semantix.png" alt="Ebay" />
+                    	<img src="library/images/community/rich-it.png" alt="Ebay" />
+                    	
+                    </div>
 
                 </div>
             </div>
@@ -350,7 +322,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell quote-man">
-                                    <img src="wp-content/themes/oni/library/images/quote-person.png" alt="" />
+                                    <img src="library/images/quote-person.png" alt="" />
                                     <h3>Senior Analyst</h3>
                                 </div>
                                 <div class="table-cell">
@@ -364,7 +336,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell quote-man">
-                                    <img src="wp-content/themes/oni/library/images/quote-person.png" alt="" />
+                                    <img src="library/images/quote-person.png" alt="" />
                                     <h3>Junior Analyst</h3>
                                 </div>
                                 <div class="table-cell">
@@ -378,7 +350,7 @@
                         <div class="table">
                             <div class="table-row">
                                 <div class="table-cell quote-man">
-                                    <img src="wp-content/themes/oni/library/images/quote-person.png" alt="" />
+                                    <img src="library/images/quote-person.png" alt="" />
                                     <h3>Decision Maker</h3>
                                 </div>
                                 <div class="table-cell">
@@ -401,18 +373,18 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="more-info">
                 <div class="wrap cf">
                     <p class="social-icons">
-                        <a href="mailto:info@open-network-insight.org"><span class="icon-envelope"></span></a><a href="https://twitter.com/ApacheSpot" target="_blank"><span class="icon-twitter"></span><a href="http://slack.apache-spot.io/" target="_blank"><img src="wp-content/themes/oni/library/images/add-to-slack.png" alt="" class="add-to-slack" /></a></a>
+                        <a href="mailto:info@open-network-insight.org"><span class="icon-envelope"></span></a><a href="https://twitter.com/ApacheSpot" target="_blank"><span class="icon-twitter"></span><a href="http://slack.apache-spot.io/" target="_blank"><img src="library/images/add-to-slack.png" alt="" class="add-to-slack" /></a></a>
                     </p>
 
                     <p>
-                        <a href="https://github.com/Open-Network-Insight/open-network-insight" class="y-btn" target="_blank">More Info</a>
+                        <a href="https://github.com/apache/incubator-spot" class="y-btn" target="_blank">More Info</a>
                     </p>
 
-                    <p style="margin-top:50px;"><img src="wp-content/themes/oni/library/images/apache-incubator.png" alt="Apache Incubator" />
+                    <p style="margin-top:50px;"><img src="library/images/apache-incubator.png" alt="Apache Incubator" />
                     </p>
 
                     <p class="disclaimer">
@@ -429,7 +401,6 @@
 
                 <div id="inner-footer" class="wrap cf">
 
-                    <nav role="navigation"></nav>
                     <p class="source-org copyright" style="text-align:center;">
                         &copy; 2016 Apache Spot.
                     </p>
@@ -439,11 +410,9 @@
             </footer>
 
         </div>
-
-        <script type='text/javascript' src='wp-content/themes/oni/library/js/scripts.js'></script>
-        <script type='text/javascript' src='wp-includes/js/wp-embed.min.js'></script>
+		<a href="#0" class="cd-top">Top</a>
+        <script type='text/javascript' src='library/js/scripts.js'></script>
 
     </body>
 
 </html>
-<!-- end of site. what a ride! -->

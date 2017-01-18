@@ -1,0 +1,221 @@
+<!doctype html>
+
+<!--[if lt IE 7]><html lang="en-US" class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en-US" class="no-js">
+    <!--<![endif]-->
+
+    <head>
+        <meta charset="utf-8">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <title>Strength in Numbers: Why Consider Open Source Cybersecurity Analytics - Apache Spot</title>
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link rel="apple-touch-icon" href="../../library/images/apple-touch-icon.png">
+        <link rel="icon" href="../../favicon.png">
+        <!--[if IE]>
+        <link rel="shortcut icon" href="http://spot.incubator.apache.org/favicon.ico">
+        <![endif]-->
+        <meta name="msapplication-TileColor" content="#f01d4f">
+        <meta name="msapplication-TileImage" content="../../library/images/win8-tile-icon.png">
+        <meta name="theme-color" content="#121212">
+
+        <link rel='dns-prefetch' href='//fonts.googleapis.com' />
+        <link rel='dns-prefetch' href='//s.w.org' />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Feed" href="../../feed/" />
+
+        <link rel='stylesheet' id='googleFonts-css'  href='http://fonts.googleapis.com/css?family=Lato%3A400%2C700%2C400italic%2C700italic' type='text/css' media='all' />
+        <link rel='stylesheet' id='bones-stylesheet-css'  href='../../library/css/style.css' type='text/css' media='all' />
+        <!--[if lt IE 9]>
+        <link rel='stylesheet' id='bones-ie-only-css'  href='http://spot.incubator.apache.org/library/css/ie.css' type='text/css' media='all' />
+        <![endif]-->
+        <link rel='stylesheet' id='mm-css-css'  href='../../library/css/meanmenu.css' type='text/css' media='all' />
+        <script type='text/javascript' src='../../library/js/libs/modernizr.custom.min.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type='text/javascript' src='../../library/js/jquery-migrate.min.js'></script>
+        <script type='text/javascript' src='../../library/js/jquery.meanmenu.js'></script>
+
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		
+		  ga('create', 'UA-87470508-1', 'auto');
+		  ga('send', 'pageview');
+		
+		</script>
+    </head>
+
+    <body class="single single-post">
+
+        <div id="container">
+			<div class="social-sidebar">
+				<a href="mailto:info@open-network-insight.org"><span class="icon-envelope"></span></a>
+				<a href="https://twitter.com/ApacheSpot" target="_blank"><span class="icon-twitter"></a>
+				<a href="http://slack.apache-spot.io/" target="_blank"><span class="icon-slack"></span></a>				
+			</div>
+            <header class="header">
+
+                <div id="inner-header" class="wrap cf">
+
+                    <p id="logo" class="h1" itemscope itemtype="http://schema.org/Organization">
+                        <a href="http://spot.incubator.apache.org/" rel="nofollow"><img src="../../library/images/logo.png" alt="Apache Spot" /></a>
+                    </p>
+
+                    <nav>
+                        <ul id="menu-main-menu" class="nav top-nav cf">
+                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
+                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
+                            </li>
+                            <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
+                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">Download</a>
+                            </li>
+                            <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
+                                <a href="../../contribute">Contribute</a>
+                            </li>
+                            <li id="menu-item-106" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-106">
+                                <a href="../../doc">Documentation</a>
+                            </li>
+                            <li class="menu-item menu-item-has-children">
+                                <a href="#">Project Components</a>
+                                <ul class="sub-menu">
+                                	<li><a href="../../project-components/open-data-models">Open Data Models</a></li>
+                                	<li><a href="../../project-components/ingestion">Ingestion</a></li>
+                                	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                	<li><a href="../../project-components/visualization">Visualization</a></li>
+                                </ul>
+                            </li>
+                            <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13 active">
+                                <a href="../../blog">Blog</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </header>
+
+            <div id="mobile-nav"></div>
+
+            <div id="content">
+
+                <div id="inner-content" class="wrap cf">
+
+                    <main id="main" class="m-all t-2of3 d-5of7 cf" role="main" itemscope itemprop="mainContentOfPage" itemtype="http://schema.org/Blog">
+
+                        <article id="post-149" class="cf post-149 post type-post status-publish format-standard hentry category-uncategorized" role="article" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
+
+                            <header class="article-header entry-header">
+
+                                <h1 class="entry-title single-title" itemprop="headline" rel="bookmark">Strength in Numbers:  Why Consider Open Source Cybersecurity Analytics</h1>
+
+                                <p class="byline entry-meta vcard">
+
+                                    <time class="updated entry-time" datetime="2016-10-21" itemprop="datePublished">
+                                        October 21, 2016
+                                    </time>
+                                    </span>
+                                </p>
+
+                            </header>
+                            <section class="entry-content cf" itemprop="articleBody">
+                                <p>
+                                    By Rob Kent, Vice President of Marketing at Cybraics
+                                </p>
+                                <p>
+                                    Competition is widely considered to be a healthy and positive thing, traditionally viewed as providing options for customers and fueling innovation. In the world of cybersecurity there is no shortage of competition, in fact cybersecurity is one of the most crowded and fast-growing areas of technology. The problem is, with so much competition, are we losing sight of the real goal: protecting our customers against the adversary? With so much focus on competing and winning customers, are we negating one of the most fundamental advantages that we could have in the fight against cybercrime? Cooperation. Our adversaries are not shy about working together… the community is strong and growing, and while there is no doubt some healthy competition, the sharing of tools and techniques is certainly far more common than in the commercial world. Like Open Source software, security can only benefit and grow through peer-reviewed submissions. Citing Linus Law by Eric S. Raymond from his book The Cathedral and the Bazaar, &#8220;Given a large enough beta-tester and co-developer base, almost every problem will be characterized quickly and the fix will be obvious to someone.&#8221;
+                                </p>
+                                <p>
+                                    This, of course, is not new information. People have been pointing this out for years. What is encouraging is that a few organizations are finally stepping up to the plate to try and change this paradigm in cybersecurity.  When it comes to cybersecurity, many have touted big data analytics as one of the key initiatives to combat adversaries. The problem is that big data in itself has its own set of challenges, one of the issues is that it is often looked at as a costly problem to store and scale as opposed to being used as another tool in an organization’s arsenal. Apache Spot, a project pioneered by Intel and Cloudera, is aiming to fix this problem.
+                                </p>
+                                <p>
+                                    By creating an open source community, the hope is that identifying security threats within large data sets will become a manageable task for all organizations, despite their size or scale. Organizations overwhelmed with their data or those that aren’t seeing results will have a community to turn to along with a common reference to compare results. By working together on Apache Spot, organizations will be able to share their experiences on how they’ve tackled or how they need to tackle these issues with a common system to reference.  Data is never going to get smaller across organizations’ core systems, so in many ways an organization just now beginning to dig into their data stores is basically starting from scratch. Having the ability to reference an open common model gives the opportunity for both those starting out and those seasoned, to have an open exchange of varying knowledge.
+                                </p>
+                                <p>
+                                    By supporting Apache Spot, Cybraics is hoping to learn as much as we contribute while we collaborate and take part in this Open Source Initiative. With the end result a set of guidelines for organizations to deploy a data analytics platform to find threats within their ecosystem, and a community that will share their experiences with the next generation of data and security professionals, perhaps we can all start actually working together to start leveling the playing field.
+                                </p>
+                            </section>
+                            <footer class="article-footer">
+
+                                filed under: <a href="../../category/uncategorized/" rel="category tag">Uncategorized</a>
+
+                            </footer>
+
+                        </article>
+
+                    </main>
+
+					<div id="sidebar1" class="sidebar m-all t-1of3 d-2of7 last-col cf" role="complementary">
+					
+						<div id="recent-posts-2" class="widget widget_recent_entries">
+							<h4 class="widgettitle">Recent Posts</h4>
+							<ul>
+								<li>
+									<a href="../../blog/strength-in-numbers-why-consider-open-source-cybersecurity-analytics/">Strength in Numbers:  Why Consider Open Source Cybersecurity Analytics</a>
+								</li>
+								<li>
+									<a href="../../blog/jupyter-notebooks-for-data-analysis/">Jupyter Notebooks for Data Analysis</a>
+								</li>
+								<li>
+									<a href="../../blog/apache-spot-and-cybersecurity-using-netflows-to-detect-threats-to-critical-infrastructure/">Apache Spot (Incubating) and Cybersecurity — Using NetFlows to Detect Threats to  Critical Infrastructure</a>
+								</li>
+								<li>
+									<a href="../../blog/how-apache-spot-helps-create-well-stocked-data-lakes-and-catch-powerful-insights/">How Apache Spot (Incubating) Helps Create Well-Stocked Data Lakes and Catch Powerful Insights</a>
+								</li>
+								<li>
+									<a href="../../blog/apache-spot-3-most-asked-questions/">Apache Spot (Incubating): 3 Most-Asked Questions</a>
+								</li>
+							</ul>
+						</div>
+						<div id="archives-2" class="widget widget_archive">
+							<h4 class="widgettitle">Archives</h4>
+							<ul>
+								<li>
+									<a href='../../2016/10/'>October 2016</a>
+								</li>
+								<li>
+									<a href='../../2016/09/'>September 2016</a>
+								</li>
+								<li>
+									<a href='../../2016/08/'>August 2016</a>
+								</li>
+								<li>
+									<a href='../../2016/03/'>March 2016</a>
+								</li>
+							</ul>
+						</div>
+					
+					</div>
+
+                </div>
+
+            </div>
+
+
+            <footer class="footer" role="contentinfo" itemscope itemtype="http://schema.org/WPFooter">
+
+                <div id="inner-footer" class="wrap cf">
+
+                    <p class="source-org copyright" style="text-align:center;">
+                        &copy; 2016 Apache Spot.
+                    </p>
+
+                </div>
+
+            </footer>
+
+        </div>
+		<a href="#0" class="cd-top">Top</a>
+        <script type='text/javascript' src='../../library/js/scripts.js'></script>
+
+    </body>
+
+</html>

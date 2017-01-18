@@ -1,0 +1,205 @@
+<!doctype html>
+
+<!--[if lt IE 7]><html lang="en-US" class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en-US" class="no-js">
+    <!--<![endif]-->
+
+    <head>
+        <meta charset="utf-8">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <title>Ingestion - Apache Spot</title>
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link rel="apple-touch-icon" href="../../library/images/apple-touch-icon.png">
+        <link rel="icon" href="../../favicon.png">
+        <!--[if IE]>
+        <link rel="shortcut icon" href="http://spot.incubator.apache.org/favicon.ico">
+        <![endif]-->
+        <meta name="msapplication-TileColor" content="#f01d4f">
+        <meta name="msapplication-TileImage" content="../../library/images/win8-tile-icon.png">
+        <meta name="theme-color" content="#121212">
+
+        <link rel='dns-prefetch' href='//fonts.googleapis.com' />
+        <link rel='dns-prefetch' href='//s.w.org' />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Feed" href="../../feed/" />
+
+        <link rel='stylesheet' id='googleFonts-css'  href='http://fonts.googleapis.com/css?family=Lato%3A400%2C700%2C400italic%2C700italic' type='text/css' media='all' />
+        <link rel='stylesheet' id='bones-stylesheet-css'  href='../../library/css/style.css' type='text/css' media='all' />
+        <!--[if lt IE 9]>
+        <link rel='stylesheet' id='bones-ie-only-css'  href='http://spot.incubator.apache.org/library/css/ie.css' type='text/css' media='all' />
+        <![endif]-->
+        <link rel='stylesheet' id='mm-css-css'  href='../../library/css/meanmenu.css' type='text/css' media='all' />
+        <script type='text/javascript' src='../../library/js/libs/modernizr.custom.min.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type='text/javascript' src='../../library/js/jquery-migrate.min.js'></script>
+        <script type='text/javascript' src='../../library/js/jquery.meanmenu.js'></script>
+
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		
+		  ga('create', 'UA-87470508-1', 'auto');
+		  ga('send', 'pageview');
+		
+		</script>
+    </head>
+
+    <body class="page">
+
+        <div id="container">
+			<div class="social-sidebar">
+				<a href="mailto:info@open-network-insight.org"><span class="icon-envelope"></span></a>
+				<a href="https://twitter.com/ApacheSpot" target="_blank"><span class="icon-twitter"></a>
+				<a href="http://slack.apache-spot.io/" target="_blank"><span class="icon-slack"></span></a>				
+			</div>
+            <header class="header">
+
+                <div id="inner-header" class="wrap cf">
+
+                    <p id="logo" class="h1" itemscope itemtype="http://schema.org/Organization">
+                        <a href="http://spot.incubator.apache.org/" rel="nofollow"><img src="../../library/images/logo.png" alt="Apache Spot" /></a>
+                    </p>
+
+                    <nav>
+                        <ul id="menu-main-menu" class="nav top-nav cf">
+                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
+                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
+                            </li>
+                            <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
+                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">Download</a>
+                            </li>
+                            <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
+                                <a href="../../contribute">Contribute</a>
+                            </li>
+                            <li id="menu-item-106" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-106">
+                                <a href="../../doc">Documentation</a>
+                            </li>
+                            <li class="menu-item menu-item-has-children active">
+                                <a href="#">Project Components</a>
+                                <ul class="sub-menu">
+                                	<li><a href="../../project-components/open-data-models">Open Data Models</a></li>
+                                	<li class="active"><a href="../../project-components/ingestion">Ingestion</a></li>
+                                	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                	<li><a href="../../project-components/visualization">Visualization</a></li>
+                                </ul>
+                            </li>
+                            <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13">
+                                <a href="../../blog">Blog</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </header>
+
+            <div id="mobile-nav"></div>
+
+			<!--
+            <div id="masthead">
+                <div class="wrap cf">
+                    <div class="m-all d-1of2 right-center">
+						<h1>Lorem ispum dolor sit amet, consectetur adipisicing elit</h1>
+                    </div>
+                </div>
+            </div>-->
+
+            
+            <div id="content">
+            	
+            	<div class="wrap cf"><!--if page has sidebar, add class "with-sidebar"-->
+            		<div class="main">
+            			<h1 class="page-title">Apache Spot Ingestion</h1>
+            			
+            			<p>Apache Spot overcomes the challenge of how to enhance data collection from different sources when most of the time our collectors are sending thousands of events per second overflowing available server resources (CPU, memory).  With Spot, you can ensure service availability near to 100% without losing data. Spot enables a faster, scalable and distributed service when required. Because of its distributed architecture, data loss does not occur when data queuing on the data node that is executing the collector daemon when peak workloads crashes the process.  This architecture ensures availability near 99.99999%, without losing information in the effort.</p>
+            			
+            			<p><img src="../../library/images/ingestion.png" alt="" /></p>
+            			
+            			<h3>Inside the Ingest</h3>
+            			
+            			<h4><em>Spot-Collectors</em></h4>
+            			
+            			<p>Daemons running in the background monitor/collect from file system paths. Collectors detect new files generated by network tools or data generated previously and left in the path for its collection. Collectors then translate this data into a human-readable format by using dissection tools, such as nfdump and tshark.</p>
+            			
+            			<p>Once the data is transformed, collectors store the data in HDFS with the original format (for forensics) and in Hive, in Avro-parquet format, so the data can be accessible by SQL queries.</p>
+            			<p>Once a file has been uploaded there two paths are available.</p>
+            			
+            			<ol>
+            				<li>Data size > 1mb: File name and location in HDFS is sent to Kafka.</li>
+            				<li>Data size < 1mb: the data event is sent to Kafka to be processed with Spark Streaming.</li>
+            			</ol>
+            			
+            			<h4><em>Kafka</em></h4>
+            			
+            			<p>A new topic is created for each instance of the ingest process. Partitions are defined by the number of Spot Workers in the ingest.  Kafka stores data sent by the collectors, so the Spot Workers can parse the data.</p>
+            			
+            			<h4><em>Spot Workers</em></h4>
+            			
+            			<p>Just like the collectors, Spot Workers are daemons running in the background subscribed to a specific Kafka topic and partition. The Spot Workers read, parse and store the data in a specific Hive tables that will be consumed by the machine learning algorithm later.</p>
+            			
+            			<p>Currently there are two types of Spot Workers.</p>
+            			
+            			<ol>
+            				<li>Python workers use multithreading to process data with the defined parsers.</li>
+            				<li>Spark-Streaming workers execute a Spark application to read data from Kafka, using spark-streaming context (micro batching).</li>
+            			</ol>          			
+            			
+            		</div>
+
+            	</div>
+            	
+            </div>
+
+
+            <div id="more-info">
+                <div class="wrap cf">
+                    <p class="social-icons">
+                        <a href="mailto:info@open-network-insight.org"><span class="icon-envelope"></span></a><a href="https://twitter.com/ApacheSpot" target="_blank"><span class="icon-twitter"></span><a href="http://slack.apache-spot.io/" target="_blank"><img src="../../library/images/add-to-slack.png" alt="" class="add-to-slack" /></a></a>
+                    </p>
+
+                    <p>
+                        <a href="https://github.com/apache/incubator-spot" class="y-btn" target="_blank">More Info</a>
+                    </p>
+
+                    <p style="margin-top:50px;"><img src="../../library/images/apache-incubator.png" alt="Apache Incubator" />
+                    </p>
+
+                    <p class="disclaimer">
+                        Apache Spot is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
+                    </p>
+
+                    <p class="disclaimer">
+                        The contents of this website are © 2016 Apache Software Foundation under the terms of the Apache License v2. Apache Spot and its logo are trademarks of the Apache Software Foundation.
+                    </p>
+                </div>
+            </div>
+
+            <footer class="footer" role="contentinfo" itemscope itemtype="http://schema.org/WPFooter">
+
+                <div id="inner-footer" class="wrap cf">
+
+                    <p class="source-org copyright" style="text-align:center;">
+                        &copy; 2016 Apache Spot.
+                    </p>
+
+                </div>
+
+            </footer>
+
+        </div>
+		<a href="#0" class="cd-top">Top</a>
+        <script type='text/javascript' src='../../library/js/scripts.js'></script>
+
+    </body>
+
+</html>
