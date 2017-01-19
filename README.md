@@ -56,7 +56,7 @@ For the full instructions visit the [spot](https://hub.docker.com/r/opennetworki
 
 ## **Getting Started**
 
-Apache Spot can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](https://github.com/Open-Network-Insight/open-network-insight/wiki).
+Apache Spot can be installed by following our installation manual. To get started, [check out the installation instructions in the documentation](http://spot.incubator.apache.org/doc/).
 
 ## **Documentation (Developer Guide)**
 
