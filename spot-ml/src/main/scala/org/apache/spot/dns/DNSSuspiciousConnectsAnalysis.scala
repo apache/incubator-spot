@@ -54,6 +54,8 @@ object DNSSuspiciousConnectsAnalysis {
 
     logger.info("Loading data")
 
+    val userDomain = config.userDomain
+
     val rawDataDF = sqlContext.read.parquet(config.inputPath)
       .filter(Timestamp + " is not null and " + UnixTimestamp + " is not null")
       .select(inColumns:_*)
@@ -64,7 +66,7 @@ object DNSSuspiciousConnectsAnalysis {
       DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, rawDataDF, config.topicCount)
 
     logger.info("Scoring")
-    val scoredDF = model.score(sparkContext, sqlContext, rawDataDF)
+    val scoredDF = model.score(sparkContext, sqlContext, rawDataDF, userDomain)
 
 
     val filteredDF = scoredDF.filter(Score + " <= " + config.threshold)

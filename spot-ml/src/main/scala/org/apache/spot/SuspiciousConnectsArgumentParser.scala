@@ -11,6 +11,7 @@ object SuspiciousConnectsArgumentParser {
                                       feedbackFile: String = "",
                                       duplicationFactor: Int = 1,
                                       topicCount: Int = 20,
+                                      userDomain: String = "",
                                       hdfsScoredConnect: String = "",
                                       threshold: Double = 1.0d,
                                       maxResults: Int = -1,
@@ -44,6 +45,10 @@ object SuspiciousConnectsArgumentParser {
     opt[String]("ldatopiccount").required().valueName("number of topics in topic model").
       action((x, c) => c.copy(topicCount = x.toInt)).
       text("topic count")
+
+    opt[String]("userdomain").valueName("<user domain>").
+      action((x, c) => c.copy(userDomain = x)).
+      text("Domain of spot user (example: intel)")
 
     opt[String]("scored").required().valueName("<hdfs path>").
       action((x, c) => c.copy(hdfsScoredConnect = x)).
