@@ -98,10 +98,9 @@ class Util(object):
 	
 	
 	@classmethod
-	def create_csv_file(cls,full_path_file,content,delimiter=',',set_quoting=3):  
-		#set_quoting: 0 - MINIMAL, 1 - ALL, 3 - NONE
+	def create_csv_file(cls,full_path_file,content,delimiter=','):   
 		with open(full_path_file, 'w+') as u_file:
-			writer = csv.writer(u_file, quoting=set_quoting, quotechar='"', delimiter=delimiter)
+			writer = csv.writer(u_file, quoting=csv.QUOTE_NONE, delimiter=delimiter)
 			writer.writerows(content)
 
 

@@ -143,31 +143,17 @@ class OA(object):
         dns_scores_csv = "{0}/dns_scores.csv".format(self._data_path)
         dns_scores_final =  self._move_time_stamp(self._dns_scores)
         dns_scores_final.insert(0,self._dns_scores_headers)
-        Util.create_csv_file(dns_scores_csv,dns_scores_final,',',0)   
+        Util.create_csv_file(dns_scores_csv,dns_scores_final)   
 
         # create bk file
         dns_scores_bu_csv = "{0}/dns_scores_bu.csv".format(self._data_path)
-        Util.create_csv_file(dns_scores_bu_csv,dns_scores_final,',',0)     
+        Util.create_csv_file(dns_scores_bu_csv,dns_scores_final)     
 
 
     def _add_tld_column(self):
-        qry_name_col = self._conf['dns_results_fields']['dns_qry_name']
-        self._dns_scores = [conn + [ self._get_valid_tld(str(conn[qry_name_col])) ] for conn in self._dns_scores ]
-         
+        qry_name_col = self._conf['dns_results_fields']['dns_qry_name'] 
+        self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ] 
   
-    def _get_valid_tld(self, qry_name):
-        tld = ""
-        try:
-            if "http://" not in qry_name: 
-                tld = get_tld("http://" + qry_name)
-            else:
-                tld = get_tld(qry_name)
-        except ValueError:
-            self._logger.error("Unable to get top level domain from query: {0}".format(qry_name))
-            tld = "UNKNOWN"
-        return tld
-    
-
     def _add_reputation(self):
 
         # read configuration.
