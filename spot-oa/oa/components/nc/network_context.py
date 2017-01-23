@@ -23,7 +23,8 @@ class NetworkContext(object):
 				csv_reader = csv.reader(nc_file)
 				csv_reader.next()
 				nc_rows = list(csv_reader)
-				self._nc_dict = dict([(x[0],x[1]) for x in nc_rows])
+				if len(nc_rows) > 0:
+					self._nc_dict = dict([(x[0], x[1]) if len(x) > 2 else ("-", "-") for x in nc_rows])
     
 	def get_nc(self, key):
 		if key in self._nc_dict:
