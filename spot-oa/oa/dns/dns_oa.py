@@ -297,18 +297,19 @@ class OA(object):
             else:
                 self._logger.info("WARNING: NO IANA configured.")
 
-            # create edge file.
-            self._logger.info("Creating edge file:{0}".format(edge_file))
-            with open(edge_file,'wb') as dns_details_edge:
-                writer = csv.writer(dns_details_edge, quoting=csv.QUOTE_ALL)
-                if update_rows:
-                    writer.writerows(update_rows)
-                else:            
-                    shutil.copy(edge_tmp,edge_file)           
-            
             try:
+                # create edge file.
+                self._logger.info("Creating edge file:{0}".format(edge_file))
+                with open(edge_file,'wb') as dns_details_edge:
+                    writer = csv.writer(dns_details_edge, quoting=csv.QUOTE_ALL)
+                    if update_rows:
+                        writer.writerows(update_rows)
+                    else:            
+                        shutil.copy(edge_tmp,edge_file)           
+                
                 os.remove(edge_tmp)
-            except OSError:
+            except OSError as e:
+                self._logger.info("Error while trying to read/write file: {0}".format(str(e))                
                 pass
            
 
