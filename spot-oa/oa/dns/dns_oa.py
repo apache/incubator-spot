@@ -277,28 +277,30 @@ class OA(object):
             dns_qry = ("SELECT frame_time,frame_len,ip_dst,ip_src,dns_qry_name,dns_qry_class,dns_qry_type,dns_qry_rcode,dns_a FROM {0}.{1} WHERE y={2} AND m={3} AND d={4} AND dns_qry_name LIKE '%{5}%' AND h={6} LIMIT {7};").format(self._db,self._table_name,year,month,day,dns_qry_name,hh,limit)
             
             # execute query
-            self._engine.query(dns_qry,edge_tmp)
- 
-            # add IANA to results.
-            if dns_iana:
-                update_rows = []
-                self._logger.info("Adding IANA translation to details results")
-                with open(edge_tmp) as dns_details_csv:
-                    rows = csv.reader(dns_details_csv, delimiter=',', quotechar='|')
-                    try:
-                        next(rows)
-                        update_rows = [[conn[0]] + [conn[1]] + [conn[2]] + [conn[3]] + [conn[4]] + [dns_iana.get_name(conn[5],"dns_qry_class")] + [dns_iana.get_name(conn[6],"dns_qry_type")] + [dns_iana.get_name(conn[7],"dns_qry_rcode")] + [conn[8]] for conn in rows]
-                        update_rows = filter(None, update_rows)
-                        header = [ "frame_time", "frame_len", "ip_dst","ip_src","dns_qry_name","dns_qry_class_name","dns_qry_type_name","dns_qry_rcode_name","dns_a" ]
-                        update_rows.insert(0,header)
-                    except IndexError:
-                        pass
-
+	    try:
+                self._engine.query(dns_qry,edge_tmp)
+            except:
+		self._logger.error("ERROR. Edge file couldn't be created for {0}, skipping this step".format(dns_qry_name))
             else:
-                self._logger.info("WARNING: NO IANA configured.")
+            # add IANA to results.
+                if dns_iana:
+                    update_rows = []
+                    self._logger.info("Adding IANA translation to details results")
+                    with open(edge_tmp) as dns_details_csv:
+                        rows = csv.reader(dns_details_csv, delimiter=',', quotechar='|')
+                        try:
+                            next(rows)
+                            update_rows = [[conn[0]] + [conn[1]] + [conn[2]] + [conn[3]] + [conn[4]] + [dns_iana.get_name(conn[5],"dns_qry_class")] + [dns_iana.get_name(conn[6],"dns_qry_type")] + [dns_iana.get_name(conn[7],"dns_qry_rcode")] + [conn[8]] for conn in rows]
+                            update_rows = filter(None, update_rows)
+                            header = [ "frame_time", "frame_len", "ip_dst","ip_src","dns_qry_name","dns_qry_class_name","dns_qry_type_name","dns_qry_rcode_name","dns_a" ]
+                            update_rows.insert(0,header)
+                        except IndexError:
+                            pass
 
-            try:
-                # create edge file.
+                else:
+                    self._logger.info("WARNING: NO IANA configured.")
+
+                    # create edge file.
                 self._logger.info("Creating edge file:{0}".format(edge_file))
                 with open(edge_file,'wb') as dns_details_edge:
                     writer = csv.writer(dns_details_edge, quoting=csv.QUOTE_ALL)
@@ -308,10 +310,7 @@ class OA(object):
                         shutil.copy(edge_tmp,edge_file)           
                 
                 os.remove(edge_tmp)
-            except OSError as e:
-                self._logger.info("Error while trying to read/write file: {0}".format(str(e))                
-                pass
-           
+
 
     def _get_dns_dendrogram(self):
         limit = self._details_limit
