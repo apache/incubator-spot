@@ -6,7 +6,7 @@ This document is intended for any developer or sysadmin in learning the technica
 
 ## Getting Started
 
-This information will help you to get started on contributing to the Apache Spot Setup repository. For information about installing and running Apache Spot go to our [Installation Guide](https://github.com/Open-Network-Insight/open-network-insight/wiki/Installation%20&%20Configuration%20Guides).
+This information will help you to get started on contributing to the Apache Spot Setup repository. For information about installing and running Apache Spot go to our [Installation Guide](http://spot.apache.org/doc/).
 
 Spot-setup contains the scripts to setup HDFS for Apache Spot solution. It will create the folder and database structure needed to run Apache Spot on HDFS and HIVE respectively. Spot-setup is a component of Apache Spot and is executed in the initial configuration after Linux user creation and before Ingest installation.
 
