@@ -1,0 +1,122 @@
+#!/bin/bash
+
+nfdump_vers=1.1
+wshark_vers=2.2.3
+local_path=`pwd`
+source_path=${local_path}/src
+dependencies=(tar wget screen python)
+missing_dep=()
+wget_cmd="wget -nc --no-check-certificate"
+untar_cmd="tar -xvf -k"
+host_os=""
+
+if [ ! -d ${source_path} ]; then
+    mkdir ${source_path}
+fi
+
+# functions
+
+log_cmd () {
+
+    echo ""
+    echo "****SPOT.INGEST.Install.sh****"
+    date +"%y-%m-%d %H:%M:%S"
+    echo "$1"
+    echo ""
+}
+
+check_pkg () {
+    for item in "$@"; do 
+     	if type ${item} >/dev/null 2>&1; then
+            log_cmd "${item} found"
+        else
+            missing_dep+=(${item})
+        fi
+    done
+}
+
+install_pkg () {
+    if [[ "${missing_dep[@]}" ]]; then
+        log_cmd "installing ${missing_dep[@]}"
+        ${install_cmd} ${missing_dep[@]}
+	unset missing_dep[*]
+    fi
+}
+
+install_tshark () {
+    if [ "${host_os}" == "debian" ]; then
+        log_cmd "installing dependencies for tshark installation"
+        check_pkg make bzip2 pkg-config libpcap-dev heimdal-dev libc-ares-dev libsmi flex bison byacc
+        install_pkg
+    elif [ "${host_os}" == "rhel" ]; then
+        check_pkg make bzip2 gcc bison glib2-devel flex-devel libsmi-devel libpcap-devel
+	install_pkg
+    fi
+    ${wget_cmd} https://1.na.dl.wireshark.org/src/wireshark-${wshark_vers}.tar.bz2 -P ${source_path}/
+    ${untar_cmd} ${source_path}/wireshark-${wshark_vers}.tar.bz2 -C ${source_path}/
+    cd ${source_path}/wireshark-${wshark_vers}
+    log_cmd "compiling tshark"
+    ./configure --enable-wireshark=no
+    make
+    make install
+    cd ..
+
+    log_cmd "tshark build complete"
+    tshark -v
+}
+
+install_nfdump () {
+    log_cmd "installing spot-nfdump"
+    ${wget_cmd} https://github.com/Open-Network-Insight/spot-nfdump/archive/${nfdump_vers}.tar.gz -P ${source_path}/
+    ${untar_cmd} ${source_path}/${nfdump_vers}.tar.gz -C ${source_path}/
+    cd ${source_path}/spot-nfdump-*/
+    source ./install_nfdump.sh
+    cd ${local_path}
+}
+
+# detect distribution
+# to add other distribution simply create a test case with installation commands
+
+if [ -f /etc/redhat-release ]; then
+    install_cmd="yum -y install"
+    log_cmd "installation command: $install_cmd"
+    host_os="rhel"
+elif [ -f /etc/debian_version ]; then
+    install_cmd="apt-get install -yq"
+    log_cmd "installation command: $install_cmd"
+    host_os="debian"
+    apt-get update
+fi
+
+# check dependencies
+check_pkg ${dependencies[@]}
+install_pkg
+
+if type tshark >/dev/null 2>&1; then
+        log_cmd "tshark found"
+    else
+        log_cmd "tshark missing"
+        install_tshark
+fi
+
+if type nfdump >/dev/null 2>&1; then
+    echo "nfdump found"
+else
+    log_cmd "missing nfdump"
+    install_nfdump
+fi
+
+if type pip >/dev/null 2>&1; then
+    echo "pip found"
+else
+    log_cmd "missing pip"
+    ${wget_cmd} https://bootstrap.pypa.io/get-pip.py -P ${source_path}/
+    python ${source_path}/get-pip.py
+    log_cmd "pip installed"
+fi
+
+if [ -z ${local_path}/requirements.txt ]; then
+    pip install -r requirements.txt
+fi
+
+log_cmd "spot-ingest dependencies installed"
