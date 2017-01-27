@@ -3,11 +3,12 @@
 nfdump_vers=1.1
 wshark_vers=2.2.3
 local_path=`pwd`
-source_path=${local_path}/src
+source_path=/tmp/ingest_src
+install_path=/opt/spot/bin
 dependencies=(tar wget screen python)
 missing_dep=()
 wget_cmd="wget -nc --no-check-certificate"
-untar_cmd="tar -xvf -k"
+untar_cmd="tar -xvf"
 host_os=""
 
 if [ ! -d ${source_path} ]; then
@@ -18,14 +19,19 @@ fi
 
 log_cmd () {
 
-    echo ""
-    echo "****SPOT.INGEST.Install.sh****"
+    printf "\n****SPOT.INGEST.Install.sh****\n"
     date +"%y-%m-%d %H:%M:%S"
-    echo "$1"
-    echo ""
+    printf "$1\n\n"
 }
 
-check_pkg () {
+cleanup () {
+    log_cmd "executing cleanup"
+    rm -rf ${source_path}
+}
+
+check_bin () {
+	# check_bin can be used to verify if a certain binary is already installed
+
     for item in "$@"; do 
      	if type ${item} >/dev/null 2>&1; then
             log_cmd "${item} found"
@@ -36,6 +42,15 @@ check_pkg () {
 }
 
 install_pkg () {
+	# if no parameters this will simply installany $missing_deps
+	# if any parameters provided they will be added $missing_dep
+
+    if [[ "$@" ]]; then
+        for item in "$@"; do
+	    missing_dep+=(${item})
+        done
+    fi
+
     if [[ "${missing_dep[@]}" ]]; then
         log_cmd "installing ${missing_dep[@]}"
         ${install_cmd} ${missing_dep[@]}
@@ -46,17 +61,18 @@ install_pkg () {
 install_tshark () {
     if [ "${host_os}" == "debian" ]; then
         log_cmd "installing dependencies for tshark installation"
-        check_pkg make bzip2 pkg-config libpcap-dev heimdal-dev libc-ares-dev libsmi flex bison byacc
-        install_pkg
+        check_bin make bzip2 pkg-config libsmi flex bison byacc
+        install_pkg libpcap-dev heimdal-dev libc-ares-dev 
     elif [ "${host_os}" == "rhel" ]; then
-        check_pkg make bzip2 gcc bison glib2-devel flex-devel libsmi-devel libpcap-devel
-	install_pkg
+        check_bin make bzip2 gcc bison
+        install_pkg glib2-devel flex-devel libsmi-devel libpcap-devel
     fi
+
     ${wget_cmd} https://1.na.dl.wireshark.org/src/wireshark-${wshark_vers}.tar.bz2 -P ${source_path}/
     ${untar_cmd} ${source_path}/wireshark-${wshark_vers}.tar.bz2 -C ${source_path}/
     cd ${source_path}/wireshark-${wshark_vers}
     log_cmd "compiling tshark"
-    ./configure --enable-wireshark=no
+    ./configure --prefix=${install_path} --enable-wireshark=no
     make
     make install
     cd ..
@@ -89,7 +105,7 @@ elif [ -f /etc/debian_version ]; then
 fi
 
 # check dependencies
-check_pkg ${dependencies[@]}
+check_bin ${dependencies[@]}
 install_pkg
 
 if type tshark >/dev/null 2>&1; then
@@ -120,3 +136,4 @@ if [ -z ${local_path}/requirements.txt ]; then
 fi
 
 log_cmd "spot-ingest dependencies installed"
+cleanup
