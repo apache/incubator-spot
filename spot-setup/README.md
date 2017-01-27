@@ -20,6 +20,12 @@ To collaborate and run spot-setup, it is required the following prerequisites:
 
 The main script in the repository is **hdfs_setup.sh** which is responsible of loading environment variables, creating folders in Hadoop for the different use cases (flow, DNS or Proxy), create the Hive database, and finally execute hive query scripts that creates Hive tables needed to access netflow, dns and proxy data.
 
+**local_setup.sh** will add some default directories such as /opt/spot/ for installing known dependencies, when running `local_setup.sh` you should do so with root access or via `sudo`
+The first parameter will be the default user who owns /opt/spot.
+Example: `sudo local_setup.sh [USER]`
+
+a. [USER] will be the default user for the spot installation
+
 ## Environment Variables
 
 **spot.conf** is the file storing the variables needed during the installation process including node assignment, User interface, Machine Learning and Ingest gateway nodes.
@@ -27,6 +33,10 @@ The main script in the repository is **hdfs_setup.sh** which is responsible of l
 This file also contains sources desired to be installed as part of Apache Spot, general paths for HDFS folders, Kerberos information and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
 
 To read more about these variables, please review the [wiki] (https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration).
+
+## Quick Start
+
+1. run local_setup.sh with sudo providing the default user as the first parameter `sudo local_setup.sh $USER` 
 
 ## Database Query Scripts
 
