@@ -19,7 +19,7 @@ package org.apache.spot.lda
 
 import org.apache.log4j.Logger
 import org.apache.spark.SparkContext
-import org.apache.spark.mllib.clustering.{DistributedLDAModel, EMLDAOptimizer, LDA}
+import org.apache.spark.mllib.clustering.{DistributedLDAModel, EMLDAOptimizer, LDA, OnlineLDAOptimizer}
 import org.apache.spark.mllib.linalg.{Matrix, Vector, Vectors}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
@@ -48,6 +48,7 @@ object SpotLDAWrapper {
              ldaSeed: Option[Long],
              ldaAlpha: Double,
              ldaBeta: Double,
+             ldaOptimizer: String,
              maxIterations: Int,
              precisionUtility: FloatPointPrecisionUtility): SpotLDAOutput = {
 
@@ -84,7 +85,12 @@ object SpotLDAWrapper {
     docWordCountCache.unpersist()
 
     //Instantiate optimizer based on input
-    val optimizer = new EMLDAOptimizer
+    val optimizer = ldaOptimizer match {
+      case "em" => new EMLDAOptimizer
+      case "online" => new OnlineLDAOptimizer
+      case _ => throw new IllegalArgumentException(
+        s"Invalid LDA optimizer $ldaOptimizer")
+    }
 
     logger.info(s"Running Spark LDA with params alpha = $ldaAlpha beta = $ldaBeta " +
       s"Max iterations = $maxIterations Optimizer = em")
@@ -103,7 +109,6 @@ object SpotLDAWrapper {
     if (ldaSeed.nonEmpty) {
       lda.setSeed(ldaSeed.get)
     }
-
 
     //Create LDA model
     val ldaModel = lda.run(ldaCorpus)

@@ -21,6 +21,7 @@
 
 DSOURCE=$1
 RAWDATA_PATH=$2
+LDAOPTIMIZER="online"
 
 # read in variables (except for date) from etc/.conf file
 
@@ -81,4 +82,5 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --maxresults ${MAXRESULTS} \
   --ldamaxiterations 20 \
   --precision ${PRECISION} \
+  --ldaoptimizer ${LDAOPTIMIZER} \
   $USER_DOMAIN_CMD

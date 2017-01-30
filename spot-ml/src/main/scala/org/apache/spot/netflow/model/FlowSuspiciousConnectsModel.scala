@@ -176,7 +176,8 @@ object FlowSuspiciousConnectsModel {
         .map({ case ((ip, word), count) => SpotLDAInput(ip, word, count) })
 
 
-    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
+    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) =
+    SpotLDAWrapper.runLDA(sparkContext,
       sqlContext,
       ipWordCounts,
       config.topicCount,
@@ -184,10 +185,11 @@ object FlowSuspiciousConnectsModel {
       config.ldaPRGSeed,
       config.ldaAlpha,
       config.ldaBeta,
+      config.ldaOptimizer,
       config.ldaMaxiterations,
       config.precisionUtility)
 
-    new FlowSuspiciousConnectsModel(config.topicCount,
+    new FlowSuspiciousConnectsModel(topicCount,
       ipToTopicMix,
       wordToPerTopicProb)
   }
