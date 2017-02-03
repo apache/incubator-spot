@@ -28,9 +28,6 @@ object FlowSuspiciousConnectsAnalysis {
 
     val scoredFlowRecords = detectFlowAnomalies(cleanFlowRecords, config, sparkContext, sqlContext, logger)
 
-    val corruptFlowRecords = filterAndSelectCorruptFlowRecords(scoredFlowRecords)
-    dataValidation.showAndSaveCorruptRecords(corruptFlowRecords, config.hdfsScoredConnect, logger)
-
     val filteredFlowRecords = filterScoredFlowRecords(scoredFlowRecords, config.threshold)
 
     val orderedFlowRecords = filteredFlowRecords.orderBy(Score)
