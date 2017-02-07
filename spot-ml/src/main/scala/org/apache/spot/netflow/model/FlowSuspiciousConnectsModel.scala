@@ -202,6 +202,7 @@ object FlowSuspiciousConnectsModel {
     dataWithWords.cache()
     dataWithWords.count
 
+    // Save corrupt records, those records that failed to create the words
     val corruptRecords = dataWithWords
       .filter(dataWithWords(SourceWord) === InvalidDataHandler.WordError ||
         dataWithWords(DestinationWord) === InvalidDataHandler.WordError)
