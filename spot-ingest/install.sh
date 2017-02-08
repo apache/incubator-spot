@@ -11,10 +11,6 @@ wget_cmd="wget -nc --no-check-certificate"
 untar_cmd="tar -xvf"
 host_os=""
 
-if [ ! -d ${source_path} ]; then
-    mkdir ${source_path}
-fi
-
 # functions
 
 log_cmd () {
@@ -22,6 +18,14 @@ log_cmd () {
     printf "\n****SPOT.INGEST.Install.sh****\n"
     date +"%y-%m-%d %H:%M:%S"
     printf "$1\n\n"
+}
+
+check_root () {
+    # checking for root as many of these functions interact with system owned directories
+    if [[ "$EUID" -ne 0 ]]; then
+            log_cmd "Non root user detected, Please run as root or with sudo"
+            exit 1
+    fi
 }
 
 cleanup () {
@@ -42,8 +46,8 @@ check_bin () {
 }
 
 install_pkg () {
-	# if no parameters this will simply installany $missing_deps
-	# if any parameters provided they will be added $missing_dep
+	# if no parameters this will simply install any $missing_deps
+	# if any parameters provided they will be added to $missing_dep
 
     if [[ "$@" ]]; then
         for item in "$@"; do
@@ -86,12 +90,15 @@ install_nfdump () {
     ${wget_cmd} https://github.com/Open-Network-Insight/spot-nfdump/archive/${nfdump_vers}.tar.gz -P ${source_path}/
     ${untar_cmd} ${source_path}/${nfdump_vers}.tar.gz -C ${source_path}/
     cd ${source_path}/spot-nfdump-*/
-    source ./install_nfdump.sh
+    source ./install_nfdump.sh ${install_path}
     cd ${local_path}
 }
+# end functions
+
+check_root
 
 # detect distribution
-# to add other distribution simply create a test case with installation commands
+# to add other distributions simply create a test case with installation commands
 
 if [ -f /etc/redhat-release ]; then
     install_cmd="yum -y install"
@@ -104,7 +111,12 @@ elif [ -f /etc/debian_version ]; then
     apt-get update
 fi
 
-# check dependencies
+if [ ! -d ${source_path} ]; then
+    log_cmd "${source_path} not created, Please run spot-setup/local_setup.sh first"
+    exit 1    
+fi
+
+# check basic dependencies
 check_bin ${dependencies[@]}
 install_pkg
 
@@ -116,14 +128,14 @@ if type tshark >/dev/null 2>&1; then
 fi
 
 if type nfdump >/dev/null 2>&1; then
-    echo "nfdump found"
+    log_cmd "nfdump found"
 else
     log_cmd "missing nfdump"
     install_nfdump
 fi
 
 if type pip >/dev/null 2>&1; then
-    echo "pip found"
+    log_cmd "pip found"
 else
     log_cmd "missing pip"
     ${wget_cmd} https://bootstrap.pypa.io/get-pip.py -P ${source_path}/
