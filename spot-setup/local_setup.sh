@@ -19,7 +19,7 @@ log_cmd () {
 
 }
 
-check_dir () {
+create_dir () {
     if [[ -d "${1}" ]]; then
             log_cmd "${1} already exists"
     else
@@ -28,23 +28,17 @@ check_dir () {
     fi
 }
 
-# check for root
+check_root () {
+# checking for root as many of these functions interact with system owned directories
 if [[ "$EUID" -ne 0 ]]; then
 
-        log_cmd "Non root user detected, exiting now"
+        log_cmd "Non root user detected, Please run as root or with sudo"
         exit 1
 
 fi
+}
 
-# make spot directories
-check_dir ${spot_dir}
-check_dir ${spot_bin}
-
-# set permissions
-log_cmd "Setting permissions on ${spot_dir}"
-chown -R ${spot_user}:${spot_user} ${spot_dir}
-chmod 0755 ${spot_bin}
-
+set_env () {
 # add directory to env
 if [[ -f "${spot_env_file}" ]]; then
         log_cmd "${spot_env_file} already exists"
@@ -52,5 +46,14 @@ else
         log_cmd "Creating ${spot_env_file}"
         echo ${spot_env} >> ${spot_env_file}
 fi
+}
+
+check_root
+
+# make spot directories
+create_dir ${spot_dir}
+create_dir ${spot_bin}
+
+set_env
 
 log_cmd "Spot local setup complete"
