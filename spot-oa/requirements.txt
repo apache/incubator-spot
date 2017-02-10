@@ -1,0 +1,11 @@
+# spot-oa dependencies
+numpy
+pandas
+Tld == 0.7.6
+
+# spot-ui dependencies
+jsonschema
+ipython == 3.2.0
+pyzmq
+jinja2
+tornado
