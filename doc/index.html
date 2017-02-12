@@ -143,7 +143,7 @@
 			
 			                This approach is recommended for customers with a dedicated cluster for use of the solution or a security data lake; it takes advantage of existing investment in hardware and software. The disadvantage of this approach is that it does require the installation of software on Hadoop nodes not managed by systems like Cloudera Manager.<br><br>
 			            </p>
-			            <img src="images/pure_hadoop.bmp" width="95%"><br><br>
+			            <img src="images/pure_hadoop.png" width="95%"><br><br>
 			
 			            <p>
 			                In the Pure Hadoop deployment scenario, the ingest component runs on an edge node, which is an expected use of this role. It is required to install some non-Hadoop software to make ingest component work. The Operational Analytics runs on a node intended for browser-based management and user applications, so that all user interfaces are located on a node or nodes with the same role. The Machine Learning (ML) component is installed on worker nodes, as the resource management for an ML pipeline is similar for functions inside and outside Hadoop.<br><br>
@@ -155,7 +155,7 @@
 			            <p>
 			                On existing Hadoop installations, a different approach involves using additional virtual machines and interacting with Hadoop components (Spark, HDFS) through a gateway node. This approach is recommended for customers with a Hadoop environment hosting heterogeneous use cases, where minimal deviation from node roles is desired. The disadvantage is that virtual machines must be sized properly according to workloads.<br><br>
 			            </p>
-			            <img src="images/hybrid_hadoop.bmp" width="95%"><br><br>
+			            <img src="images/hybrid_hadoop.png" width="95%"><br><br>
 			
 			            <p>
 			                In addition to the services deployed on the existing cluster, additional Virtual Machines (VMs) are required to host the non-Hadoop functions of the solution. The gateway service is required for some of these VMs to allow for interaction with Spark, Hive, and HDFS.<br><br>
