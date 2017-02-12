@@ -245,7 +245,7 @@
 			                <h3>3.3 Edit apache spot (incubating) configuration.</h3>
 			                Go to apache spot (incubating) configuration module to edit the solution configuration:<br><br>
 			                <p class="terminal">
-			                    cd /home/solution_user/incubator-spot/spot-setup<br>
+			                    cd /home/solution-user/incubator-spot/spot-setup<br>
 			                    vi spot.conf
 			                </p><br>
 			                
@@ -423,7 +423,7 @@
 			
 			                Copy the configuration to the two nodes named as UINODE and MLNODE.<br>
 			                <p class="terminal">
-			                    sudo scp spot.conf solution_user@node:/etc/.
+			                    sudo scp spot.conf solution-user@node:/etc/.
 			                </p><br>
 			
 			                Run the hdfs_setup.sh script to create folders in Hadoop for the different use cases (flow, DNS or Proxy), create the Hive database, and finally execute hive query scripts that creates Hive tables needed to access netflow, DNS and proxy data.
@@ -534,9 +534,9 @@
 			                <h3>5.1 ML code.</h3>
 			                Copy ML code to the primary ML node, the node will launch Spark application.
 			                <p class="terminal">
-			                    scp -r spot-ml "ml-node":/home/"solution-user"/. ssh "ml-node"
+			                    scp -r spot-ml "ml-node":/home/solution-user/. ssh "ml-node"
 			                    mv spot-ml ml
-			                    cd /home/"solution-user"/ml
+			                    cd /home/solution-user/ml
 			                </p><br>
 			
 			                <h3>5.1 ML dependencies</h3>
@@ -566,9 +566,9 @@
 			
 			                Copy spot-oa code to the OA node designed in the configuration file (UINODE).
 			                <p class="terminal">
-			                    scp -r spot-oa "ml-node":/home/"solution-user"/. <br>
+			                    scp -r spot-oa "ml-node":/home/solution-user/. <br>
 			                    ssh "oa-node"<br>
-			                    cd /home/"solution-user"/spot-oa    
+			                    cd /home/solution-user/spot-oa    
 			                </p><br>
 			
 			                <h2>6.2 OA prerequisites.</h2>
