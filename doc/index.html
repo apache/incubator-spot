@@ -483,10 +483,12 @@
 			                        <a href="https://www.wireshark.org/download.html"> Wireshark page</a><br>
 			                        Full instructions for compiling Wireshark can be found <a href="https://www.wireshark.org/docs/wsug_html_chunked/ChBuildInstallUnixBuild.html">here</a> instructions for compiling<br>
 			                        <p class="terminal">
-			                            sudo yum -y install gtk2-devel gtk+-devel bison qt-devel qt5-qtbase-devel sudo yum -y groupinstall "Development Tools"<br>
+			                            sudo yum -y install gtk2-devel gtk+-devel bison qt-devel qt5-qtbase-devel<br>
+                                        sudo yum -y groupinstall "Development Tools"<br>
 			                            sudo yum -y install libpcap-devel<br>
 			                            #compile Wireshark<br>
-			                            wget https://1.na.dl.wireshark.org/src/wireshark-2.2.3.tar.bz2 tar xvf wireshark-2.0.1.tar.bz2<br>
+			                            wget https://1.na.dl.wireshark.org/src/wireshark-2.2.3.tar.bz2<br>
+                                        tar xvf wireshark-2.0.1.tar.bz2<br>
 			                            cd wireshark-2.0.1<br>
 			                            ./configure --with-gtk2 --disable-wireshark<br>
 			                            make<br>
@@ -534,7 +536,8 @@
 			                <h3>5.1 ML code.</h3>
 			                Copy ML code to the primary ML node, the node will launch Spark application.
 			                <p class="terminal">
-			                    scp -r spot-ml "ml-node":/home/solution-user/ ssh "ml-node"
+			                    scp -r spot-ml "ml-node":/home/solution-user/<br>
+                                ssh "ml-node"
 			                    mv spot-ml ml
 			                    cd /home/solution-user/ml
 			                </p><br>
