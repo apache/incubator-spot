@@ -171,7 +171,7 @@
 			                    This installation guide assumes that a cluster with HDFS is running CDH.<br>
 			                    <h2>1. CDH (Cloudera Distribution of Hadoop) Requirements:</h2>
 			                    <b>Minimum required version:</b> 5.4<br>
-			                    <b>NOTE:</b> Spot requires spark 1.6, if you are using CDH < 5.7 please upgrade your spark version to 1.6.
+			                    <b>NOTE:</b> Spot requires spark 1.6, if you are using CDH &lt; 5.7 please upgrade your spark version to 1.6.
 			                    <h3>Required Hadoop Services before install apache spot (incubating):</h3>
 			                    <ol>                
 			                        <li>HDFS.</li>
@@ -616,9 +616,9 @@
 			                        You need to update the engine.json file accordingly:
 			                        <p class="terminal">
 			                            {
-			                                "oa_data_engine":"<database engine>",
+			                                "oa_data_engine":"&lt;database engine&gt;",
 			                                "impala":{
-			                                    "impala_daemon":"<node>"
+			                                    "impala_daemon":"&lt;node&gt;"
 			                                },
 			                                "hive":{}
 			                            }
@@ -817,7 +817,7 @@
 			                                <li>count of connections</li>
 			                            </ul>
 			
-			                            The full output of this query is stored into the ir-<ip>.csv file. If an expanded search was previously executed on this IP, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used.<br><br>
+			                            The full output of this query is stored into the ir-&lt;ip&gt;.csv file. If an expanded search was previously executed on this IP, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used.<br><br>
 			
 			                            Based on the results in this file, the following functions will be executed:<br><br>
 			                            
@@ -868,20 +868,20 @@
 			
 			                            <b>generate_attack_map_file()</b> - create a globe map indicating the trajectory of the connections based on their geolocation. 
 			                            This function depends on having geolocation data for each IP. If you haven't set up a geolocation database file, the map file won't be generated.<br>
-			                            <b>Output:</b> globe_<ip>.json<br><br>
+			                            <b>Output:</b> globe_&lt;ip&gt;.json<br><br>
 			
 			                            <b>generate_stats()</b> - This will create the horizontal bar graph for the Impact Analysis. 
 			                            This will represent the number of inbound, outbound and twoway connections found.<br>
-			                            <b>Output:</b> stats-<ip>.json<br><br>
+			                            <b>Output:</b> stats-&lt;ip&gt;.json<br><br>
 			
 			                            <b>generate_dendro()</b> - This function creates a file linking all different IP's that have connected to the IP under investigation, 
 			                            this will be displayed in the Storyboard under the Incident Progression panel as a dendrogram.
 			                            If no network context file is included, the dendrogram will only be 1 level deep, but if a network context file is included, 
 			                            additional levels will be added to the dendrogram to break down the threat activity.<br>
-			                            <b>Output:</b> dendro-<ip>.json<br><br>
+			                            <b>Output:</b> dendro-&lt;ip&gt;.json<br><br>
 			
 			                             <b>details_inbound()</b> - This function executes a query to the flow table, to find additional details on the IP under investigation and its connections grouping them by time; so the result will be a graph showing the number of connections occurring in a customizable timeframe.<br>
-			                            <b>Output:</b> sbdet-<ip>.tsv<br><br>
+			                            <b>Output:</b> sbdet-&lt;ip&gt;.tsv<br><br>
 			
 			                            <b>add_threat()</b> - This function updates/creates the threats.csv file, appending a new line for every threat analyzed. 
 			                            This file will serve as an index for the Storyboard and is displayed in the 'Executive Threat Briefing' panel.<br>
@@ -903,12 +903,12 @@
 			                                <b>Output files</b>
 			                                <ul>
 			
-			                                    <li>/oni-oa/data/flow/<date>/threats.csv</li>
-			                                    <li>/oni-oa/data/flow/<date>/threat_<ip>.csv</li>
-			                                    <li>/oni-oa/data/flow/<date>/sbdet-<ip>.tsv</li> 
-			                                    <li>/oni-oa/data/flow/<date>/globe_<ip>.json</li>  
-			                                    <li>/oni-oa/data/flow/<date>/stats-<ip>.json</li>  
-			                                    <li>/oni-oa/data/flow/<date>/dendro-<ip>.json</li>
+			                                    <li>/oni-oa/data/flow/&lt;date&gt;/threats.csv</li>
+			                                    <li>/oni-oa/data/flow/&lt;date&gt;/threat_&lt;ip&gt;.csv</li>
+			                                    <li>/oni-oa/data/flow/&lt;date&gt;/sbdet-&lt;ip&gt;.tsv</li> 
+			                                    <li>/oni-oa/data/flow/&lt;date&gt;/globe_&lt;ip&gt;.json</li>  
+			                                    <li>/oni-oa/data/flow/&lt;date&gt;/stats-&lt;ip&gt;.json</li>  
+			                                    <li>/oni-oa/data/flow/&lt;date&gt;/dendro-&lt;ip&gt;.json</li>
 			                                </ul>  
 			                            </p>
 			                           
@@ -940,7 +940,7 @@
 			                            Clicking on a threat from the list will also update the additional frames.<br><br>
 			
 			                            <b>Incident Progression</b><br>
-			                            <b>Data source file:</b> dendro-<ip>.json<br>
+			                            <b>Data source file:</b> dendro-&lt;ip&gt;.json<br>
 			                            Frame located in the top right of the Storyboard Web page<br><br>
 			                            <img src="images/flow_sb_3.JPG"><br><br>
 			
@@ -948,7 +948,7 @@
 			                            When network context is available, this graph will present an extra level to break down each type of connection into detailed context.<br><br>
 			
 			                            <b>Impact Analysis</b>
-			                            <b>Data source file:</b> stats-<ip>.json<br><br>
+			                            <b>Data source file:</b> stats-&lt;ip&gt;.json<br><br>
 			                            <img src="images/flow_sb_4.JPG" style="width: 50%"><br><br>
 			
 			
@@ -956,7 +956,7 @@
 			                            Clicking any bar in the graph, will break down that information into its context.<br><br>
 			
 			                            <b>Map View | Globe</b><br>
-			                            <b>Data source file:</b> globe_<ip>.json<br><br>
+			                            <b>Data source file:</b> globe_&lt;ip&gt;.json<br><br>
 			                            <img src="images/flow_sb_5.JPG" style="width: 50%"><br><br>
 			
 			                            Map View Globe will only be created if you have a geolocation database. 
@@ -964,7 +964,7 @@
 			                            using the geolocation data of each IP to print lines on the map showing the flow of the data.<br><br>
 			
 			                            <b>Timeline</b><br>
-			                            <b>Data source file:</b> sbdet-<ip>.json<br><br>
+			                            <b>Data source file:</b> sbdet-&lt;ip&gt;.json<br><br>
 			                            <img src="images/flow_sb_6.JPG" style="width: 50%"><br><br>
 			
 			                            Timeline is created using the resulting connections found during the Threat Investigation process. 
@@ -1016,7 +1016,7 @@
 			                            <img src="images/1.1_dns_sc01.jpg"><br><br>
 			                        </li>
 			                        <li>
-			                            <b>The Suspicious <frame:></frame:></b>
+			                            <b>The Suspicious &lt;frame:&gt;&lt;/frame:&gt;</b>
 			                            <p>
 			                                Located at the top left of the Web page, this frame shows the top 250 suspicious DNS from the Machine Learning (ML) output.<br><br>
 			                                <ol>
@@ -1111,7 +1111,7 @@
 			                    they will be sorted by the quantity of connections made to each specific Domain Name.<br><br>
 			                    <img src="images/1.1_dns_ti04.jpg" style="width: 50%;"><br><br>
 			
-			                    The full output of this query is stored into the threat-dendro-<threat>.csv file, from which the top 'n' results will be extracted and displayed in a table. If an expanded search was previously executed on this IP or Domain, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used, so please monitor the notebooks status icon for completion. The quantity of results displayed on screen can be set by modifying the top_results variable.<br><br>
+			                    The full output of this query is stored into the threat-dendro-&lt;threat&gt;.csv file, from which the top 'n' results will be extracted and displayed in a table. If an expanded search was previously executed on this IP or Domain, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used, so please monitor the notebooks status icon for completion. The quantity of results displayed on screen can be set by modifying the top_results variable.<br><br>
 			
 			                    <b>Save comments.</b><br>
 			                    In addition, a web form is displayed under the title of 'Threat summary', 
@@ -1127,13 +1127,13 @@
 			
 			                    <b>Input files</b><br>
 			                    <ul>
-			                        <li>ipython/dns/user/<date>/dns_scores.css</li>
+			                        <li>ipython/dns/user/&lt;date&gt;/dns_scores.css</li>
 			                    </ul>
 			                    
 			                    <b>Output files</b>
 			                    <ul>
-			                        <li>ipython/dns/user/<date>/threats.csv</li>
-			                        <li>ipython/dns/user/<date>/threat-dendro-<threat>.csv</li>
+			                        <li>ipython/dns/user/&lt;date&gt;/threats.csv</li>
+			                        <li>ipython/dns/user/&lt;date&gt;/threat-dendro-&lt;threat&gt;.csv</li>
 			                    </ul>            
 			                    
 			                    <b>HDFS tables consumed: </b> dns
@@ -1161,7 +1161,7 @@
 			                        You can click on any title and view the additional comments at the bottom area of the panel.<br><br>
 			
 			                        <b>Incident progression</b>
-			                        <b>Data source file:</b> threat-dendro-<threat>.csv<br>
+			                        <b>Data source file:</b> threat-dendro-&lt;threat&gt;.csv<br>
 			                        Incident progression frame is located on the right side of the Web page.<br><br>
 			                        <img src="images/1.1_dns_sb02.jpg" style="width: 50%;"><br><br>
 			
@@ -1170,7 +1170,7 @@
 			                        <b>Input files</b>
 			                        <ul>
 			                            <li>threats.csv</li>
-			                            <li>threat-dendro-<threat>.csv</li>
+			                            <li>threat-dendro-&lt;threat&gt;.csv</li>
 			                        </ul>                        
 			                    </p>
 			                </div>
