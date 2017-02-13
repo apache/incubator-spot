@@ -19,7 +19,7 @@ package org.apache.spot.lda
 
 import org.apache.log4j.Logger
 import org.apache.spark.SparkContext
-import org.apache.spark.mllib.clustering.{DistributedLDAModel, EMLDAOptimizer, LDA, OnlineLDAOptimizer}
+import org.apache.spark.mllib.clustering._
 import org.apache.spark.mllib.linalg.{Matrix, Vector, Vectors}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
@@ -111,16 +111,21 @@ object SpotLDAWrapper {
     }
 
     //Create LDA model
-    val ldaModel = lda.run(ldaCorpus)
+    val ldaModel: LocalLDAModel = ldaOptimizer match {
+      case "em" => lda.run(ldaCorpus).asInstanceOf[DistributedLDAModel].toLocal
+      case "online" => lda.run(ldaCorpus).asInstanceOf[LocalLDAModel]
+      case _ => throw new IllegalArgumentException(
+        s"Invalid LDA optimizer $ldaOptimizer")
+    }
 
     //Convert to DistributedLDAModel to expose info about topic distribution
-    val distLDAModel = ldaModel.asInstanceOf[DistributedLDAModel]
+    //val distLDAModel = ldaModel.asInstanceOf[DistributedLDAModel]
 
     //Get word topic mix: columns = topic (in no guaranteed order), rows = words (# rows = vocab size)
-    val wordTopicMat: Matrix = distLDAModel.topicsMatrix
+    val wordTopicMat: Matrix = ldaModel.topicsMatrix
 
     //Topic distribution: for each document, return distribution (vector) over topics for that docs
-    val docTopicDist: RDD[(Long, Vector)] = distLDAModel.topicDistributions
+    val docTopicDist: RDD[(Long, Vector)] = ldaModel.topicDistributions(ldaCorpus)
 
     //Create doc results from vector: convert docID back to string, convert vector of probabilities to array
     val docToTopicMixDF =

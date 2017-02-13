@@ -45,7 +45,8 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     ldaPRGSeed = None,
     ldaMaxiterations = 20,
     ldaAlpha = 1.02,
-    ldaBeta = 1.001)
+    ldaBeta = 1.001,
+    ldaOptimizer = "online")
 
   val testingConfigFloatConversion = SuspiciousConnectsConfig(analysis = "flow",
     inputPath = "",
