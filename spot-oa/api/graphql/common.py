@@ -16,7 +16,7 @@ def parse_date_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d')
 
 SpotDateType = GraphQLScalarType(
-    name='Date',
+    name='SpotDate',
     description='The `Date` scalar type represents date values in the format yyyy-mm-dd.',
     serialize=coerce_date,
     parse_value=coerce_date,
@@ -34,7 +34,7 @@ def parse_datetime_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d %H:%M:%S')
 
 SpotDatetimeType = GraphQLScalarType(
-    name='Datetime',
+    name='SpotDatetime',
     description='The `Datetime` scalar type represents datetime values in the format yyyy-mm-dd hh:mm:ss.',
     serialize=coerce_datetime,
     parse_value=coerce_datetime,
@@ -50,7 +50,7 @@ def parse_ip_literal(ast):
     return ast.value
 
 SpotIpType = GraphQLScalarType(
-    name='Ip',
+    name='SpotIp',
     description='The `Ip` scalar type represents a network ip in dot-decimal format.',
     serialize=coerce_ip,
     parse_value=coerce_ip,

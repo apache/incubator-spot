@@ -45,19 +45,19 @@ SuspiciousType = GraphQLObjectType(
 			type=GraphQLString,
 			resolver=lambda root, *_: root.get('proto')
 		),
-		'iPkts': GraphQLField(
+		'inPkts': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('ipkt') or 0
 		),
-		'iBytes': GraphQLField(
+		'inBytes': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('ibyt') or 0
 		),
-		'oPkts': GraphQLField(
+		'outPkts': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('opkt') or 0
 		),
-		'oBytes': GraphQLField(
+		'outBytes': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('obyt') or 0
 		),
@@ -139,31 +139,31 @@ EdgeDetailsType = GraphQLObjectType(
 			type=GraphQLString,
 			resolver=lambda root, *_: root.get('tos')
 		),
-		'iBytes': GraphQLField(
+		'inBytes': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('ibytes') or 0
 		),
-		'iPkts': GraphQLField(
+		'inPkts': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('ipkts') or 0
 		),
-		'input': GraphQLField(
+		'inIface': GraphQLField(
 			type=GraphQLString,
 			resolver=lambda root, *_: root.get('input')
 		),
-		'output': GraphQLField(
+		'outIface': GraphQLField(
 			type=GraphQLString,
 			resolver=lambda root, *_: root.get('output')
 		),
-		'rip': GraphQLField(
+		'routerIp': GraphQLField(
 			type=GraphQLString,
 			resolver=lambda root, *_: root.get('rip')
 		),
-		'oBytes': GraphQLField(
+		'outBytes': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('obytes') or 0
         ),
-		'oPkts': GraphQLField(
+		'outPkts': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('obytes') or 0
         )
@@ -181,11 +181,11 @@ IpConnectionDetailsType = GraphQLObjectType(
             type=GraphQLString,
             resolver=lambda root, *_: root.get('dstip')
         ),
-		'iBytes': GraphQLField(
+		'inBytes': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('ibytes') or 0
 		),
-		'iPkts': GraphQLField(
+		'inPkts': GraphQLField(
 			type=GraphQLInt,
 			resolver=lambda root, *_: root.get('ipkts') or 0
 		)
@@ -202,9 +202,13 @@ QueryType = GraphQLObjectType(
                 'date': GraphQLArgument(
                     type=SpotDateType,
                     description='A date to use as a reference for suspicous connections. Defaults to today'
+                ),
+                'ip': GraphQLArgument(
+                    type=SpotIpType,
+                    description='Ip of interest'
                 )
             },
-            resolver=lambda root, args, *_: Flow.suspicious_connections(date=args.get('date', date.today()))
+            resolver=lambda root, args, *_: Flow.suspicious_connections(date=args.get('date', date.today()), ip=args.get('ip'))
         ),
         'edgeDetails': GraphQLField(
             type= GraphQLList(EdgeDetailsType),
