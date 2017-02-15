@@ -9,3 +9,8 @@ ipython == 3.2.0
 pyzmq
 jinja2
 tornado
+
+# GraphQL API dependencies
+flask
+flask-graphql
+graphql-core
