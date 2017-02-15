@@ -86,17 +86,6 @@ def _score_connection(args):
     else:
         return {'success':False}
 
-def _quick_score_connection(args):
-    _input = args.get('input')
-    _date = _input.get('date', date.today())
-    score = _input.get('score')
-    ip = _input.get('ip')
-
-    if Flow.quick_score(date=_date, score=score, ip=ip) is None:
-        return {'success':True}
-    else:
-        return {'success':False}
-
 MutationType = GraphQLObjectType(
     name='NetflowMutationType',
     fields={
@@ -109,16 +98,6 @@ MutationType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: _score_connection(args)
-        ),
-        'quickScore': GraphQLField(
-            type=ScoreOutputType,
-            args={
-                'input': GraphQLArgument(
-                    type=QuickScoreInputType,
-                    description='Quick score criteria'
-                )
-            },
-            resolver=lambda root, args, *_: _quick_score_connection(args)
         )
     }
 )
