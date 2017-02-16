@@ -1,50 +1,63 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-var d3 = require('d3');
-var assign = require('object-assign');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var NetflowConstants = require('../constants/NetflowConstants');
-var RestStore = require('../../../js/stores/RestStore');
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-var DATE_FILTER = 'date';
-var IP_FILTER = 'ip';
+const IP_VAR = 'ip';
+const DATE_VAR = 'date';
 
-var ChordsDiagramStore = assign(new RestStore(NetflowConstants.API_VISUAL_DETAILS), {
-  _parser: d3.dsv('\t', 'text/plain'),
-  errorMessages: {
-    404: 'No details available'
-  },
-  headers: {
-    // TODO: Add Headers
-  },
-  setDate: function (date)
-  {
-    this.setRestFilter(DATE_FILTER, date.replace(/-/g, ''));
-  },
-  setIp: function (ip)
-  {
-    this.setRestFilter(IP_FILTER, ip.replace(/\./g, '_'));
-  },
-  getIp: function ()
-  {
-    return this.getRestFilter(IP_FILTER).replace(/_/g, '.');
-  }
-});
+class ChordsDiagramStore extends ObservableGraphQLStore {
+    getQuery() {
+        return `
+            query($date: SpotDate!, $ip: SpotIp!) {
+                flow {
+                    ipDetails(date: $date, ip: $ip) {
+                        srcip: srcIp
+                        dstip: dstIp
+                        ipkts: inPkts
+                        ibytes: inBytes
+                    }
+                }
+            }
+        `;
+    }
+
+    unboxData(data) {
+        return data.flow.ipDetails;
+    }
+
+    setIp(ip) {
+      this.setVariable(IP_VAR, ip);
+    }
+
+    getIp() {
+      this.getVariable(IP_VAR);
+    }
+
+    setDate(date) {
+      this.setVariable(DATE_VAR, date);
+    }
+}
+
+const cds = new ChordsDiagramStore();
 
 SpotDispatcher.register(function (action) {
   switch (action.actionType) {
     case SpotConstants.UPDATE_DATE:
-      ChordsDiagramStore.setDate(action.date);
-      break;
+        cds.setDate(action.date);
+        break;
     case SpotConstants.SELECT_IP:
-      ChordsDiagramStore.setIp(action.ip);
+      cds.setIp(action.ip);
+      break;
+    case SpotConstants.RELOAD_SUSPICIOUS:
+      cds.resetData();
       break;
     case SpotConstants.RELOAD_DETAILS_VISUAL:
-      ChordsDiagramStore.reload();
+      cds.sendQuery();
       break;
   }
 });
 
-module.exports = ChordsDiagramStore;
+module.exports = cds;

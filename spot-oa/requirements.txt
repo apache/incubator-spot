@@ -14,3 +14,4 @@ tornado
 flask
 flask-graphql
 graphql-core
+urllib3

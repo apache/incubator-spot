@@ -42,7 +42,8 @@ const SpotConstants = {
   START_DATE: 'start-date',
   END_DATE: 'end-date',
   // Server Paths
-  NOTEBOOKS_PATH: '/notebooks/ipynb'
+  NOTEBOOKS_PATH: '/notebooks/ipynb',
+  GRAPHQL_ENDPOINT: '/graphql'
 };
 
 module.exports = SpotConstants;
