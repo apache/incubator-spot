@@ -3,6 +3,7 @@ from graphql import (
     GraphQLObjectType,
     GraphQLField,
     GraphQLArgument,
+    GraphQLString,
     GraphQLInt,
     GraphQLBoolean,
     GraphQLNonNull,
@@ -10,7 +11,7 @@ from graphql import (
     GraphQLInputObjectField
 )
 
-from api.graphql.common import SpotDateType, SpotIpType
+from api.graphql.common import SpotDateType, SpotIpType, SpotOperationOutputType
 from api.resources.flow import Flow
 
 SimpleScoreInputType = GraphQLInputObjectType(
@@ -43,31 +44,24 @@ SimpleScoreInputType = GraphQLInputObjectType(
     }
 )
 
-QuickScoreInputType = GraphQLInputObjectType(
-    name='NetflowQuickScoreInputType',
+AddCommentInputType = GraphQLInputObjectType(
+    name='NetflowAddCommentInputType',
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
-            description='A reference date for the score process. Defaults to today'
-        ),
-        'score': GraphQLInputObjectField(
-            type=GraphQLNonNull(GraphQLInt),
-            description='A detailed search criteria for the score process'
+            description='A reference date for the add comment process. Defaults to today'
         ),
         'ip': GraphQLInputObjectField(
             type=GraphQLNonNull(SpotIpType),
-            description='Ip to look for'
-        )
-    }
-)
-
-ScoreOutputType = GraphQLObjectType(
-    name='NetflowScoreOutputType',
-    fields={
-        'success': GraphQLField(
-            type=GraphQLBoolean,
-            description='True after connections have been scored',
-            resolver=lambda root, *_: root.get('success')
+            description='Reference IP for the comment'
+        ),
+        'title': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLString),
+            description='A title for the comment'
+        ),
+        'text': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLString),
+            description='A description text for the comment'
         )
     }
 )
@@ -86,11 +80,23 @@ def _score_connection(args):
     else:
         return {'success':False}
 
+def _add_comment(args):
+    _input = args.get('input')
+    _date = _input.get('date', date.today())
+    ip = _input.get('ip')
+    title = _input.get('title')
+    text = _input.get('text')
+
+    if Flow.save_comment(date=_date, ip=ip, title=title, text=text) is None:
+        return {'success':True}
+    else:
+        return {'success':False}
+
 MutationType = GraphQLObjectType(
     name='NetflowMutationType',
     fields={
         'score': GraphQLField(
-            type=ScoreOutputType,
+            type=SpotOperationOutputType,
             args={
                 'input': GraphQLArgument(
                     type=SimpleScoreInputType,
@@ -98,6 +104,16 @@ MutationType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: _score_connection(args)
+        ),
+        'addComment': GraphQLField(
+            type=SpotOperationOutputType,
+            args={
+                'input': GraphQLArgument(
+                    type=AddCommentInputType,
+                    description='Comment info'
+                )
+            },
+            resolver=lambda root, args, *_: _add_comment(args)
         )
     }
 )

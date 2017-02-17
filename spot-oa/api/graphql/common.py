@@ -1,6 +1,14 @@
 from collections import OrderedDict
 from datetime import date, datetime
-from graphql import GraphQLScalarType
+from graphql import (
+    GraphQLScalarType,
+    GraphQLObjectType,
+    GraphQLField,
+    GraphQLString,
+    GraphQLBoolean,
+    GraphQLList,
+    GraphQLNonNull
+)
 
 def coerce_date(value):
     if isinstance(value, date):
@@ -16,25 +24,25 @@ def parse_date_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d')
 
 SpotDateType = GraphQLScalarType(
-    name='SpotDate',
+    name='SpotDateType',
     description='The `Date` scalar type represents date values in the format yyyy-mm-dd.',
     serialize=coerce_date,
     parse_value=coerce_date,
     parse_literal=parse_date_literal)
 
 def coerce_datetime(value):
-    if isinstance(value, datetime):
-        return value
-    elif isinstance(value, int):
-        return datetime.fromtimestamp(value)
-    else:
-        return datetime.strptime(str(value), '%Y-%m-%d %H:%M:%S')
+    if isinstance(value, int):
+        value = datetime.fromtimestamp(value)
+    elif not isinstance(value, datetime):
+        value = datetime.strptime(str(value), '%Y-%m-%d %H:%M:%S')
+
+    return value.strftime('%Y-%m-%d %H:%M:%S')
 
 def parse_datetime_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d %H:%M:%S')
 
 SpotDatetimeType = GraphQLScalarType(
-    name='SpotDatetime',
+    name='SpotDatetimeType',
     description='The `Datetime` scalar type represents datetime values in the format yyyy-mm-dd hh:mm:ss.',
     serialize=coerce_datetime,
     parse_value=coerce_datetime,
@@ -50,8 +58,43 @@ def parse_ip_literal(ast):
     return ast.value
 
 SpotIpType = GraphQLScalarType(
-    name='SpotIp',
+    name='SpotIpType',
     description='The `Ip` scalar type represents a network ip in dot-decimal format.',
     serialize=coerce_ip,
     parse_value=coerce_ip,
     parse_literal=parse_ip_literal)
+
+SpotOperationOutputType = GraphQLObjectType(
+    name='SpotOperationOutputType',
+    fields={
+        'success': GraphQLField(
+            type=GraphQLBoolean,
+            description='True after the operation success',
+            resolver=lambda root, *_: root.get('success')
+        )
+    }
+)
+
+def create_spot_node_type(name, extra_fields={}):
+    def get_fields():
+        fields = {
+            'name': GraphQLField(
+                type=GraphQLNonNull(GraphQLString),
+                description='Node name',
+                resolver=lambda root, *_: root.get('name')
+            ),
+            'children': GraphQLField(
+                type=GraphQLList(NodeType),
+                description='Children list',
+                resolver=lambda root, *_: root.get('children')
+            )
+        }
+        fields.update(extra_fields if type(extra_fields) is dict else {})
+
+        return fields
+    NodeType = GraphQLObjectType(
+        name=name,
+        fields=get_fields
+    )
+
+    return NodeType

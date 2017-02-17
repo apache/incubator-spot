@@ -30,7 +30,6 @@ class GraphQLStore {
     }
 
     resetData() {
-        console.log('Call to resetData');
         this.setData({});
     }
 

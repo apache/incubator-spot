@@ -11,7 +11,7 @@ const DATE_VAR = 'date';
 class ChordsDiagramStore extends ObservableGraphQLStore {
     getQuery() {
         return `
-            query($date: SpotDate!, $ip: SpotIp!) {
+            query($date: SpotDateType!, $ip: SpotIpType!) {
                 flow {
                     ipDetails(date: $date, ip: $ip) {
                         srcip: srcIp

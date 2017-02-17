@@ -36,7 +36,7 @@ class DetailStore extends ObservableWithHeadersGraphQLStore {
 
     getQuery() {
         return `
-            query($tstart: SpotDatetime!, $srcIp: SpotIp!, $dstIp: SpotIp!) {
+            query($tstart: SpotDatetimeType!, $srcIp: SpotIpType!, $dstIp: SpotIpType!) {
                 flow {
                     edgeDetails(tstart: $tstart, srcIp: $srcIp, dstIp: $dstIp) {
                         tstart

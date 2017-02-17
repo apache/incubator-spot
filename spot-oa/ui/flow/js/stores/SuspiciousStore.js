@@ -39,13 +39,10 @@ class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
     }
 
     getQuery() {
-        const ipFilterParam = this.getVariable(IP_VAR) ? ', $ip:SpotIp!' : '';
-        const ipFilterArgument = this.getVariable(IP_VAR) ? ', ip:$ip' : '';
-
         return `
-            query($date:SpotDate!${ipFilterParam}) {
+            query($date:SpotDateType!,$ip:SpotIpType) {
                 flow {
-                    suspicious(date: $date${ipFilterArgument}) {
+                    suspicious(date: $date, ip:$ip) {
                         rank
                         tstart
                         srcIP: srcIp
@@ -82,7 +79,7 @@ class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
     }
 
     setFilter(ip) {
-        this.setVariable(IP_VAR, ip);
+        this.setVariable(IP_VAR, ip || null);
         this.notifyListeners(CHANGE_FILTER_EVENT);
     }
 

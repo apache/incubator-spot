@@ -11,7 +11,7 @@ from graphql import (
     GraphQLNonNull
 )
 
-from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType
+from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, create_spot_node_type
 from api.resources.flow import Flow
 
 SuspiciousType = GraphQLObjectType(
@@ -22,7 +22,7 @@ SuspiciousType = GraphQLObjectType(
 			resolver=lambda root, *_: root.get('sev') or 0
 		),
 		'tstart': GraphQLField(
-			type=GraphQLString,
+			type=SpotDatetimeType,
 			resolver=lambda root, *_: root.get('tstart')
 		),
         'srcIp': GraphQLField(
@@ -108,7 +108,7 @@ EdgeDetailsType = GraphQLObjectType(
     name='NetflowEdgeDetailsType',
     fields={
 		'tstart': GraphQLField(
-			type=GraphQLString,
+			type=SpotDatetimeType,
 			resolver=lambda root, *_: root.get('tstart')
 		),
 		'srcIp': GraphQLField(
@@ -192,11 +192,248 @@ IpConnectionDetailsType = GraphQLObjectType(
     }
 )
 
+CommentType = GraphQLObjectType(
+    name='NetflowComment',
+    fields={
+        'ip': GraphQLField(
+            type=SpotIpType,
+            resolver=lambda root, *_: root.get('ip')
+        ),
+        'title': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('title')
+        ),
+        'text': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('text')
+        )
+    }
+)
+
+ThreatsInformationType = GraphQLObjectType(
+    name='NetflowThreats',
+    fields={
+        'ips': GraphQLField(
+            type=GraphQLList(SpotIpType),
+            description='List of ips that have been scored as high risk (1)',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference to retrieve the list of high risk ips. Defaults to today'
+                )
+            },
+            resolver=lambda root, args, *_: Flow.get_scored_connection(date=args.get('date', date.today()))
+        ),
+        'comments': GraphQLField(
+            type=GraphQLList(CommentType),
+            description='A list of comments about threats',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference to retrieve the list of high risk comments. Defaults to today'
+                )
+            },
+            resolver=lambda root, args, *_: Flow.story_board(date=args.get('date', date.today()))
+        )
+    }
+)
+
+IncidentProgressionNodeType = create_spot_node_type('NetflowIncidentProgressionNodeType')
+
+ImpactAnalysisNodeType = create_spot_node_type('NetflowImpactAnalysisNodeType', {
+    'size': GraphQLField(
+        type=GraphQLInt,
+        description='Node size',
+        resolver=lambda root, *_: root.get('size') or 0
+    )
+})
+
+MapViewGeometryType = GraphQLObjectType(
+    name='NetflowMapViewGeometryType',
+    fields={
+        'coordinates': GraphQLField(
+            type=GraphQLList(GraphQLFloat),
+            description='Geo Latitude and longitude',
+            resolver=lambda root,*_: root.get('coordinates')
+        )
+    }
+)
+
+MapViewPropertiesType = GraphQLObjectType(
+    name='NetflowMapViewPropertiesType',
+    fields={
+        'ip': GraphQLField(
+            type=SpotIpType,
+            description='Ip',
+            resolver=lambda root, *_: root.get('ip')
+        ),
+        'location': GraphQLField(
+            type=GraphQLString,
+            description='Name of the ip\'s location',
+            resolver=lambda root, *_: root.get('location')
+        ),
+        'type': GraphQLField(
+            type=GraphQLInt,
+            description='Property type',
+            resolver=lambda root, *_: root.get('type')
+        )
+    }
+)
+
+MapViewIpType = GraphQLObjectType(
+    name='NetflowMapViewIpType',
+    fields={
+        'geometry': GraphQLField(
+            type=MapViewGeometryType,
+            description='Geolocalization information',
+            resolver=lambda root, *_: root.get('geometry')
+        ),
+        'properties': GraphQLField(
+            type=MapViewPropertiesType,
+            description='Metadata',
+            resolver=lambda root, *_: root.get('properties')
+        )
+    }
+)
+
+MapViewType = GraphQLObjectType(
+    name='NetflowMapViewType',
+    fields={
+        'srcIps': GraphQLField(
+            type=GraphQLList(MapViewIpType),
+            description='A list of source ips',
+            resolver=lambda root, *_: root.get('sourceips')
+        ),
+        'dstIps': GraphQLField(
+            type=GraphQLList(MapViewIpType),
+            description='A list of destination ips',
+            resolver=lambda root, *_: root.get('destips')
+        )
+    }
+)
+
+TimelineType = GraphQLObjectType(
+    name='NetflowTimelineType',
+    fields={
+        'tstart': GraphQLField(
+            type=GraphQLNonNull(SpotDatetimeType),
+            description='Connection\'s start time',
+            resolver=lambda root, *_: root.get('tstart')
+        ),
+        'tend': GraphQLField(
+            type=GraphQLNonNull(SpotDatetimeType),
+            description='Connection\'s end time',
+            resolver=lambda root, *_: root.get('tend')
+        ),
+        'srcIp': GraphQLField(
+            type=GraphQLNonNull(SpotIpType),
+            description='Source ip',
+            resolver=lambda root, *_: root.get('srcip')
+        ),
+        'dstIp': GraphQLField(
+            type=GraphQLNonNull(SpotIpType),
+            description='Destination ip',
+            resolver=lambda root, *_: root.get('dstip')
+        ),
+        'protocol': GraphQLField(
+            type=GraphQLNonNull(GraphQLString),
+            description='Connection\'s protocol',
+            resolver=lambda root, *_: root.get('proto')
+        ),
+        'srcPort': GraphQLField(
+            type=GraphQLNonNull(GraphQLInt),
+            description='Source port',
+            resolver=lambda root, *_: root.get('sport')
+        ),
+        'dstPort': GraphQLField(
+            type=GraphQLNonNull(GraphQLInt),
+            description='Destionation port',
+            resolver=lambda root, *_: root.get('dport')
+        ),
+        'pkts': GraphQLField(
+            type=GraphQLNonNull(GraphQLInt),
+            description='Packets tranferred between ips',
+            resolver=lambda root, *_: root.get('pkts')
+        ),
+        'bytes': GraphQLField(
+            type=GraphQLNonNull(GraphQLInt),
+            description='Bytes tranferred between ips',
+            resolver=lambda root, *_: root.get('bytes')
+        )
+    }
+)
+
+ThreatInformationType = GraphQLObjectType(
+    name='NetflowThreatInformation',
+    fields={
+        'incidentProgression': GraphQLField(
+            type=IncidentProgressionNodeType,
+            description='Incident progression information',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference for incident progression information. Defaults to today'
+                ),
+                'ip': GraphQLArgument(
+                    type=GraphQLNonNull(SpotIpType),
+                    description='Threat\'s Ip'
+                )
+            },
+            resolver=lambda root, args, *_ : Flow.incident_progression(date=args.get('date', date.today()), ip=args.get('ip'))
+        ),
+        'impactAnalysis': GraphQLField(
+            type=ImpactAnalysisNodeType,
+            description='Impact analysis information',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference for impact analysis information. Defaults to today'
+                ),
+                'ip': GraphQLArgument(
+                    type=GraphQLNonNull(SpotIpType),
+                    description='Threat\'s Ip'
+                )
+            },
+            resolver=lambda root, args, *_ : Flow.impact_analysis(date=args.get('date', date.today()), ip=args.get('ip'))
+        ),
+        'geoLocalization': GraphQLField(
+            type=MapViewType,
+            description='Gelocalization info about the ips related to this threat',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference for geo localization information. Defaults to today'
+                ),
+                'ip': GraphQLArgument(
+                    type=GraphQLNonNull(SpotIpType),
+                    description='Threat\'s Ip'
+                )
+            },
+            resolver=lambda root, args, *_: Flow.sc_geo(date=args.get('date', date.today()), ip=args.get('ip'))
+        ),
+        'timeline': GraphQLField(
+            type=GraphQLList(TimelineType),
+            description='Time based information about this threat',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference for time line information. Defaults to today'
+                ),
+                'ip': GraphQLArgument(
+                    type=GraphQLNonNull(SpotIpType),
+                    description='Threat\'s Ip'
+                )
+            },
+            resolver=lambda root, args, *_: Flow.time_line(date=args.get('date', date.today()), ip=args.get('ip'))
+        )
+    }
+)
+
 QueryType = GraphQLObjectType(
     name='NetflowQueryType',
     fields={
         'suspicious': GraphQLField(
-            type= GraphQLList(SuspiciousType),
+            type=GraphQLList(SuspiciousType),
             description='Netflow Suspicious connections',
             args={
                 'date': GraphQLArgument(
@@ -211,7 +448,7 @@ QueryType = GraphQLObjectType(
             resolver=lambda root, args, *_: Flow.suspicious_connections(date=args.get('date', date.today()), ip=args.get('ip'))
         ),
         'edgeDetails': GraphQLField(
-            type= GraphQLList(EdgeDetailsType),
+            type=GraphQLList(EdgeDetailsType),
             description='Network acitvity between two ips around a particular moment in time',
             args={
                 'tstart': GraphQLArgument(
@@ -230,7 +467,7 @@ QueryType = GraphQLObjectType(
             resolver=lambda root, args, *_: Flow.details(tstart=args.get('tstart'), src_ip=args.get('srcIp'), dst_ip=args.get('dstIp'))
         ),
         'ipDetails': GraphQLField(
-            type= GraphQLList(IpConnectionDetailsType),
+            type=GraphQLList(IpConnectionDetailsType),
             description='Ip network activity details',
             args={
                 'date': GraphQLArgument(
@@ -243,6 +480,16 @@ QueryType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: Flow.chord_details(date=args.get('date', date.today()), ip=args.get('ip'))
+        ),
+        'threats': GraphQLField(
+            type=ThreatsInformationType,
+            description='Advanced inforamtion about threats',
+            resolver=lambda *_ : {}
+        ),
+        'threat': GraphQLField(
+            type=ThreatInformationType,
+            description='Advanced inforamtion about a single threat',
+            resolver=lambda *_:{}
         )
     }
 )
