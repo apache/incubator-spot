@@ -284,13 +284,13 @@ GRID STYLES
 /*********************
 GENERAL STYLES
 *********************/
-body { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.5; color: #0b0b0b; background-color: #f7f7f7; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-hyphens: none; -epub-hyphens: none; -moz-hyphens: none; hyphens: none; }
+body { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; /*font-size: 100%;*/font-size:10.5pt; line-height: 1.5; color: #0b0b0b; background-color: #ff; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-hyphens: none; -epub-hyphens: none; -moz-hyphens: none; hyphens: none; }
 
-p { -webkit-hyphens: none; -epub-hyphens: none; -moz-hyphens: none; hyphens: none; letter-spacing: 1px; line-height: 1.8em; font-size: 11pt; }
+p { -webkit-hyphens: none; -epub-hyphens: none; -moz-hyphens: none; hyphens: none; letter-spacing: 1px; line-height: 1.8em; font-size: 10.5pt; }
 
 ol {padding-left:20px;font-size:11pt;line-height:1.8em;letter-spacing:1px;}
 
-ul{padding-left:20px;list-style-image:url('../images/bullet.png');font-size:11pt;line-height:1.8em;letter-spacing:1px;}
+ul{padding-left:20px;list-style-image:url('../images/bullet.png');font-size:11pt;line-height:1.8em;letter-spacing:1px;margin-bottom:25px;}
 ul li {margin-bottom:10px;}
 
 img { max-width: 100%; height: auto; }
@@ -301,18 +301,25 @@ img { max-width: 100%; height: auto; }
 
 .desktop {display:none;}
 
-
+.orange-bold {color:#c97644;font-weight:bold;font-style:italic;}#configuration .orange-bold {margin-bottom:10px;}
+.short-mrg {margin-bottom:10px;}
 /*********************
 LAYOUT
 *********************/
 .wrap { width: 85%; margin: 0 auto; }
 #mainwrap {position:relative;}
 
+.box-shadow {
+-webkit-box-shadow: 4px 4px 10px 0px rgba(50, 50, 50, 0.35);
+-moz-box-shadow:    4px 4px 10px 0px rgba(50, 50, 50, 0.35);
+box-shadow:         4px 4px 10px 0px rgba(50, 50, 50, 0.35);
+margin-bottom:25px;	
+}
 /*********************
 PUSH MENU
 *********************/
 
-.cbp-spmenu button{position:absolute;top:5px;right:2px;margin:15px 5px 0 0;border:none;background-color:transparent;font-size:2em;color:#fff;text-indent:-999999px;background:url('../images/open.png')no-repeat;width:29px;height:30px;padding:0;}
+.cbp-spmenu button{position:absolute;top:5px;right:2px;margin:15px 5px 0 0;border:none;background-color:transparent;font-size:2em;color:#fff;text-indent:-999999px;background:url('../images/open.png')no-repeat;width:29px;height:30px;padding:0;}
 .cbp-spmenu.cbp-spmenu-open button {background:url('../images/close.png') no-repeat;}
 .cbp-spmenu{background:#d0cbc5;position:absolute;}
 .cbp-spmenu h3{color:#ffffff;font-size:1.9em;padding:20px 0 20px 20px;margin:0 0 15px;font-size:16pt;font-weight:500;text-transform:uppercase;font-family:'Open Sans',sans-serif;letter-spacing:0;}
@@ -394,12 +401,16 @@ h1, .h1 { font-size: 2.2em; line-height: 1.333em; }
 
 h2, .h2 { font-size: 1.75em; line-height: 1.4em; margin-bottom: 0.375em; }
 
-h3, .h3 { font-size: 1.125em; }
+h3, .h3 { font-size: 1.4em; color:#8e8506; margin:15px 0 5px;}
 
 h4, .h4 { font-size: 1.1em; font-weight: 700; }
 
 h5, .h5 { font-size: 0.846em; line-height: 2.09em; text-transform: uppercase; letter-spacing: 2px; }
 
+.gray {color:#a3a3a1;text-transform:uppercase;margin-bottom:10px;}<p class="short-mrg">
+#configuration .gray {margin-bottom:5px;}
+
+p {margin:0 0 30px;}
 /*********************
 BUTTON STYLES
 *********************/
@@ -472,25 +483,37 @@ FOOTER STYLES
 
 .footer { clear: both; background-color: #363132; color: #f8f9fa; min-height: 50px; }
 
+.copyright {margin:14px 0;}
 
 /************************
  ORIGINAL STYLES
 *************************/
 img {height: auto;max-width: 100%;}
-p.terminal {background: #000000;border: 2px solid #000000;border-radius: 25px;color: #FFFFFF;margin-left: 50px;margin-right: 100px;padding: 20px;}
-table.configuration {margin-left: 20px;margin-right: 20px;width: 90%;}
-table.configuration th {background-color: #212F3C;color: white;}
-table.configuration td {padding: 8px;text-align: center;}
-table.configuration tr:nth-child(even) {background-color: #f2f2f2;}
-.sidenav {background-color: #212F3C;height: 100%;left: 0;overflow-x: hidden;padding-top: 60px;position: absolute;top: 0;transition: 0.5s;width: 200px;z-index: 1;}
+p.terminal {background: #4b4547;border: 2px solid #4b4547;border-radius: 25px;color: #FFFFFF;margin-left: 0;padding: 20px;}
+table.configuration {margin-left: 20px;margin-right: 20px;width: 90%;table-layout:fixed;}
+table.configuration th {background-color: #212F3C;color: white;padding:10px;}
+table.configuration th:first-of-type {background:#8e8506;}
+table.configuration th:nth-child(2) {background:#807705;}
+table.configuration th:nth-child(3) {background:#797105;}
+table.configuration td {padding: 8px;text-align: center;vertical-align:top;word-wrap:break-word;}
+table.configuration tr:nth-child(2) td {padding-top:25px;}
+table.configuration tr:last-child td {padding-bottom:25px;}
+table.configuration tr td:first-of-type {background-color: #e6e6e6;}
+table.configuration tr td:nth-child(2) {background-color:#cfcfcf;}
+table.configuration tr td:nth-child(3) {background-color:#c4c4c4;}
+table.configuration.config2 tr td:nth-child(2) {font-size:9.5pt !important;}
+
+.sidenav {background-color: #212F3C;height: 100%strong;left: 0;overflow-x: hidden;padding-top: 60px;position: absolute;top: 0;transition: 0.5s;width: 200px;z-index: 1;}
 .sidenav a {color: #818181;display: block;font-size: 20px;padding: 8px 8px 8px 32px;text-decoration: none;transition: 0.3s;}
 .sidenav li {color: #818181;}
 .sidenav a:hover, .offcanvas a:focus {color: #f1f1f1;}
 .sidenav .closebtn {font-size: 36px;margin-left: 50px;position: absolute;right: 25px;top: 0;}
-#main {padding: 20px;margin-left:45px;transition: margin-left .5s;}
+.main {/*padding: 20px;margin-left:45px;*/padding:20px 20px 20px 65px;transition: margin-left .5s;}
 
-#main {max-width:100%;overflow:hidden;}
-
+.main {max-width:100%;overflow:hidden;}
+.main.tan-bg {
+	background:#e8e5e0;
+}
 
 @media only screen and (min-width:768px) {
   .wrap { width: 760px; }

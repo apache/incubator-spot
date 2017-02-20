@@ -114,14 +114,14 @@
 
             	</nav>
             	           
-			    <div id="main">
+			    <div class="main">
 			        <div id="introduction">
 			            <h1>Introduction</h1>
 			            <p>
 			                Apache Spot (incubating) is a solution built to leverage strong technology in both &#34;big data&#34; and scientific computing disciplines. While the solution solves problems end-to-end, components may be leveraged individually or integrated into other solutions. All components can output data in CSV format, maximizing interoperability.
 			                <br>
 			            </p>
-			            <img src="images/1.1_technical_overviewv02.jpg" width="95%"><br><br>            
+			            <img src="images/1.1_technical_overviewv02.jpg" style="margin:30px 0;" alt="" /><br><br>            
 			            <h3>Parallel Ingest Framework.</h3>
 			            <p>
 			                The system uses decoders optimized from open source, that decodes binary flow and packet data, then loading the data in HDFS and data structures inside Hadoop. The decoded data is stored in multiple formats so it is available for searching, used by machine learning, transfer to law enforcement, or inputs to other systems.
@@ -135,15 +135,17 @@
 			                In addition to machine learning, a proven process of context enrichment, noise filtering, whitelisting, and heuristics are applied to network data to produce a short list of the most likely patterns, which may be security threats.<br><br>    
 			            </p>
 			        </div>
+		       </div>
+		       <div class="main tan-bg">
 			        <div id="environment">
 			            <h1>Environment</h1>
-			            <h3>PURE HADOOP</h3>
+			            <h3>Pure Hadoop</h3>
 			            <p>
 			                Apache Spot (incubating) can be installed on a new or existing Hadoop cluster, its components viewed as services and distributed according to common roles in the cluster. One approach is to follow the recommended deployment of CDH (see diagram below).<br><br>
 			
 			                This approach is recommended for customers with a dedicated cluster for use of the solution or a security data lake; it takes advantage of existing investment in hardware and software. The disadvantage of this approach is that it does require the installation of software on Hadoop nodes not managed by systems like Cloudera Manager.<br><br>
 			            </p>
-			            <img src="images/pure_hadoop.bmp" width="95%"><br><br>
+			            <img src="images/pure_hadoop.png" alt="" /><br><br>
 			
 			            <p>
 			                In the Pure Hadoop deployment scenario, the ingest component runs on an edge node, which is an expected use of this role. It is required to install some non-Hadoop software to make ingest component work. The Operational Analytics runs on a node intended for browser-based management and user applications, so that all user interfaces are located on a node or nodes with the same role. The Machine Learning (ML) component is installed on worker nodes, as the resource management for an ML pipeline is similar for functions inside and outside Hadoop.<br><br>
@@ -155,25 +157,28 @@
 			            <p>
 			                On existing Hadoop installations, a different approach involves using additional virtual machines and interacting with Hadoop components (Spark, HDFS) through a gateway node. This approach is recommended for customers with a Hadoop environment hosting heterogeneous use cases, where minimal deviation from node roles is desired. The disadvantage is that virtual machines must be sized properly according to workloads.<br><br>
 			            </p>
-			            <img src="images/hybrid_hadoop.bmp" width="95%"><br><br>
+			            <img src="images/hybrid_hadoop.png" alt="" /><br><br>
 			
 			            <p>
 			                In addition to the services deployed on the existing cluster, additional Virtual Machines (VMs) are required to host the non-Hadoop functions of the solution. The gateway service is required for some of these VMs to allow for interaction with Spark, Hive, and HDFS.<br><br>
 			            </p>
 			
-			            <b>Note:</b> While the above condition is a recommended layout for production, pilot deployments may be chosen to combine the above roles into fewer VMs. Each component of the Apache Spot (incubating) solution has integral interactions with Hadoop, but its non-Hadoop processing and memory requirements are separable with this approach.<br><br>
+			            <strong>Note:</strong> While the above condition is a recommended layout for production, pilot deployments may be chosen to combine the above roles into fewer VMs. Each component of the Apache Spot (incubating) solution has integral interactions with Hadoop, but its non-Hadoop processing and memory requirements are separable with this approach.<br><br>
 			
 			        </div>
+		      </div>
+		      <div class="main">
 			        <div id="installation">
 			            <h1>Installation</h1>
 			            <div id="cdh">
 			                
 			                    This installation guide assumes that a cluster with HDFS is running CDH.<br>
-			                    <h2>1. CDH (Cloudera Distribution of Hadoop) Requirements:</h2>
-			                    <b>Minimum required version:</b> 5.4<br>
-			                    <b>NOTE:</b> Spot requires spark 1.6, if you are using CDH < 5.7 please upgrade your spark version to 1.6.
-			                    <h3>Required Hadoop Services before install apache spot (incubating):</h3>
-			                    <ol>                
+			                    <h3>1. CDH (Cloudera Distribution of Hadoop) Requirements:</h3>
+			                    <p>
+			                    <strong>Minimum required version:</strong> 5.4<br>
+			                    <strong>NOTE:</strong> Spot requires spark 1.6, if you are using CDH &lt; 5.7 please upgrade your spark version to 1.6.</p>
+			                    <p class="orange-bold" style="margin-bottom:0;">Required Hadoop Services before install apache spot (incubating):</p>
+			                    <ul>                
 			                        <li>HDFS.</li>
 			                        <li>HIVE.</li>
 			                        <li>IMPALA.</li>
@@ -181,16 +186,16 @@
 			                        <li>SPARK (YARN).</li>
 			                        <li>YARN.</li>
 			                        <li>Zookeeper.</li>                
-			                    </ol>                
+			                    </ul>                
 			            </div>
 			            <div id="deployment">
-			                <h2>2. Deployment Recommendations</h2>
-			                There are four components in apache spot (incubating):
+			                <h3>2. Deployment Recommendations</h3>
+			                <p class="orange-bold" style="margin-bottom:0;">There are four components in apache spot (incubating):</p>
 			                <ul>
-			                    <li><b>spot-setup</b> &mdash;  scripts that create the required HDFS paths, hive tables and configuration for apache spot (incubating).</li>
-			                    <li><b>spot-ingest</b> &mdash;  binary and log files are captured or transferred into the Hadoop cluster, where they are transformed and loaded into solution data stores.</li>
-			                    <li><b>spot-ml</b> &mdash;  machine learning algorithms are used to add additional learning information to the ingest data, which is used to filter and sort raw data.</li>
-			                    <li><b>spot-oa</b>&mdash;  data output from the machine learning component is augmented with context and heuristics, then is available to the user for interacting with it.</li>
+			                    <li><strong>spot-setup</strong> &mdash;  scripts that create the required HDFS paths, hive tables and configuration for apache spot (incubating).</li>
+			                    <li><strong>spot-ingest</strong> &mdash;  binary and log files are captured or transferred into the Hadoop cluster, where they are transformed and loaded into solution data stores.</li>
+			                    <li><strong>spot-ml</strong> &mdash;  machine learning algorithms are used to add additional learning information to the ingest data, which is used to filter and sort raw data.</li>
+			                    <li><strong>spot-oa</strong>&mdash;  data output from the machine learning component is augmented with context and heuristics, then is available to the user for interacting with it.</li>
 			                </ul> 
 			                While all of the components can be installed on the same server in a development or test scenario, the recommended configuration for production is to map the components to specific server roles in a Hadoop cluster.<br><br>
 			                <table class="configuration">
@@ -217,32 +222,32 @@
 			                </table>
 			            </div>
 			            <div id="configuration">
-			                <h2>3. Configuring the cluster.</h2>
-			                <h3>3.1 Create a user account for apache spot (incubating).</h3>
+			                <h3>3. Configuring the cluster.</h3>
+			                <h4 class="gray">3.1 Create a user account for apache spot (incubating).</h4>
 			                <p>
 			                    Before starting the installation, 
 			                    the recommended approach is to create a user account with super user privileges (sudo) 
 			                    and with access to HDFS in each one of the nodes where apache spot (incubating) is going to be installed ( i.e. edge server, yarn node).<br>
 			                </p>
 			
-			                <b>Add user to all apache spot (incubating) nodes:</b><br><br>
+			                <p class="orange-bold">Add user to all apache spot (incubating) nodes:</p>
 			                <p class="terminal"> 
 			                    sudo adduser &#60;solution-user&#62;<br>
 			                    passwd &#60;solution-user&#62;
 			                </p><br>
 			
-			                <b>Add user to HDFS supergroup (IMPORTANT: this should be done in the Name Node) :</b><br><br>
+			                <p class="orange-bold">Add user to HDFS supergroup (IMPORTANT: this should be done in the Name Node) :</p>
 			                <p class="terminal">
 			                    sudo usermod -G supergroup $username
 			                </p><br>
 			
-			                <h3>3.2 Get the code.</h3>
+			                <h4 class="gray">3.2 Get the code.</h4>
 			                Go to the home directory of the solution user in the node assigned for spot-setup and spot-ingest and clone the code:<br><br>
 			                <p class="terminal">
 			                    git clone https://github.com/apache/incubator-spot.git
 			                </p><br>
 			
-			                <h3>3.3 Edit apache spot (incubating) configuration.</h3>
+			                <h4 class="gray">3.3 Edit apache spot (incubating) configuration.</h4>
 			                Go to apache spot (incubating) configuration module to edit the solution configuration:<br><br>
 			                <p class="terminal">
 			                    cd /home/solution_user/incubator-spot/spot-setup<br>
@@ -250,7 +255,7 @@
 			                </p><br>
 			                
 			                Configuration variables of apache spot (incubating):<br><br>
-			                <table class="configuration">
+			                <table class="configuration config2">
 			                    <tr>
 			                        <th>Key</th>
 			                        <th>Value</th>
@@ -412,37 +417,37 @@
 			                    </tr>           
 			                </table>
 			                <br><br>
-			                <b>NOTE: deprecated keys will be removed in the next releases.</b><br>
-			                <b>More details about how to set up Spark properties please go to: <a href="https://github.com/apache/incubator-spot/blob/master/spot-ml/SPARKCONF.md">Spark Configuration</a></b><br><br>
+			                <p><strong>NOTE:</strong> deprecated keys will be removed in the next releases.<br>
+			                More details about how to set up Spark properties please go to: <a href="https://github.com/apache/incubator-spot/blob/master/spot-ml/SPARKCONF.md">Spark Configuration</a></p>
 			                
-			                <h3>3.4 Run spot-setup.</h3>
-			                Copy the configuration file edited in the previous step to &#34;/etc/&#34; folder.<br>
+			                <h4 class="gray">3.4 Run spot-setup.</h4>
+			                <p class="short-mrg">Copy the configuration file edited in the previous step to &#34;/etc/&#34; folder.</p>
 			                <p class="terminal">
 			                    sudo cp spot.conf /etc/.    
-			                </p><br>
+			                </p>
 			
-			                Copy the configuration to the two nodes named as UINODE and MLNODE.<br>
+			                <p class="short-mrg">Copy the configuration to the two nodes named as UINODE and MLNODE.</p>
 			                <p class="terminal">
 			                    sudo scp spot.conf solution_user@node:/etc/.
-			                </p><br>
+			                </p>
 			
-			                Run the hdfs_setup.sh script to create folders in Hadoop for the different use cases (flow, DNS or Proxy), create the Hive database, and finally execute hive query scripts that creates Hive tables needed to access netflow, DNS and proxy data.
+			                <p class="short-mrg">Run the hdfs_setup.sh script to create folders in Hadoop for the different use cases (flow, DNS or Proxy), create the Hive database, and finally execute hive query scripts that creates Hive tables needed to access netflow, DNS and proxy data.</p>
 			                <p class="terminal">
 			                    ./hdfs_setup.sh
-			                </p><br>
+			                </p>
 			
 			            </div>
 			            <div id="ingest">
-			                <h2>4 Ingest.</h2>
-			                <h3> 4.1 Ingest Code.</h3>
+			                <h3>4 Ingest.</h3>
+			                <h4 class="gray"> 4.1 Ingest Code.</h4>
 			                <p>
 			                    Copy the ingest folder (spot-ingest) to the selected node for ingest process (i.e. edge server). If you cloned the code in the edge server and you are planning to use the same server for ingest you dont need to copy the folder.
 			                </p>
 			
-			                <h3>4.2 Ingest dependencies.</h3>
+			                <h4 class="gray">4.2 Ingest dependencies.</h4>
 			                <ul>
 			                    <li>
-			                        Create a src folder to install all the dependencies.<br>
+			                        <p class="short-mrg">Create a src folder to install all the dependencies.</p>
 			                        <p class="terminal">
 			                            cd spot-ingest <br>
 			                            mkdir src <br>
@@ -450,26 +455,26 @@
 			                        </p><br>
 			                    </li>
 			                    <li>
-			                        Install pip &#45; python package manager.<br>
+			                        <p class="short-mrg">Install pip &#45; python package manager.</p>
 			                        <p class="terminal">
 			                            wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py <br>
 			                            sudo -H python get-pip.py
 			                        </p><br>
 			                    </li>
 			                    <li>
-			                        kafka-python (how to install) -- Python client for the Apache Kafka distributed stream processing system.<br>
+			                        <p class="short-mrg">kafka-python (how to install) -- Python client for the Apache Kafka distributed stream processing system.</p>
 			                        <p class="terminal">
 			                            sudo -H pip install kafka-python
 			                        </p><br>
 			                    </li>
 			                    <li>
-			                        watchdog - (how to install) Python API library and shell utilities to monitor file system events.<br>
+			                        <p class="short-mrg">watchdog - (how to install) Python API library and shell utilities to monitor file system events.</p>
 			                        <p class="terminal">
 			                            sudo -H pip install watchdog
 			                        </p><br>
 			                    </li>
 			                    <li>
-			                        spot-nfdump - netflow dissector tool. This version is a custom version developed for apache spot (incubating) that has special features required for spot-ml.<br>
+			                        <p class="short-mrg">spot-nfdump - netflow dissector tool. This version is a custom version developed for apache spot (incubating) that has special features required for spot-ml.</p>
 			                        <p class="terminal">
 			                            sudo yum -y groupinstall "Development Tools"<br>
 			                            git clone https://github.com/Open-Network-Insight/spot-nfdump.git <br>
@@ -479,9 +484,8 @@
 			                        </p><br>
 			                    </li>
 			                    <li>
-			                        tshark - DNS dissector tool. For tshark, follow the steps on the web site to install it. Tshark must be downloaded and built from 
-			                        <a href="https://www.wireshark.org/download.html"> Wireshark page</a><br>
-			                        Full instructions for compiling Wireshark can be found <a href="https://www.wireshark.org/docs/wsug_html_chunked/ChBuildInstallUnixBuild.html">here</a> instructions for compiling<br>
+			                        <p class="short-mrg">tshark - DNS dissector tool. For tshark, follow the steps on the web site to install it. Tshark must be downloaded and built from <a href="https://www.wireshark.org/download.html"> Wireshark page</a></p>
+			                        <p class="short-mrg">Full instructions for compiling Wireshark can be found <a href="https://www.wireshark.org/docs/wsug_html_chunked/ChBuildInstallUnixBuild.html">here</a> instructions for compiling</p>
 			                        <p class="terminal">
 			                            sudo yum -y install gtk2-devel gtk+-devel bison qt-devel qt5-qtbase-devel sudo yum -y groupinstall "Development Tools"<br>
 			                            sudo yum -y install libpcap-devel<br>
@@ -495,18 +499,17 @@
 			                        </p><br>
 			                    </li>
 			                    <li>
-			                        screen -- The screen utility is used to capture output from the ingest component for logging, troubleshooting, etc. You can check if screen is installed on the node.<br>
+			                        <p class="short-mrg">screen -- The screen utility is used to capture output from the ingest component for logging, troubleshooting, etc. You can check if screen is installed on the node.</p>
 			                        <p class="terminal">
 			                            which screen
 			                        </p><br>
-			                        If screen is not available, install it.
+			                        <p class="short-mrg">If screen is not available, install it.</p>
 			                        <p class="terminal">
 			                            sudo yum install screen
 			                        </p><br>
 			                    </li>
 			                    <li>
-			                        Spark-Streaming – Download the following jar file: spark-streaming-kafka-0-8-assembly_2.11. This jar adds support for Spark Streaming + Kafka and needs to be downloaded on the following path: spot-ingest/common (with the same name). 
-			                        <b>Currently spark streaming is only enabled for proxy pipeline, if you are not planning to ingest proxy data you can skip this step.</b><br>
+			                        <p class="short-mrg">Spark-Streaming – Download the following jar file: spark-streaming-kafka-0-8-assembly_2.11. This jar adds support for Spark Streaming + Kafka and needs to be downloaded on the following path: spot-ingest/common (with the same name). <strong>Currently spark streaming is only enabled for proxy pipeline, if you are not planning to ingest proxy data you can skip this step.</strong></p>
 			                        <p class="terminal">
 			                            cd spot-ingest/common<br>
 			                            wget https://repo1.maven.org/maven2/org/apache/spark/spark-streaming-kafka- 0-8-assembly_2.11/2.0.0/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar
@@ -514,65 +517,65 @@
 			                    </li>
 			                </ul>
 			
-			                <h3>4.3 Ingest configuration.</h3>
-			                Ingest Configuration:<br>
-			                The file ingest_conf.json contains all the required configuration to start the ingest module
+			                <h4 class="gray">4.3 Ingest configuration.</h4>
+			                <p class="short-mrg">Ingest Configuration:</p>
+			                <p class="short-mrg">The file ingest_conf.json contains all the required configuration to start the ingest module</p>
 			                <ul>
-			                    <li><b>dbname:</b> Name of HIVE database where all the ingested data will be stored in avro-parquet format.</li>
-			                    <li><b>hdfs_app_path:</b> Application path in HDFS where the pipelines will be stored (i.e /user/application_user/).</li>
-			                    <li><b>kafka:</b> Kafka and Zookeeper server information required to create/listen topics and partitions.</li>
-			                    <li><b>collector_processes:</b> Ingest framework uses multiprocessing to collect files (different from workers), this configuration key defines the numbers of collector processes to use.</li>
-			                    <li><b>spark-streaming:</b> Proxy pipeline uses spark streaming to ingest data, this configuration is required to setup the spark application for more details please check : how to configure spark</li>
-			                    <li><b>pipelines:</b> In this section you can add multiple configurations for either the same pipeline or different pipelines. The configuration name must be lowercase without spaces (i.e. flow_internals).</li>
-			                    <li><b>local_staging:</b> (for each pipeline) this path is very important, ingest uses this for tmp files</li>
+			                    <li><strong>dbname:</strong> Name of HIVE database where all the ingested data will be stored in avro-parquet format.</li>
+			                    <li><strong>hdfs_app_path:</strong> Application path in HDFS where the pipelines will be stored (i.e /user/application_user/).</li>
+			                    <li><strong>kafka:</strong> Kafka and Zookeeper server information required to create/listen topics and partitions.</li>
+			                    <li><strong>collector_processes:</strong> Ingest framework uses multiprocessing to collect files (different from workers), this configuration key defines the numbers of collector processes to use.</li>
+			                    <li><strong>spark-streaming:</strong> Proxy pipeline uses spark streaming to ingest data, this configuration is required to setup the spark application for more details please check : how to configure spark</li>
+			                    <li><strong>pipelines:</strong> In this section you can add multiple configurations for either the same pipeline or different pipelines. The configuration name must be lowercase without spaces (i.e. flow_internals).</li>
+			                    <li><strong>local_staging:</strong> (for each pipeline) this path is very important, ingest uses this for tmp files</li>
 			                </ul>
-			                For more information about spot ingest please go to <a href="https://github.com/apache/incubator-spot/tree/master/spot-ingest"> spot-ingest</a><br>
+			                <p class="short-mrg">For more information about spot ingest please go to <a href="https://github.com/apache/incubator-spot/tree/master/spot-ingest"> spot-ingest</a></p>
 			            </div>
 			            <div id="ml">
 			
-			                <h2>5. Machine Learning.</h2>
-			                <h3>5.1 ML code.</h3>
-			                Copy ML code to the primary ML node, the node will launch Spark application.
+			                <h3>5. Machine Learning.</h3>
+			                <h4 class="gray">5.1 ML code.</h4>
+			                <p class="short-mrg">Copy ML code to the primary ML node, the node will launch Spark application.</p>
 			                <p class="terminal">
 			                    scp -r spot-ml "ml-node":/home/"solution-user"/. ssh "ml-node"
 			                    mv spot-ml ml
 			                    cd /home/"solution-user"/ml
-			                </p><br>
+			                </p>
 			
-			                <h3>5.1 ML dependencies</h3>
+			                <h4 class="gray">5.1 ML dependencies</h4>
 			                <ul>
 			                    <li>
-			                        Create a src folder to install all the dependencies.
+			                        <p class="short-mrg">Create a src folder to install all the dependencies.</p>
 			                        <p class="terminal">
 			                            mkdir src<br>
 			                            cd src
-			                        </p><br>
+			                        </p>
 			                    </li>
-			                    <li>Install sbt -- In order to build Scala code, a SBT installation is required. Please download and install <a href="http://www.scala-sbt.org/download.html">download.</a></li>
+			                    <li><p class="short-mrg">Install sbt -- In order to build Scala code, a SBT installation is required. Please download and install <a href="http://www.scala-sbt.org/download.html">download.</a></p></li>
 			                    <li>
-			                        Build Spark application.                
+			                        <p class="short-mrg">Build Spark application.</p>               
 			                        <p class="terminal">
 			                            cd ml<br>
 			                            sbt assembly
-			                        </p><br>
+			                        </p>
 			                    </li>
 			                </ul>
 			
-			                <b>NOTE: validate spot.conf is already copied to this node in the following path: /etc/spot.conf</b>
+			                <p class="short-mrg"><strong>NOTE:</strong> validate spot.conf is already copied to this node in the following path: /etc/spot.conf</p>
 			            </div>
 			            <div id="oa">
-			                <h2>6. Operational Analytics.</h2>
-			                <h3>6.1 OA code.</h3>
+			                <h3>6. Operational Analytics.</h3>
+			                <h4 class="gray">6.1 OA code.</h4>
 			
-			                Copy spot-oa code to the OA node designed in the configuration file (UINODE).
+			                <p class="short-mrg">Copy spot-oa code to the OA node designed in the configuration file (UINODE).</p>
 			                <p class="terminal">
 			                    scp -r spot-oa "ml-node":/home/"solution-user"/. <br>
 			                    ssh "oa-node"<br>
 			                    cd /home/"solution-user"/spot-oa    
 			                </p><br>
 			
-			                <h2>6.2 OA prerequisites.</h2>
-			                In order to execute this process there are a few prerequisites:
+			                <h4 class="gray">6.2 OA prerequisites.</h4>
+			                <p class="short-mrg">In order to execute this process there are a few prerequisites:</p>
 			                <ul>
 			                    <li>Python 2.7.</li>
 			                    <li>spot-ml results. Operational Analytics works and transforms Machine Learning results. The
@@ -580,40 +583,41 @@
 			                    <li><a href="https://pypi.python.org/pypi/tld/0.7.6"> TLD 0.7.6</a></li>
 			                </ul>
 			
-			                <h3>6.3 OA (backend) installation.</h3>
-			                OA installation consists of the configuration of extra modules or components and creation of a set of files. Depending on the data type that is going to be processed some components are required and other components are not. If users are planning to analyze the three data types supported (Flow, DNS and Proxy) then all components should be configured.
+			                <h4 class="gray">6.3 OA (backend) installation.</h4>
+			                <p class="short-mrg">OA installation consists of the configuration of extra modules or components and creation of a set of files. Depending on the data type that is going to be processed some components are required and other components are not. If users are planning to analyze the three data types supported (Flow, DNS and Proxy) then all components should be configured.</p>
 			                <ol>
-			                    <li>Add context files. Context files should go into spot-oa/context folder and they should contain network and geo localization context. For more information on context files go to spot- oa/context/
-			                        <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/README.md">README.md</a><br><br></li>
+			                    <li><p class="short-mrg">Add context files. Context files should go into spot-oa/context folder and they should contain network and geo localization context. For more information on context files go to spot- oa/context/ <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/README.md">README.md</a><br></p></li>
 			                    <li>
-			                        Add a file ipranges.csv: Ip ranges file is used by OA when running data type Flow. It should contain a list of ip ranges and the label for the given range, example:
+			                        <p class="short-mrg">Add a file ipranges.csv: Ip ranges file is used by OA when running data type Flow. It should contain a list of ip ranges and the label for the given range, example:</p>
 			                        <p class="terminal">
 			                            10.0.0.1,10.255.255.255,Internal
-			                        </p><br>    
+			                        </p>    
 			                    </li>
 			                    <li>
-			                        Add a file iploc.csv: Ip localization file used by OA when running data type Flow. Create a csv file with ip ranges in integer format and give the coordinates for each range.<br><br>
+			                        <p class="short-mrg">Add a file iploc.csv: Ip localization file used by OA when running data type Flow. Create a csv file with ip ranges in integer format and give the coordinates for each range.</p>
 			                    </li>
 			                    <li>
-			                        Add a file networkcontext_1.csv: Ip names file is used by OA when running data type DNS and Proxy. This file should contains two columns, one for Ip the other for the name, example:
+			                        <p class="short-mrg">Add a file networkcontext_1.csv: Ip names file is used by OA when running data type DNS and Proxy. This file should contains two columns, one for Ip the other for the name, example:</p>
 			                        <p class="terminal">
 			                            10.192.180.150, AnyMachine <br>
 			                            10.192.1.1, MySystem
-			                        </p><br>
+			                        </p>
 			                    </li>
 			                    <li>
-			                        The spot-setup project contains scripts to install the hive database and also includes the main configuration file for this tool. The main file is called spot.conf which contains different variables that the user can set up to customize their installation. Some variables must be     updated in order to have spot-ml and spot-oa working.<br><br>
-			                        To run the OA process it's required to install spot-setup. If it's already installed just make sure the following configuration are set up in spot.conf file (oa node).<br><br>
-			                        <b>LUSER:</b> represents the home folder for the user in the Machine Learning node. It's used to know where to return feedback.<br>
-			                        <b>HUSER:</b> represents the HDFS folder. It's used to know from where to get Machine Learning results.<br>
-			                        <b>IMPALA_DEM:</b> represents the node running Impala daemon. It's needed to execute Impala queries in the OA process.<br>
-			                        <b>DBNAME:</b> Hive database, the name is required for OA to execute queries against this database. LPATH: represents the local path where the feedback is going to be sent, it actually works with LUSER.<br><br>
+			                        <p class="short-mrg">The spot-setup project contains scripts to install the hive database and also includes the main configuration file for this tool. The main file is called spot.conf which contains different variables that the user can set up to customize their installation. Some variables must be     updated in order to have spot-ml and spot-oa working.</p>
+			                        <p class="short-mrg">To run the OA process it's required to install spot-setup. If it's already installed just make sure the following configuration are set up in spot.conf file (oa node).</p>
+			                        <ul>
+				                        <li><strong>LUSER:</strong> represents the home folder for the user in the Machine Learning node. It's used to know where to return feedback.</li>
+				                        <li><strong>HUSER:</strong> represents the HDFS folder. It's used to know from where to get Machine Learning results.</li>
+				                        <li><strong>IMPALA_DEM:</strong> represents the node running Impala daemon. It's needed to execute Impala queries in the OA process.</li>
+				                        <li><strong>DBNAME:</strong> Hive database, the name is required for OA to execute queries against this database. LPATH: represents the local path where the feedback is going to be sent, it actually works with LUSER.</li>
+			                        </ul>
 			                    </li>
 			                    <li>
-			                        Configure components. Components are python modules included in this project that add context and details to the data being analyzed. There are five components and while not all components are required to every data type, it's recommended to configure all of them in case new data types are analyzed in the future. For more details about how to configure each component go to <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/components/README.md">spot-oa/oa/components/README.md.</a><br><br>
+			                       <p class="short-mrg">Configure components. Components are python modules included in this project that add context and details to the data being analyzed. There are five components and while not all components are required to every data type, it's recommended to configure all of them in case new data types are analyzed in the future. For more details about how to configure each component go to <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/components/README.md">spot-oa/oa/components/README.md.</a></p>
 			                    </li>
 			                    <li>
-			                        You need to update the engine.json file accordingly:
+			                        <p class="short-mrg">You need to update the engine.json file accordingly:</p>
 			                        <p class="terminal">
 			                            {
 			                                "oa_data_engine":"<database engine>",
@@ -622,60 +626,58 @@
 			                                },
 			                                "hive":{}
 			                            }
-			                        </p><br>
-			                        Where:
+			                            
+			                        </p>
+			                        <p class="short-mrg">Where:</p>
 			                        <ul>
 			                            <li>: Whichever database engine you have installed and configured in your cluster to work with Apache Spot (incubating). i.e. "Impala" or "Hive". For this key, the value you enter needs to match exactly with one of the following keys, where you'll need to add the corresponding node name.<br></li>
 			                            <li>: The node name in your cluster where you have the database service running.</li>
 			                        </ul>
 			                    </li>            
 			                </ol>
-			                For more information please go to: <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/INSTALL.md"> https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/INSTALL.md</a>
+			                <p class="short-mrg">For more information please go to: <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/INSTALL.md"> https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/INSTALL.md</a></p>
 			
-			                <h2>6.4 Visualization.</h2>
-			                <p>
-			                    Apache Spot (incubating) - User Interface (aka Spot UI or UI) Provides tools for interactive visualization, noise filters, white listing, and attack heuristics.<br><br>
-			                    Here you will find instructions to get Spot UI up and running. For more information about Spot look here.<br><br>
-			                </p>
+			                <h3>6.4 Visualization.</h3>
+			                <p>Apache Spot (incubating) - User Interface (aka Spot UI or UI) Provides tools for interactive visualization, noise filters, white listing, and attack heuristics.</p>
+			                    <p>Here you will find instructions to get Spot UI up and running. For more information about Spot look here.</p>
 			
-			                <h2>6.5 Visualization requirements.</h2>
+			                <h3>6.5 Visualization requirements.</h3>
 			                <ul>
 			                    <li>IPython with notebook module enabled (== 3.2.0) <a href="https://ipython.org/ipython-doc/3/index.html"> link</a></li>
 			                    <li>NPM - Node Package Manager <a href="https://www.npmjs.com"> link</a></li>
 			                    <li>spot-oa output > Spot UI takes any output from spot-oa backend, as input for the visualization tools provided. Please make sure there are files available under PATH_TO_SPOT/ui/data/${PIPELINE}/${DATE}/</li>
 			                </ul>
 			
-			                <h2>6.6 Install visualization.</h2>
+			                <h3>6.6 Install visualization.</h3>
 			                <ol>
 			                    <li>
-			                        Go to Spot UI folder:
-			                        <p class="terminal">cd spot-oa/ui</p><br>
+			                        <p class="short-mrg">Go to Spot UI folder:</p>
+			                        <p class="terminal">cd spot-oa/ui</p>
 			                    </li>
 			                    <li>
-			                        With root privileges, install browserify and uglify as global commands on your system.
-			                        <p class="terminal">npm install –g browserify uglifyjs</p><br>
+			                       <p class="short-mrg">With root privileges, install browserify and uglify as global commands on your system.</p>
+			                        <p class="terminal">npm install –g browserify uglifyjs</p>
 			                    </li>
 			                    <li>
-			                        Install dependencies and build Spot UI.
-			                        <p class="terminal">npm install</p><br>
+			                        <p class="short-mrg">Install dependencies and build Spot UI.</p>
+			                        <p class="terminal">npm install</p>
 			                    </li>
 			                </ol>
 			            </div>
 			        </div>
+		        </div>
+		        <div class="main tan-bg">
 			        <div id="userguide">
 			            <h1>User Guide</h1>
 			            <div id="uflow">
-			                <h2>Flow</h2>
+			                <h3>Flow</h3>
 			                <div id="fsc">
-			                    <h3>Suspicious Connects</h3>
-			                    <p>
-			                        Access the analyst view for Suspicious Connects <b>http://"server-ip":8889/files/ui/flow/suspicious.html</b> . 
-			                        Select the date that you want to review (defaults to current date). <br>
-			                        Your view should look similar to the one below:<br><br>
-			                    </p>
-			                    <img src="images/1.1sc1.jpg">
-			                    <p>
-			                        Suspicious Connects Web Page contains 4 frames with different functions and information:
+			                    <h4 class="gray" style="margin-top:0;">Suspicious Connects</h4>
+			                    <p class="short-mrg">Access the analyst view for Suspicious Connects <strong>http://"server-ip":8889/files/ui/flow/suspicious.html</strong>. Select the date that you want to review (defaults to current date).</p>
+			                     <p class="short-mrg">Your view should look similar to the one below:</p>
+			                    <img src="images/1.1sc1.jpg" class="box-shadow" alt="" />
+			                    <p class="short-mrg">
+			                        Suspicious Connects Web Page contains 4 frames with different functions and information:</p>
 			
 			                        <ul>
 			                            <li>Suspicious</li>
@@ -685,9 +687,9 @@
 			                        </ul>
 			                    </p>
 			
-			                    <h3>The Suspicious frame</h3>
-			                    <p>
-			                        Located in the top left corner of the Suspicious Connects Web Page, this frame presents the Top 250 Suspicious Connections in a table format based on Machine Learning (ML) output. These are the columns depicted in this table:
+			                    <h4 class="gray">The Suspicious frame</h4>
+			                    <p class="short-mrg">
+			                        Located in the top left corner of the Suspicious Connects Web Page, this frame presents the Top 250 Suspicious Connections in a table format based on Machine Learning (ML) output. These are the columns depicted in this table:</p>
 			                        <ul>
 			                            <li>Rank - ML output rank</li>
 			                            <li>Time - Time received field for Netflow record</li>
@@ -700,73 +702,57 @@
 			                            <li>Input Bytes - Reported Input Bytes for the Netflow Record</li>                        
 			                        </ul>
 			                    </p>
-			                    <p>
-			                        <b>Additional functionality in Suspicious frame</b>
+			                    <p class="orange-bold" style="margin-bottom:0;">Additional functionality in Suspicious frame</strong>
 			                        <ol>                        
 			                            <li>
 			                                By selecting a specific row within the Suspicious frame, the connection in the Network View will be highlighted.<br><br>
-			                                <img src="images/1.1_sc2.jpg"><br><br>
+			                                <img src="images/1.1_sc2.jpg" class="box-shadow" alt="" />
 			                            </li>
 			                            <li>
-			                                In addition, by performing this row selection the Details Frame presents all the Netflow records in between Source & Destination IP Addresses that happened in the same minute as the Suspicious Record selected<br><br>
-			                                <img src="images/1.1_sc3.jpg"><br><br>
+			                                In addition, by performing this row selection the Details Frame presents all the Netflow records in between Source &amp; Destination IP Addresses that happened in the same minute as the Suspicious Record selected<br><br>
+			                                <img src="images/1.1_sc3.jpg" class="box-shadow" alt="" />
 			                            </li>
 			                            <li>
 			                                Next to a Source/Destination IP Addresses, a shield icon might be present. This icon denotes any reputation services value context added as part of the Operational Analytics component. By rolling over you can see the IP Address Reputation result<br><br>
-			                                <img src="images/1.1_sc4.jpg"><br><br>
+			                                <img src="images/1.1_sc4.jpg" class="box-shadow" alt="" />
 			                            </li>
 			                            <li>
 			                                An additional icon next to the IP addresses within the Suspicious frame is the globe icon. This icon denotes Geo-localization information context added as part of the Operational Analytics component. By rolling over you can see the additional information<br><br>
-			                                <img src="images/1.1_sc5.jpg"><br><br>
+			                                <img src="images/1.1_sc5.jpg" class="box-shadow" alt="" /><br><br>
 			                            </li>
 			                        </ol>
 			                    </p>
 			                    
-			                    <h3>The Network View frame</h3>
-			                    <p>
-			                        Located at the top right corner of the Suspicious Connects Web Page. It is a graphical representation of the Suspicious records relationships. 
-			                        If context has been added, Internal IP Addresses will be presented as diamonds and External IP Addresses as circles.<br><br>
-			                    </p>
-			                    <img src="images/1.1_sc6.jpg"><br><br>
-			                    <p>
-			                        <b>Additional functionality in Network View frame</b>
+			                    <h4 class="gray">The Network View frame</h4>
+			                    <p class="short-mrg">Located at the top right corner of the Suspicious Connects Web Page. It is a graphical representation of the Suspicious records relationships.</p>
+			                    <p class="short-mrg">If context has been added, Internal IP Addresses will be presented as diamonds and External IP Addresses as circles.</p>
+			                    <img src="images/1.1_sc6.jpg" class="box-shadow" alt="" /><br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Additional functionality in Network View frame</p>
 			                        <ol>                        
 			                            <li>
-			                                As soon as you move your mouse over a node, a dialog shows IP address information of that particular node.<br><br>
-			                                <img src="images/1.1_sc7.jpg"><br><br>
+			                                <p class="short-mrg">As soon as you move your mouse over a node, a dialog shows IP address information of that particular node.</p>
+			                                <img src="images/1.1_sc7.jpg" class="box-shadow" alt="" />
 			                            </li>
 			                            <li>
-			                                A primary mouse click over one of the nodes will bring a chord diagram into the Details frame. 
-			                                The chord diagram is a graphical representation of the connections between the selected node and other nodes within Suspicious Connects records, 
-			                                providing number of Bytes From & To. You can move your mouse over an IP to get additional information. In addition, 
-			                                drag the chord graph to change its orientation.<br><br>
-			                                <img src="images/1.1_sc8.jpg"><br><br>
+			                                <p class="short-mrg">A primary mouse click over one of the nodes will bring a chord diagram into the Details frame.</p>
+			                                <p class="short-mrg">The chord diagram is a graphical representation of the connections between the selected node and other nodes within Suspicious Connects records, providing number of Bytes From & To. You can move your mouse over an IP to get additional information. In addition, drag the chord graph to change its orientation.</p>
+			                                <img src="images/1.1_sc8.jpg" class="box-shadow" alt="" />
 			                            </li>
 			                            <li>
-			                                A secondary mouse click uses the node information in order to apply an IP filter to the Suspicious Web Page.<br><br>
-			                                <img src="images/1.1_sc9.jpg"><br><br>
+			                                <p class="short-mrg">A secondary mouse click uses the node information in order to apply an IP filter to the Suspicious Web Page.</p>
+			                                <img src="images/1.1_sc9.jpg" class="box-shadow" alt="" />
 			                            </li>                
 			                        </ol>
-			                    </p>
 			
-			                    <h3>The Notebook frame</h3>
-			                    <p>
-			                        This frame contains an initialized Jupyter Notebook. The main function is to allow the Analyst to score IP Addresses and Ports with different values. 
-			                        In order to assign a risk to a specific connection, select it using a combination of all the combo boxes, 
-			                        select the correct risk rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button. 
-			                        Selecting a value from each list will narrow down the coincidences, therefore if the analyst wishes to score all connections with one same relevant attribute (i.e. src port 80), 
-			                        then select only the combo boxes that are relevant and leave the rest at the first row at the top.
-			                    </p>
-			                    <img src="images/1.1_sc10.jpg"><br><br>
+			                    <h4 class="gray">The Notebook frame</h4>
+			                    <p class="short-mrg">This frame contains an initialized IPython Notebook. The main function is to allow the Analyst to score IP Addresses and Ports with different values. In order to assign a risk to a specific connection, select it using a combination of all the combo boxes, select the correct risk rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button. Selecting a value from each list will narrow down the coincidences, therefore if the analyst wishes to score all connections with one same relevant attribute (i.e. src port 80), then select only the combo boxes that are relevant and leave the rest at the first row at the top.</p>
+			                    <img src="images/1.1_sc10.jpg" class="box-shadow" alt="" />
 			
-			                    <h3>The Score button</h3>
-			                    <p>
-			                        When the Analyst clicks on the Score button, the action will find all coincidences exactly matching the selected values and update their score to the rating selected in the radio button list.
-			                    </p>
+			                    <h4 class="gray">The Score button</h4>
+			                    <p class="short-mrg">When the Analyst clicks on the Score button, the action will find all coincidences exactly matching the selected values and update their score to the rating selected in the radio button list.</p>
 			
-			                    <h3>The Save button</h3>
-			                    <p>
-			                        Analysts must use Save button in order to store the scored connections. After you click it, the rest of the frames in the page will be refreshed and the connections that you already scored will disappear on the suspicious connects page, including from the lists in the notebook. This will also reorder the flow_scores.csv file to move all scored connections to the end of the file and sort the rest by severity value. A shell script will be executed to copy the file with the scored connections to the ML Node and specific path. The following values will be obtained from the .conf file:
+			                    <h4 class="gray">The Save button</h4>
+			                    <p class="short-mrg">Analysts must use Save button in order to store the scored connections. After you click it, the rest of the frames in the page will be refreshed and the connections that you already scored will disappear on the suspicious connects page, including from the lists in the notebook. This will also reorder the flow_scores.csv file to move all scored connections to the end of the file and sort the rest by severity value. A shell script will be executed to copy the file with the scored connections to the ML Node and specific path. The following values will be obtained from the .conf file:</p>
 			
 			                        <ul>
 			                            <li>LPATH</li>
@@ -774,205 +760,175 @@
 			                            <li>LUSER</li>
 			                        </ul>
 			
-			                        For this process to work correctly, it's important to create an ssh key to enable secure communication between nodes, in this case, the ML node and the node where the UI runs. To learn more on how to create and copy the ssh key, please refer to the "Configure User Accounts" section.
-			                    </p>
+			                        <p class="short-mrg">For this process to work correctly, it's important to create an ssh key to enable secure communication between nodes, in this case, the ML node and the node where the UI runs. To learn more on how to create and copy the ssh key, please refer to the "Configure User Accounts" section.</p>
 			
-			                    <h3>The Quick IP Scoring box</h3>
-			                    <p>
-			                        This box allows the Analyst to enter an IP Address and scored using the "Score" and "Save" buttons using the same process depicted above
-			                    </p>
+			                    <h4 class="gray">The Quick IP Scoring box</h4>
+			                    <p class="short-mrg">This box allows the Analyst to enter an IP Address and scored using the "Score" and "Save" buttons using the same process depicted above.</p>
 			
-			                    <h3>Suspicious Connects Web Page Input files</h3>
+			                    <h4 class="gray">Suspicious Connects Web Page Input files</h4>
 			                    <ul>
 			                            <li>flow_scores.csv</li>
 			                            <li>flow_scores_bu.csv</li>               
 			                    </ul>
 			                </div>
 			                <div id="fti">
-			                    <h3>Threat Investigation</h3>
-			                    <p>
-			                        Access the analyst view for suspicious connects <b>http://"server-ip":8889/files/ui/flow/suspicious.html.</b>
-			                         Select the date that you want to review. <br>
-			                        Your screen should now look like this:<br><br>
-			                        <img src="images/1.1sc1.jpg"><br><br>
+			                    <h4 class="gray">Threat Investigation</h4>
+			                    <p class="short-mrg">Access the analyst view for suspicious connects <strong>http://"server-ip":8889/files/ui/flow/suspicious.html.</strong></p>
+			                    <p class="short-mrg">Select the date that you want to review.</p>
+			                    <p class="short-mrg">Your screen should now look like this:</p>
+			                    <img src="images/1.1sc1.jpg" class="box-shadow" alt="" />
 			                        
-			                        The analyst must score the suspicious connections before moving into Threat Investigation View, 
-			                        please refer to <a href="#fsc">Suspicious Connects Analyst View</a> walk-through <br>
-			                        Select <b>Flows > Threat Investigation </b> from apache spot (incubating) Menu.<br><br>
-			                        <img src="images/1.1_ti01.jpg"><br><br>
+			                    <p class="short-mrg">The analyst must score the suspicious connections before moving into Threat Investigation View, please refer to <a href="#fsc">Suspicious Connects Analyst View</a> walk-through.</p>
+			                   
+			                    <p class="short-mrg">Select <strong>Flows > Threat Investigation </strong> from apache spot (incubating) Menu.</p>
+			                    
+			                    <img src="images/1.1_ti01.jpg" class="box-shadow" alt="" />
 			
-			                        <b>Threat Investigation</b> Web Page will be opened, loading the embedded Jupyter notebook.<br><br>
-			                        <img src="images/1.1_ti02.jpg"><br><br>
+		                        <p class="short-mrg"><strong>Threat Investigation</strong> Web Page will be opened, loading the embedded IPython notebook.</p>
+		                        <img src="images/1.1_ti02.jpg" class="box-shadow" alt="" />
+		
+		                        <h4 class="gray">Expanded search</h4>
+		                        <p class="short-mrg">You can select any IP from the list and click <strong>Search</strong> to view specific details about it. A query to the flow table will be executed looking into the raw data initially collected to find all communication between this and any other IP Addresses during the day, collecting additional information, such as:</p>
 			
-			                        <h3>Expanded search</h3>
-			                        <p>
-			                            You can select any IP from the list and click <b>Search</b> to view specific details about it. A query to the flow table will be executed looking into the raw data initially collected to find all communication between this and any other IP Addresses during the day, collecting additional information, such as:
-			
-			                            <ul>
-			                                <li>max & avg number of bytes sent/received</li>
-			                                <li>max & avg number of packets sent/received</li>
-			                                <li>destination port</li>
-			                                <li>source port</li>
-			                                <li>first & last connection time</li>
-			                                <li>count of connections</li>
-			                            </ul>
-			
-			                            The full output of this query is stored into the ir-<ip>.csv file. If an expanded search was previously executed on this IP, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used.<br><br>
-			
-			                            Based on the results in this file, the following functions will be executed:<br><br>
+	                            <ul>
+	                                <li>max &amp; avg number of bytes sent/received</li>
+	                                <li>max &amp; avg number of packets sent/received</li>
+	                                <li>destination port</li>
+	                                <li>source port</li>
+	                                <li>first &amp; last connection time</li>
+	                                <li>count of connections</li>
+	                            </ul>
+	
+	                            <p class="short-mrg">The full output of this query is stored into the ir-<ip>.csv file. If an expanded search was previously executed on this IP, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used.</p>
+	
+	                            <p class="short-mrg">Based on the results in this file, the following functions will be executed:</p>
 			                            
-			                            <ul>
-			                                <li>get_in_out_and_twoway_conns</li>
-			                                <li>add_geospatial_info()</li>
-			                                <li>add_network_context()</li>
-			                            </ul>
+	                            <ul>
+	                                <li>get_in_out_and_twoway_conns</li>
+	                                <li>add_geospatial_info()</li>
+	                                <li>add_network_context()</li>
+	                            </ul>
 			
-			                            The system will create three dictionaries, each containing:<br><br>
-			                            <ul>
-			                                <li>Inbound connections (when the suspicious IP acts only as destination)</li>
-			                                <li>Outbound connections (when the suspicious IP acts only as source)</li>
-			                                <li>2Way Connections (when the suspicious IP acts as both source and destination)</li>
+			                    <p class="short-mrg">The system will create three dictionaries, each containing:</p>
+	                            <ul>
+	                                <li>Inbound connections (when the suspicious IP acts only as destination)</li>
+	                                <li>Outbound connections (when the suspicious IP acts only as source)</li>
+	                                <li>2Way Connections (when the suspicious IP acts as both source and destination)</li>
+	
+	                             </ul>
 			
-			                             </ul>
+	                            <p class="short-mrg">If an iploc.csv file is available, each dictionary will be updated with the geolocation data for each IP.</p>
+	                            
+	                            <p class="short-mrg">If a network_context_1.txt file is available, a description for each identified node will also be added to each dictionary.</p>
+	
+	                            <p class="short-mrg">The connections dictionary will be separated into two smaller dictionaries, each containing</p>
+	                            <ul>
+	                                <li>Top 'n' IP's per number of connections.</li>
+	                                <li>Top 'n' IP's per bytes transferred.</li>
+	                                <li>The number of results stored in the dictionaries (n) can be set by updating the value of the top_results variable.</li>
+	                            </ul>
 			
-			                            If an iploc.csv file is available, each dictionary will be updated with the geolocation data for each IP.<br>
-			                            If a network_context_1.txt file is available, a description for each identified node will also be added to each dictionary.<br><br>
-			
-			                            The connections dictionary will be separated into two smaller dictionaries, each containing<br><br>
-			                            <ul>
-			                                <li>Top 'n' IP's per number of connections.</li>
-			                                <li>Top 'n' IP's per bytes transferred.</li>
-			                                <li>The number of results stored in the dictionaries (n) can be set by updating the value of the top_results variable.</li>
-			                            </ul>
-			                        </p>
-			
-			                        <h3>Save Comments</h3>
-			                        <p>
-			                            In addition, a web form is displayed under the title of 'Threat summary', 
-			                            where the analyst can enter a Title & Description on the kind of attack/behavior described by the particular IP address that is under investigation.<br><br>
-			                            Click on the Save button after entering the data to write it into a CSV file, which eventually will be used in the Storyboard Analyst View.<br><br>
-			                            <img src="images/1.1_ti03.jpg"><br><br>
-			                        </p>
-			
-			                        <p>
-			                            After creating the csv file with the analysis description, 
-			                            the following functions will generate all graphs and diagrams related to the IP under investigation, 
-			                            to populate the Storyboard Analyst view.<br><br>
-			
-			                            <ul>
-			                                <li>generate_attack_map_file(anchor_ip, top_inbound_b, outbound, twoway)</li>
-			                                <li>generate_stats(anchor_ip, top_inbound_b, outbound, twoway, threat_name)</li>
-			                                <li>generate_dendro(anchor_ip, top_inbound_b, outbound, twoway, date)</li>
-			                                <li>details_inbound(anchor_ip,top_inbound_b)</li>
-			                            </ul>
-			
-			                            <b>generate_attack_map_file()</b> - create a globe map indicating the trajectory of the connections based on their geolocation. 
-			                            This function depends on having geolocation data for each IP. If you haven't set up a geolocation database file, the map file won't be generated.<br>
-			                            <b>Output:</b> globe_<ip>.json<br><br>
-			
-			                            <b>generate_stats()</b> - This will create the horizontal bar graph for the Impact Analysis. 
-			                            This will represent the number of inbound, outbound and twoway connections found.<br>
-			                            <b>Output:</b> stats-<ip>.json<br><br>
-			
-			                            <b>generate_dendro()</b> - This function creates a file linking all different IP's that have connected to the IP under investigation, 
-			                            this will be displayed in the Storyboard under the Incident Progression panel as a dendrogram.
-			                            If no network context file is included, the dendrogram will only be 1 level deep, but if a network context file is included, 
-			                            additional levels will be added to the dendrogram to break down the threat activity.<br>
-			                            <b>Output:</b> dendro-<ip>.json<br><br>
-			
-			                             <b>details_inbound()</b> - This function executes a query to the flow table, to find additional details on the IP under investigation and its connections grouping them by time; so the result will be a graph showing the number of connections occurring in a customizable timeframe.<br>
-			                            <b>Output:</b> sbdet-<ip>.tsv<br><br>
-			
-			                            <b>add_threat()</b> - This function updates/creates the threats.csv file, appending a new line for every threat analyzed. 
-			                            This file will serve as an index for the Storyboard and is displayed in the 'Executive Threat Briefing' panel.<br>
-			                            <b>Output:</b> threats.csv<br><br>
-			
-			                            Each function will print a message to let you know if its output file was successfully updated.<br><br>
-			
-			                            <h3>Continue to the Storyboard</h3>
-			                            <p>
-			                                 Once you have saved comments on any suspicious IP, you can continue to the Storyboard to check the results.
-			
-			                                <b>Input files</b>
-			                                <ul>
-			                                    <li>flow_scores.csv</li>
-			                                    <li>iploc.csv</li>
-			                                    <li>network_context_1.txt</li>
-			                                </ul>
-			
-			                                <b>Output files</b>
-			                                <ul>
-			
-			                                    <li>/oni-oa/data/flow/<date>/threats.csv</li>
-			                                    <li>/oni-oa/data/flow/<date>/threat_<ip>.csv</li>
-			                                    <li>/oni-oa/data/flow/<date>/sbdet-<ip>.tsv</li> 
-			                                    <li>/oni-oa/data/flow/<date>/globe_<ip>.json</li>  
-			                                    <li>/oni-oa/data/flow/<date>/stats-<ip>.json</li>  
-			                                    <li>/oni-oa/data/flow/<date>/dendro-<ip>.json</li>
-			                                </ul>  
-			                            </p>
-			                           
-			                            <b>HDFS tables consumed:</b> flow
-			                        </p>
-			                    </p>
+		                        <h4 class="gray">Save Comments</h4>
+		                        <p class="short-mrg">In addition, a web form is displayed under the title of 'Threat summary', where the analyst can enter a Title &amp; Description on the kind of attack/behavior described by the particular IP address that is under investigation.</p>
+		                        <p class="short-mrg">Click on the Save button after entering the data to write it into a CSV file, which eventually will be used in the Storyboard Analyst View.</p>
+		                        <img src="images/1.1_ti03.jpg" class="box-shadow" alt="" />			
+		                        <p class="short-mrg">After creating the csv file with the analysis description, the following functions will generate all graphs and diagrams related to the IP under investigation, to populate the Storyboard Analyst view.</p>
+		
+	                            <ul>
+	                                <li>generate_attack_map_file(anchor_ip, top_inbound_b, outbound, twoway)</li>
+	                                <li>generate_stats(anchor_ip, top_inbound_b, outbound, twoway, threat_name)</li>
+	                                <li>generate_dendro(anchor_ip, top_inbound_b, outbound, twoway, date)</li>
+	                                <li>details_inbound(anchor_ip,top_inbound_b)</li>
+	                            </ul>
+	
+	                            <p><strong>generate_attack_map_file()</strong> - create a globe map indicating the trajectory of the connections based on their geolocation. This function depends on having geolocation data for each IP. If you haven't set up a geolocation database file, the map file won't be generated.<br><strong>Output:</strong> globe_<ip>.json</p>
+	
+	                            <p><strong>generate_stats()</strong> - This will create the horizontal bar graph for the Impact Analysis.This will represent the number of inbound, outbound and twoway connections found.<br>
+		                        <strong>Output:</strong> stats-<ip>.json</p>
+		
+		                        <p><strong>generate_dendro()</strong> - This function creates a file linking all different IP's that have connected to the IP under investigation, this will be displayed in the Storyboard under the Incident Progression panel as a dendrogram. If no network context file is included, the dendrogram will only be 1 level deep, but if a network context file is included, additional levels will be added to the dendrogram to break down the threat activity.<br>
+	                            <strong>Output:</strong> dendro-<ip>.json</p>
+	
+	                             <p><strong>details_inbound()</strong> - This function executes a query to the flow table, to find additional details on the IP under investigation and its connections grouping them by time; so the result will be a graph showing the number of connections occurring in a customizable timeframe.<br>
+	                            <strong>Output:</strong> sbdet-<ip>.tsv</p>
+		
+		                        <p><strong>add_threat()</strong> - This function updates/creates the threats.csv file, appending a new line for every threat analyzed. This file will serve as an index for the Storyboard and is displayed in the 'Executive Threat Briefing' panel.<br><strong>Output:</strong> threats.csv</p>
+		
+		                        <p>Each function will print a message to let you know if its output file was successfully updated.</p>
+		
+		                        <h4 class="gray">Continue to the Storyboard</h4>
+	                            <p>Once you have saved comments on any suspicious IP, you can continue to the Storyboard to check the results.</p>
+	
+	                            <p class="orange-bold" style="margin-bottom:0;">Input files</p>
+                                <ul>
+                                    <li>flow_scores.csv</li>
+                                    <li>iploc.csv</li>
+                                    <li>network_context_1.txt</li>
+                                </ul>
+
+                                <p class="orange-bold" style="margin-bottom:0;">Output files</p>
+                                <ul>
+
+                                    <li>/oni-oa/data/flow/<date>/threats.csv</li>
+                                    <li>/oni-oa/data/flow/<date>/threat_<ip>.csv</li>
+                                    <li>/oni-oa/data/flow/<date>/sbdet-<ip>.tsv</li> 
+                                    <li>/oni-oa/data/flow/<date>/globe_<ip>.json</li>  
+                                    <li>/oni-oa/data/flow/<date>/stats-<ip>.json</li>  
+                                    <li>/oni-oa/data/flow/<date>/dendro-<ip>.json</li>
+                                </ul>  
+	                           
+	                            <p class="orange-bold" style="margin-bottom:0;">HDFS tables consumed:</p> 
+	                            <ul>
+	                            	<li>flow</li>
+	                            </ul>
+
 			                </div>
 			                <div id="fsb">
-			                    <h3>Storyboard</h3>
+			                    <h4 class="gray">Storyboard</h4>
 			                    <ol>
 			                        <li>
-			                            Select the option <b>Flow > Storyboard</b> from Apache Spot (incubating) Menu.<br><br>
-			                            <img src="images/sb_tit1.JPG"><br><br>
-			                        </li>
-			                        <li>   
-			                            Your view should look something like this, depending on the IP's you have analyzed on the Threat Analysis for that day. 
-			                            You can select a different date from the calendar.<br><br>
-			                            <img src="images/flow_sb_1.JPG"><br><br>
+			                        	<p class="short-mrg">Select the option <strong>Flow > Storyboard</strong> from Apache Spot (incubating) Menu.</p>
+			                            <img src="images/sb_tit1.JPG" class="box-shadow" alt="" />
+		                            </li>
+			                        <li>
+			                        	<p class="short-mrg">Your view should look something like this, depending on the IP's you have analyzed on the Threat Analysis for that day. You can select a different date from the calendar.</p>
+			                            <img src="images/flow_sb_1.JPG" class="box-shadow" alt="" />
 			                        </li>
 			                        <li>
-			                            Review the results:<br><br>
+			                        	<p class="short-mrg">Review the results:</p>
 			
-			                            <b>Executive Threat Briefing</b><br>
-			                            <b>Data source file:</b> threats.csv
-			                            Executive Threat Briefing lists all the incident titles you entered at the Threat Investigation notebook. 
-			                            You can click on any title and the additional information will be displayed.<br><br>
-			                            <img src="images/flow_sb_2.JPG" style="width: 50%"><br><br>
+			                            <p class="orange-bold" style="margin-bottom:0;">Executive Threat Briefing</p>
+			                            <p class="short-mrg"><strong>Data source file:</strong> threats.csv Executive Threat Briefing lists all the incident titles you entered at the Threat Investigation notebook. You can click on any title and the additional information will be displayed.</p>
+			                            <p class="short-mrg" style="text-align: center"><img src="images/flow_sb_2.JPG" class="box-shadow" alt="" /></p>
 			
-			                            Clicking on a threat from the list will also update the additional frames.<br><br>
+			                           <p class="short-mrg">Clicking on a threat from the list will also update the additional frames.</p>
 			
-			                            <b>Incident Progression</b><br>
-			                            <b>Data source file:</b> dendro-<ip>.json<br>
-			                            Frame located in the top right of the Storyboard Web page<br><br>
-			                            <img src="images/flow_sb_3.JPG"><br><br>
+			                            <p class="orange-bold" style="margin-bottom:0;">Incident Progression</p>
+			                            <p class="short-mrg"><strong>Data source file:</strong> dendro-<ip>.json<br>Frame located in the top right of the Storyboard Web page</p>
+			                            <img src="images/flow_sb_3.JPG" class="box-shadow" alt="" />
 			
-			                            Incident Progression displays a tree graph (dendrogram) detailing the type of connections that conform the activity related to the threat. 
-			                            When network context is available, this graph will present an extra level to break down each type of connection into detailed context.<br><br>
+			                            <p class="short-mrg">Incident Progression displays a tree graph (dendrogram) detailing the type of connections that conform the activity related to the threat.</p>
+			                            <p class="short-mrg">When network context is available, this graph will present an extra level to break down each type of connection into detailed context.</p>
 			
-			                            <b>Impact Analysis</b>
-			                            <b>Data source file:</b> stats-<ip>.json<br><br>
-			                            <img src="images/flow_sb_4.JPG" style="width: 50%"><br><br>
+			                            <p class="short-mrg"><strong>Impact Analysis Data source file:</strong> stats-<ip>.json</p>
+			                            <p class="short-mrg" style="text-align: center;"><img src="images/flow_sb_4.JPG" class="box-shadow" alt="" /></p>
 			
 			
-			                            Impact Analysis displays a horizontal bar graph representing the number of inbound, outbound and two-way connections found related to the threat. 
-			                            Clicking any bar in the graph, will break down that information into its context.<br><br>
+			                            <p class="short-mrg">Impact Analysis displays a horizontal bar graph representing the number of inbound, outbound and two-way connections found related to the threat. Clicking any bar in the graph, will break down that information into its context.</p>
 			
-			                            <b>Map View | Globe</b><br>
-			                            <b>Data source file:</b> globe_<ip>.json<br><br>
-			                            <img src="images/flow_sb_5.JPG" style="width: 50%"><br><br>
+			                            <p class="orange-bold" style="margin-bottom:0;">Map View | Globe</p>
+			                            <p class="short-mrg"><strong>Data source file:</strong> globe_<ip>.json</p>
+			                            <p class="short-mrg" style="text-align: center;"><img src="images/flow_sb_5.JPG" class="box-shadow" alt="" /></p>
 			
-			                            Map View Globe will only be created if you have a geolocation database. 
-			                            This is intended to represent on a global scale the communication detected, 
-			                            using the geolocation data of each IP to print lines on the map showing the flow of the data.<br><br>
+			                            <p class="short-mrg">Map View Globe will only be created if you have a geolocation database. This is intended to represent on a global scale the communication detected, using the geolocation data of each IP to print lines on the map showing the flow of the data.</p>
 			
-			                            <b>Timeline</b><br>
-			                            <b>Data source file:</b> sbdet-<ip>.json<br><br>
-			                            <img src="images/flow_sb_6.JPG" style="width: 50%"><br><br>
+			                            <p class="orange-bold" style="margin-bottom:0;">Timeline</p>
+			                            <p class="short-mrg"><strong>Data source file:</strong> sbdet-<ip>.json</p>
+			                            <p class="short-mrg" style="text-align: center;"><img src="images/flow_sb_6.JPG" class="box-shadow" alt="" /></p>
 			
-			                            Timeline is created using the resulting connections found during the Threat Investigation process. 
-			                            It will display 'clusters' of inbound connections to the IP, grouped by time; 
-			                            showing an overall idea of the times during the day with the most activity. 
-			                            You can zoom in or out into the graphs timeline using your mouse scroll.<br><br>
+			                            <p class="short-mrg">Timeline is created using the resulting connections found during the Threat Investigation process. It will display 'clusters' of inbound connections to the IP, grouped by time; showing an overall idea of the times during the day with the most activity. You can zoom in or out into the graphs timeline using your mouse scroll.</p>
 			
-			                            <b>Input files</b><br><br>
+			                            <p class="short-mrg"><strong>Input files</strong></p>
 			                            <ul>                    
 			                                <li>threats.csv</li>
 			                                <li>threat-dendro-${id}.json</li>
@@ -984,19 +940,19 @@
 			                    </ol>
 			                </div>
 			                <div id="fis">
-			                    <h3>Ingest Summary</h3>
+			                    <h4 class="gray">Ingest Summary</h4>
 			                    <ol>
 			                        <li>
-			                            Load the Ingest Summary page by going to <b>http://"server-ip":8889/files/index_ingest.html </b> or using the drop down menu.<br><br>
-			                            <img src="images/is1.png"><br><br>
+			                            <p class="short-mrg">Load the Ingest Summary page by going to <strong>http://"server-ip":8889/files/index_ingest.html</strong> or using the drop down menu.</p>
+			                            <img src="images/is1.png" class="box-shadow" alt="" />
 			                        </li>
 			                        <li>
-			                            Select a start date, end date and click the reload button to load ingest data. Ingest summary will default to last 7 seven days. 
-			                            Your view should now look like this:<br><br>
-			                            <img src="images/is2.png"><br><br>
+			                            <p class="short-mrg">Select a start date, end date and click the reload button to load ingest data. Ingest summary will default to last 7 seven days. 
+			                            Your view should now look like this:</p>
+			                            <img src="images/is2.png" class="box-shadow" alt="" />
 			                        </li>
 			                        <li>
-			                            Ingest Summary presents the Flows ingestion timeline, showing the total flows for a particular period of time.<br><br>
+			                            <p class="short-mrg">Ingest Summary presents the Flows ingestion timeline, showing the total flows for a particular period of time.</p>
 			                            <ul>
 			                                <li>Analyst can zoom in/out on the graph.</li>
 			                                <li>Analyst can zoom in/out on the graph.</li>
@@ -1006,69 +962,58 @@
 			                </div>
 			            </div>
 			            <div id="udns">
-			                <h2>DNS</h2>
+			                <h3>DNS</h3>
 			                <div id="dsc">
-			                    <h3>Suspicious DNS</h3>
+			                    <h4 class="gray" style="margin-top:0;">Suspicious DNS</h4>
 			                    <ol>
 			                        <li>
-			                            <b>Open the analyst view for Suspicious DNS:</b> <i>http://"server-ip":8889/files/ui/dns/suspicious.html.</i> Select the date that you want to review (defaults to current date).<br> 
-			                            Your screen should now look like this:<br><br>
-			                            <img src="images/1.1_dns_sc01.jpg"><br><br>
+			                            <p><strong>Open the analyst view for Suspicious DNS:</strong> <i>http://"server-ip":8889/files/ui/dns/suspicious.html.</i> Select the date that you want to review (defaults to current date).</p> 
+			                            <p class="short-mrg">Your screen should now look like this:</p>
+			                            <img src="images/1.1_dns_sc01.jpg" class="box-shadow" alt="" />
 			                        </li>
 			                        <li>
-			                            <b>The Suspicious <frame:></frame:></b>
-			                            <p>
-			                                Located at the top left of the Web page, this frame shows the top 250 suspicious DNS from the Machine Learning (ML) output.<br><br>
-			                                <ol>
-			                                    <li>By moving the mouse over a suspicious DNS, 
-			                                        you will highlight the entire row as well as a blur effect that allows you to quickly identify current connection within the Network View frame.<br><br>
-			                                    </li>
-			                                    <li>
-			                                        Shield icon. Represents the output for any Reputation Services results that has been enabled, user can mouse over in order to obtain additional information. 
-			                                        The icon will change its color depending upon the results from specific reputation services.<br><br>
-			                                    </li>
-			                                    <li>
-			                                        By selecting on a Suspicious DNS record, you will highlight current row as well as the node from Network View frame. 
-			                                        In addition Details frame will be populated with additional communications directed to the same DNS record.<br><br>
-			                                    </li>
-			                                </ol>                                          
-			                            </p>
+			                            <p class="short-mrg"><strong>The Suspicious</strong><br>Located at the top left of the Web page, this frame shows the top 250 suspicious DNS from the Machine Learning (ML) output.</p>
+		                                <ol>
+		                                    <li>By moving the mouse over a suspicious DNS, 
+		                                        you will highlight the entire row as well as a blur effect that allows you to quickly identify current connection within the Network View frame.<br><br>
+		                                    </li>
+		                                    <li>
+		                                        Shield icon. Represents the output for any Reputation Services results that has been enabled, user can mouse over in order to obtain additional information. 
+		                                        The icon will change its color depending upon the results from specific reputation services.<br><br>
+		                                    </li>
+		                                    <li>
+		                                        By selecting on a Suspicious DNS record, you will highlight current row as well as the node from Network View frame. 
+		                                        In addition Details frame will be populated with additional communications directed to the same DNS record.<br><br>
+		                                    </li>
+		                                </ol>                                          
 			                        </li>
 			                        <li>
-			                            <b>The Network View frame</b><br><br>
-			                            <p>
-			                                Located at the top right corner, Network View is a graphic representation of the "Suspicious DNS".<br><br>
-			                                <ol>
-			                                    <li>As soon as you move your mouse over a node, a dialog shows up providing additional information.<br><br></li>
-			                                    <li>Diamonds represents DNS records and circles represents IP addresses communicating to the respective DNS record<br><br></li>
-			                                    <li>A primary mouse click in an IP Address (circle) will bring a diagram within Details frame, providing all the Domain Name records queried by that particular IP Address<br><br></li>
-			                                    <li>A secondary mouse click uses the node information to filter suspicious data.<br><br></li>
-			                                </ol>
-			                            </p>
+			                            <p class="short-mrg"><strong>The Network View frame</strong><br>Located at the top right corner, Network View is a graphic representation of the "Suspicious DNS".</p>
+		                                <ol>
+		                                    <li>As soon as you move your mouse over a node, a dialog shows up providing additional information.<br><br></li>
+		                                    <li>Diamonds represents DNS records and circles represents IP addresses communicating to the respective DNS record<br><br></li>
+		                                    <li>A primary mouse click in an IP Address (circle) will bring a diagram within Details frame, providing all the Domain Name records queried by that particular IP Address<br><br></li>
+		                                    <li>A secondary mouse click uses the node information to filter suspicious data.<br><br></li>
+		                                </ol>
 			                        </li>
 			                        <li>
-			                            <b>The Details frame</b><br><br>
-			                            Located at the bottom right corner of the Web page. It provides additional information for the selected connection.<br><br>
-			                            Detail View frame has two modes:<br><br>
+			                            <p class="short-mrg"><strong>The Details frame</strong><br>
+			                            Located at the bottom right corner of the Web page. It provides additional information for the selected connection.</p>
+			                            <p class="short-mrg">Detail View frame has two modes:</p>
 			                            <ul>
 			                                <li>Table details (when you select a record in the Suspicious frame).</li>
-			                                <li>Dendrogram diagram (when you select an IP address in the Network View frame)<br><br></li>
+			                                <li>Dendrogram diagram (when you select an IP address in the Network View frame)</li>
 			                            </ul>
 			                        </li>
 			                        <li>
-			                            <b>The Notebook frame</b><br>
-			                            <p>
-			                                This frame contains an initialized Jupyter Notebook. The main function is to allow the Analyst to score IP Addresses and DNS records with different values. In order to assign a risk to a specific connection, select it using a combination of all the combo boxes, select the correct risk rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button. Selecting a value from each list will narrow down the coincidences, therefore if the analyst wishes to score all connections with one same relevant attribute (i.e. ip address 10.1.1.1), then select only the combo boxes that are relevant and leave the rest at the first row at the top.
-			                            </p>
-			                            <p>
-			                                <b>The Score button</b><br><br>
-			                                Pressing the 'Score' button will find all exact matches of the selected threat (Client IP or Query) in the dns_scores.csv file and update them with the selected rating value. These results are temporarily stored in the score_tmp.csv file and copied back to the dns_scores.csv file at the end of the process.<br>
-			                                Selecting values from both the "Client IP" and "Query" lists to score them together, will update every matching threat individually with the same rating value, but not necessarily as a Client_IP-Query pair.<br><br>
-			                                You can score a large set of similar or coincident queries by entering a keyword in the "Quick Scoring" text field and then select a severity value from the radiobutton list. The value entered here will only search for matches on the dns_qry_name name column. "Quick Scoring" text field has precedence over any selection made on the lists.<br>
-			                            </p>
-			                            <p>
-			                                <b>The Save button</b><br><br>
-			                                Analysts must use the Save button in order to store the scored records. After you click it, the rest of the frames in the page will be refreshed and the connections that you already scored will disappear on the suspicious connects page. A shell script will be executed to copy the file with the scored connections to the ML Node and specific path. The following values will be obtained from the .conf file:
+			                            <p><strong>The Notebook frame</strong><br>This frame contains an initialized IPython Notebook. The main function is to allow the Analyst to score IP Addresses and DNS records with different values. In order to assign a risk to a specific connection, select it using a combination of all the combo boxes, select the correct risk rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button. Selecting a value from each list will narrow down the coincidences, therefore if the analyst wishes to score all connections with one same relevant attribute (i.e. ip address 10.1.1.1), then select only the combo boxes that are relevant and leave the rest at the first row at the top.</p>
+		                               <p class="orange-bold" style="margin-bottom:0;">Score button</p>
+			                           <p class="short-mrg">Pressing the 'Score' button will find all exact matches of the selected threat (Client IP or Query) in the dns_scores.csv file and update them with the selected rating value. These results are temporarily stored in the score_tmp.csv file and copied back to the dns_scores.csv file at the end of the process.</p>
+			                           <p class="short-mrg">Selecting values from both the "Client IP" and "Query" lists to score them together, will update every matching threat individually with the same rating value, but not necessarily as a Client_IP-Query pair.</p>
+			                           <p>You can score a large set of similar or coincident queries by entering a keyword in the "Quick Scoring" text field and then select a severity value from the radiobutton list. The value entered here will only search for matches on the dns_qry_name name column. "Quick Scoring" text field has precedence over any selection made on the lists.</p>
+
+			                            <p class="orange-bold" style="margin-bottom:0;">The Save button</p>
+			                            <p class="short-mrg">Analysts must use the Save button in order to store the scored records. After you click it, the rest of the frames in the page will be refreshed and the connections that you already scored will disappear on the suspicious connects page. A shell script will be executed to copy the file with the scored connections to the ML Node and specific path. The following values will be obtained from the .conf file:</p>
 			                                <ul>
 			                                    <li>LPATH</li>
 			                                    <li>MLNODE</li>
@@ -1077,97 +1022,86 @@
 			                            </p>
 			                        </li>
 			                    </ol>
-			                    <b>Input files</b>
+			                    <p class="orange-bold" style="margin-bottom:0;">Input files</p>
 			                    <ul>
 			                        <li>dns_scores.csv</li>
 			                        <li>dns_scores_bu.csv  </li>
 			                    </ul>                        
 			                </div>
 			                <div id="dti">
-			                    <h3>DNS Threat Investigation</h3>
-			                    Access the analyst view for DNS Suspicious Connects. Select the date that you want to review.<br>
-			                    Your view should now look like this:<br><br>
-			                    <img src="images/1.1_dns_sc01.jpg"><br><br>
+			                    <h4 class="gray">DNS Threat Investigation</h4>
+			                    <p>Access the analyst view for DNS Suspicious Connects. Select the date that you want to review.</p>
+			                    <p class="short-mrg">Your view should now look like this:</p>
+			                    <img src="images/1.1_dns_sc01.jpg" class="box-shadow" alt="" />
 			
-			                    The analyst must previously score the suspicious connections before moving into Threat Investigation View, please refer to DNS Suspicious Connects Analyst View walk-through.<br><br>
-			                    Select DNS > Threat Investigation from Apache Spot (incubating) Menu.<br><br>
-			                    <img src="images/1.1_dns_ti01.jpg"><br><br>
+			                    <p class="short-mrg">The analyst must previously score the suspicious connections before moving into Threat Investigation View, please refer to DNS Suspicious Connects Analyst View walk-through.</p>
+			                    <p class="short-mrg">Select <strong>DNS > Threat Investigation</strong> from Apache Spot (incubating) Menu.</p>
+			                    <img src="images/1.1_dns_ti01.jpg" class="box-shadow" alt="" />
 			
-			                    Threat Investigation Web Page will be opened, loading the embedded Jupyter notebook. A list with all IPs and DNS Names scored as High risk will be presented<br><br>
-			                    <img src="images/1.1_dns_ti02.png"><br><br>
+			                    <p class="short-mrg">Threat Investigation Web Page will be opened, loading the embedded IPython notebook. A list with all IPs and DNS Names scored as High risk will be presented</p>
+			                    <img src="images/1.1_dns_ti02.png" class="box-shadow" alt="" />
 			
-			                    <b>Expanded Search</b><br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Expanded Search</p>
+			                    <p class="short-mrg">Select any value from the list and press the "Search" button. The system will execute a query to the dns table, looking into the raw data initially collected to find additional activity of the selected IP or DNS Name according to the following criteria:</p>
 			
-			                    Select any value from the list and press the "Search" button. The system will execute a query to the dns table, 
-			                    looking into the raw data initially collected to find additional activity of the selected IP or DNS Name according to the following criteria:<br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Expanded Search for a particular Domain Name</p>
+			                    <p class="short-mrg">The query results will provide the different unique IP Addresses list that have queried this particular Domain, the list will be sorted by the quantity of connections.</p>
+			                    <p style="text-align:center;"><img src="images/1.1_dns_ti03.jpg" class="box-shadow" alt="" /></p>
 			
-			                    <b>Expanded Search for a particular Domain Name</b><br>
-			                    The query results will provide the different unique IP Addresses list that have queried this particular Domain,
-			                    the list will be sorted by the quantity of connections.<br><br>
-			                    <img src="images/1.1_dns_ti03.jpg" style="width: 50%;"><br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Expanded Search for a particular IP</p>
+			                    <p class="short-mrg">The expanded search will provide the different unique Domains list that this particular IP queried in one day, they will be sorted by the quantity of connections made to each specific Domain Name.</p>
+			                    <p style="text-align: center;"><img src="images/1.1_dns_ti04.jpg" class="box-shadow" alt="" /></p>
 			
-			                    <b>Expanded Search for a particular IP</b><br>
-			                    The expanded search will provide the different unique Domains list that this particular IP queried in one day, 
-			                    they will be sorted by the quantity of connections made to each specific Domain Name.<br><br>
-			                    <img src="images/1.1_dns_ti04.jpg" style="width: 50%;"><br><br>
+			                    <p class="short-mrg">The full output of this query is stored into the threat-dendro-<threat>.csv file, from which the top 'n' results will be extracted and displayed in a table. If an expanded search was previously executed on this IP or Domain, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used, so please monitor the notebooks status icon for completion. The quantity of results displayed on screen can be set by modifying the top_results variable.</p>
 			
-			                    The full output of this query is stored into the threat-dendro-<threat>.csv file, from which the top 'n' results will be extracted and displayed in a table. If an expanded search was previously executed on this IP or Domain, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used, so please monitor the notebooks status icon for completion. The quantity of results displayed on screen can be set by modifying the top_results variable.<br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Save comments.</p>
+			                    <p class="short-mrg">In addition, a web form is displayed under the title of 'Threat summary', where the analyst can enter a Title &amp; Description on the kind of attack/behavior described by the particular IP address that is under investigation.</p>
+			                    <img src="images/1.1_dns_ti05.jpg" class="box-shadow" alt="" />
 			
-			                    <b>Save comments.</b><br>
-			                    In addition, a web form is displayed under the title of 'Threat summary', 
-			                    where the analyst can enter a Title & Description on the kind of attack/behavior described by the particular IP address that is under investigation.<br><br>
-			                    <img src="images/1.1_dns_ti05.jpg"><br><br>
+			                    <p class="short-mrg">Clicking the "Save" button, will create/update the threats.csv file, adding a new line with the contents of the form. This file is used at the Storyboard section to display all the comments entered by the user, as well it will serve as a index of the threats analyzed.</p>
 			
-			                    Clicking the "Save" button, will create/update the threats.csv file, adding a new line with the contents of the form. 
-			                    This file is used at the Storyboard section to display all the comments entered by the user, 
-			                    as well it will serve as a index of the threats analyzed.<br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Continue to the Storyboard.</p>
+			                    <p class="short-mrg">Once you have saved comments on any suspicious IP or domain, you can continue to the Storyboard to check the results.</p>
 			
-			                    <b>Continue to the Storyboard.</b><br>
-			                    Once you have saved comments on any suspicious IP or domain, you can continue to the Storyboard to check the results.<br><br>
-			
-			                    <b>Input files</b><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Input files</p>
 			                    <ul>
 			                        <li>ipython/dns/user/<date>/dns_scores.css</li>
 			                    </ul>
 			                    
-			                    <b>Output files</b>
+			                    <p class="orange-bold" style="margin-bottom:0;">Output files</p>
 			                    <ul>
 			                        <li>ipython/dns/user/<date>/threats.csv</li>
 			                        <li>ipython/dns/user/<date>/threat-dendro-<threat>.csv</li>
 			                    </ul>            
 			                    
-			                    <b>HDFS tables consumed: </b> dns
+			                    <p class="orange-bold" style="margin-bottom:0;">HDFS tables consumed: </p>
+			                    <p>dns</p>
 			
 			                </div>
 			                <div id="dsb">
-			                    <h3>DNS Storyboard</h3>
-			                    <b>Walk-through</b><br><br>
+			                    <h4 class="gray">DNS Storyboard</h4>
+			                    <p class="orange-bold" style="margin-bottom:0;">Walk-through</p>
 			                    <ol>
 			                        <li>
-			                            Select the option <b>DNS > Storyboard</b> from Apache Spot (incubating) Menu.<br><br>
-			                            <img src="images/dns_sb_tit1.jpg"><br><br>
+			                            <p>Select the option <strong>DNS > Storyboard</strong> from Apache Spot (incubating) Menu.</p>
+			                            <img src="images/dns_sb_tit1.jpg" class="box-shadow" alt="" />
 			                        </li>
 			                        <li>
-			                            Your view should look something like this, 
-			                            depending on how many threats you have analyzed and commented on the Threat Analysis for that day. 
-			                            You can select a different date from the calendar.<br><br>
-			                            <img src="images/1.1_dns_sb01.jpg"><br><br>
+			                            <p class="short-mrg">Your view should look something like this, pending on how many threats you have analyzed and commented on the Threat Analysis for that day. You can select a different date from the calendar.</p>
+			                            <img src="images/1.1_dns_sb01.jpg" class="box-shadow" alt="" />
 			                        </li>
 			                    </ol>
-			                    <p>
-			                        <b>Executive Threat Briefing</b><br>
-			                        <b>Data source file:</b> threats.csv<br>
-			                        Executive Threat Briefing frame lists all the incident titles you entered at the Threat Investigation notebook. 
-			                        You can click on any title and view the additional comments at the bottom area of the panel.<br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Executive Threat Briefing</p>
+			                    <p class="short-mrg"><strong>Data source file:</strong> threats.csv<br>
+			                        Executive Threat Briefing frame lists all the incident titles you entered at the Threat Investigation notebook. You can click on any title and view the additional comments at the bottom area of the panel.</p>
 			
-			                        <b>Incident progression</b>
-			                        <b>Data source file:</b> threat-dendro-<threat>.csv<br>
-			                        Incident progression frame is located on the right side of the Web page.<br><br>
-			                        <img src="images/1.1_dns_sb02.jpg" style="width: 50%;"><br><br>
+		                        <p class="short-mrg"><strong>Incident progression Data source file:</strong> threat-dendro-<threat>.csv<br>Incident progression frame is located on the right side of the Web page.</p>
+			                     
+			                    <img src="images/1.1_dns_sb02.jpg" class="box-shadow" alt="" />
 			
-			                        This will display a tree graph (dendrogram) detailing the type of connections that conform the activity related to the threat.<br><br>
+			                    <p class="short-mrg">This will display a tree graph (dendrogram) detailing the type of connections that conform the activity related to the threat.</p>
 			
-			                        <b>Input files</b>
+			                    <p class="orange-bold" style="margin-bottom: 0;">Input files</p>
 			                        <ul>
 			                            <li>threats.csv</li>
 			                            <li>threat-dendro-<threat>.csv</li>
@@ -1176,21 +1110,19 @@
 			                </div>
 			            </div>
 			            <div id="uproxy">
-			                <h2>Proxy</h2>
+			                <h3 style="margin-bottom: 0;">Proxy</h3>
 			                <div id="psc">
-			                    <h3>Suspicious Proxy</h3>
-			                    <b>Walk-through</b>
+			                    <h4 class="gray">Suspicious Proxy</h4>
+			                    <strong>Walk-through</strong>
 			                    <ol>
 			                        <li>
-			                            <b>Open the analyst view for Suspicious Proxy:</b> <i>http://"server-ip":8889/files/ui/proxy/suspicious.html</i>. 
-			                            Select the date that you want to review (defaults to current date). <br>
-			                            Your screen should now look like this:<br><br>
-			                            <img src="images/1.1_proxy_sc01.jpg"><br><br>
+			                            <p class="short-mrg"><strong>Open the analyst view for Suspicious Proxy:</strong> <i>http://"server-ip":8889/files/ui/proxy/suspicious.html</i>. Select the date that you want to review (defaults to current date).</p>
+			                            <p class="short-mrg">Your screen should now look like this:</p>
+			                            <img src="images/1.1_proxy_sc01.jpg" class="box-shadow" alt="" /><br><br>
 			
 			                        </li>
 			                        <li>
-			                            <b>The Suspicious frame</b><br><br>
-			                            Located at the top left of the Web page, this frame shows the top 250 Suspicious Proxy connections from the Machine Learning (ML) output.<br><br>
+			                            <p class="short-mrg"><strong>The Suspicious frame</strong><br>Located at the top left of the Web page, this frame shows the top 250 Suspicious Proxy connections from the Machine Learning (ML) output.</p>
 			
 			                            <ol>
 			                                <li>
@@ -1211,10 +1143,10 @@
 			                            </ol>                                                    
 			                        </li>
 			                        <li>
-			                            <b>The Network View frame</b><br><br>
-			                            Located at the top right corner, Network View is a hierarchical force graph used to represent the "Suspicious Proxy" connections.<br><br>
+			                            <p class="short-mrg"><strong>The Network View frame</strong><br>
+			                            Located at the top right corner, Network View is a hierarchical force graph used to represent the "Suspicious Proxy" connections.</p>
 			
-			                            <b>Network View Force Graph Order Hierarchy</b><br><br>
+			                            <p class="orange-bold" style="margin-bottom:0;">Network View Force Graph Order Hierarchy</strong></p>
 			                            <ul>
 			                                <li>Root Proxy Node</li>
 			                                <li>Proxy Request Method</li>
@@ -1222,114 +1154,104 @@
 			                                <li>Proxy Path</li>
 			                                <li>Client IP Address</li>
 			                            </ul><br>
-			                            <b>Network View Functionality</b>
+			                            <p class="orange-bold" style="margin-bottom:0;">Network View Functionality</p>
 			                            <ol>
 			                                <li>
-			                                    As soon as you move your mouse over a node, a dialog shows up providing additional information.<br><br>
-			                                    <img src="images/1.1_proxy_sc02.jpg" style="width: 60%;"><br><br>
+			                                    <p class="short-mrg">As soon as you move your mouse over a node, a dialog shows up providing additional information.</p>
+			                                    <img src="images/1.1_proxy_sc02.jpg" class="box-shadow" alt="" />
 			                                </li>
 			                                <li>
-			                                    Graph can be zoomed in/out and can be moved in the frame<br><br>
-			                                    <img src="images/1.1_proxy_sc03.jpg" style="width: 60%;"><br><br>
+			                                    <p class="short-mrg">Graph can be zoomed in/out and can be moved in the frame</p>
+			                                    <img src="images/1.1_proxy_sc03.jpg" class="box-shadow" alt="" />
 			                                </li>
 			                                <li>
-			                                    By double-clicking in the Root Proxy Node the graph can be fully expanded/collapsed<br><br>
-			                                    <img src="images/1.1_proxy_sc04.jpg" style="width: 60%;"><br><br>
+			                                    <p class="short-mrg">By double-clicking in the Root Proxy Node the graph can be fully expanded/collapsed</p>
+			                                    <img src="images/1.1_proxy_sc04.jpg" class="box-shadow" alt="" />
 			                                </li>
 			                                <li>
-			                                    By double-clicking a node, the node can be expanded/collapsed one level<br><br>
-			                                    <img src="images/1.1_proxy_sc05.jpg" style="width: 60%;"><br><br>
+			                                    <p class="short-mrg">By double-clicking a node, the node can be expanded/collapsed one level</p>
+			                                    <img src="images/1.1_proxy_sc05.jpg" class="box-shadow" alt="" />
 			                                </li>
 			                                <li>
-			                                    The path in yellow represents the Suspicious record selected in the suspicious frame<br><br>
-			                                    <img src="images/1.1_proxy_sc06.jpg" style="width: 60%;"><br><br>
+			                                    <p class="short-mrg">The path in yellow represents the Suspicious record selected in the suspicious frame</p>
+			                                    <img src="images/1.1_proxy_sc06.jpg" class="box-shadow" alt="" />
 			                                </li>
 			                                <li>
-			                                    Records will be highlighted with different colors depending upon the Risk Reputation provided by the Reputation Service<br><br>
-			                                    <img src="images/1.1_proxy_sc07.jpg" style="width: 60%;"><br><br>
+			                                    <p class="short-mrg">Records will be highlighted with different colors depending upon the Risk Reputation provided by the Reputation Service</p>
+			                                    <img src="images/1.1_proxy_sc07.jpg" class="box-shadow" alt="" />
 			                                </li>
 			                                <li>
-			                                    A secondary mouse click over the Proxy Path or Client IP address nodes populates the Filter Box which eventually filter Suspicious & Network View Frames <br><br>
-			                                    <img src="images/1.1_proxy_sc08.jpg" style="width: 60%;"><br><br>
+			                                    <p class="short-mrg">A secondary mouse click over the Proxy Path or Client IP address nodes populates the Filter Box which eventually filter Suspicious &amp; Network View Frames </p>
+			                                    <img src="images/1.1_proxy_sc08.jpg" class="box-shadow" alt="" />
 			                                </li>
 			                            </ol> 
 			                        </li>
 			                        <li>
-			                            <b>The Details frame</b><br><br>
-			                            Located at the bottom right corner of the Web page. It provides additional information for the selected connection in the Suspicious frame. 
-			                            It includes columns that are not part of the Suspicious frame such as User Agent, MIME Type, Proxy Server IP, Bytes.<br><br>
-			                            <img src="images/1.1_proxy_sc09.jpg" style="width: 60%;"><br><br>
+			                            <p class="short-mrg" style="margin-bottom:0;"><strong>The Details frame</strong></p>
+			                            <p class="short-mrg">Located at the bottom right corner of the Web page. It provides additional information for the selected connection in the Suspicious frame. 
+			                            It includes columns that are not part of the Suspicious frame such as User Agent, MIME Type, Proxy Server IP, Bytes.</p>
+			                            <img src="images/1.1_proxy_sc09.jpg" class="box-shadow" alt="" />
 			                        </li>
 			                        <li>
-			                            <b>The Notebook frame</b><br><br>
-			                            This frame contains an initialized Jupyter Notebook. The main function is to allow the Analyst to score Proxy records with different values. In order to assign a risk to a specific connection, select the correct rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button.<br><br>
-			                            <img src="images/1.1_proxy_sc10.jpg" style="width: 60%;"><br><br>
+			                            <p class="short-mrg"><strong>The Notebook frame</strong><br>
+			                            This frame contains an initialized IPython Notebook. The main function is to allow the Analyst to score Proxy records with different values. In order to assign a risk to a specific connection, select the correct rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button.</p>
+			                            <img src="images/1.1_proxy_sc10.jpg" class="box-shadow" alt="" />
 			
 			                        </li>
 			                    </ol>
 			
-			                    <b>The Score button</b><br><br>
-			                    Pressing the 'Score' button will find all exact matches of the selected threat (Proxy Record) in the proxy_scores.csv file and update them with the selected rating value. These results are temporarily stored in the score_tmp.csv file and copied back to the proxy_scores.csv file at the end of the process.<br><br>
+			                    <p class="orange-bold" style="margin-bottom: 0;">The Score button</p>
+			                    <p>Pressing the 'Score' button will find all exact matches of the selected threat (Proxy Record) in the proxy_scores.csv file and update them with the selected rating value. These results are temporarily stored in the score_tmp.csv file and copied back to the proxy_scores.csv file at the end of the process.</p>
 			
-			                    <b>The Save button</b><br><br>
-			                    Analysts must use the Save button in order to store the scored records. After you click it, the rest of the frames in the page will be refreshed and the connections that you already scored will disappear on the suspicious connects page. A shell script will be executed to copy the file with the scored connections to the ML Node and specific path. The following values will be obtained from the .conf file:
+			                    <p class="orange-bold" style="margin-bottom:0;">The Save button</p>
+			                    <p class="short-mrg">Analysts must use the Save button in order to store the scored records. After you click it, the rest of the frames in the page will be refreshed and the connections that you already scored will disappear on the suspicious connects page. A shell script will be executed to copy the file with the scored connections to the ML Node and specific path. The following values will be obtained from the .conf file:</p>
 			                    <ul>
 			                        <li>LPATH</li>
 			                        <li>MLNODE</li>
 			                        <li>LUSER</li>
 			                    </ul>            
 			                    
-			                    For this process to work correctly, it's important to create an ssh key to enable secure communication between nodes, in this case, the ML node and the node where the UI runs. To learn more on how to create and copy the ssh key, please refer to the "Configure User Accounts" section.<br><br>
+			                    <p>For this process to work correctly, it's important to create an ssh key to enable secure communication between nodes, in this case, the ML node and the node where the UI runs. To learn more on how to create and copy the ssh key, please refer to the "Configure User Accounts" section.</p>
 			
-			                    <b>Input files</b>
+			                    <p class="orange-bold" style="margin-bottom:0;">Input files</p>
 			                    <ul>
 			                        <li>proxy_scores.csv </li>
 			                        <li>proxy_scores_bu.csv</li>
 			                    </ul>                 
 			                </div>
 			                <div id="pti">
-			                    <h3>Proxy Threat Investigation</h3>
-			                    <b>Walk-through</b><br><br>
-			                    Access the analyst view for Proxy Suspicious Connects. Select the date that you want to review. <br>
-			                    Your view should now look like this:<br><br>
-			                    <img src="images/1.1_proxy_sc01.jpg"><br><br>
+			                    <h4 class="gray">Proxy Threat Investigation</h4>
+			                    <p class="orange-bold" style="margin-bottom:0;">Walk-through</p>
+			                    <p class="short-mrg">Access the analyst view for Proxy Suspicious Connects. Select the date that you want to review.</p>
+			                    <p class="short-mrg">Your view should now look like this:</p>
+			                    <img src="images/1.1_proxy_sc01.jpg" class="box-shadow" alt="" />
 			
-			                    The analyst must previously score the suspicious connections before moving into Threat Investigation View, please refer to Proxy Suspicious Connects Analyst View walk-through.
-			                    Select <b>Proxy > Threat Investigation</b> from Apache Spot (incubating) Menu.<br><br>
-			                    <img src="images/1.1_proxy_ti01.jpg"><br><br>
+			                    <p class="short-mrg">The analyst must previously score the suspicious connections before moving into Threat Investigation View, please refer to Proxy Suspicious Connects Analyst View walk-through.</p>
+			                    <p class="short-mrg">Select <strong>Proxy > Threat Investigation</strong> from Apache Spot (incubating) Menu.</p>
+			                    <img src="images/1.1_proxy_ti01.jpg" class="box-shadow" alt="" /><br><br>
 			
-			                    Threat Investigation Web Page will be opened, loading the embedded Jupyter notebook. A list with all Proxy Records scored as High risk will be presented<br><br>
-			                    <img src="images/1.1_proxy_ti02.jpg" style="width: 60%;"><br><br>
+			                    <p class="short-mrg">Threat Investigation Web Page will be opened, loading the embedded IPython notebook. A list with all Proxy Records scored as High risk will be presented</p>
+			                    <img src="images/1.1_proxy_ti02.jpg" class="box-shadow" alt="" /><br><br>
 			
-			                    <b>Expanded Search</b><br><br>
+			                    <p class="orange-bold" style="margin-bottom:0;">Expanded Search</p>
 			
-			                    Select any value from the list and press the "Search" button. The system will execute a query to the proxy table, 
-			                    looking into the raw data initially collected to find additional activity for the selected Proxy Record. 
-			                    Results will be extracted and displayed in a table. If an expanded search was previously executed on this Proxy Record, 
-			                    the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. 
-			                    Query execution time is long and will vary depending on whether Hive or Impala is being used, so please monitor the notebooks status icon for completion. 
-			                    The quantity of results displayed on screen can be set by modifying the top_results variable, 
-			                    additional information on how to modify this variable can be found <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md"> here</a><br><br>
-			                    <img src="images/1.1_proxy_ti03.jpg" style="width: 60%;"><br><br>
+			                    <p class="short-mrg">Select any value from the list and press the "Search" button. The system will execute a query to the proxy table, looking into the raw data initially collected to find additional activity for the selected Proxy Record. Results will be extracted and displayed in a table. If an expanded search was previously executed on this Proxy Record, the system will extract the results from the preexisting file to reduce the execution time by avoiding another query to the table. Query execution time is long and will vary depending on whether Hive or Impala is being used, so please monitor the notebooks status icon for completion. The quantity of results displayed on screen can be set by modifying the top_results variable, additional information on how to modify this variable can be found <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md"> here</a></p>
+			                    <img src="images/1.1_proxy_ti03.jpg" class="box-shadow" alt="" />			
+			                    <p class="orange-bold" style="margin-bottom:0;">Save comments.</p>
+			                    <p class="short-mrg">In addition, a web form is displayed under the title of 'Threat summary', where the analyst can enter a Title &amp; Description on the kind of attack/behavior described by the particular Proxy Record that is under investigation.</p>
+			                    <img src="images/1.1_proxy_ti04.jpg" class="box-shadow" alt="" />			
 			
-			                    <b>Save comments.</b><br><br>
-			                    In addition, a web form is displayed under the title of 'Threat summary', 
-			                    where the analyst can enter a Title & Description on the kind of attack/behavior described by the particular Proxy Record that is under investigation.<br><br>
-			                    <img src="images/1.1_proxy_ti04.jpg" style="width: 60%;"><br><br>
+			                    <p class="short-mrg">Clicking the "Save" button, will create/update the threats.csv file, adding a new line with the contents of the form. This file is used at the Storyboard section to display all the comments entered by the user, as well it will serve as an index of the threats analyzed.</p>
 			
+			                    <p class="orange-bold" style="margin-bottom: 0;">Continue to the Storyboard.</p>
+			                    <p class="short-mrg">Once you have saved comments on any suspicious IP or domain, you can continue to the Storyboard to check the results.</p>
 			
-			                    Clicking the "Save" button, will create/update the threats.csv file, adding a new line with the contents of the form. 
-			                    This file is used at the Storyboard section to display all the comments entered by the user, as well it will serve as an index of the threats analyzed.<br><br>
-			
-			                    <b>Continue to the Storyboard.</b><br>
-			                    Once you have saved comments on any suspicious IP or domain, you can continue to the Storyboard to check the results.<br><br>
-			
-			                    <b>Input files</b>
+			                    <p class="orange-bold" style="margin-bottom:0;">Input files</p>
 			                    <ul>
 			                        <li>proxy_scores.tsv</li>
 			                    </ul>
 			
-			                    <b>Output files</b>
+			                    <p class="orange-bold" style="margin-bottom:0;">Output files</p>
 			                    <ul>
 			                        <li>threats.csv</li>
 			                        <li>es-{id}.csv</li>
@@ -1337,53 +1259,47 @@
 			                        <li>timeline-{id}.tsv</li>
 			                    </ul>                
 			                    
-			                    <b>HDFS tables consumed:</b> proxy
+			                    <p class="orange-bold" style="margin-bottom:0;">HDFS tables consumed:</p>
+			                    <p>proxy</p>
 			                </div>
 			                <div id="psb">
-			                    <h3>Proxy Storyboard</h3>
+			                    <h4 class="gray">Proxy Storyboard</h4>
 			                    <ol>
 			                        <li>
-			                            Select the option <b>Proxy > Storyboard</b> from Apache Spot (incubating) Menu.<br><br>
-			                            <img src="images/1.1_proxy_sb01.jpg"><br><br>
+			                            Select the option <strong>Proxy > Storyboard</strong> from Apache Spot (incubating) Menu.<br><br>
+			                            <img src="images/1.1_proxy_sb01.jpg" class="box-shadow" alt="" />
 			                        </li>
 			                        <li>
-			                            Your view should look something like this, 
-			                            depending on how many threats you have analyzed and commented on the Threat Analysis for that day. 
-			                            You can select a different date from the calendar.<br><br>
-			                            <img src="images/1.1_proxy_sb02.jpg"><br><br>
+			                            <p class="short-mrg">Your view should look something like this, 
+			                            depending on how many threats you have analyzed and commented on the Threat Analysis for that day. You can select a different date from the calendar.</p>
+			                            <img src="images/1.1_proxy_sb02.jpg" class="box-shadow" alt="" />
 			                        </li>
 			                    </ol>
 			
-			                    <b>Executive Threat Briefing</b><br><br>
-			                    <b>Data source file:</b> threats.csv<br>
-			                    Executive Threat Briefing frame lists all the incident titles you entered at the Threat Investigation notebook. 
-			                    You can click on any title and view the additional comments at the bottom area of the panel.<br><br>
-			                    <img src="images/1.1_proxy_sb03.jpg" style="width: 50%;"><br><br>
+			                    <p class="orange-bold">Executive Threat Briefing</p>
+			                    <p class="short-mrg"><strong>Data source file:</strong> threats.csv<br>
+			                    Executive Threat Briefing frame lists all the incident titles you entered at the Threat Investigation notebook. You can click on any title and view the additional comments at the bottom area of the panel.</p>
+			                    <p style="text-align: center;"><img src="images/1.1_proxy_sb03.jpg" class="box-shadow" alt="" /></p>
 			
-			                    <b>Incident progression</b><br><br>
-			                    <b>Data source file:</b> incident-progression-{id}.json<br>
-			                    Incident progression frame is located on the right side of the Web page.
-			                    Incident Progression displays a tree graph (dendrogram) detailing the type of connections that conform the activity related to the threat. 
-			                    It presents the following fields:
+			                    <p class="orange-bold" style="margin-bottom:0;">Incident progression</p>
+			                    <p class="short-mrg"><strong>Data source file:</strong> incident-progression-{id}.json<br>Incident progression frame is located on the right side of the Web page. Incident Progression displays a tree graph (dendrogram) detailing the type of connections that conform the activity related to the threat. It presents the following fields:</p>
 			                    <ul>
-			                        <li><b>Referer</b> - URLs that refers to the Suspicious Proxy Record</li>
-			                        <li><b>IP</b> - All ip addresses connecting to the Suspicious Proxy Record</li>
-			                        <li><b>Method</b> - Proxy methods used to communicate in between the IP addresses and the Proxy Record</li>
-			                        <li><b>ContentType</b> - HTTP MIME Types</li>
-			                        <li><b>Threat</b> - Represents the Suspicious Proxy Record</li>
-			                        <li><b>Referred</b> - URLs that the Suspicious Proxy Record referred to</li><br>
-			                        <img src="images/1.1_proxy_sb04.jpg" style="width: 60%;"><br><br>
+			                        <li><strong>Referer</strong> - URLs that refers to the Suspicious Proxy Record</li>
+			                        <li><strong>IP</strong> - All ip addresses connecting to the Suspicious Proxy Record</li>
+			                        <li><strong>Method</strong> - Proxy methods used to communicate in between the IP addresses and the Proxy Record</li>
+			                        <li><strong>ContentType</strong> - HTTP MIME Types</li>
+			                        <li><strong>Threat</strong> - Represents the Suspicious Proxy Record</li>
+			                        <li><strong>Referred</strong> - URLs that the Suspicious Proxy Record referred to</li>
+			                        <img src="images/1.1_proxy_sb04.jpg" class="box-shadow" alt="" />
 			
-			                        If multiple IP Addresses connects to a particular Proxy Threat (URL) you can scroll down/up, arrows indicate that there are more elements in the list.<br><br>
-			                        <img src="images/1.1_proxy_sb06.jpg" style="width: 60%;"><br><br>
+			                        <p class="short-mrg">If multiple IP Addresses connects to a particular Proxy Threat (URL) you can scroll down/up, arrows indicate that there are more elements in the list.</p>
+			                        <img src="images/1.1_proxy_sb06.jpg" class="box-shadow" alt="" /><br><br>
 			
-			                        <b>Timeline</b><br>
-			                        <b>Data source file:</b> timeline-{id}.tsv<br>
-			                        Timeline is created using the connections found during the Threat Investigation process. It will display 'clusters' of IP connections to the Proxy Record (URL), grouped by time; showing an overall idea of the times during the day with the most activity. You can zoom in or out into the graphs timeline using your mouse scroll. 
-			                        The number next to the IP Address represents the quantity of connections made from that particular IP to the Proxy Record in the displayed time.<br><br>
-			                        <img src="images/1.1_proxy_sb05.jpg" style="width: 60%;"><br><br>
+			                        <p class="orange-bold" style="margin-bottom:0;">Timeline</p>
+			                        <p class="short-mrg"><strong>Data source file:</strong> timeline-{id}.tsv<br>Timeline is created using the connections found during the Threat Investigation process. It will display 'clusters' of IP connections to the Proxy Record (URL), grouped by time; showing an overall idea of the times during the day with the most activity. You can zoom in or out into the graphs timeline using your mouse scroll. The number next to the IP Address represents the quantity of connections made from that particular IP to the Proxy Record in the displayed time.</p>
+			                        <img src="images/1.1_proxy_sb05.jpg" class="box-shadow" alt="" /><br><br>
 			
-			                        <b>Input files</b><br><br>
+			                        <p class="orange-bold" style="margin-bottom:0;">Input files</p>
 			                        <ul>
 			                            <li>threats.csv</li>
 			                            <li>incident-progression-{id}.json</li>
