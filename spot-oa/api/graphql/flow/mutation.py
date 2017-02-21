@@ -5,7 +5,6 @@ from graphql import (
     GraphQLArgument,
     GraphQLString,
     GraphQLInt,
-    GraphQLBoolean,
     GraphQLNonNull,
     GraphQLInputObjectType,
     GraphQLInputObjectField
@@ -14,8 +13,8 @@ from graphql import (
 from api.graphql.common import SpotDateType, SpotIpType, SpotOperationOutputType
 from api.resources.flow import Flow
 
-SimpleScoreInputType = GraphQLInputObjectType(
-    name='NetflowSimpleScoreInputType',
+ScoreInputType = GraphQLInputObjectType(
+    name='NetflowScoreInputType',
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
@@ -99,7 +98,7 @@ MutationType = GraphQLObjectType(
             type=SpotOperationOutputType,
             args={
                 'input': GraphQLArgument(
-                    type=SimpleScoreInputType,
+                    type=GraphQLNonNull(ScoreInputType),
                     description='Score criteria'
                 )
             },
@@ -109,7 +108,7 @@ MutationType = GraphQLObjectType(
             type=SpotOperationOutputType,
             args={
                 'input': GraphQLArgument(
-                    type=AddCommentInputType,
+                    type=GraphQLNonNull(AddCommentInputType),
                     description='Comment info'
                 )
             },
