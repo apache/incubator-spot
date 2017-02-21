@@ -43,8 +43,12 @@ AddCommentInputType = GraphQLInputObjectType(
             description='A reference date for the add comment process. Defaults to today'
         ),
         'dnsQuery': GraphQLInputObjectField(
-            type=GraphQLNonNull(GraphQLString),
+            type=GraphQLString,
             description='Reference dns query for the comment'
+        ),
+        'clientIp': GraphQLInputObjectField(
+            type=SpotIpType,
+            description='Reference client ip for the comment'
         ),
         'title': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
@@ -73,10 +77,11 @@ def _add_comment(args):
     _input = args.get('input')
     _date = _input.get('date', date.today())
     dns_query = _input.get('dnsQuery')
+    client_ip = _input.get('clientIp')
     title = _input.get('title')
     text = _input.get('text')
 
-    if Dns.save_comment(date=_date, dns_query=dns_query, title=title, text=text) is None:
+    if Dns.save_comment(date=_date, dns_query=dns_query, client_ip=client_ip, title=title, text=text) is None:
         return {'success':True}
     else:
         return {'success':False}

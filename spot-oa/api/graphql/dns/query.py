@@ -177,19 +177,47 @@ IpDetailsType = GraphQLObjectType(
     }
 )
 
+ClientIpThreatType = GraphQLObjectType(
+    name='DnsClientIpThreatType',
+    fields={
+        'ipClient': GraphQLField(
+            type=SpotIpType,
+            description='A client ip that has been scored as high risk (1)',
+            resolver=lambda root, *_: root.get('ip_dst')
+        )
+    }
+)
+
+QueryThreatType = GraphQLObjectType(
+    name='DnsQueryThreatType',
+    fields={
+        'dnsQuery': GraphQLField(
+            type=GraphQLString,
+            description='A dns query that has been scored as high risk (1)',
+            resolver=lambda root, *_: root.get('dns_qry_name')
+        )
+    }
+)
+
+ThreatType = GraphQLUnionType(
+    name='DnsThreatType',
+    types=[QueryThreatType, ClientIpThreatType],
+    resolve_type=lambda root, *_: QueryThreatType if root.has_key('dns_qry_name') else ClientIpThreatType
+)
+
 ThreatsInformationType = GraphQLObjectType(
     name='DnsThreats',
     fields={
-        'dnsQueries': GraphQLField(
-            type=GraphQLList(GraphQLString),
-            description='List of dns queries that have been scored as high risk (1)',
+        'list': GraphQLField(
+            type=GraphQLList(ThreatType),
+            description='List of dns queries or client ips that have been scored as high risk (1)',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as reference to retrieve the list of high risk dns queries. Defaults to today'
+                    description='A date to use as reference to retrieve the list of high risk threats. Defaults to today'
                 )
             },
-            resolver=lambda root, args, *_: Dns.get_scored_queries(date=args.get('date', date.today()))
+            resolver=lambda root, args, *_: Dns.get_scored_connections(date=args.get('date', date.today()))
         )
     }
 )
