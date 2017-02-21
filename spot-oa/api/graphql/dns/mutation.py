@@ -35,14 +35,48 @@ ScoreInputType = GraphQLInputObjectType(
     }
 )
 
+AddCommentInputType = GraphQLInputObjectType(
+    name='DnsAddCommentInputType',
+    fields={
+        'date': GraphQLInputObjectField(
+            type=SpotDateType,
+            description='A reference date for the add comment process. Defaults to today'
+        ),
+        'dnsQuery': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLString),
+            description='Reference dns query for the comment'
+        ),
+        'title': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLString),
+            description='A title for the comment'
+        ),
+        'text': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLString),
+            description='A description text for the comment'
+        )
+    }
+)
+
 def _score_record(args):
     _input = args.get('input')
     _date = _input.get('date', date.today())
     score = _input.get('score')
-    dnsQuery = _input.get('dnsQuery')
-    clientIp = _input.get('clientIp')
+    dns_query = _input.get('dnsQuery')
+    client_ip = _input.get('clientIp')
 
-    if Dns.dns_score(date=_date, score=score, dnsQuery=dnsQuery, clientIp=clientIp) is None:
+    if Dns.dns_score(date=_date, score=score, dns_query=dns_query, client_ip=client_ip) is None:
+        return {'success':True}
+    else:
+        return {'success':False}
+
+def _add_comment(args):
+    _input = args.get('input')
+    _date = _input.get('date', date.today())
+    dns_query = _input.get('dnsQuery')
+    title = _input.get('title')
+    text = _input.get('text')
+
+    if Dns.save_comment(date=_date, dns_query=dns_query, title=title, text=text) is None:
         return {'success':True}
     else:
         return {'success':False}
@@ -59,6 +93,16 @@ MutationType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: _score_record(args)
+        ),
+        'addComment': GraphQLField(
+            type=SpotOperationOutputType,
+            args={
+                'input': GraphQLArgument(
+                    type=GraphQLNonNull(AddCommentInputType),
+                    description='Comment info'
+                )
+            },
+            resolver=lambda root, args, *_: _add_comment(args)
         )
     }
 )

@@ -177,6 +177,23 @@ IpDetailsType = GraphQLObjectType(
     }
 )
 
+ThreatsInformationType = GraphQLObjectType(
+    name='DnsThreats',
+    fields={
+        'dnsQueries': GraphQLField(
+            type=GraphQLList(GraphQLString),
+            description='List of dns queries that have been scored as high risk (1)',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference to retrieve the list of high risk dns queries. Defaults to today'
+                )
+            },
+            resolver=lambda root, args, *_: Dns.get_scored_queries(date=args.get('date', date.today()))
+        )
+    }
+)
+
 QueryType = GraphQLObjectType(
     name='DnsQueryType',
     fields={
@@ -228,6 +245,11 @@ QueryType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: Dns.client_details(date=args.get('date', date.today()), ip=args.get('ip'))
+        ),
+        'threats': GraphQLField(
+            type=ThreatsInformationType,
+            description='Advanced inforamtion about threats',
+            resolver=lambda *_ : {}
         )
     }
 )
