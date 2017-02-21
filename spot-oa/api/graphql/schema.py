@@ -5,6 +5,7 @@ from graphql import (
 )
 
 from flow import QueryType as NetflowQueryType, MutationType as NetflowMutationType
+from dns import QueryType as DnsQueryType, MutationType as DnsMutationType
 
 SpotSchema = GraphQLSchema(
   query=GraphQLObjectType(
@@ -12,6 +13,12 @@ SpotSchema = GraphQLSchema(
     fields={
       'flow': GraphQLField(
         type= NetflowQueryType,
+        description='Flow information',
+        resolver=lambda *_: {}
+      ),
+      'dns': GraphQLField(
+        type= DnsQueryType,
+        description='Dns information',
         resolver=lambda *_: {}
       )
     }
@@ -21,6 +28,10 @@ SpotSchema = GraphQLSchema(
     fields={
         'flow': GraphQLField(
             type=NetflowMutationType,
+            resolver=lambda *_: {}
+        ),
+        'dns': GraphQLField(
+            type=DnsMutationType,
             resolver=lambda *_: {}
         )
     }

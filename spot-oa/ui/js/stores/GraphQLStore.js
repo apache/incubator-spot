@@ -19,6 +19,10 @@ class GraphQLStore {
         return this.variables[name];
     }
 
+    unsetVariable(name) {
+        delete this.variables[name];
+    }
+
     setData(data) {
         this.data = data;
     }

@@ -26,28 +26,6 @@ var SuspiciousPanel = React.createClass({
       </p>
     );
   },
-  /**
-    * Answers cell can have multiple pipe separated values. To allow
-    * proper displaying of information lets place each answer inside
-    * a block element let browsers decide how to display them.
-    */
-  _render_dns_a_cell: function (answers, item, idx)
-  {
-    var cellBody;
-
-    answers = (answers || []).split('|');
-
-    cellBody = answers.map(function (answer, i)
-    {
-      return (
-        <div key={'answer_' + idx + '_' + i}>
-          {answer}
-        </div>
-      );
-    }.bind(this));
-
-    return cellBody;
-  },
   _render_ip_dst_cell: function (ip_dst, item, idx)
   {
     var ip_dst_info, iconClass;
