@@ -493,3 +493,5 @@ QueryType = GraphQLObjectType(
         )
     }
 )
+
+TYPES = []

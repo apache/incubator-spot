@@ -1,76 +1,81 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-var assign = require('object-assign');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var DnsConstants = require('../constants/DnsConstants');
-var RestStore = require('../../../js/stores/RestStore');
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
 var fields = ['title', 'summary'];
 var filterName;
 
-var IncidentProgressionStore = assign(new RestStore(DnsConstants.API_INCIDENT_PROGRESSION), {
-  errorMessages: {
-    404: 'Please choose a different date, no data has been found'
-  },
-  setDate: function (date)
-  {
-    this.setEndpoint(DnsConstants.API_INCIDENT_PROGRESSION.replace('${date}', date.replace(/-/g, '')));
-  },
-  setFilter: function (name, value)
-  {
-    filterName = name;
-    this.setRestFilter('id', value);
-  },
-  getFilterName: function ()
-  {
-    return filterName;
-  },
-  getFilterValue: function ()
-  {
-    return this.getRestFilter('id');
-  },
-  clearFilter: function ()
-  {
-    this.removeRestFilter('id');
-  }
-});
+const DATE_VAR = 'date';
+
+class IncidentProgressionStore extends ObservableGraphQLStore {
+    static QUERY: 'dnsQuery'
+    static CLIENT_IP: 'clientIp'
+
+    constructor() {
+        super();
+
+        this.filterName = null;
+    }
+
+    getQuery() {
+        return `
+            query($date:SpotDateType, $dnsQuery: String, $clientIp:SpotIpType) {
+                dns {
+                    threat {
+                        incidentProgression(date:$date, dnsQuery:$dnsQuery, clientIp:$clientIp) {
+                            name
+                            children {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+    }
+
+    unboxData(data) {
+        return data.dns.threat.incidentProgression;
+    }
+
+    setDate(date) {
+        this.setVariable(DATE_VAR, date);
+    }
+
+    setFilter(name, value) {
+        this.filterName = name==IncidentProgressionStore.QUERY?name:IncidentProgressionStore.CLIENT_IP;
+        this.setVariable(this.filterName, value);
+    }
+
+    clearFilter() {
+        this.unsetVariable(this.filterName);
+        this.filterName = null;
+    }
+}
+
+const ips = new IncidentProgressionStore();
 
 SpotDispatcher.register(function (action) {
   switch (action.actionType) {
     case SpotConstants.UPDATE_DATE:
-      IncidentProgressionStore.setDate(action.date);
-      IncidentProgressionStore.clearFilter();
-      IncidentProgressionStore.resetData();
+      ips.setDate(action.date);
+      ips.clearFilter();
+      ips.resetData();
 
       break;
     case SpotConstants.SELECT_COMMENT:
-      var comment, filterParts, key;
+      ips.clearFilter();
 
-      IncidentProgressionStore.clearFilter();
+      let filterName = IncidentProgressionStore.QUERY in action.comment ? IncidentProgressionStore.QUERY : IncidentProgressionStore.CLIENT_IP;
+      ips.setFilter(filterName, action.comment[filterName]);
 
-      comment = action.comment;
-
-      filterParts = [];
-
-      for (key in comment)
-      {
-        // Skip comment fields
-        if (fields.indexOf(key)>=0) continue;
-
-        if (comment[key])
-        {
-          IncidentProgressionStore.setFilter(key, comment[key]);
-
-          break;
-        }
-      }
-
-      IncidentProgressionStore.reload();
+      ips.sendQuery();
 
       break;
   }
 });
 
-module.exports = IncidentProgressionStore;
+module.exports = ips;

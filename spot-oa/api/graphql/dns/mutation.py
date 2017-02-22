@@ -22,7 +22,7 @@ ScoreInputType = GraphQLInputObjectType(
         ),
         'score': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLInt),
-            description='A detailed search criteria for the score process'
+            description='A score value, 1->High, 2->Medium, 3->Low'
         ),
         'dnsQuery': GraphQLInputObjectField(
             type=GraphQLString,
@@ -64,14 +64,14 @@ AddCommentInputType = GraphQLInputObjectType(
 def _score_record(args):
     _input = args.get('input')
     _date = _input.get('date', date.today())
-    score = _input.get('score')
     dns_query = _input.get('dnsQuery')
     client_ip = _input.get('clientIp')
+    query_score = _input.get('score') if dns_query else None
+    client_ip_score = _input.get('score') if client_ip else None
 
-    if Dns.dns_score(date=_date, score=score, dns_query=dns_query, client_ip=client_ip) is None:
-        return {'success':True}
-    else:
-        return {'success':False}
+    result = Dns.score_connection(date=_date, dns=dns_query, ip=client_ip, dns_sev=query_score, ip_sev=client_ip_score)
+
+    return {'success': result}
 
 def _add_comment(args):
     _input = args.get('input')

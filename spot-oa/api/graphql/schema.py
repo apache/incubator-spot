@@ -4,8 +4,8 @@ from graphql import (
     GraphQLField
 )
 
-from flow import QueryType as NetflowQueryType, MutationType as NetflowMutationType
-from dns import QueryType as DnsQueryType, MutationType as DnsMutationType
+from flow import QueryType as NetflowQueryType, MutationType as NetflowMutationType, TYPES as NetflowTypes
+from dns import QueryType as DnsQueryType, MutationType as DnsMutationType, TYPES as DnsTypes
 
 SpotSchema = GraphQLSchema(
   query=GraphQLObjectType(
@@ -35,5 +35,6 @@ SpotSchema = GraphQLSchema(
             resolver=lambda *_: {}
         )
     }
-  )
+  ),
+  types=NetflowTypes + DnsTypes
 )

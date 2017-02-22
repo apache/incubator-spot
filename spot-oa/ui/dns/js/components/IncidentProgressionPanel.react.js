@@ -30,22 +30,14 @@ const IncidentProgressionPanel = React.createClass({
     if (!storeData.loading) {
         state.error = storeData.error;
 
-        if (storeData.data && storeData.data.length) {
-          let filterName = IncidentProgressionStore.getFilterName();
-
+        if (storeData.data) {
           state.data = {
-            id: 'root',
-            name: IncidentProgressionStore.getFilterValue(),
-            children: []
+              id: 'root',
+              name: storeData.data.name
           };
 
-          state.leafNodes = 0;
-          storeData.data.forEach((item) => {
-            state.data.children.push({
-              id: `node${++state.leafNodes}`,
-              name: item[fieldMapper[filterName]]
-            });
-          });
+          state.data.children = storeData.data.children.map(child => ({id:child.name, name:child.name}));
+          state.leafNodes = state.data.children.length;
         }
     }
 

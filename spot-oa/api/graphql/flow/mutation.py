@@ -22,7 +22,7 @@ ScoreInputType = GraphQLInputObjectType(
         ),
         'score': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLInt),
-            description='A detailed search criteria for the score process'
+            description='A score value, 1->High, 2->Medium, 3->Low'
         ),
         'srcIp': GraphQLInputObjectField(
             type=SpotIpType,

@@ -8,10 +8,11 @@ from graphql import (
     GraphQLString,
     GraphQLInt,
     GraphQLFloat,
-    GraphQLUnionType
+    GraphQLUnionType,
+    GraphQLInterfaceType
 )
 
-from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType
+from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, create_spot_node_type
 from api.resources.dns import Dns
 
 SuspiciousType = GraphQLObjectType(
@@ -205,6 +206,55 @@ ThreatType = GraphQLUnionType(
     resolve_type=lambda root, *_: QueryThreatType if root.has_key('dns_qry_name') else ClientIpThreatType
 )
 
+CommentInterface = GraphQLInterfaceType(
+    name='DnsCommentInterface',
+    fields={
+        'title': GraphQLField(GraphQLString),
+        'text': GraphQLField(GraphQLString)
+    },
+    resolve_type=lambda root, *_: QueryCommentType if root.has_key('dns_qry_name') else ClientIpCommentType
+)
+
+QueryCommentType = GraphQLObjectType(
+    name='DnsQueryCommentType',
+    interfaces=[CommentInterface],
+    fields={
+        'dnsQuery': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('dns_qry_name')
+        ),
+        'title': GraphQLField(
+            type=GraphQLString,
+            description='A title for the comment',
+            resolver=lambda root, *_: root.get('title')
+        ),
+        'text': GraphQLField(
+            type=GraphQLString,
+            description='A title for the comment',
+            resolver=lambda root, *_: root.get('text')
+        )
+    }
+)
+
+ClientIpCommentType = GraphQLObjectType(
+    name='DnsClientIpCommentType',
+    interfaces=[CommentInterface],
+    fields={
+        'clientIp': GraphQLField(
+            type=SpotIpType,
+            resolver=lambda root, *_: root.get('ip_dst')
+        ),
+        'title': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('title')
+        ),
+        'text': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('text')
+        )
+    }
+)
+
 ThreatsInformationType = GraphQLObjectType(
     name='DnsThreats',
     fields={
@@ -218,6 +268,44 @@ ThreatsInformationType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: Dns.get_scored_connections(date=args.get('date', date.today()))
+        ),
+        'comments': GraphQLField(
+            type=GraphQLList(CommentInterface),
+            description='A list of comments about threats',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference to retrieve the list of high risk comments. Defaults to today'
+                )
+            },
+            resolver=lambda root, args, *_: Dns.comments(date=args.get('date', date.today()))
+        )
+    }
+)
+
+IncidentProgressionNodeType = create_spot_node_type('DnsIncidentProgressionNodeType')
+
+ThreatInformationType = GraphQLObjectType(
+    name='DnsThreatInformation',
+    fields={
+        'incidentProgression': GraphQLField(
+            type=IncidentProgressionNodeType,
+            description='Incident progression information',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference for incident progression information. Defaults to today'
+                ),
+                'dnsQuery': GraphQLArgument(
+                    type=GraphQLString,
+                    description='Threat\'s dns query'
+                ),
+                'clientIp': GraphQLArgument(
+                    type=SpotIpType,
+                    description='Threat\'s client ip'
+                )
+            },
+            resolver=lambda root, args, *_ : Dns.incident_progression(date=args.get('date', date.today()), query=args.get('dnsQuery'), ip=args.get('clientIp'))
         )
     }
 )
@@ -278,6 +366,13 @@ QueryType = GraphQLObjectType(
             type=ThreatsInformationType,
             description='Advanced inforamtion about threats',
             resolver=lambda *_ : {}
+        ),
+        'threat': GraphQLField(
+            type=ThreatInformationType,
+            description='Advanced inforamtion about a single threat',
+            resolver=lambda *_: {}
         )
     }
 )
+
+TYPES = [QueryCommentType, ClientIpCommentType]
