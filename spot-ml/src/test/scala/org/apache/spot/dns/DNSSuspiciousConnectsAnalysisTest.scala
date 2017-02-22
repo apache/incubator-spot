@@ -10,7 +10,14 @@ import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
 
 
-case class DNSInput(frame_time: String, unix_tstamp: Long, frame_len: Int, ip_dst: String, dns_qry_name: String, dns_qry_class: String, dns_qry_type: Int, dns_qry_rcode: Int)
+case class DNSInput(frame_time: String,
+                    unix_tstamp: Long,
+                    frame_len: Int,
+                    ip_dst: String,
+                    dns_qry_name: String,
+                    dns_qry_class: String,
+                    dns_qry_type: Int,
+                    dns_qry_rcode: Int)
 
 class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with Matchers {
 
@@ -34,19 +41,50 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
     logger.setLevel(Level.WARN)
 
-    val anomalousRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 1, "172.16.9.132", "turner.com.122.2o7.net", "0x00000001", 1, 0)
-    val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "turner.com.122.2o7.net", "0x00000001", 1, 0)
-
+    val anomalousRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 1, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
+    val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
-
-    val scoredData = DNSSuspiciousConnectsAnalysis.scoreDNSRecords(data, testConfig,
-      sparkContext,
-      sqlContext,
-      logger)
-
-
+    val scoredData = DNSSuspiciousConnectsAnalysis.scoreDNSRecords(data, testConfig, sparkContext, sqlContext, logger)
     val anomalyScore = scoredData.filter(scoredData(FrameLength) === 1).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(FrameLength) === 168).collect().map(_.getAs[Double](Score))
+
+    Math.abs(anomalyScore - 0.2d) should be <= 0.01d
+    typicalScores.length shouldBe 4
+    Math.abs(typicalScores(0) - 0.8d) should be <= 0.01d
+    Math.abs(typicalScores(1) - 0.8d) should be <= 0.01d
+    Math.abs(typicalScores(2) - 0.8d) should be <= 0.01d
+    Math.abs(typicalScores(3) - 0.8d) should be <= 0.01d
+  }
+
+
+  "dns supicious connects analysis" should "estimate correct probabilities in toy data with subdomain length anomaly" in {
+
+    val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
+    logger.setLevel(Level.WARN)
+
+    val anomalousRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT",
+      1463735425L,
+      168,
+      "172.16.9.132",
+      "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com",
+      "0x00000001",
+      1,
+      0)
+    val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT",
+      1463735425L,
+      168,
+      "172.16.9.132",
+      "tinker.turner.com",
+      "0x00000001",
+      1,
+      0)
+    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
+    val scoredData = DNSSuspiciousConnectsAnalysis.scoreDNSRecords(data, testConfig, sparkContext, sqlContext, logger)
+    val anomalyScore = scoredData.
+      filter(scoredData(QueryName) === "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com").
+      first().
+      getAs[Double](Score)
+    val typicalScores = scoredData.filter(scoredData(QueryName) === "tinker.turner.com").collect().map(_.getAs[Double](Score))
 
     Math.abs(anomalyScore - 0.2d) should be <= 0.01d
     typicalScores.length shouldBe 4

@@ -199,6 +199,16 @@ object FlowSuspiciousConnectsModel {
     val dataWithWords = totalRecords.withColumn(SourceWord, flowWordCreator.srcWordUDF(ModelColumns: _*))
       .withColumn(DestinationWord, flowWordCreator.dstWordUDF(ModelColumns: _*))
 
+    dataWithWords.cache()
+    dataWithWords.count
+
+    // Save corrupt records, those records that failed to create the words
+    val corruptRecords = dataWithWords
+      .filter(dataWithWords(SourceWord) === InvalidDataHandler.WordError ||
+        dataWithWords(DestinationWord) === InvalidDataHandler.WordError)
+
+    InvalidDataHandler.showAndSaveCorruptRecords(corruptRecords, config.hdfsScoredConnect, logger)
+
     // Aggregate per-word counts at each IP
     val srcWordCounts = dataWithWords
       .filter(dataWithWords(SourceWord).notEqual(InvalidDataHandler.WordError))

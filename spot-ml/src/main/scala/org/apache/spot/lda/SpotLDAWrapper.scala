@@ -61,9 +61,6 @@ object SpotLDAWrapper {
       .toDF(DocumentName, DocumentNumber)
       .cache
 
-    // Forcing an action to cache results
-    documentDictionary.count()
-
     //Structure corpus so that the index is the docID, values are the vectors of word occurrences in that doc
     val ldaCorpus: RDD[(Long, Vector)] =
       formatSparkLDAInput(docWordCountCache,
@@ -148,7 +145,6 @@ object SpotLDAWrapper {
     val wordCountsPerDoc: RDD[(Long, Iterable[(Int, Double)])]
     = wordCountsPerDocDF
       .select(DocumentNumber, WordNumber, WordNameWordCount)
-      .rdd
       .map({ case Row(documentId: Long, wordId: Int, wordCount: Int) => (documentId.toLong, (wordId, wordCount.toDouble)) })
       .groupByKey
 

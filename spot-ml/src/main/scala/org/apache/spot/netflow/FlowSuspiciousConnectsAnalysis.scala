@@ -44,8 +44,6 @@ object FlowSuspiciousConnectsAnalysis {
     val invalidFlowRecords = filterAndSelectInvalidFlowRecords(inputFlowRecords)
     dataValidation.showAndSaveInvalidRecords(invalidFlowRecords, config.hdfsScoredConnect, logger)
 
-    val corruptFlowRecords = filterAndSelectCorruptFlowRecords(scoredFlowRecords)
-    dataValidation.showAndSaveCorruptRecords(corruptFlowRecords, config.hdfsScoredConnect, logger)
   }
 
   /**
