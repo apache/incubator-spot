@@ -192,6 +192,37 @@ IpConnectionDetailsType = GraphQLObjectType(
     }
 )
 
+ScoredConnection = GraphQLObjectType(
+    name='NetflowScoredConnection',
+    fields={
+        'srcIp': GraphQLField(
+            type=SpotIpType,
+            description='Source Ip',
+            resolver=lambda root, *_: root.get('srcip')
+        ),
+        'srcPort': GraphQLField(
+            type=GraphQLInt,
+            description='Source port',
+            resolver=lambda root, *_: root.get('srcport') or 0
+        ),
+        'dstIp': GraphQLField(
+            type=SpotIpType,
+            description='Destination Ip',
+            resolver=lambda root, *_: root.get('dstip')
+        ),
+        'dstPort': GraphQLField(
+            type=GraphQLInt,
+            description='Destionation port',
+            resolver=lambda root, *_: root.get('dstport') or 0
+        ),
+        'score': GraphQLField(
+            type=GraphQLInt,
+            description='Score value. 1->High, 2->Medium, 3->Low',
+            resolver=lambda root, *_: root.get('score') or 0
+        )
+    }
+)
+
 CommentType = GraphQLObjectType(
     name='NetflowComment',
     fields={
@@ -213,13 +244,13 @@ CommentType = GraphQLObjectType(
 ThreatsInformationType = GraphQLObjectType(
     name='NetflowThreats',
     fields={
-        'ips': GraphQLField(
-            type=GraphQLList(SpotIpType),
-            description='List of ips that have been scored as high risk (1)',
+        'list': GraphQLField(
+            type=GraphQLList(ScoredConnection),
+            description='List of connections that have been scored',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as reference to retrieve the list of high risk ips. Defaults to today'
+                    description='A date to use as reference to retrieve the list of scored connections. Defaults to today'
                 )
             },
             resolver=lambda root, args, *_: Flow.get_scored_connection(date=args.get('date', date.today()))
