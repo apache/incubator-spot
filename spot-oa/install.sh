@@ -1,7 +1,7 @@
 #!/bin/bash
 
 local_path=`pwd`
-source_path=/tmp/ingest_src
+source_path=/tmp/oa_src
 install_path=/opt/spot/
 dependencies=(tar wget screen python)
 missing_dep=()
@@ -91,6 +91,10 @@ elif [ -f /etc/debian_version ]; then
     apt-get update
 fi
 
+if [ ! -d ${source_path} ]; then
+        mkdir ${source_path}
+fi
+
 if [ ! -d ${install_path} ]; then
     log_cmd "${install_path} not created, Please run spot-setup/local_setup.sh first"
     exit 1    
@@ -114,6 +118,8 @@ if [ -z ${local_path}/requirements.txt ]; then
 fi
 
 npm_install
+cd ui
+npm install
 
 log_cmd "spot-ingest dependencies installed"
 cleanup

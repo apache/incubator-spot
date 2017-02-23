@@ -65,13 +65,13 @@ install_pkg () {
 sbt_install () {
     log_cmd 'installing sbt for ${host_os}'    
     if [[ ${1} == 'debian' ]]; then
-            echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-            sudo apt-get update
-            sudo apt-get install sbt
-    elif [[ ${1} == 'rhel']]; then
-            curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-            sudo yum -y install sbt
+            echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+            apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+            apt-get update
+            apt-get install sbt
+    elif [[ ${1} == 'rhel' ]]; then
+            curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+            yum -y install sbt
     fi
 }
 
@@ -92,6 +92,10 @@ elif [ -f /etc/debian_version ]; then
     log_cmd "installation command: $install_cmd"
     host_os="debian"
     apt-get update
+fi
+
+if [ ! -d ${source_path} ]; then
+        mkdir ${source_path}
 fi
 
 if [ ! -d ${install_path} ]; then
