@@ -4,6 +4,7 @@
 # This script needs to be run with root priviliges or it will fail to create the /opt/ directories
 
 spot_dir=/opt/spot
+spot_jar=${spot_dir}/jar
 spot_bin=${spot_dir}/bin
 spot_env="export PATH=\$PATH:${spot_bin}"
 spot_env_file=/etc/profile.d/spot.sh
@@ -13,7 +14,7 @@ spot_user=$1
 
 log_cmd () {
 
-    printf "\n****SPOT.SETUP.local_setup.sh****\n"
+    printf "\n****SPOT.SETUP.install.sh****\n"
     date +"%y-%m-%d %H:%M:%S"
     printf "$1\n\n"
 
@@ -54,7 +55,8 @@ check_root
 # make spot directories
 create_dir ${spot_dir}
 create_dir ${spot_bin}
+create_dir ${spot_jar}
 
 set_env
 
-log_cmd "Spot local setup complete"
+log_cmd "spot-setup complete"

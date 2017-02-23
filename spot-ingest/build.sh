@@ -19,6 +19,21 @@ log_cmd () {
     printf "$1\n\n"
 }
 
+check_os () {
+        # detect distribution
+        # to add other distributions simply create a test case with installation commands
+        if [ -f /etc/redhat-release ]; then
+                install_cmd="yum -y install"
+                log_cmd "installation command: $install_cmd"
+                host_os="rhel"
+        elif [ -f /etc/debian_version ]; then
+                install_cmd="apt-get install -yq"
+                log_cmd "installation command: $install_cmd"
+                host_os="debian"
+                apt-get update
+        fi
+}
+
 cleanup () {
     log_cmd "executing cleanup"
     rm -rf ${source_path}
@@ -47,20 +62,6 @@ install_nfdump () {
     cd ${local_path}
 }
 
-check_os () {
-        # detect distribution
-        # to add other distributions simply create a test case with installation commands
-        if [ -f /etc/redhat-release ]; then
-                install_cmd="yum -y install"
-                log_cmd "installation command: $install_cmd"
-                host_os="rhel"
-        elif [ -f /etc/debian_version ]; then
-                install_cmd="apt-get install -yq"
-                log_cmd "installation command: $install_cmd"
-                host_os="debian"
-                apt-get update
-        fi
-}
 # end functions
 
 check_os

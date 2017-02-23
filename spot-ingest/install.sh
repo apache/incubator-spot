@@ -15,6 +15,21 @@ log_cmd () {
         printf "$1\n\n"
 }
 
+check_os () {
+        # detect distribution
+        # to add other distributions simply create a test case with installation commands
+        if [ -f /etc/redhat-release ]; then
+                install_cmd="yum -y install"
+                log_cmd "installation command: $install_cmd"
+                host_os="rhel"
+        elif [ -f /etc/debian_version ]; then
+                install_cmd="apt-get install -yq"
+                log_cmd "installation command: $install_cmd"
+                host_os="debian"
+                apt-get update
+        fi
+}
+
 check_root () {
         # checking for root as many of these functions interact with system owned directories
         if [[ "$EUID" -ne 0 ]]; then
@@ -73,6 +88,8 @@ install_pip () {
         fi
 }
 # end functions
+
+check_os
 
 # check basic dependencies
 check_bin ${dependencies[@]}

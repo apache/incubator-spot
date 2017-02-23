@@ -3,20 +3,33 @@
 local_path=`pwd`
 source_path=/tmp/oa_src
 install_path=/opt/spot/
-dependencies=(tar wget screen python)
+dependencies=(curl wget screen python)
 missing_dep=()
 wget_cmd="wget -nc --no-check-certificate"
-untar_cmd="tar -xvf"
 host_os=""
-num_procs=$(nproc)
 
 # functions
 
 log_cmd () {
 
-    printf "\n****SPOT.INGEST.Install.sh****\n"
+    printf "\n****SPOT.OA.install.sh****\n"
     date +"%y-%m-%d %H:%M:%S"
     printf "$1\n\n"
+}
+
+check_os () {
+        # detect distribution
+        # to add other distributions simply create a test case with installation commands
+        if [ -f /etc/redhat-release ]; then
+                install_cmd="yum -y install"
+                log_cmd "installation command: $install_cmd"
+                host_os="rhel"
+        elif [ -f /etc/debian_version ]; then
+                install_cmd="apt-get install -yq"
+                log_cmd "installation command: $install_cmd"
+                host_os="debian"
+                apt-get update
+        fi
 }
 
 check_root () {
@@ -61,35 +74,33 @@ install_pkg () {
     fi
 }
 
-npm_install () {
+install_pip () {
+        if type pip >/dev/null 2>&1; then\
+                log_cmd "pip found"
+        else    
+                log_cmd "missing pip"
+                ${wget_cmd} https://bootstrap.pypa.io/get-pip.py -P ${source_path}/
+                python ${source_path}/get-pip.py
+                log_cmd "pip installed"
+        fi
+}
+
+install_npm () {
 
         log_cmd 'installing NodeJS 7 for ${host_os}'    
-        if [[ ${1} == 'debian' ]]; then
-                curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-                sudo apt-get install -y nodejs
+        if [[ ${host_os} == 'debian' ]]; then
+                curl -sL https://deb.nodesource.com/setup_7.x | bash -
+                apt-get install -y nodejs
 
-        elif [[ ${1} == 'rhel']]; then
+        elif [[ ${host_os} == 'rhel' ]]; then
                 curl -sL https://rpm.nodesource.com/setup_7.x | bash -
                 yum install -y nodejs
         fi  
 }
 # end functions
 
+check_os
 check_root
-
-# detect distribution
-# to add other distributions simply create a test case with installation commands
-
-if [ -f /etc/redhat-release ]; then
-    install_cmd="yum -y install"
-    log_cmd "installation command: $install_cmd"
-    host_os="rhel"
-elif [ -f /etc/debian_version ]; then
-    install_cmd="apt-get install -yq"
-    log_cmd "installation command: $install_cmd"
-    host_os="debian"
-    apt-get update
-fi
 
 if [ ! -d ${source_path} ]; then
         mkdir ${source_path}
@@ -104,22 +115,13 @@ fi
 check_bin ${dependencies[@]}
 install_pkg
 
-if type pip >/dev/null 2>&1; then
-    log_cmd "pip found"
-else
-    log_cmd "missing pip"
-    ${wget_cmd} https://bootstrap.pypa.io/get-pip.py -P ${source_path}/
-    python ${source_path}/get-pip.py
-    log_cmd "pip installed"
-fi
+install_pip
 
 if [ -z ${local_path}/requirements.txt ]; then
     pip install -r requirements.txt
 fi
 
-npm_install
-cd ui
-npm install
+install_npm
 
-log_cmd "spot-ingest dependencies installed"
+log_cmd "spot-oa dependencies installed"
 cleanup
