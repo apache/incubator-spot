@@ -1,61 +1,68 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-const assign = require('object-assign');
-const d3 = require('d3');
-
 const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-const FlowConstants = require('../constants/ProxyConstants');
 const SpotConstants = require('../../../js/constants/SpotConstants');
-const RestStore = require('../../../js/stores/RestStore');
 
-const FILTER_NAME = 'hash';
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-const TimelineStore = assign(new RestStore(FlowConstants.API_TIMELINE), {
-    _parser: d3.tsv,
-    _date:'',
-    errorMessages: {
-        404: 'Please choose a different date, no data has been found'
-    },
-    setDate: function (date)
-    {
-        this.setEndpoint(FlowConstants.API_TIMELINE.replace('${date}', date.replace(/-/g, '')));
-        this._date = date;
-    },
-    getDate() {
-        return this._date;
-    },
-    setFilter: function (value)
-    {
-        this.setRestFilter(FILTER_NAME, value);
-    },
-    getFilter: function ()
-    {
-        return this.getRestFilter(FILTER_NAME);
-    },
-    clearFilter: function ()
-    {
-       this.removeRestFilter(FILTER_NAME);
+const DATE_VAR = 'date';
+const URI_VAR = 'uri';
+
+class TimelineStore extends ObservableGraphQLStore {
+    getQuery() {
+        return `
+            query($date:SpotDateType!,$uri:String!) {
+                proxy {
+                    threat {
+                        timeline(date:$date, uri:$uri) {
+                            duration
+                            clientip: clientIp
+                            tend: endDatetime
+                            respcode: responseCode
+                            tstart: startDatetime
+                        }
+                    }
+                }
+            }
+        `;
     }
-});
 
+    unboxData(data) {
+        return data.proxy.threat.timeline;
+    }
+
+    setDate(date) {
+        this.setVariable(DATE_VAR, date);
+    }
+
+    getDate() {
+        return this.getVariable(DATE_VAR);
+    }
+
+    setUri(uri) {
+        this.setVariable(URI_VAR, uri);
+    }
+
+    getUri() {
+        return this.getVariable(URI_VAR);
+    }
+}
+
+const ts = new TimelineStore();
 
 SpotDispatcher.register(function (action) {
     switch (action.actionType) {
         case SpotConstants.UPDATE_DATE:
-            TimelineStore.setDate(action.date);
-
+            ts.setDate(action.date);
             break;
         case SpotConstants.RELOAD_COMMENTS:
-            TimelineStore.clearFilter();
-            TimelineStore.resetData();
+            ts.resetData();
             break;
         case SpotConstants.SELECT_COMMENT:
-            TimelineStore.setFilter(action.comment.hash);
-
-            TimelineStore.reload();
-
+            ts.setUri(action.comment.uri);
+            ts.sendQuery();
             break;
     }
 });
 
-module.exports = TimelineStore;
+module.exports = ts;

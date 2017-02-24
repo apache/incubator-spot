@@ -1,41 +1,65 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-var assign = require('object-assign');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var JsonStore = require('../../../js/stores/JsonStore');
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-var ProxyConstants = require('../constants/ProxyConstants');
+const DATE_VAR = 'date';
+const URI_VAR = 'uri';
 
-var IncidentProgressionStore = assign(new JsonStore(ProxyConstants.API_INCIDENT_PROGRESSION), {
-    errorMessages: {
-        404: 'Please choose a different date, no data has been found'
-    },
-    setDate: function (date) {
-        this.setEndpoint(ProxyConstants.API_INCIDENT_PROGRESSION.replace('${date}', date.replace(/-/g, '')));
-    },
-    setHash: function (hash) {
-        this.setRestFilter('hash', hash);
+class IncidentProgressionStore extends ObservableGraphQLStore {
+    getQuery() {
+        return `
+            query($date:SpotDateType!,$uri:String!) {
+                proxy {
+                    threat {
+                        incidentProgression(date:$date,uri:$uri) {
+                            requests {
+                                reqmethod: requestMethod
+                                clientip: clientIp
+                                resconttype: responseContentType
+                                referer
+                            }
+                            fulluri: uri
+                            referer_for: refererFor
+                        }
+                    }
+                }
+            }
+        `;
     }
-});
+
+    unboxData(data) {
+        return data.proxy.threat.incidentProgression;
+    }
+
+    setDate(date) {
+        this.setVariable(DATE_VAR, date);
+    }
+
+    setUri(uri) {
+        this.setVariable(URI_VAR, uri);
+    }
+}
+
+const ips = new IncidentProgressionStore();
 
 SpotDispatcher.register(function (action) {
     switch (action.actionType) {
         case SpotConstants.UPDATE_DATE:
-            IncidentProgressionStore.setDate(action.date);
+            ips.setDate(action.date);
 
             break;
         case SpotConstants.RELOAD_COMMENTS:
-            IncidentProgressionStore.removeRestFilter('hash');
-            IncidentProgressionStore.resetData();
+            ips.resetData();
             break;
         case SpotConstants.SELECT_COMMENT:
-            IncidentProgressionStore.setHash(action.comment.hash);
-            IncidentProgressionStore.reload();
+            ips.setUri(action.comment.uri);
+            ips.sendQuery();
 
             break;
     }
 });
 
-module.exports = IncidentProgressionStore;
+module.exports = ips;

@@ -10,9 +10,6 @@ var DetailsPanel = React.createClass({
     mixins: [GridPanelMixin, DetailsGridMixin],
     store: DetailsStore,
     // Custom cells
-    _render_p_date_cell: function (date, item) {
-        return date + ' ' + item.p_time;
-    },
     _render_host_cell(host) {
         return (
             <p className="spot-text-wrapper" data-toggle="tooltip">

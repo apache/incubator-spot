@@ -6,19 +6,25 @@ from graphql import (
 
 from flow import QueryType as NetflowQueryType, MutationType as NetflowMutationType, TYPES as NetflowTypes
 from dns import QueryType as DnsQueryType, MutationType as DnsMutationType, TYPES as DnsTypes
+from proxy import QueryType as ProxyQueryType, MutationType as ProxyMutationType, TYPES as ProxyTypes
 
 SpotSchema = GraphQLSchema(
   query=GraphQLObjectType(
     name='SpotQueryType',
     fields={
       'flow': GraphQLField(
-        type= NetflowQueryType,
+        type=NetflowQueryType,
         description='Flow information',
         resolver=lambda *_: {}
       ),
       'dns': GraphQLField(
-        type= DnsQueryType,
+        type=DnsQueryType,
         description='Dns information',
+        resolver=lambda *_: {}
+      ),
+      'proxy': GraphQLField(
+        type=ProxyQueryType,
+        description='Proxy Information',
         resolver=lambda *_: {}
       )
     }
@@ -36,5 +42,5 @@ SpotSchema = GraphQLSchema(
         )
     }
   ),
-  types=NetflowTypes + DnsTypes
+  types=NetflowTypes + DnsTypes + ProxyTypes
 )
