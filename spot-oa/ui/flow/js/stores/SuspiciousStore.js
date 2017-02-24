@@ -1,16 +1,14 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-var assign = require('object-assign');
-
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-
-var CHANGE_FILTER_EVENT = 'change_filter';
-var HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
-var UNHIGHLIGHT_THREAT_EVENT = 'unhightlight_thread';
-var SELECT_THREAT_EVENT = 'select_treath';
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
 
 const ObservableWithHeadersGraphQLStore = require('../../../js/stores/ObservableWithHeadersGraphQLStore');
+
+const CHANGE_FILTER_EVENT = 'change_filter';
+const HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
+const UNHIGHLIGHT_THREAT_EVENT = 'unhightlight_thread';
+const SELECT_THREAT_EVENT = 'select_treath';
 
 const DATE_VAR = 'date';
 const IP_VAR = 'ip';
@@ -18,6 +16,9 @@ const IP_VAR = 'ip';
 class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
     constructor() {
         super();
+
+        this.highlightedThread = null;
+        this.selectedThread = null;
 
         this.headers = {
             rank: 'Rank',
