@@ -18,7 +18,8 @@ Ingest data is captured or transferred into the Hadoop cluster, where they are t
 * Ingest user with sudo privileges (i.e. spot). This user will execute all the processes in the Ingest Framework also this user needs to have access to hdfs solution path (i.e. /user/spot/).
 
 ### Install
-1. Install Python dependencies `pip install -r requirements.txt` 
+
+1. run `sudo ./install.sh`
 
 ### Configure Kafka
 **Adding Kafka Service:**

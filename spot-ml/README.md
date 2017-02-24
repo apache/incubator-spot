@@ -11,6 +11,12 @@ netflow and DNS records, and spot-ml will try to load data to the operational an
 The remaining instructions in this README file treat spot-ml in a stand-alone fashion that might be helpful for customizing and troubleshooting the
 component.
 
+### Install
+
+1. run `sudo ./install.sh`
+2. run `./build.sh`
+3. run `sudo ./post_build.sh`
+
 ## Prepare data for input 
 
 Load data for consumption by spot-ml by running [spot-ingest].
