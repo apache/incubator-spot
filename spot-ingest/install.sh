@@ -1,14 +1,18 @@
 #!/bin/bash
 
+nfdump_vers=1.1
+wshark_vers=2.2.3
 local_path=`pwd`
 source_path=/tmp/ingest_src
 install_path=/opt/spot/
 dependencies=(tar wget screen python make gcc m4 automake autoconf flex byacc)
 missing_dep=()
 host_os=""
+wget_cmd="wget -nc --no-check-certificate"
+untar_cmd="tar -xvf"
+mk_opt="-j `nproc`"
 
 # functions
-
 log_cmd () {
         printf "\n****SPOT.INGEST.install.sh****\n"
         date +"%y-%m-%d %H:%M:%S"
@@ -28,6 +32,11 @@ check_os () {
                 host_os="debian"
                 apt-get update
         fi
+}
+
+cleanup () {
+    log_cmd "executing cleanup"
+    rm -rf ${source_path}
 }
 
 check_root () {
@@ -77,6 +86,38 @@ check_tshark () {
         fi
 }
 
+install_tshark () {
+        if type tshark >/dev/null 2>&1; then
+                log_cmd "tshark found"
+        else
+                log_cmd "tshark missing"
+                check_tshark
+                ${wget_cmd} https://1.na.dl.wireshark.org/src/wireshark-${wshark_vers}.tar.bz2 -P ${source_path}/
+                ${untar_cmd} ${source_path}/wireshark-${wshark_vers}.tar.bz2 -C ${source_path}/
+                cd ${source_path}/wireshark-${wshark_vers}
+                log_cmd "compiling tshark"
+                ./configure --prefix=${install_path} --enable-wireshark=no
+                make ${mk_opt} 
+                make install
+                cd ..
+        fi
+        log_cmd "tshark build complete"
+        tshark -v
+}
+
+install_nfdump () {
+        if type nfdump >/dev/null 2>&1; then
+                log_cmd "nfdump found"
+        else
+                log_cmd "installing spot-nfdump"
+                ${wget_cmd} https://github.com/Open-Network-Insight/spot-nfdump/archive/${nfdump_vers}.tar.gz -P ${source_path}/
+                ${untar_cmd} ${source_path}/${nfdump_vers}.tar.gz -C ${source_path}/
+                cd ${source_path}/spot-nfdump-*/
+                source ./install_nfdump.sh ${install_path}
+                cd ${local_path}    
+        fi
+}
+
 install_pip () {
         if type pip >/dev/null 2>&1; then\
                 log_cmd "pip found"
@@ -87,14 +128,34 @@ install_pip () {
                 log_cmd "pip installed"
         fi
 }
+
 # end functions
 
+check_root
 check_os
+
+if [ ! -d ${source_path} ]; then
+        mkdir ${source_path}
+fi
+
+if [ ! -d ${install_path} ]; then
+        log_cmd "${install_path} not created, Please run spot-setup/install.sh first"
+        exit 1        
+fi
 
 # check basic dependencies
 check_bin ${dependencies[@]}
 install_pkg
-check_tshark
+
+# install dissectors
+install_tshark
+install_nfdump
+
+# python dependencies
 install_pip
+if [ -z ${local_path}/requirements.txt ]; then
+    pip install -r requirements.txt
+fi
 
 log_cmd "dependencies satisfied, please run ./build.sh to complete setup"
+cleanup

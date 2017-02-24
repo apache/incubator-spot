@@ -70,16 +70,20 @@ install_pkg () {
 }
 
 sbt_install () {
-    log_cmd 'installing sbt for ${host_os}'    
-    if [[ ${host_os} == 'debian' ]]; then
-            echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
-            apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-            apt-get update
-            apt-get install sbt
-    elif [[ ${host_os} == 'rhel' ]]; then
-            curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-            yum -y install sbt
-    fi
+        if type sbt >/dev/null 2>&1; then
+                log_cmd "sbt found"
+        else
+                log_cmd 'installing sbt for ${host_os}'    
+                if [[ ${host_os} == 'debian' ]]; then
+                        echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+                        apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+                        apt-get update
+                        apt-get install sbt
+                elif [[ ${host_os} == 'rhel' ]]; then
+                        curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+                        yum -y install sbt
+                fi
+        fi
 }
 
         
@@ -92,11 +96,6 @@ check_root
 check_bin ${dependencies[@]}
 install_pkg
 
-# install
-if type sbt >/dev/null 2>&1; then
-        log_cmd "sbt found"
-else
-        sbt_install
-fi
+sbt_install
 
 log_cmd "spot-ml dependencies installed"

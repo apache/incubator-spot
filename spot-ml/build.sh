@@ -13,23 +13,7 @@ log_cmd () {
     date +"%y-%m-%d %H:%M:%S"
     printf "$1\n\n"
 }
-
-check_os () {
-        # detect distribution
-        # to add other distributions simply create a test case with installation commands
-        if [ -f /etc/redhat-release ]; then
-                install_cmd="yum -y install"
-                log_cmd "installation command: $install_cmd"
-                host_os="rhel"
-        elif [ -f /etc/debian_version ]; then
-                install_cmd="apt-get install -yq"
-                log_cmd "installation command: $install_cmd"
-                host_os="debian"
-                apt-get update
-        fi
-}
-
-        
+       
 # end functions
 
 check_os
@@ -42,8 +26,6 @@ fi
 # build
 log_cmd 'assembling spot-ml jar'
 sbt assembly
-cp ./target/scala-2.10/spot-ml-assembly-1.1.jar ${install_path}/jar/
-cp ./ml_ops.sh ${install_path}/bin
 
 log_cmd "spot-ml dependencies installed"
-cleanup
+log_cmd 'run `sudo ./post_build.sh` to install in /opt/spot/'
