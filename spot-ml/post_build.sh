@@ -7,7 +7,7 @@ install_path=/opt/spot
 
 log_cmd () {
 
-    printf "\n****SPOT.ML.build.sh****\n"
+    printf "\n****SPOT.ML.post_build.sh****\n"
     date +"%y-%m-%d %H:%M:%S"
     printf "$1\n\n"
 }
