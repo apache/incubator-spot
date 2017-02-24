@@ -4,7 +4,7 @@ local_path=`pwd`
 install_path=/opt/spot
 dependencies=(curl)
 missing_dep=()
-wget_cmd="wget -nc --no-check-certificate"
+wget_cmd="wget -nc"
 host_os=""
 
 

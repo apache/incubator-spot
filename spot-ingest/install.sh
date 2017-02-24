@@ -8,7 +8,7 @@ install_path=/opt/spot/
 dependencies=(tar wget screen python make gcc m4 automake autoconf flex byacc)
 missing_dep=()
 host_os=""
-wget_cmd="wget -nc --no-check-certificate"
+wget_cmd="wget -nc"
 untar_cmd="tar -xvf"
 mk_opt="-j `nproc`"
 

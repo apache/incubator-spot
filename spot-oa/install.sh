@@ -5,7 +5,7 @@ source_path=/tmp/oa_src
 install_path=/opt/spot/
 dependencies=(curl wget screen python)
 missing_dep=()
-wget_cmd="wget -nc --no-check-certificate"
+wget_cmd="wget -nc"
 host_os=""
 
 # functions
