@@ -19,10 +19,6 @@ if [ ! -d ${install_path} ]; then
     exit 1    
 fi
 
-if [ -z ${local_path}/requirements.txt ]; then
-    pip install -r requirements.txt
-fi
-
 cd ui
 npm install
 
