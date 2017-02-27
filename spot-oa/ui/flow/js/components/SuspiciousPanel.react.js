@@ -137,8 +137,7 @@ var SuspiciousPanel = React.createClass({
     _render_score_cell: false,
     _render_srcDomain_cell: false,
     _render_srcGeo_cell: false,
-    _render_srcIpInternal_cell: false,
-    _render_sev_cell: false
+    _render_srcIpInternal_cell: false
 });
 
 module.exports = SuspiciousPanel;

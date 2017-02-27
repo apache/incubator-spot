@@ -310,7 +310,7 @@ ThreatsInformationType = GraphQLObjectType(
                     description='A date to use as reference to retrieve the list of scored connections. Defaults to today'
                 )
             },
-            resolver=lambda root, args, *_: Flow.get_scored_connection(date=args.get('date', date.today()))
+            resolver=lambda root, args, *_: Flow.get_scored_connections(date=args.get('date', date.today()))
         ),
         'comments': GraphQLField(
             type=GraphQLList(CommentType),
