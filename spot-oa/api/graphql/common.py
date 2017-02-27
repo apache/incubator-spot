@@ -5,6 +5,7 @@ from graphql import (
     GraphQLObjectType,
     GraphQLField,
     GraphQLString,
+    GraphQLInt,
     GraphQLBoolean,
     GraphQLList,
     GraphQLNonNull
@@ -98,3 +99,17 @@ def create_spot_node_type(name, extra_fields={}):
     )
 
     return NodeType
+
+IngestSummaryType = GraphQLObjectType(
+    name='SpotIngestSummaryType',
+    fields={
+        'datetime': GraphQLField(
+            type=SpotDatetimeType,
+            resolver=lambda root, *_: root.get('tdate')
+        ),
+        'total': GraphQLField(
+            type=GraphQLInt,
+            resolver=lambda root, *_: root.get('total')
+        )
+    }
+)

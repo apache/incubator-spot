@@ -12,7 +12,7 @@ from graphql import (
     GraphQLInterfaceType
 )
 
-from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, create_spot_node_type
+from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, create_spot_node_type, IngestSummaryType
 from api.resources.dns import Dns
 
 SuspiciousType = GraphQLObjectType(
@@ -371,6 +371,21 @@ QueryType = GraphQLObjectType(
             type=ThreatInformationType,
             description='Advanced inforamtion about a single threat',
             resolver=lambda *_: {}
+        ),
+        'ingestSummary': GraphQLField(
+            type=GraphQLList(IngestSummaryType),
+            description='Total of ingested dns queries',
+            args={
+                'startDate': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='Start date'
+                ),
+                'endDate': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='End date'
+                )
+            },
+            resolver=lambda root, args, *_: Dns.ingest_summary(start_date=args.get('startDate'), end_date=args.get('endDate'))
         )
     }
 )

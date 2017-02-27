@@ -11,7 +11,7 @@ from graphql import (
     GraphQLNonNull
 )
 
-from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, create_spot_node_type
+from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, create_spot_node_type, IngestSummaryType
 from api.resources.flow import Flow
 
 SuspiciousType = GraphQLObjectType(
@@ -188,8 +188,8 @@ IpConnectionDetailsType = GraphQLObjectType(
     }
 )
 
-ScoredConnection = GraphQLObjectType(
-    name='NetflowScoredConnection',
+ScoredConnectionType = GraphQLObjectType(
+    name='NetflowScoredConnectionType',
     fields={
         'srcIp': GraphQLField(
             type=SpotIpType,
@@ -281,7 +281,7 @@ ExpandedSearchType = GraphQLObjectType(
 )
 
 CommentType = GraphQLObjectType(
-    name='NetflowComment',
+    name='NetflowCommentType',
     fields={
         'ip': GraphQLField(
             type=SpotIpType,
@@ -299,10 +299,10 @@ CommentType = GraphQLObjectType(
 )
 
 ThreatsInformationType = GraphQLObjectType(
-    name='NetflowThreats',
+    name='NetflowThreatsType',
     fields={
         'list': GraphQLField(
-            type=GraphQLList(ScoredConnection),
+            type=GraphQLList(ScoredConnectionType),
             description='List of connections that have been scored',
             args={
                 'date': GraphQLArgument(
@@ -592,7 +592,22 @@ QueryType = GraphQLObjectType(
         'threat': GraphQLField(
             type=ThreatInformationType,
             description='Advanced inforamtion about a single threat',
-            resolver=lambda *_:{}
+            resolver=lambda *_: {}
+        ),
+        'ingestSummary': GraphQLField(
+            type=GraphQLList(IngestSummaryType),
+            description='Total of ingested netflows',
+            args={
+                'startDate': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='Start date'
+                ),
+                'endDate': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='End date'
+                )
+            },
+            resolver=lambda root, args, *_: Flow.ingest_summary(start_date=args.get('startDate'), end_date=args.get('endDate'))
         )
     }
 )

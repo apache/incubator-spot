@@ -9,7 +9,7 @@ from graphql import (
     GraphQLList
 )
 
-from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType
+from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, IngestSummaryType
 from api.resources.proxy import Proxy
 
 SuspiciousType = GraphQLObjectType(
@@ -428,6 +428,21 @@ QueryType = GraphQLObjectType(
             type=ThreatInformationType,
             description='Advanced inforamtion about a single threat',
             resolver=lambda *_:{}
+        ),
+        'ingestSummary': GraphQLField(
+            type=GraphQLList(IngestSummaryType),
+            description='Total of ingested http requests',
+            args={
+                'startDate': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='Start date'
+                ),
+                'endDate': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='End date'
+                )
+            },
+            resolver=lambda root, args, *_: Proxy.ingest_summary(start_date=args.get('startDate'), end_date=args.get('endDate'))
         )
     }
 )
