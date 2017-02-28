@@ -21,7 +21,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel._
-import scala.io.Source
+import org.apache.spot.utilities.data.InputOutputDataHandler.getFeedbackRDD
 
 /**
   * Routines for ingesting the feedback file provided by the operational analytics layer.
@@ -44,27 +44,20 @@ object FlowFeedback {
                      feedbackFile: String,
                      duplicationFactor: Int): DataFrame = {
 
+    val feedback: RDD[String] = getFeedbackRDD(sc, feedbackFile)
 
-    if (new java.io.File(feedbackFile).exists) {
-
+    if (!feedback.isEmpty()) {
       /*
-      feedback file is a tab-separated file with a single header line.
-      */
-
-      val lines = Source.fromFile(feedbackFile).getLines().toArray.drop(1)
-      val feedback: RDD[String] = sc.parallelize(lines)
-
-      /*
-         flow_scores.csv - feedback file structure
-         0	sev
-         1	tstart
-         2	srcIP
-         3	dstIP
-         4	sport
-         5	dport
-         6	ipkt
-         7	ibyt
-        */
+           flow_scores.csv - feedback file structure
+           0	sev
+           1	tstart
+           2	srcIP
+           3	dstIP
+           4	sport
+           5	dport
+           6	ipkt
+           7	ibyt
+          */
 
       // Given the structure pull out indexes we need for a new DataFrame creation
       // containing the columns for word creation only.

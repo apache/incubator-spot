@@ -70,14 +70,9 @@ else
     USER_DOMAIN_CMD=''
 fi
 
-FEEDBACK_PATH=${LPATH}/${DSOURCE}_scores.csv
+FEEDBACK_PATH=${HPATH}/ml_feedback.csv
 
 HDFS_SCORED_CONNECTS=${HPATH}/scores
-
-LDA_OUTPUT_DIR=${DSOURCE}/${FDATE}
-
-mkdir -p ${LPATH}
-rm -f ${LPATH}/*.{dat,beta,gamma,other,pkl} # protect the flow_scores.csv file
 
 hdfs dfs -rm -R -f ${HDFS_SCORED_CONNECTS}
 
