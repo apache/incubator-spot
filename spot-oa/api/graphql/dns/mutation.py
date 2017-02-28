@@ -11,7 +11,7 @@ from graphql import (
 )
 
 from api.graphql.common import SpotDateType, SpotIpType, SpotOperationOutputType
-from api.resources.dns import Dns
+import api.resources.dns as Dns
 
 ScoreInputType = GraphQLInputObjectType(
     name='DnsScoreType',

@@ -12,7 +12,7 @@ from graphql import (
 )
 
 from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, create_spot_node_type, IngestSummaryType
-from api.resources.flow import Flow
+import api.resources.flow as Flow
 
 SuspiciousType = GraphQLObjectType(
     name='NetflowSuspiciousType',

@@ -11,7 +11,7 @@ from graphql import (
 )
 
 from api.graphql.common import SpotDateType, SpotIpType, SpotOperationOutputType
-from api.resources.flow import Flow
+import api.resources.flow as Flow
 
 ScoreInputType = GraphQLInputObjectType(
     name='NetflowScoreInputType',

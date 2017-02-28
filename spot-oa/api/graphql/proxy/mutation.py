@@ -11,7 +11,7 @@ from graphql import (
 )
 
 from api.graphql.common import SpotDateType, SpotIpType, SpotOperationOutputType
-from api.resources.proxy import Proxy
+import api.resources.proxy as Proxy
 
 ScoreInputType = GraphQLInputObjectType(
     name='ProxyScoreInputType',

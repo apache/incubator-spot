@@ -10,7 +10,7 @@ from graphql import (
 )
 
 from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, IngestSummaryType
-from api.resources.proxy import Proxy
+import api.resources.proxy as Proxy
 
 SuspiciousType = GraphQLObjectType(
     name='ProxySuspiciousType',

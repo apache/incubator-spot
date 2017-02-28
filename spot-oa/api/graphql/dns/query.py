@@ -13,7 +13,7 @@ from graphql import (
 )
 
 from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, IngestSummaryType
-from api.resources.dns import Dns
+import api.resources.dns as Dns
 
 SuspiciousType = GraphQLObjectType(
     name='DnsSuspiciousType',
