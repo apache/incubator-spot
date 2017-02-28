@@ -5,15 +5,11 @@ const SpotConstants = require('../../../js/constants/SpotConstants');
 
 const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-var fields = ['title', 'summary'];
-var filterName;
-
 const DATE_VAR = 'date';
+const QUERY_VAR = 'dnsQuery';
+const CLIENT_IP_VAR = 'clientIp';
 
 class IncidentProgressionStore extends ObservableGraphQLStore {
-    static QUERY: 'dnsQuery'
-    static CLIENT_IP: 'clientIp'
-
     constructor() {
         super();
 
@@ -26,13 +22,19 @@ class IncidentProgressionStore extends ObservableGraphQLStore {
                 dns {
                     threat {
                         incidentProgression(date:$date, dnsQuery:$dnsQuery, clientIp:$clientIp) {
-                            name
-                            children {
-                                name
-                            }
+                            ...QueryFragment
+                            ...ClientIpFragment
                         }
                     }
                 }
+            }
+
+            fragment QueryFragment on DnsIncidentProgressionQueryType {
+                dnsQuery
+            }
+
+            fragment ClientIpFragment on DnsIncidentProgressionClientIpType {
+                clientIp
             }
         `;
     }
@@ -46,8 +48,16 @@ class IncidentProgressionStore extends ObservableGraphQLStore {
     }
 
     setFilter(name, value) {
-        this.filterName = name==IncidentProgressionStore.QUERY?name:IncidentProgressionStore.CLIENT_IP;
+        this.filterName = name==QUERY_VAR?name:CLIENT_IP_VAR;
         this.setVariable(this.filterName, value);
+    }
+
+    getFilterName() {
+        return this.filterName;
+    }
+
+    getFilterValue() {
+        return this.getVariable(this.filterName);
     }
 
     clearFilter() {
@@ -69,7 +79,7 @@ SpotDispatcher.register(function (action) {
     case SpotConstants.SELECT_COMMENT:
       ips.clearFilter();
 
-      let filterName = IncidentProgressionStore.QUERY in action.comment ? IncidentProgressionStore.QUERY : IncidentProgressionStore.CLIENT_IP;
+      let filterName = QUERY_VAR in action.comment ? QUERY_VAR : CLIENT_IP_VAR;
       ips.setFilter(filterName, action.comment[filterName]);
 
       ips.sendQuery();

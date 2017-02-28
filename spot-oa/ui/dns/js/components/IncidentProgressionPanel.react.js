@@ -8,8 +8,8 @@ const DendrogramMixin = require('../../../js/components/DendrogramMixin.react');
 const IncidentProgressionStore = require('../stores/IncidentProgressionStore');
 
 const fieldMapper = {
-    ip_dst: 'dns_qry_name',
-    dns_qry_name: 'ip_dst'
+    clientIp: 'dnsQuery',
+    dnsQuery: 'clientIp'
 };
 
 const IncidentProgressionPanel = React.createClass({
@@ -30,14 +30,22 @@ const IncidentProgressionPanel = React.createClass({
     if (!storeData.loading) {
         state.error = storeData.error;
 
-        if (storeData.data) {
+        if (storeData.data && storeData.data.length) {
+          let filterName = IncidentProgressionStore.getFilterName();
+
           state.data = {
-              id: 'root',
-              name: storeData.data.name
+            id: 'root',
+            name: IncidentProgressionStore.getFilterValue(),
+            children: []
           };
 
-          state.data.children = storeData.data.children.map(child => ({id:child.name, name:child.name}));
-          state.leafNodes = state.data.children.length;
+          state.leafNodes = 0;
+          storeData.data.forEach((item) => {
+            state.data.children.push({
+              id: `node${++state.leafNodes}`,
+              name: item[fieldMapper[filterName]]
+            });
+          });
         }
     }
 
