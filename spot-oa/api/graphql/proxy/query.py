@@ -269,6 +269,74 @@ ThreatsInformationType = GraphQLObjectType(
     }
 )
 
+ExpandedSearchType = GraphQLObjectType(
+    name='DnsExpandedSearchType',
+    fields={
+        'datetime': GraphQLField(
+            type=SpotDatetimeType,
+            resolver=lambda root, *_: root.get('p_time')
+        ),
+        'clientIp': GraphQLField(
+            type=SpotIpType,
+            resolver=lambda root, *_: root.get('clientip')
+        ),
+        'username': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('username')
+        ),
+        'duration': GraphQLField(
+            type=GraphQLInt,
+            resolver=lambda root, *_: root.get('duration')
+        ),
+        'uri': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('fulluri')
+        ),
+        'webCategory': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('webcat')
+        ),
+        'responseCode': GraphQLField(
+            type=GraphQLInt,
+            resolver=lambda root, *_: root.get('respcode')
+        ),
+        'requestMethod': GraphQLField(
+            type=GraphQLString,
+            description='Http Method',
+            resolver=lambda root, *_: root.get('reqmethod')
+        ),
+        'userAgent': GraphQLField(
+            type=GraphQLString,
+            description='Client\'s user agent',
+            resolver=lambda root, *_: root.get('useragent')
+        ),
+        'responseContentType': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('resconttype')
+        ),
+        'referer': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('referer')
+        ),
+        'uriPort': GraphQLField(
+            type=GraphQLInt,
+            resolver=lambda root, *_: root.get('uriport')
+        ),
+        'serverIp': GraphQLField(
+            type=SpotIpType,
+            resolver=lambda root, *_: root.get('serverip')
+        ),
+        'serverToClientBytes': GraphQLField(
+            type=GraphQLInt,
+            resolver=lambda root, *_: root.get('scbytes')
+        ),
+        'clientToServerBytes': GraphQLField(
+            type=GraphQLInt,
+            resolver=lambda root, *_: root.get('csbytes')
+        )
+    }
+)
+
 IncidentProgressionRequestType = GraphQLObjectType(
     name='ProxyIncidentProgressionRequestType',
     fields={
@@ -345,6 +413,21 @@ TimelineType = GraphQLObjectType(
 ThreatInformationType = GraphQLObjectType(
     name='ProxyThreatInformation',
     fields={
+        'details': GraphQLField(
+            type=GraphQLList(ExpandedSearchType),
+            description='Detailed information about a high risk threat',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as reference for incident progression information. Defaults to today'
+                ),
+                'uri': GraphQLArgument(
+                    type=GraphQLNonNull(GraphQLString),
+                    description='Threat\'s URI'
+                )
+            },
+            resolver=lambda root, args, *_: Proxy.expanded_search(date=args.get('date', date.today()), uri=args.get('uri'))
+        ),
         'incidentProgression': GraphQLField(
             type=IncidentProgressionType,
             description='Incident progression information',
