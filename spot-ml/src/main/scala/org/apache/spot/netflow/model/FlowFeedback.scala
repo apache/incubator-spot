@@ -70,9 +70,6 @@ object FlowFeedback {
       val DestinationPortIndex = 5
       val IpktIndex = 6
       val IbytIndex = 7
-      val HourIndex = 20
-      val MinuteIndex = 21
-      val SecondIndex = 22
 
       sqlContext.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(ScoreIndex).trim.toInt == 3)
@@ -82,8 +79,8 @@ object FlowFeedback {
           row(TimeStartIndex).split(" ")(1).split(":")(2).trim.toInt, // second
           row(SourceIpIndex),
           row(DestinationIpIndex),
-          row(SourcePortIndex),
-          row(DestinationPortIndex),
+          row(SourcePortIndex).trim.toInt,
+          row(DestinationPortIndex).trim.toInt,
           row(IpktIndex).trim.toLong,
           row(IbytIndex).trim.toLong)))
         .flatMap(row => List.fill(duplicationFactor)(row)), ModelSchema)

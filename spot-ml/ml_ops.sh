@@ -70,7 +70,7 @@ else
     USER_DOMAIN_CMD=''
 fi
 
-FEEDBACK_PATH=${HPATH}/ml_feedback.csv
+FEEDBACK_PATH=${HPATH}/feedback/ml_feedback.csv
 
 HDFS_SCORED_CONNECTS=${HPATH}/scores
 
