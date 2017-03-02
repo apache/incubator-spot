@@ -1,3 +1,4 @@
+import os
 # Configuration file for ipython-notebook.
 
 c = get_config()
@@ -104,7 +105,9 @@ c.NotebookApp.port = 8889
 
 # Supply overrides for the tornado.web.Application that the IPython notebook
 # uses.
-# c.NotebookApp.tornado_settings = {}
+c.NotebookApp.tornado_settings = {
+    'debug': os.environ.get('SPOT_DEV')=='1'
+}
 
 # The directory to use for notebooks and kernels.
 # c.NotebookApp.notebook_dir = u''

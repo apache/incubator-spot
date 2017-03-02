@@ -13,7 +13,7 @@ from schema import SpotSchema
 app = Flask(__name__)
 
 blueprint = Blueprint('graphql_api', __name__)
-blueprint.add_url_rule('/graphql', strict_slashes=False, view_func=GraphQLView.as_view('graphql', schema=SpotSchema, graphiql=os.environ.get('FLASK_DEBUG')=='1'))
+blueprint.add_url_rule('/graphql', strict_slashes=False, view_func=GraphQLView.as_view('graphql', schema=SpotSchema, graphiql=os.environ.get('SPOT_DEV')=='1'))
 
 app.register_blueprint(blueprint)
 
