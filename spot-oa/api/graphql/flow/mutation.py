@@ -6,11 +6,13 @@ from graphql import (
     GraphQLString,
     GraphQLInt,
     GraphQLNonNull,
+    GraphQLList,
     GraphQLInputObjectType,
     GraphQLInputObjectField
 )
 
 from api.graphql.common import SpotDateType, SpotIpType, SpotOperationOutputType
+from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, SpotOperationOutputType
 import api.resources.flow as Flow
 
 ScoreInputType = GraphQLInputObjectType(
@@ -43,8 +45,58 @@ ScoreInputType = GraphQLInputObjectType(
     }
 )
 
-AddCommentInputType = GraphQLInputObjectType(
-    name='NetflowAddCommentInputType',
+ThreatDetailsInputType = GraphQLInputObjectType(
+    name='NetflowThreatDetailsInputType',
+    fields={
+        'firstSeen': GraphQLInputObjectField(
+            type=SpotDatetimeType,
+            description='First time two ips were seen on one day data of network traffic'
+        ),
+        'lastSeen': GraphQLInputObjectField(
+            type=SpotDatetimeType,
+            description='Last time two ips were seen on one day data of network trafic'
+        ),
+        'srcIp': GraphQLInputObjectField(
+            type=SpotIpType,
+            description='Source ip'
+        ),
+        'dstIp': GraphQLInputObjectField(
+            type=SpotIpType,
+            description='Destination ip'
+        ),
+        'srcPort': GraphQLInputObjectField(
+            type=GraphQLInt,
+            description='Source port'
+        ),
+        'dstPort': GraphQLInputObjectField(
+            type=GraphQLInt,
+            description='Destination port'
+        ),
+        'connections': GraphQLInputObjectField(
+            type=GraphQLInt,
+            description='Number of connections on one day of network traffic'
+        ),
+        'maxPkts': GraphQLInputObjectField(
+            type=GraphQLInt,
+            description='Maximum number of packets tranferred on a single connection'
+        ),
+        'avgPkts': GraphQLInputObjectField(
+            type=GraphQLInt,
+            description='Average number of packets transferred bwteen ips'
+        ),
+        'maxBytes': GraphQLInputObjectField(
+            type=GraphQLInt,
+            description='Maximum number of bytes tranferred on a single connection'
+        ),
+        'avgBytes': GraphQLInputObjectField(
+            type=GraphQLInt,
+            description='Average number of bytes transferred bwteen ips'
+        )
+    }
+)
+
+CreateStoryboardInputType = GraphQLInputObjectType(
+    name='NetflowCreateStoryboardInputType',
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
@@ -61,58 +113,66 @@ AddCommentInputType = GraphQLInputObjectType(
         'text': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
             description='A description text for the comment'
+        ),
+        'threatDetails': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLList(ThreatDetailsInputType)),
+        ),
+        'first': GraphQLInputObjectField(
+            type=GraphQLInt
         )
     }
 )
 
 def _score_connection(args):
+    results = []
+
     _input = args.get('input')
-    _date = _input.get('date', date.today())
-    score = _input.get('score')
-    srcIp = _input.get('srcIp')
-    dstIp = _input.get('dstIp')
-    srcPort = _input.get('srcPort')
-    dstPort = _input.get('dstPort')
+    for cmd in _input:
+        result = Flow.score_connection(
+            date=cmd['date'], score=cmd['score'],
+            src_ip=cmd.get('srcIp'), src_port=cmd.get('srcPort'),
+            dst_ip=cmd.get('dstIp'), dst_port=cmd.get('dstPort')
+        )
 
-    if Flow.score_connection(date=_date, score=score, Ipsrc=srcIp, Ipdst=dstIp, srcport=srcPort, dstport=dstPort) is None:
-        return {'success':True}
-    else:
-        return {'success':False}
+        results.append({'success': result})
 
-def _add_comment(args):
+    return results
+
+def _create_storyboard(args):
     _input = args.get('input')
     _date = _input.get('date', date.today())
     ip = _input.get('ip')
+    threat_details = _input.get('threatDetails')
     title = _input.get('title')
     text = _input.get('text')
+    first = _input.get('first')
 
-    if Flow.save_comment(date=_date, ip=ip, title=title, text=text) is None:
-        return {'success':True}
-    else:
-        return {'success':False}
+    result = Flow.create_storyboard(date=_date, ip=ip, title=title, text=text, expanded_search=threat_details, top_results=first)
+
+    return {'sucess': result}
 
 MutationType = GraphQLObjectType(
     name='NetflowMutationType',
     fields={
         'score': GraphQLField(
-            type=SpotOperationOutputType,
+            type=GraphQLList(SpotOperationOutputType),
             args={
                 'input': GraphQLArgument(
-                    type=GraphQLNonNull(ScoreInputType),
+                    type=GraphQLNonNull(GraphQLList(ScoreInputType)),
                     description='Score criteria'
                 )
             },
             resolver=lambda root, args, *_: _score_connection(args)
         ),
-        'addComment': GraphQLField(
+        'createStoryboard': GraphQLField(
             type=SpotOperationOutputType,
             args={
                 'input': GraphQLArgument(
-                    type=GraphQLNonNull(AddCommentInputType),
-                    description='Comment info'
+                    type=GraphQLNonNull(CreateStoryboardInputType),
+                    description='Generates every data needed to move a threat to the storyboard'
                 )
             },
-            resolver=lambda root, args, *_: _add_comment(args)
+            resolver=lambda root, args, *_: _create_storyboard(args)
         )
     }
 )

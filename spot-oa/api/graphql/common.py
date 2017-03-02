@@ -10,6 +10,7 @@ from graphql import (
     GraphQLList,
     GraphQLNonNull
 )
+import socket
 
 def coerce_date(value):
     if isinstance(value, date):
@@ -21,13 +22,16 @@ def coerce_date(value):
     else:
         return datetime.strptime(str(value), '%Y-%m-%d').date()
 
+def serialize_date(value):
+    return date.strptime(value, '%Y-%m-%d').strftime('%Y-%m-%d')
+
 def parse_date_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d')
 
 SpotDateType = GraphQLScalarType(
     name='SpotDateType',
     description='The `Date` scalar type represents date values in the format yyyy-mm-dd.',
-    serialize=coerce_date,
+    serialize=serialize_date,
     parse_value=coerce_date,
     parse_literal=parse_date_literal)
 
@@ -37,7 +41,10 @@ def coerce_datetime(value):
     elif not isinstance(value, datetime):
         value = datetime.strptime(str(value), '%Y-%m-%d %H:%M:%S')
 
-    return value.strftime('%Y-%m-%d %H:%M:%S')
+    return value
+
+def serialize_datetime(value):
+    return datetime.strptime(value, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
 
 def parse_datetime_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d %H:%M:%S')
@@ -45,14 +52,13 @@ def parse_datetime_literal(ast):
 SpotDatetimeType = GraphQLScalarType(
     name='SpotDatetimeType',
     description='The `Datetime` scalar type represents datetime values in the format yyyy-mm-dd hh:mm:ss.',
-    serialize=coerce_datetime,
+    serialize=serialize_datetime,
     parse_value=coerce_datetime,
     parse_literal=parse_datetime_literal)
 
 def coerce_ip(value):
     return str(value)
 
-import socket
 def parse_ip_literal(ast):
     socket.inet_aton(ast.value)
 
@@ -93,6 +99,7 @@ def create_spot_node_type(name, extra_fields={}):
         fields.update(extra_fields if type(extra_fields) is dict else {})
 
         return fields
+
     NodeType = GraphQLObjectType(
         name=name,
         fields=get_fields
