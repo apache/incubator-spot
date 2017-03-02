@@ -18,7 +18,7 @@ def coerce_date(value):
     elif isinstance(value, datetime):
         return value.date()
     elif isinstance(value, int):
-        return date.fromtimestamp(value)
+        return date.utcfromtimestamp(value)
     else:
         return datetime.strptime(str(value), '%Y-%m-%d').date()
 
@@ -37,14 +37,17 @@ SpotDateType = GraphQLScalarType(
 
 def coerce_datetime(value):
     if isinstance(value, int):
-        value = datetime.fromtimestamp(value)
+        value = datetime.utcfromtimestamp(value)
     elif not isinstance(value, datetime):
         value = datetime.strptime(str(value), '%Y-%m-%d %H:%M:%S')
 
     return value
 
 def serialize_datetime(value):
-    return datetime.strptime(value, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
+    if not isinstance(value, datetime):
+        value = datetime.strptime(str(value), '%Y-%m-%d %H:%M:%S')
+
+    return value.strftime('%Y-%m-%d %H:%M:%S')
 
 def parse_datetime_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d %H:%M:%S')
