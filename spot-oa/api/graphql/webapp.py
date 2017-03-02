@@ -32,3 +32,5 @@ def load_jupyter_server_extension(nb_app):
     ])
 
     nb_app.log.info('Apache Spot server extension loaded')
+    if os.environ.get('SPOT_DEV')=='1':
+        nb_app.log.warn('Apache Spot server running in dev mode (environment var SPOT_DEV=1)')
