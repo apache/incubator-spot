@@ -177,6 +177,33 @@ EdgeDetailsType = GraphQLObjectType(
     }
 )
 
+ThreatDetailsType = GraphQLObjectType(
+    name='DnsThreatDetailsType',
+    fields={
+        'frameTime': GraphQLField(
+            type=SpotDatetimeType,
+            description='Frame date time',
+            resolver=lambda root, *_: root.get('frameTime')
+        ),
+        'total': GraphQLField(
+            type=GraphQLInt,
+            description='Total threats',
+            resolver=lambda root, *_: root.get('total')
+        ),
+        'dnsQuery': GraphQLField(
+            type=GraphQLString,
+            description='Dns Threats',
+            resolver=lambda root, *_: root.get('dnsQuery')
+        ),
+        'ipClient': GraphQLField(
+            type=SpotIpType,
+            description='Ip Threats',
+            resolver=lambda root, *_: root.get('ipClient')
+        )
+    }
+)
+
+
 IpDetailsType = GraphQLObjectType(
     name='DnsIpDetailsType',
     fields={
@@ -372,6 +399,25 @@ ThreatInformationType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_ : Dns.incident_progression(date=args.get('date', date.today()), query=args.get('dnsQuery'), ip=args.get('clientIp'))
+        ),
+        'details': GraphQLField(
+            type=GraphQLList(ThreatDetailsType),
+            description='Get details about threats',
+            args={
+                'date': GraphQLArgument(
+                    type=SpotDateType,
+                    description='A date to use as a reference for suspicous queries. Defaults to today'
+                ),
+                'clientIp': GraphQLArgument(
+                    type=SpotIpType,
+                    description='Ip of interest'
+                ),
+                'query': GraphQLArgument(
+                    type=GraphQLString,
+                    description='Partial query of interest'
+                )
+            },
+            resolver=lambda root, args, *_: Dns.expanded_search(date=args.get('date', date.today()), query=args.get('query'), ip=args.get('clientIp'))
         )
     }
 )
