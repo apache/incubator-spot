@@ -158,7 +158,7 @@ MutationType = GraphQLObjectType(
             type=GraphQLList(SpotOperationOutputType),
             args={
                 'input': GraphQLArgument(
-                    type=GraphQLNonNull(GraphQLList(ScoreInputType)),
+                    type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ScoreInputType))),
                     description='Score criteria'
                 )
             },
