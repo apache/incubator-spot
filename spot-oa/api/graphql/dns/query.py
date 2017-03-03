@@ -214,9 +214,14 @@ IpDetailsType = GraphQLObjectType(
     }
 )
 
-ThreatType = GraphQLObjectType(
-    name='DnsThreatType',
+ScoredThreatType = GraphQLObjectType(
+    name='DnsScoredThreatType',
     fields={
+        'frameTime': GraphQLField(
+            type=SpotDatetimeType,
+            description='Date and time of user score',
+            resolver=lambda root, *_: datetime.utcfromtimestamp(int(root.get('unix_tstamp') or 0))
+        ),
         'dnsQuery': GraphQLField(
             type=GraphQLString,
             description='A dns query that has been scored as high risk (1)',
@@ -291,7 +296,7 @@ ThreatsInformationType = GraphQLObjectType(
     name='DnsThreats',
     fields={
         'list': GraphQLField(
-            type=GraphQLList(ThreatType),
+            type=GraphQLList(ScoredThreatType),
             description='List of dns queries or client ips that have been scored as high risk (1)',
             args={
                 'date': GraphQLArgument(
