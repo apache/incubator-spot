@@ -79,7 +79,7 @@ class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
     }
 
     setFilter(ip) {
-        this.setVariable(IP_VAR, ip || null);
+        this.setVariable(IP_VAR, ip || '');
         this.notifyListeners(CHANGE_FILTER_EVENT);
     }
 
