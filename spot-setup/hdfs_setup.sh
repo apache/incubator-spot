@@ -57,7 +57,6 @@ then
 	fi
 
 fi
-exit
 #
 # creating HDFS user's folder
 #
