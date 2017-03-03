@@ -191,6 +191,10 @@ IpConnectionDetailsType = GraphQLObjectType(
 ScoredConnectionType = GraphQLObjectType(
     name='NetflowScoredConnectionType',
     fields={
+        'tstart': GraphQLField(
+            type=SpotDatetimeType,
+            resolver=lambda root, *_: root.get('tstart')
+        ),
         'srcIp': GraphQLField(
             type=SpotIpType,
             description='Source Ip',
