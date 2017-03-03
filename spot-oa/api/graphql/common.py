@@ -78,7 +78,7 @@ SpotOperationOutputType = GraphQLObjectType(
     name='SpotOperationOutputType',
     fields={
         'success': GraphQLField(
-            type=GraphQLBoolean,
+            type=GraphQLNonNull(GraphQLBoolean),
             description='True after the operation success',
             resolver=lambda root, *_: root.get('success')
         )

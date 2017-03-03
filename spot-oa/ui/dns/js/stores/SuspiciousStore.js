@@ -7,8 +7,8 @@ const SpotUtils = require('../../../js/utils/SpotUtils');
 const ObservableWithHeadersGraphQLStore = require('../../../js/stores/ObservableWithHeadersGraphQLStore');
 
 const DATE_VAR = 'date';
-const IP_VAR = 'ip_dst';
-const DNS_VAR = 'dns_qry_name';
+const IP_VAR = 'ipClient';
+const DNS_VAR = 'dnsQuery';
 
 const CHANGE_FILTER_EVENT = 'change_filter';
 const HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
@@ -37,9 +37,9 @@ class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
 
     getQuery() {
         return `
-            query($date:SpotDateType!,$ip:SpotIpType,$query:String) {
+            query($date:SpotDateType!,$dnsQuery:String,$ipClient:SpotIpType) {
                 dns {
-                    suspicious(date: $date, clientIp:$ip, query:$query) {
+                    suspicious(date: $date, dnsQuery:$dnsQuery, clientIp:$ipClient) {
                         unix_tstamp: unixTimestamp
                         dns_qry_type: dnsQueryType
                         frame_len: frameLength
@@ -78,18 +78,18 @@ class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
         }
         else if (SpotUtils.IP_V4_REGEX.test(filter)) {
             this.unsetVariable(DNS_VAR);
-            this.setVar(IP_VAR, filter);
+            this.setVariable(IP_VAR, filter);
         }
         else {
             this.unsetVariable(IP_VAR);
-            this.setVar(DNS_VAR, filter);
+            this.setVariable(DNS_VAR, filter);
         }
 
         this.notifyListeners(CHANGE_FILTER_EVENT);
     }
 
     getFilter() {
-        return this.getVariable(IP_VAR) || this.getVariable(DNS_VAR);
+        return this.getVariable(IP_VAR) || this.getVariable(DNS_VAR) || '';
     }
 
     addChangeFilterListener(callback) {

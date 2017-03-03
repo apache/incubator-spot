@@ -5,7 +5,7 @@ const SpotConstants = require('../../../js/constants/SpotConstants');
 
 const ObservableWithHeadersGraphQLStore = require('../../../js/stores/ObservableWithHeadersGraphQLStore');
 
-const DNS_QUERY_VAR = 'query';
+const DNS_QUERY_VAR = 'dnsQuery';
 const TIME_VAR = 'frameTime';
 
 class DetailsStore extends ObservableWithHeadersGraphQLStore {
@@ -29,9 +29,9 @@ class DetailsStore extends ObservableWithHeadersGraphQLStore {
 
     getQuery() {
         return `
-            query($frameTime:SpotDatetimeType!,$query:String!) {
+            query($frameTime:SpotDatetimeType!,$dnsQuery:String!) {
                 dns {
-                    edgeDetails(frameTime: $frameTime, query:$query) {
+                    edgeDetails(frameTime: $frameTime, dnsQuery:$dnsQuery) {
                         dns_a: dnsQueryAnswers
                         frame_len: frameLength
                         dns_qry_type_name: dnsQueryTypeLabel

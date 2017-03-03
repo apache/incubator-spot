@@ -6,14 +6,14 @@ const SpotConstants = require('../../../js/constants/SpotConstants');
 const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
 const DATE_VAR = 'date'
-const CLIENT_IP_VAR = 'ip';
+const CLIENT_IP_VAR = 'clientIp';
 
 class DendrogramStore extends ObservableGraphQLStore {
     getQuery() {
         return `
-            query($date:SpotDateType!,$ip:SpotIpType!) {
+            query($date:SpotDateType!,$clientIp:SpotIpType!) {
                 dns {
-                    ipDetails(date:$date, ip:$ip) {
+                    ipDetails(date:$date, clientIp:$clientIp) {
                         dns_qry_name: dnsQuery
                         dns_a: dnsQueryAnswers
                     }

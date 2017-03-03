@@ -6,6 +6,7 @@ from graphql import (
     GraphQLString,
     GraphQLInt,
     GraphQLNonNull,
+    GraphQLList,
     GraphQLInputObjectType,
     GraphQLInputObjectField
 )
@@ -35,8 +36,23 @@ ScoreInputType = GraphQLInputObjectType(
     }
 )
 
-AddCommentInputType = GraphQLInputObjectType(
-    name='DnsAddCommentInputType',
+ThreatDetailsInputType = GraphQLInputObjectType(
+    name='DnsThreatDetailsInputType',
+    fields={
+        'total': GraphQLInputObjectField(
+            type=GraphQLInt
+        ),
+        'dnsQuery': GraphQLInputObjectField(
+            type=GraphQLString
+        ),
+        'clientIp': GraphQLInputObjectField(
+            type=SpotIpType
+        )
+    }
+)
+
+CreateStoryboardInputType = GraphQLInputObjectType(
+    name='DnsCreateStoryboardInputType',
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
@@ -57,57 +73,68 @@ AddCommentInputType = GraphQLInputObjectType(
         'text': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
             description='A description text for the comment'
+        ),
+        'threatDetails': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ThreatDetailsInputType))),
         )
     }
 )
 
-def _score_record(args):
+def _score_records(args):
+    results = []
+
+    _input = args.get('input')
+    for cmd in _input:
+        _date = cmd.get('date', date.today())
+        dns_query = cmd.get('dnsQuery', '')
+        client_ip = cmd.get('clientIp', '')
+        query_score = cmd.get('score') if dns_query else 0
+        client_ip_score = cmd.get('score') if client_ip else 0
+
+        result = Dns.score_connection(date=_date, dns=dns_query, ip=client_ip, dns_sev=query_score, ip_sev=client_ip_score)
+
+        results.append({'success': result})
+
+    return results
+
+def _create_storyboard(args):
     _input = args.get('input')
     _date = _input.get('date', date.today())
-    dns_query = _input.get('dnsQuery')
-    client_ip = _input.get('clientIp')
-    query_score = _input.get('score') if dns_query else None
-    client_ip_score = _input.get('score') if client_ip else None
-
-    result = Dns.score_connection(date=_date, dns=dns_query, ip=client_ip, dns_sev=query_score, ip_sev=client_ip_score)
-
-    return {'success': result}
-
-def _add_comment(args):
-    _input = args.get('input')
-    _date = _input.get('date', date.today())
-    dns_query = _input.get('dnsQuery')
-    client_ip = _input.get('clientIp')
+    dns_query = _input.get('dnsQuery', '')
+    client_ip = _input.get('clientIp', '')
+    threat_details = _input.get('threatDetails')
     title = _input.get('title')
     text = _input.get('text')
 
-    if Dns.save_comment(date=_date, dns_query=dns_query, client_ip=client_ip, title=title, text=text) is None:
-        return {'success':True}
-    else:
-        return {'success':False}
+    result = Dns.create_storyboard(
+        date=_date, query=dns_query, ip=client_ip,
+        title=title, text=text,
+        expanded_search=threat_details)
+
+    return {'success': result}
 
 MutationType = GraphQLObjectType(
     name='DnsMutationType',
     fields={
         'score': GraphQLField(
-            type=SpotOperationOutputType,
+            type=GraphQLList(SpotOperationOutputType),
             args={
                 'input': GraphQLArgument(
-                    type=GraphQLNonNull(ScoreInputType),
+                    type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ScoreInputType))),
                     description='Score criteria'
                 )
             },
-            resolver=lambda root, args, *_: _score_record(args)
+            resolver=lambda root, args, *_: _score_records(args)
         ),
-        'addComment': GraphQLField(
+        'createStoryboard': GraphQLField(
             type=SpotOperationOutputType,
             args={
                 'input': GraphQLArgument(
-                    type=GraphQLNonNull(AddCommentInputType),
-                    description='Comment info'
+                    type=GraphQLNonNull(CreateStoryboardInputType),
+                    description='Generates every data needed to move a threat to the storyboard'
                 )
             },
-            resolver=lambda root, args, *_: _add_comment(args)
+            resolver=lambda root, args, *_: _create_storyboard(args)
         )
     }
 )
