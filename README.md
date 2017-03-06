@@ -72,7 +72,7 @@ Apache Spot functionality is divided into different modules, go to each module f
 Our Central repository for our Apache Spot solution is found here. If you find a bug, have question or something to discuss please contact us:
 
 * [Create an Issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT). 
-* [Go to our Slack channel](https://spot.slack.com/messages/general/). 
+* [Go to our Slack channel](https://apachespot.slack.com/messages/general/). 
 
 ## **Contributing to Apache Spot**
 
