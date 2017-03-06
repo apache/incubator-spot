@@ -322,9 +322,7 @@ def  save_comments(ip,query,title,text,date):
 
     return True
 """
---------------------------------------------------------------------------
 Return a list(dict) with all the data ingested during the time frame provided.
---------------------------------------------------------------------------
 """
 def ingest_summary(start_date,end_date):
 
@@ -334,9 +332,9 @@ def ingest_summary(start_date,end_date):
                     tdate,total
                 FROM {0}.dns_ingest_summary
                 WHERE
-                    ( y <= {1} and y >= {2}) AND
-                    ( m <= {3} and m >= {4})
+                    ( y >= {1} and y <= {2}) AND
+                    ( m >= {3} and m <= {4})
                 """)\
-                .format(start_date.year,end_date.year,start_date.month,end_date.month)
+                .format(db,start_date.year,end_date.year,start_date.month,end_date.month)
 
     return ImpalaEngine.execute_query_as_list(is_query)

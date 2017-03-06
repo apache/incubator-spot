@@ -381,3 +381,21 @@ def incident_progression(date,uri):
         .format(hdfs_path,file_name)))
     else:
         return {}
+
+"""
+Return a list(dict) with all the data ingested during the time frame provided.
+"""
+def ingest_summary(start_date,end_date):
+
+    db = Configuration.db()
+    is_query = ("""
+                SELECT
+                    tdate,total
+                FROM {0}.proxy_ingest_summary
+                WHERE
+                    ( y >= {1} and y <= {2}) AND
+                    ( m >= {3} and m <= {4})
+                """)\
+                .format(db,start_date.year,end_date.year,start_date.month,end_date.month)
+
+    return ImpalaEngine.execute_query_as_list(is_query)
