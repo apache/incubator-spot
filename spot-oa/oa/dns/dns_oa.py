@@ -105,8 +105,10 @@ class OA(object):
         table_schema=['suspicious', 'edge', 'dendro', 'threat_dendro', 'threat_investigation', 'storyboard' ]
 
         for path in table_schema:
-            HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}/d={5}".format(HUSER,self._table_name,path,yr,mn,dy),user="impala")
-        HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}".format(HUSER,self._table_name,"summary",yr,mn),user="impala")
+            HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}/d={5}".format(HUSER,self._table_name,path,yr,int(mn),int(dy)),user="impala")
+        HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}".format(HUSER,self._table_name,"summary",yr,int(mn)),user="impala")
+        impala.execute_query("invalidate metadata")
+
         #removes Feedback file
         HDFSClient.delete_folder("{0}/{1}/scored_results/{2}{3}{4}/feedback/ml_feedback.csv".format(HUSER,self._table_name,yr,mn,dy))
         #removes json files from the storyboard
@@ -334,9 +336,10 @@ class OA(object):
                 dns_details = [ conn + (dns_nc.get_nc(conn[2]),) for conn in dns_details ]
             else:
                 dns_details = [ conn + (0,) for conn in dns_details ]
-                         
+            
+            # value_string += str(tuple(row) for row in dns_details) + ","              
             for row in dns_details:
-                value_string += str(tuple(item for item in row)) + ","   
+                value_string += str(tuple(item for item in row)) + ","
 
             if value_string != "": 
                 
@@ -350,9 +353,10 @@ class OA(object):
     def _get_dns_dendrogram(self): 
 
         for conn in self._dns_scores:   
-            timestamp = conn[self._conf["dns_score_fields"]["unix_tstamp"]]
-            
+            timestamp = conn[self._conf["dns_score_fields"]["unix_tstamp"]]         
+
             full_date = datetime.datetime.utcfromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
+
             date = full_date.split(" ")[0].split("-")
             # get date parameters.
             
@@ -408,7 +412,7 @@ class OA(object):
         if len(df_final) > 0:
             query_to_insert=("""
                 INSERT INTO {0}.dns_ingest_summary PARTITION (y={1}, m={2}) VALUES {3};
-            """).format(self._db, yr, mn, tuple(df_final))
-            
+            """).format(self._db, yr, mn, tuple(df_final))            
             impala.execute_query(query_to_insert)  
+
         

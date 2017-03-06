@@ -69,10 +69,7 @@ class OA(object):
         self._conf = json.loads(open (conf_file).read(),object_pairs_hook=OrderedDict)
 
         # initialize data engine
-        self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
-        self._engine = Data(self._db, self._table_name,self._logger)
-        
-        
+        self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')        
                 
     def start(self):       
         
@@ -108,15 +105,14 @@ class OA(object):
         table_schema=['suspicious', 'edge','chords','threat_investigation', 'timeline', 'storyboard', 'summary' ] 
 
         for path in table_schema:
-            HDFSClient.delete_folder("{0}/flow/hive/oa/{1}/y={2}/m={3}/d={4}".format(HUSER,path,yr,mn,dy),user="impala")
-        HDFSClient.delete_folder("{0}/flow/hive/oa/{1}/y={2}/m={3}".format(HUSER,"",yr,mn),user="impala")
+            HDFSClient.delete_folder("{0}/flow/hive/oa/{1}/y={2}/m={3}/d={4}".format(HUSER,path,yr,int(mn),int(dy)),user="impala")
+       
+        HDFSClient.delete_folder("{0}/flow/hive/oa/{1}/y={2}/m={3}".format(HUSER,"summary",yr,int(mn)),user="impala")
+        impala.execute_query("invalidate metadata")
         #removes Feedback file
         HDFSClient.delete_folder("{0}/{1}/scored_results/{2}{3}{4}/feedback/ml_feedback.csv".format(HUSER,self._table_name,yr,mn,dy))
         #removes json files from the storyboard
         HDFSClient.delete_folder("{0}/{1}/oa/{2}/{3}/{4}/{5}".format(HUSER,self._table_name,"storyboard",yr,mn,dy))
-
-        
-
 
     def _create_folder_structure(self):   
 
