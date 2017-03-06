@@ -149,7 +149,7 @@ def _create_storyboard(args):
 
     result = Flow.create_storyboard(date=_date, ip=ip, title=title, text=text, expanded_search=threat_details, top_results=first)
 
-    return {'sucess': result}
+    return {'success': result}
 
 MutationType = GraphQLObjectType(
     name='NetflowMutationType',

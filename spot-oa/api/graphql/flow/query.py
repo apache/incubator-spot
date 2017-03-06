@@ -624,8 +624,7 @@ QueryType = GraphQLObjectType(
                     description='End date'
                 )
             },
-            resolver=lambda root, args, *
-            _: Flow.ingest_summary(start_date=args.get('startDate'), end_date=args.get('endDate'))
+            resolver=lambda root, args, *_: Flow.ingest_summary(start_date=args.get('startDate'), end_date=args.get('endDate'))
         )
     }
 )
