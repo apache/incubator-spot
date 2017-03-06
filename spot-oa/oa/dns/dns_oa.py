@@ -336,8 +336,7 @@ class OA(object):
                 dns_details = [ conn + (dns_nc.get_nc(conn[2]),) for conn in dns_details ]
             else:
                 dns_details = [ conn + (0,) for conn in dns_details ]
-            
-            # value_string += str(tuple(row) for row in dns_details) + ","              
+                          
             for row in dns_details:
                 value_string += str(tuple(item for item in row)) + ","
 
@@ -353,8 +352,7 @@ class OA(object):
     def _get_dns_dendrogram(self): 
 
         for conn in self._dns_scores:   
-            timestamp = conn[self._conf["dns_score_fields"]["unix_tstamp"]]         
-
+            timestamp = conn[self._conf["dns_score_fields"]["unix_tstamp"]]
             full_date = datetime.datetime.utcfromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 
             date = full_date.split(" ")[0].split("-")
@@ -413,6 +411,4 @@ class OA(object):
             query_to_insert=("""
                 INSERT INTO {0}.dns_ingest_summary PARTITION (y={1}, m={2}) VALUES {3};
             """).format(self._db, yr, mn, tuple(df_final))            
-            impala.execute_query(query_to_insert)  
-
-        
+            impala.execute_query(query_to_insert)
