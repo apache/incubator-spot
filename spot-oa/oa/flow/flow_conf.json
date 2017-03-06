@@ -21,20 +21,19 @@
 	    ,"score":17
     },
 	"column_indexes_filter": [0,8,9,10,11,12,13,14,15,16,17],	
-	"flow_score_fields": {
-		"sev": 0
-		,"tstart": 1
-		,"srcIP": 2
-		,"dstIP":3
-		,"sport":4
-		,"dport":5
-		,"proto":6
-		,"ipkt":7
-		,"ibyt":8
-		,"opkt":9
-		,"obyt":10
-		,"score":11
-		,"rank":12
+	"flow_score_fields": { 
+		"tstart": 0
+		,"srcIP": 1
+		,"dstIP":2
+		,"sport":3
+		,"dport":4
+		,"proto":5
+		,"ipkt":6
+		,"ibyt":7
+		,"opkt":8
+		,"obyt":9
+		,"score":10
+		,"rank":11
 	},
 	"flow_feedback_fields": {
 		"sev":0

@@ -27,8 +27,12 @@ from utils import Util
 from components.data.data import Data
 from components.iana.iana_transform import IanaTransform
 from components.nc.network_context import NetworkContext
+
+import api.resources.hdfs_client as HDFSClient
+import api.resources.impala_engine as impala
 from multiprocessing import Process
 import pandas as pd 
+from impala.util import as_pandas
 
 import time
 import md5
@@ -78,13 +82,12 @@ class OA(object):
         ####################
 
         self._create_folder_structure()
+        self._clear_previous_executions()   
         self._add_ipynb()
         self._get_proxy_results()
-        self._add_reputation()
-        self._add_severity()
+        self._add_reputation() 
         self._add_iana()
-        self._add_network_context()
-        self._add_hash()
+        self._add_network_context() 
         self._create_proxy_scores_csv()
         self._get_oa_details()
         self._ingest_summary()
@@ -100,6 +103,27 @@ class OA(object):
         # create date folder structure if it does not exist.
         self._logger.info("Creating folder structure for OA (data and ipynb)")
         self._data_path,self._ingest_summary_path,self._ipynb_path = Util.create_oa_folders("proxy",self._date)
+
+
+    def _clear_previous_executions(self):
+        
+        self._logger.info("Cleaning data from previous executions for the day")       
+        yr = self._date[:4]
+        mn = self._date[4:6]
+        dy = self._date[6:]  
+        table_schema = []
+        HUSER = self._spot_conf.get('conf', 'HUSER').replace("'", "").replace('"', '')
+        table_schema=['suspicious', 'edge','threat_investigation', 'timeline', 'storyboard', 'summary' ] 
+
+        for path in table_schema:
+            HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}/d={5}".format(HUSER,self._table_name,path,yr,mn,dy),user="impala")
+        
+        HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}".format(HUSER,self._table_name,"summary",yr,mn),user="impala")
+        #removes Feedback file
+        HDFSClient.delete_folder("{0}/{1}/scored_results/{2}{3}{4}/feedback/ml_feedback.csv".format(HUSER,self._table_name,yr,mn,dy))
+        #removes json files from the storyboard
+        HDFSClient.delete_folder("{0}/{1}/oa/{2}/{3}/{4}/{5}".format(HUSER,self._table_name,"storyboard",yr,mn,dy))
+
 
 
     def _add_ipynb(self):
@@ -140,23 +164,23 @@ class OA(object):
             self._logger.error("There was an error getting ML results from HDFS")
             sys.exit(1)
 
-        # add headers.
-        self._logger.info("Adding headers")
-        self._proxy_scores_headers = [  str(key) for (key,value) in self._conf['proxy_score_fields'].items() ]
-
         self._proxy_scores = self._proxy_results[:]
 
 
     def _create_proxy_scores_csv(self):
-
-        proxy_scores_csv = "{0}/proxy_scores.tsv".format(self._data_path)
-        proxy_scores_final = self._proxy_scores[:];
-        proxy_scores_final.insert(0,self._proxy_scores_headers)
-        Util.create_csv_file(proxy_scores_csv,proxy_scores_final, self._results_delimiter)
-
-        # create bk file
-        proxy_scores_bu_csv = "{0}/proxy_scores_bu.tsv".format(self._data_path)
-        Util.create_csv_file(proxy_scores_bu_csv,proxy_scores_final, self._results_delimiter)
+        # get date parameters.
+        yr = self._date[:4]
+        mn = self._date[4:6]
+        dy = self._date[6:] 
+        value_string = ""
+ 
+        for row in self._proxy_scores:
+            value_string += str(tuple(Util.cast_val(item) for item in row)) + ","              
+    
+        load_into_impala = ("""
+             INSERT INTO {0}.proxy_scores partition(y={2}, m={3}, d={4}) VALUES {1}
+        """).format(self._db, value_string[:-1], yr, mn, dy) 
+        impala.execute_query(load_into_impala)
 
 
     def _add_reputation(self):
@@ -200,12 +224,6 @@ class OA(object):
             self._proxy_scores = [ conn + [""] for conn in self._proxy_scores  ]
 
 
-
-    def _add_severity(self):
-        # Add severity column
-        self._proxy_scores = [conn + [0] for conn in self._proxy_scores]
-
-
     def _add_iana(self):
 
         iana_conf_file = "{0}/components/iana/iana_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -225,21 +243,9 @@ class OA(object):
             nc_conf = json.loads(open(nc_conf_file).read())["NC"]
             proxy_nc = NetworkContext(nc_conf,self._logger)
             ip_dst_index = self._conf["proxy_score_fields"]["clientip"]
-            self._proxy_scores = [ conn + [proxy_nc.get_nc(conn[ip_dst_index])] for conn in self._proxy_scores ]
-
+            self._proxy_scores = [ conn + [proxy_nc.get_nc(conn[ip_dst_index])] for conn in self._proxy_scores ] 
         else:
             self._proxy_scores = [ conn + [""] for conn in self._proxy_scores ]
-
-
-    def _add_hash(self):
-        #A hash string is generated to be used as the file name for the edge files.
-        #These fields are used for the hash creation, so this combination of values is treated as
-        #a 'unique' connection
-        cip_index = self._conf["proxy_score_fields"]["clientip"]
-        uri_index = self._conf["proxy_score_fields"]["fulluri"]
-        tme_index = self._conf["proxy_score_fields"]["p_time"]
-
-        self._proxy_scores = [conn + [str( md5.new(str(conn[cip_index]) + str(conn[uri_index])).hexdigest() + str((conn[tme_index].split(":"))[0]) )] for conn in self._proxy_scores]
 
 
     def _get_oa_details(self):
@@ -248,73 +254,61 @@ class OA(object):
         # start suspicious connects details process.
         p_sp = Process(target=self._get_suspicious_details)
         p_sp.start()
-
-        # p_sp.join()
+ 
 
     def _get_suspicious_details(self):
-        hash_list = []
+        uri_list = []
         iana_conf_file = "{0}/components/iana/iana_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         if os.path.isfile(iana_conf_file):
             iana_config  = json.loads(open(iana_conf_file).read())
             proxy_iana = IanaTransform(iana_config["IANA"])
 
         for conn in self._proxy_scores:
-            conn_hash = conn[self._conf["proxy_score_fields"]["hash"]]
-            if conn_hash not in hash_list:
-                hash_list.append(conn_hash)
-                clientip = conn[self._conf["proxy_score_fields"]["clientip"]]
-                fulluri = conn[self._conf["proxy_score_fields"]["fulluri"]]
-                date=conn[self._conf["proxy_score_fields"]["p_date"]].split('-')
-                if len(date) == 3:
-                    year=date[0]
-                    month=date[1].zfill(2)
-                    day=date[2].zfill(2)
-                    hh=(conn[self._conf["proxy_score_fields"]["p_time"]].split(":"))[0]
-                    self._get_proxy_details(fulluri,clientip,conn_hash,year,month,day,hh,proxy_iana)
+            clientip = conn[self._conf["proxy_score_fields"]["clientip"]]
+            fulluri = conn[self._conf["proxy_score_fields"]["fulluri"]]
+            date=conn[self._conf["proxy_score_fields"]["p_date"]].split('-')
+            if len(date) == 3:
+                year=date[0]
+                month=date[1].zfill(2)
+                day=date[2].zfill(2)
+                hh=(conn[self._conf["proxy_score_fields"]["p_time"]].split(":"))[0]
+                self._get_proxy_details(fulluri,clientip,year,month,day,hh,proxy_iana)
 
 
-    def _get_proxy_details(self,fulluri,clientip,conn_hash,year,month,day,hh,proxy_iana):
 
-        limit = 250
-        output_delimiter = '\t'
-        edge_file ="{0}/edge-{1}-{2}.tsv".format(self._data_path,clientip,conn_hash)
-        edge_tmp  ="{0}/edge-{1}-{2}.tmp".format(self._data_path,clientip,conn_hash)
+    def _get_proxy_details(self,fulluri,clientip,year,month,day,hh,proxy_iana):
+        limit = 250 
+        value_string = ""
+        
+        query_to_load =("""
+            SELECT p_date, p_time, clientip, host, webcat, respcode, reqmethod, useragent, resconttype,
+            referer, uriport, serverip, scbytes, csbytes, fulluri, {5} as hh
+            FROM {0}.{1} WHERE y='{2}' AND m='{3}' AND d='{4}' AND
+            h='{5}' AND fulluri='{6}' AND clientip='{7}' LIMIT {8};
+        """).format(self._db,self._table_name, year,month,day,hh,fulluri,clientip,limit)
 
-        if not os.path.isfile(edge_file):
-            proxy_qry = ("SELECT p_date, p_time, clientip, host, webcat, respcode, reqmethod, useragent, resconttype, \
-                referer, uriport, serverip, scbytes, csbytes, fulluri FROM {0}.{1} WHERE y=\'{2}\' AND m=\'{3}\' AND d=\'{4}\' AND \
-                h=\'{5}\' AND fulluri =\'{6}\' AND clientip = \'{7}\' LIMIT {8};").format(self._db,self._table_name, year,month,day,hh,fulluri,clientip,limit)
-
-            # execute query
-            self._engine.query(proxy_qry,edge_tmp,output_delimiter)
-            # add IANA to results.
+        detail_results = impala.execute_query(query_to_load)
+ 
+        if proxy_iana:
+             # add IANA to results.
             self._logger.info("Adding IANA translation to details results")
-            with open(edge_tmp) as proxy_details_csv:
-                rows = csv.reader(proxy_details_csv, delimiter=output_delimiter,quotechar='"')
-                next(proxy_details_csv)
-                update_rows = [[conn[0]] + [conn[1]] + [conn[2]] + [conn[3]] + [conn[4]] + [proxy_iana.get_name(conn[5],"proxy_http_rcode") if proxy_iana else conn[5]] + [conn[6]] + [conn[7]] + [conn[8]] + [conn[9]] + [conn[10]] + [conn[11]] + [conn[12]] + [conn[13]] + [conn[14]] if len(conn) > 0 else [] for conn in rows]
-                update_rows = filter(None, update_rows)
-                header = ["p_date","p_time","clientip","host","webcat","respcode","reqmethod","useragent","resconttype","referer","uriport","serverip","scbytes","csbytes","fulluri"]
-                update_rows.insert(0,header)
+ 
+            updated_rows = [conn + (proxy_iana.get_name(conn[5],"proxy_http_rcode"),) for conn in detail_results]
+            updated_rows = filter(None, updated_rows)            
+        else:
+            updated_rows = [conn + ("") for conn in detail_results ]
+ 
+        for row in updated_rows:
+            value_string += str(tuple(item for item in row)) + ","     
+        
+        if value_string != "":  
+            query_to_insert=("""
+                INSERT INTO {0}.proxy_edge PARTITION (y={1}, m={2}, d={3}) VALUES ({4});
+            """).format(self._db,year, month, day, value_string[:-1])
 
-		# due an issue with the output of the query.
-		update_rows = [ [ w.replace('"','') for w in l ] for l in update_rows ]
-	
+            impala.execute_query(query_to_insert) 
 
-            # create edge file.
-            self._logger.info("Creating edge file:{0}".format(edge_file))
-            with open(edge_file,'wb') as proxy_details_edge:
-                writer = csv.writer(proxy_details_edge, quoting=csv.QUOTE_NONE, delimiter=output_delimiter)
-                if update_rows:
-                    writer.writerows(update_rows)
-                else:
-                    shutil.copy(edge_tmp,edge_file)
-
-            try:
-                os.remove(edge_tmp)
-            except OSError:
-                pass
-
+   
 
     def _ingest_summary(self): 
         # get date parameters.
@@ -328,44 +322,36 @@ class OA(object):
         result_rows = []        
         df_filtered =  pd.DataFrame()
 
-        ingest_summary_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)			
-        ingest_summary_tmp = "{0}.tmp".format(ingest_summary_file)
-
-        if os.path.isfile(ingest_summary_file):
-        	df = pd.read_csv(ingest_summary_file, delimiter=',')
-            #discards previous rows from the same date
-        	df_filtered = df[df['date'].str.contains("{0}-{1}-{2}".format(yr, mn, dy)) == False] 
-        else:
-        	df = pd.DataFrame()
-            
         # get ingest summary.
-        ingest_summary_qry = ("SELECT p_date, p_time, COUNT(*) as total "
-                                    " FROM {0}.{1}"
-                                    " WHERE y='{2}' AND m='{3}' AND d='{4}' "
-                                    " AND p_date IS NOT NULL AND p_time IS NOT NULL " 
-                                    " AND clientip IS NOT NULL AND p_time != '' "
-                                    " AND host IS NOT NULL AND fulluri IS NOT NULL "
-                                    " GROUP BY p_date, p_time;") 
 
-        ingest_summary_qry = ingest_summary_qry.format(self._db,self._table_name, yr, mn, dy)
-        results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)        
-        self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
+        query_to_load=("""
+                SELECT p_date, p_time, COUNT(*) as total
+                FROM {0}.{1} WHERE y='{2}' AND m='{3}' AND d='{4}'
+                AND p_date IS NOT NULL AND p_time IS NOT NULL
+                AND clientip IS NOT NULL AND p_time != ''
+                AND host IS NOT NULL AND fulluri IS NOT NULL
+                GROUP BY p_date, p_time;
+        """).format(self._db,self._table_name, yr, mn, dy)
         
-        if os.path.isfile(results_file):
-            df_results = pd.read_csv(results_file, delimiter=',')  
-            
+        results = impala.execute_query(query_to_load) 
+ 
+        if results:
+            df_results = as_pandas(results)
             #Forms a new dataframe splitting the minutes from the time column/
             df_new = pd.DataFrame([["{0} {1}:{2}".format(val['p_date'], val['p_time'].split(":")[0].zfill(2), val['p_time'].split(":")[1].zfill(2)), int(val['total']) if not math.isnan(val['total']) else 0 ] for key,val in df_results.iterrows()],columns = ingest_summary_cols)
-            
+            value_string = ''
             #Groups the data by minute 
             sf = df_new.groupby(by=['date'])['total'].sum()
             df_per_min = pd.DataFrame({'date':sf.index, 'total':sf.values})
             
-            df_final = df_filtered.append(df_per_min, ignore_index=True)
-            df_final.to_csv(ingest_summary_tmp,sep=',', index=False)
+            df_final = df_filtered.append(df_per_min, ignore_index=True).to_records(False,False) 
+            if len(df_final) > 0:
+                query_to_insert=("""
+                    INSERT INTO {0}.proxy_ingest_summary PARTITION (y={1}, m={2}) VALUES {3};
+                """).format(self._db, yr, mn, tuple(df_final))
 
-            os.remove(results_file)
-            os.rename(ingest_summary_tmp,ingest_summary_file)
+                impala.execute_query(query_to_insert) 
+                
         else:
             self._logger.info("No data found for the ingest summary")
         
