@@ -251,8 +251,8 @@ class OA(object):
 
             dns_qry_class_index = self._conf["dns_results_fields"]["dns_qry_class"]
             dns_qry_type_index = self._conf["dns_results_fields"]["dns_qry_type"]
-            dns_qry_rcode_index = self._conf["dns_results_fields"]["dns_qry_rcode"]
-            self._dns_scores = [ conn + [ dns_iana.get_name(conn[dns_qry_class_index],"dns_qry_class")] + [dns_iana.get_name(conn[dns_qry_type_index],"dns_qry_type")] + [ dns_iana.get_name(conn[dns_qry_rcode_index],"dns_qry_rcode") ] for conn in self._dns_scores ]
+            dns_qry_rcode_index = self._conf["dns_results_fields"]["dns_qry_rcode"]            
+            self._dns_scores = [ conn + [ str(dns_iana.get_name(conn[dns_qry_class_index],"dns_qry_class"))] + [str(dns_iana.get_name(conn[dns_qry_type_index],"dns_qry_type"))] + [str(dns_iana.get_name(conn[dns_qry_rcode_index],"dns_qry_rcode"))] for conn in self._dns_scores ]
             
         else:            
             self._dns_scores = [ conn + ["","",""] for conn in self._dns_scores ] 

@@ -230,8 +230,8 @@ class OA(object):
         if os.path.isfile(iana_conf_file):
             iana_config  = json.loads(open(iana_conf_file).read())
             proxy_iana = IanaTransform(iana_config["IANA"])
-            proxy_rcode_index = self._conf["proxy_score_fields"]["respcode"]
-            self._proxy_scores = [ conn + [ proxy_iana.get_name(conn[proxy_rcode_index],"proxy_http_rcode")] for conn in self._proxy_scores ]
+            proxy_rcode_index = self._conf["proxy_score_fields"]["respcode"]            
+            self._proxy_scores = [ conn + [str(proxy_iana.get_name(conn[proxy_rcode_index],"proxy_http_rcode"))] for conn in self._proxy_scores ]
         else:
             self._proxy_scores = [ conn + [""] for conn in self._proxy_scores ]
 
