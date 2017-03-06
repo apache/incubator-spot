@@ -15,10 +15,6 @@ const HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
 const UNHIGHLIGHT_THREAT_EVENT = 'unhightlight_thread';
 const SELECT_THREAT_EVENT = 'select_treath';
 
-var filterName = '';
-var highlightedThread = null;
-var selectedThread = null;
-
 class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
     constructor() {
         super();
@@ -87,8 +83,8 @@ class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
             this.unsetVariable(CLIENT_IP_VAR);
         }
         else if (SpotUtils.IP_V4_REGEX.test(filter)) {
-            this.setVariable(URI_VAR, filter);
-            this.unsetVariable(CLIENT_IP_VAR, filter);
+            this.unsetVariable(URI_VAR, filter);
+            this.setVariable(CLIENT_IP_VAR, filter);
         }
         else {
             this.unsetVariable(CLIENT_IP_VAR);
@@ -99,7 +95,7 @@ class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
     }
 
     getFilter() {
-        return this.getVariable(CLIENT_IP_VAR) || this.getVariable(URI_VAR);
+        return this.getVariable(CLIENT_IP_VAR) || this.getVariable(URI_VAR) || '';
     }
 
     addChangeFilterListener(callback) {

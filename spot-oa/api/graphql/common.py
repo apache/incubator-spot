@@ -23,7 +23,7 @@ def coerce_date(value):
         return datetime.strptime(str(value), '%Y-%m-%d').date()
 
 def serialize_date(value):
-    return date.strptime(value, '%Y-%m-%d').strftime('%Y-%m-%d')
+    return datetime.strptime(value, '%Y-%m-%d').strftime('%Y-%m-%d')
 
 def parse_date_literal(ast):
     return datetime.strptime(ast.value, '%Y-%m-%d')
@@ -115,7 +115,7 @@ IngestSummaryType = GraphQLObjectType(
     fields={
         'datetime': GraphQLField(
             type=SpotDatetimeType,
-            resolver=lambda root, *_: root.get('tdate')
+            resolver=lambda root, *_: '{}:00'.format(root.get('tdate'))
         ),
         'total': GraphQLField(
             type=GraphQLInt,

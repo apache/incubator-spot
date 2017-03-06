@@ -18,7 +18,7 @@ SuspiciousType = GraphQLObjectType(
         'datetime': GraphQLField(
             type=SpotDatetimeType,
             description='Start time of the request',
-            resolver=lambda root, *_: '{} {}'.format(root.get('p_date', ''), root.get('p_time', ''))
+            resolver=lambda root, *_: '{} {}'.format(root.get('tdate') or '1970-01-01', root.get('time') or '00:00:00')
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
@@ -107,7 +107,8 @@ SuspiciousType = GraphQLObjectType(
         ),
         'score': GraphQLField(
             type=GraphQLInt,
-            resolver=lambda root, *_: root.get('score')
+            description='Score value assigned by machine learning algorithm',
+            resolver=lambda root, *_: root.get('ml_score') or 0
         ),
         'uriRep': GraphQLField(
             type=GraphQLString,
@@ -132,7 +133,7 @@ EdgeDetailsType = GraphQLObjectType(
         'datetime': GraphQLField(
             type=GraphQLString,
             description='Start time of the request',
-            resolver=lambda root, *_: '{} {}'.format(root.get('p_date'), root.get('p_time'))
+            resolver=lambda root, *_: '{} {}'.format(root.get('tdate') or '1970-01-01', root.get('time') or '00:00:00')
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
@@ -210,15 +211,20 @@ EdgeDetailsType = GraphQLObjectType(
 ScoredRequestType = GraphQLObjectType(
     name='ProxyScoredRequestType',
     fields={
+        'datetime': GraphQLField(
+            type=SpotDateType,
+            description='Date and time of user score',
+            resolver=lambda root, *_: root.get('tdate') or '1970-01-01'
+        ),
         'uri': GraphQLField(
             type=SpotIpType,
             description='Requested URI',
-            resolver=lambda root, *_: root.get('uri')
+            resolver=lambda root, *_: root.get('fulluri')
         ),
         'score': GraphQLField(
             type=GraphQLInt,
             description='Score value. 1->High, 2->Medium, 3->Low',
-            resolver=lambda root, *_: root.get('score') or 0
+            resolver=lambda root, *_: root.get('uri_sev') or 0
         )
     }
 )
@@ -228,7 +234,7 @@ CommentType = GraphQLObjectType(
     fields={
         'uri': GraphQLField(
             type=GraphQLString,
-            resolver=lambda root, *_: root.get('uri_threat')
+            resolver=lambda root, *_: root.get('p_threat')
         ),
         'title': GraphQLField(
             type=GraphQLString,
@@ -253,7 +259,7 @@ ThreatsInformationType = GraphQLObjectType(
                     description='A date to use as reference to retrieve the list of scored requests. Defaults to today'
                 )
             },
-            resolver=lambda root, args, *_: Proxy.get_scored_request(date=args.get('date', date.today()))
+            resolver=lambda root, args, *_: Proxy.get_scored_requests(date=args.get('date', date.today()))
         ),
         'comments': GraphQLField(
             type=GraphQLList(CommentType),
@@ -269,12 +275,12 @@ ThreatsInformationType = GraphQLObjectType(
     }
 )
 
-ExpandedSearchType = GraphQLObjectType(
-    name='DnsExpandedSearchType',
+ThreatDetailsType = GraphQLObjectType(
+    name='ProxyThreatDetailsType',
     fields={
         'datetime': GraphQLField(
             type=SpotDatetimeType,
-            resolver=lambda root, *_: root.get('p_time')
+            resolver=lambda root, *_: '{} {}'.format(root.get('p_date') or '1970-01-01', root.get('p_time') or '00:00:00')
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
@@ -389,11 +395,11 @@ TimelineType = GraphQLObjectType(
     fields={
         'startDatetime': GraphQLField(
             type=SpotDatetimeType,
-            resolver=lambda root, *_: root.get('tstart')
+            resolver=lambda root, *_: root.get('tstart') or '1970-01-01 00:00:00'
         ),
         'endDatetime': GraphQLField(
             type=SpotDatetimeType,
-            resolver=lambda root, *_: root.get('tend')
+            resolver=lambda root, *_: root.get('tend') or '1970-01-01 00:00:00'
         ),
         'duration': GraphQLField(
             type=GraphQLInt,
@@ -406,6 +412,10 @@ TimelineType = GraphQLObjectType(
         'responseCode': GraphQLField(
             type=GraphQLInt,
             resolver=lambda root, *_: root.get('respcode')
+        ),
+        'responseCodeLabel': GraphQLField(
+            type=GraphQLString,
+            resolver=lambda root, *_: root.get('respcode_name')
         )
     }
 )
@@ -414,7 +424,7 @@ ThreatInformationType = GraphQLObjectType(
     name='ProxyThreatInformation',
     fields={
         'details': GraphQLField(
-            type=GraphQLList(ExpandedSearchType),
+            type=GraphQLList(ThreatDetailsType),
             description='Detailed information about a high risk threat',
             args={
                 'date': GraphQLArgument(
@@ -500,7 +510,7 @@ QueryType = GraphQLObjectType(
                     description='Client\'s ip'
                 )
             },
-            resolver=lambda root, args, *_: Proxy.details(date=args.get('date', date.today()), uri=args.get('uri'), clientip=args.get('clientIp'))
+            resolver=lambda root, args, *_: Proxy.details(date=args.get('date', date.today()), uri=args.get('uri'), ip=args.get('clientIp'))
         ),
         'threats': GraphQLField(
             type=ThreatsInformationType,

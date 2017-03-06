@@ -18,7 +18,7 @@ class TimelineStore extends ObservableGraphQLStore {
                             duration
                             clientip: clientIp
                             tend: endDatetime
-                            respcode: responseCode
+                            respcode: responseCodeLabel
                             tstart: startDatetime
                         }
                     }

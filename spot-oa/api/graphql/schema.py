@@ -39,6 +39,10 @@ SpotSchema = GraphQLSchema(
         'dns': GraphQLField(
             type=DnsMutationType,
             resolver=lambda *_: {}
+        ),
+        'proxy': GraphQLField(
+            type=ProxyMutationType,
+            resolver=lambda *_: {}
         )
     }
   ),

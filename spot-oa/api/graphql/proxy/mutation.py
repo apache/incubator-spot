@@ -3,6 +3,7 @@ from graphql import (
     GraphQLObjectType,
     GraphQLField,
     GraphQLArgument,
+    GraphQLList,
     GraphQLString,
     GraphQLInt,
     GraphQLNonNull,
@@ -10,7 +11,7 @@ from graphql import (
     GraphQLInputObjectField
 )
 
-from api.graphql.common import SpotDateType, SpotIpType, SpotOperationOutputType
+from api.graphql.common import SpotDateType, SpotDatetimeType, SpotIpType, SpotOperationOutputType
 import api.resources.proxy as Proxy
 
 ScoreInputType = GraphQLInputObjectType(
@@ -25,18 +26,67 @@ ScoreInputType = GraphQLInputObjectType(
             description='A score value, 1->High, 2->Medium, 3->Low'
         ),
         'uri': GraphQLInputObjectField(
-            type=GraphQLString,
-            description='Requested URI'
-        ),
-        'clientIp': GraphQLInputObjectField(
-            type=SpotIpType,
-            description='Client\'s ip'
+            type=GraphQLNonNull(GraphQLString),
+            description='Full URI'
         )
     }
 )
 
-AddCommentInputType = GraphQLInputObjectType(
-    name='ProxyAddCommentInputType',
+ThreatDetailsInputType = GraphQLInputObjectType(
+    name='ProxyThreatDetailsInputType',
+    fields={
+        'datetime': GraphQLInputObjectField(
+            type=SpotDatetimeType
+        ),
+        'clientIp': GraphQLInputObjectField(
+            type=SpotIpType
+        ),
+        'username': GraphQLInputObjectField(
+            type=GraphQLString
+        ),
+        'duration': GraphQLInputObjectField(
+            type=GraphQLInt
+        ),
+        'uri': GraphQLInputObjectField(
+            type=GraphQLString
+        ),
+        'webCategory': GraphQLInputObjectField(
+            type=GraphQLString
+        ),
+        'responseCode': GraphQLInputObjectField(
+            type=GraphQLInt
+        ),
+        'requestMethod': GraphQLInputObjectField(
+            type=GraphQLString,
+            description='Http Method'
+        ),
+        'userAgent': GraphQLInputObjectField(
+            type=GraphQLString,
+            description='Client\'s user agent'
+        ),
+        'responseContentType': GraphQLInputObjectField(
+            type=GraphQLString
+        ),
+        'referer': GraphQLInputObjectField(
+            type=GraphQLString
+        ),
+        'uriPort': GraphQLInputObjectField(
+            type=GraphQLInt
+        ),
+        'serverIp': GraphQLInputObjectField(
+            type=SpotIpType
+        ),
+        'serverToClientBytes': GraphQLInputObjectField(
+            type=GraphQLInt
+        ),
+        'clientToServerBytes': GraphQLInputObjectField(
+            type=GraphQLInt
+        )
+    }
+)
+
+CreateStoryboardInputType = GraphQLInputObjectType(
+    name='ProxyCreateStoryboardInputType',
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
@@ -53,53 +103,66 @@ AddCommentInputType = GraphQLInputObjectType(
         'text': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
             description='A description text for the comment'
+        ),
+        'threatDetails': GraphQLInputObjectField(
+            type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ThreatDetailsInputType))),
+        ),
+        'first': GraphQLInputObjectField(
+            type=GraphQLInt
         )
     }
 )
 
-def _score_connection(args):
+def _score_connections(args):
+    results = []
+
     _input = args.get('input')
-    _date = _input.get('date', date.today())
-    score = _input.get('score')
-    uri = _input.get('uri')
-    clientIp = _input.get('clientIp')
+    for cmd in _input:
+        _date = cmd.get('date', date.today())
+        score = cmd.get('score')
+        uri = cmd.get('uri')
 
-    return {'success': Proxy.score_request(date=_date, score=score, uri=uri, cllientip=clientIp)}
+        result = Proxy.score_request(date=_date, score=score, uri=uri)
 
-def _add_comment(args):
+        results.append({'success': result})
+
+    return results
+
+def _create_storyboard(args):
     _input = args.get('input')
     _date = _input.get('date', date.today())
     uri = _input.get('uri')
     title = _input.get('title')
     text = _input.get('text')
+    threat_details = _input.get('threatDetails')
+    first = _input.get('first')
 
-    if Proxy.save_comment(date=_date, uri=uri, title=title, text=text) is None:
-        return {'success':True}
-    else:
-        return {'success':False}
+    result = Proxy.create_storyboard(date=_date, uri=uri, title=title, text=text, expanded_search=threat_details, top_results=first)
+
+    return {'success': result}
 
 MutationType = GraphQLObjectType(
     name='ProxyMutationType',
     fields={
         'score': GraphQLField(
-            type=SpotOperationOutputType,
+            type=GraphQLList(SpotOperationOutputType),
             args={
                 'input': GraphQLArgument(
-                    type=GraphQLNonNull(ScoreInputType),
+                    type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ScoreInputType))),
                     description='Score criteria'
                 )
             },
-            resolver=lambda root, args, *_: _score_connection(args)
+            resolver=lambda root, args, *_: _score_connections(args)
         ),
-        'addComment': GraphQLField(
+        'createStoryboard': GraphQLField(
             type=SpotOperationOutputType,
             args={
                 'input': GraphQLArgument(
-                    type=GraphQLNonNull(AddCommentInputType),
-                    description='Comment info'
+                    type=GraphQLNonNull(CreateStoryboardInputType),
+                    description='Generates every data needed to move a threat to the storyboard'
                 )
             },
-            resolver=lambda root, args, *_: _add_comment(args)
+            resolver=lambda root, args, *_: _create_storyboard(args)
         )
     }
 )
