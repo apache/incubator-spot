@@ -321,8 +321,12 @@ def  save_comments(ip,query,title,text,date):
         ImpalaEngine.execute_query(insert_query)
 
     return True
+
 """
-Return a list(dict) with all the data ingested during the time frame provided.
+--------------------------------------------------------------------------
+Return a list(dict) with all the data ingested during the timeframe 
+provided.
+--------------------------------------------------------------------------
 """
 def ingest_summary(start_date,end_date):
 
