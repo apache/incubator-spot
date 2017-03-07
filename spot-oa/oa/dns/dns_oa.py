@@ -410,6 +410,6 @@ class OA(object):
 
         if len(df_final) > 0:
             query_to_insert=("""
-                INSERT INTO {0}.dns_ingest_summary PARTITION (y={1}, m={2}) VALUES {3};
-            """).format(self._db, yr, mn, tuple(df_final))            
+                INSERT INTO {0}.dns_ingest_summary PARTITION (y={1}, m={2}, d={3}) VALUES {4};
+            """).format(self._db, yr, mn, dy, tuple(df_final))            
             impala.execute_query(query_to_insert)

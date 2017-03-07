@@ -307,8 +307,7 @@ class OA(object):
             """).format(self._db,year, month, day, value_string[:-1])
 
             impala.execute_query(query_to_insert) 
-
-   
+ 
 
     def _ingest_summary(self): 
         # get date parameters.
@@ -347,8 +346,8 @@ class OA(object):
             df_final = df_filtered.append(df_per_min, ignore_index=True).to_records(False,False) 
             if len(df_final) > 0:
                 query_to_insert=("""
-                    INSERT INTO {0}.proxy_ingest_summary PARTITION (y={1}, m={2}) VALUES {3};
-                """).format(self._db, yr, mn, tuple(df_final))
+                    INSERT INTO {0}.proxy_ingest_summary PARTITION (y={1}, m={2}, d={3}) VALUES {4};
+                """).format(self._db, yr, mn, dy, tuple(df_final))
 
                 impala.execute_query(query_to_insert) 
                 
