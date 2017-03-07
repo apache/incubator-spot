@@ -90,12 +90,13 @@ def ingest_summary(start_date,end_date):
                 tdate,total
             FROM {0}.flow_ingest_summary
             WHERE
-                ( y >= {1} AND y <= {2})
-                AND
-                ( m >= {3} AND m <= {4})
+                ( y >= {1} AND y <= {2}) AND
+                ( m >= {3} AND m <= {4}) AND
+                ( d >= {5} AND d <= {6})
             ORDER BY tdate
             """).format(db,start_date.year,end_date.year, \
-                        start_date.month,end_date.month)
+                        start_date.month,end_date.month, \
+                        start_date.day, end_date.day)
 
     return ImpalaEngine.execute_query_as_list(is_query)
 

@@ -337,8 +337,9 @@ def ingest_summary(start_date,end_date):
                 FROM {0}.dns_ingest_summary
                 WHERE
                     ( y >= {1} and y <= {2}) AND
-                    ( m >= {3} and m <= {4})
+                    ( m >= {3} and m <= {4}) AND
+                    ( d >= {5} and d <= {6})
                 """)\
-                .format(db,start_date.year,end_date.year,start_date.month,end_date.month)
+                .format(db,start_date.year,end_date.year,start_date.month,end_date.month, start_date.day, end_date.day)
 
     return ImpalaEngine.execute_query_as_list(is_query)
