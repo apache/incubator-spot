@@ -107,7 +107,6 @@ class OA(object):
 
         for path in table_schema:
             HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}/d={5}".format(HUSER,self._table_name,path,yr,int(mn),int(dy)),user="impala")        
-        HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}".format(HUSER,self._table_name,"summary",yr,int(mn)),user="impala")        
         impala.execute_query("invalidate metadata")
         #removes Feedback file
         HDFSClient.delete_folder("{0}/{1}/scored_results/{2}{3}{4}/feedback/ml_feedback.csv".format(HUSER,self._table_name,yr,mn,dy))
