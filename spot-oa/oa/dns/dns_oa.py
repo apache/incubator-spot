@@ -180,6 +180,7 @@ class OA(object):
 
         dns_scores_final = self._move_time_stamp(self._dns_scores)
         self._dns_scores = dns_scores_final
+    
         for row in dns_scores_final:
             value_string += str(tuple(Util.cast_val(item) for item in row)) + ","              
     
@@ -243,16 +244,15 @@ class OA(object):
 
 
     def _add_iana(self):
-
         iana_conf_file = "{0}/components/iana/iana_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        if os.path.isfile(iana_conf_file):
+        if os.path.isfile(iana_conf_file):            
             iana_config  = json.loads(open(iana_conf_file).read())
             dns_iana = IanaTransform(iana_config["IANA"])
 
             dns_qry_class_index = self._conf["dns_results_fields"]["dns_qry_class"]
             dns_qry_type_index = self._conf["dns_results_fields"]["dns_qry_type"]
             dns_qry_rcode_index = self._conf["dns_results_fields"]["dns_qry_rcode"]            
-            self._dns_scores = [ conn + [ str(dns_iana.get_name(conn[dns_qry_class_index],"dns_qry_class"))] + [str(dns_iana.get_name(conn[dns_qry_type_index],"dns_qry_type"))] + [str(dns_iana.get_name(conn[dns_qry_rcode_index],"dns_qry_rcode"))] for conn in self._dns_scores ]
+            self._dns_scores = [ conn + [ dns_iana.get_name(conn[dns_qry_class_index],"dns_qry_class")] + [dns_iana.get_name(conn[dns_qry_type_index],"dns_qry_type")] + [dns_iana.get_name(conn[dns_qry_rcode_index],"dns_qry_rcode")] for conn in self._dns_scores ]
             
         else:            
             self._dns_scores = [ conn + ["","",""] for conn in self._dns_scores ] 
@@ -307,6 +307,7 @@ class OA(object):
             dns_qry_name = conn[self._conf["dns_score_fields"]["dns_qry_name"]]
             self._get_dns_details(dns_qry_name,yr,mn,dy,hh,dns_iana)
 
+
     def _get_dns_details(self,dns_qry_name,year,month,day,hh,dns_iana):
         value_string = ""
         query_to_load =("""
@@ -317,7 +318,7 @@ class OA(object):
         try: 
              dns_details = impala.execute_query(query_to_load) 
         except:
-            self._logger.error("ERROR. Details couldn't be retreived for {0}, skipping this step".format(dns_qry_name))
+            self._logger.info("WARNING. Details couldn't be retreived for {0}, skipping this step".format(dns_qry_name))
         else:
         # add IANA to results. 
             update_rows = []

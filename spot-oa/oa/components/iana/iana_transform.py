@@ -82,20 +82,20 @@ class IanaTransform(object):
             if key in self._qclass_dict:
                 return self._qclass_dict[key]
             else:
-                return key
+                return ""
         if column == COL_QTYPE:
             if key in self._qtype_dict:
                 return self._qtype_dict[key]
             else:
-                return key
+                return ""
         if column == COL_RCODE:
             if key in self._rcode_dict:
                 return self._rcode_dict[key]
             else:
-                return key
+                return ""
         if column == COL_PRESP: 
             if key in self._http_rcode_dict:
                 return self._http_rcode_dict[key]
             else:
-                return key
+                return ""
 
