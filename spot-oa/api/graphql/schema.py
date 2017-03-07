@@ -14,17 +14,17 @@ SpotSchema = GraphQLSchema(
     fields={
       'flow': GraphQLField(
         type=NetflowQueryType,
-        description='Flow information',
+        description='Flow is a network protocol that collects IP traffic information and monitors network traffic',
         resolver=lambda *_: {}
       ),
       'dns': GraphQLField(
         type=DnsQueryType,
-        description='Dns information',
+        description='Domain Name System (DNS) Log Records contains the requests in between clients and DNS servers',
         resolver=lambda *_: {}
       ),
       'proxy': GraphQLField(
         type=ProxyQueryType,
-        description='Proxy Information',
+        description='Proxy Logs contains the requests in between clients and Proxy servers',
         resolver=lambda *_: {}
       )
     }
@@ -34,14 +34,17 @@ SpotSchema = GraphQLSchema(
     fields={
         'flow': GraphQLField(
             type=NetflowMutationType,
+            description='Flow related mutation operations',
             resolver=lambda *_: {}
         ),
         'dns': GraphQLField(
             type=DnsMutationType,
+            description='DNS related mutation operations',
             resolver=lambda *_: {}
         ),
         'proxy': GraphQLField(
             type=ProxyMutationType,
+            description='Proxy related mutation operations',
             resolver=lambda *_: {}
         )
     }

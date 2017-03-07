@@ -27,11 +27,11 @@ ScoreInputType = GraphQLInputObjectType(
         ),
         'dnsQuery': GraphQLInputObjectField(
             type=GraphQLString,
-            description='Dns query to score'
+            description='Dns query name to score'
         ),
         'clientIp': GraphQLInputObjectField(
             type=SpotIpType,
-            description='Client\'s ip to score'
+            description='Client IP to score'
         )
     }
 )
@@ -40,13 +40,16 @@ ThreatDetailsInputType = GraphQLInputObjectType(
     name='DnsThreatDetailsInputType',
     fields={
         'total': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='The number of time an IP sent a dns query'
         ),
         'dnsQuery': GraphQLInputObjectField(
-            type=GraphQLString
+            type=GraphQLString,
+            description='DNS query name'
         ),
         'clientIp': GraphQLInputObjectField(
-            type=SpotIpType
+            type=SpotIpType,
+            description='Client IP address'
         )
     }
 )
@@ -56,26 +59,27 @@ CreateStoryboardInputType = GraphQLInputObjectType(
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
-            description='A reference date for the add comment process. Defaults to today'
+            description='A reference date for the storyboard being created. Defaults to today'
         ),
         'dnsQuery': GraphQLInputObjectField(
             type=GraphQLString,
-            description='Reference dns query for the comment'
+            description='Threat dns query name'
         ),
         'clientIp': GraphQLInputObjectField(
             type=SpotIpType,
-            description='Reference client ip for the comment'
+            description='Threat client IP'
         ),
         'title': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
-            description='A title for the comment'
+            description='Threat title'
         ),
         'text': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
-            description='A description text for the comment'
+            description='Threat title description'
         ),
         'threatDetails': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ThreatDetailsInputType))),
+            description='Threat details. See DnsThreatInformation.details'
         )
     }
 )
@@ -118,6 +122,7 @@ MutationType = GraphQLObjectType(
     fields={
         'score': GraphQLField(
             type=GraphQLList(SpotOperationOutputType),
+            description='Sets a score value to connections',
             args={
                 'input': GraphQLArgument(
                     type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ScoreInputType))),
@@ -128,10 +133,11 @@ MutationType = GraphQLObjectType(
         ),
         'createStoryboard': GraphQLField(
             type=SpotOperationOutputType,
+            description='Request Spot to create an entry on storyboard for a particular threat',
             args={
                 'input': GraphQLArgument(
                     type=GraphQLNonNull(CreateStoryboardInputType),
-                    description='Generates every data needed to move a threat to the storyboard'
+                    description='Threat information'
                 )
             },
             resolver=lambda root, args, *_: _create_storyboard(args)

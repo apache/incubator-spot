@@ -19,82 +19,102 @@ SuspiciousType = GraphQLObjectType(
     fields={
         'tstart': GraphQLField(
             type=SpotDatetimeType,
+            description='Time the flow was received by the flow collector',
             resolver=lambda root, *_: root.get('tstart')
         ),
         'srcIp': GraphQLField(
             type=GraphQLString,
+            description='Source IP address',
             resolver=lambda root, *_: root.get('srcip')
         ),
         'dstIp': GraphQLField(
             type=GraphQLString,
+            description='Destination IP address',
             resolver=lambda root, *_: root.get('dstip')
         ),
         'srcPort': GraphQLField(
             type=GraphQLInt,
+            description='Source port',
             resolver=lambda root, *_: root.get('sport') or 0
         ),
         'dstPort': GraphQLField(
             type=GraphQLInt,
+            description='Destination port',
             resolver=lambda root, *_: root.get('dport') or 0
         ),
         'protocol': GraphQLField(
             type=GraphQLString,
+            description='IP protocol',
             resolver=lambda root, *_: root.get('proto')
         ),
         'inPkts': GraphQLField(
             type=GraphQLInt,
+            description='Input packets',
             resolver=lambda root, *_: root.get('ipkt') or 0
         ),
         'inBytes': GraphQLField(
             type=GraphQLInt,
+            description='Input bytes',
             resolver=lambda root, *_: root.get('ibyt') or 0
         ),
         'outPkts': GraphQLField(
             type=GraphQLInt,
+            description='Output packets',
             resolver=lambda root, *_: root.get('opkt') or 0
         ),
         'outBytes': GraphQLField(
             type=GraphQLInt,
+            description='Output bytes',
             resolver=lambda root, *_: root.get('obyt') or 0
         ),
         'score': GraphQLField(
             type=GraphQLFloat,
+            description='Spot ML score',
             resolver=lambda root, *_: root.get('ml_score') or 0
         ),
         'rank': GraphQLField(
             type=GraphQLInt,
+            description='Spot ML rank',
             resolver=lambda root, *_: root.get('rank') or 0
         ),
         'srcIp_isInternal': GraphQLField(
             type=GraphQLBoolean,
+            description='Internal source IP address context flag',
             resolver=lambda root, *_: root.get('srcip_internal') == '1'
         ),
         'dstIp_isInternal': GraphQLField(
             type=GraphQLBoolean,
+            description='Internal destionation IP address context flag',
             resolver=lambda root, *_: root.get('dstip_internal') == '1'
         ),
         'srcIp_geoloc': GraphQLField(
             type=GraphQLString,
+            description='Source IP geolocation',
             resolver=lambda root, *_: root.get('src_geoloc')
         ),
         'dstIp_geoloc': GraphQLField(
             type=GraphQLString,
+            description='Destination IP geolocation',
             resolver=lambda root, *_: root.get('dst_geoloc')
         ),
         'srcIp_domain': GraphQLField(
             type=GraphQLString,
+            description='Source IP domain',
             resolver=lambda root, *_: root.get('src_domain')
         ),
         'dstIp_domain': GraphQLField(
             type=GraphQLString,
+            description='Destination IP domain',
             resolver=lambda root, *_: root.get('dst_domain')
         ),
         'srcIp_rep': GraphQLField(
             type=GraphQLString,
+            description='Source IP reputation metadata',
             resolver=lambda root, *_: root.get('src_rep')
         ),
         'dstIp_rep': GraphQLField(
             type=GraphQLString,
+            description='Destination IP reputation metadata',
             resolver=lambda root, *_: root.get('dst_rep')
         )
     }
@@ -105,62 +125,77 @@ EdgeDetailsType = GraphQLObjectType(
     fields={
         'tstart': GraphQLField(
             type=SpotDatetimeType,
+            description='Time the flow was received by the flow collector',
             resolver=lambda root, *_: root.get('tstart')
         ),
         'srcIp': GraphQLField(
             type=GraphQLString,
+            description='Source IP address',
             resolver=lambda root, *_: root.get('srcip')
         ),
         'dstIp': GraphQLField(
             type=GraphQLString,
+            description='Destination IP address',
             resolver=lambda root, *_: root.get('dstip')
         ),
         'srcPort': GraphQLField(
             type=GraphQLString,
+            description='Source port',
             resolver=lambda root, *_: root.get('sport')
         ),
         'dstPort': GraphQLField(
             type=GraphQLString,
+            description='Destination port',
             resolver=lambda root, *_: root.get('dport')
         ),
         'protocol': GraphQLField(
             type=GraphQLString,
+            description='IP protocol',
             resolver=lambda root, *_: root.get('proto')
         ),
         'flags': GraphQLField(
             type=GraphQLString,
+            description='TCP flags',
             resolver=lambda root, *_: root.get('flags')
         ),
         'tos': GraphQLField(
             type=GraphQLString,
+            description='DSCP value',
             resolver=lambda root, *_: root.get('tos')
         ),
         'inBytes': GraphQLField(
             type=GraphQLInt,
+            description='Input bytes',
             resolver=lambda root, *_: root.get('ibyt') or 0
         ),
         'inPkts': GraphQLField(
             type=GraphQLInt,
+            description='Input packets',
             resolver=lambda root, *_: root.get('ipkt') or 0
         ),
         'inIface': GraphQLField(
             type=GraphQLString,
+            description='SNMP input interface id index',
             resolver=lambda root, *_: root.get('input')
         ),
         'outIface': GraphQLField(
             type=GraphQLString,
+            description='SNMP output interface id index',
             resolver=lambda root, *_: root.get('output')
         ),
         'routerIp': GraphQLField(
             type=GraphQLString,
+            description='Reporting router IP address',
             resolver=lambda root, *_: root.get('rip')
         ),
         'outBytes': GraphQLField(
             type=GraphQLInt,
+            description='Output bytes',
             resolver=lambda root, *_: root.get('obyt') or 0
         ),
         'outPkts': GraphQLField(
             type=GraphQLInt,
+            description='Output packets',
             resolver=lambda root, *_: root.get('opkt') or 0
         )
     }
@@ -171,18 +206,22 @@ IpConnectionDetailsType = GraphQLObjectType(
     fields={
         'srcIp': GraphQLField(
             type=GraphQLString,
+            description='Source IP address',
             resolver=lambda root, *_: root.get('srcip')
         ),
         'dstIp': GraphQLField(
             type=GraphQLString,
+            description='Destination IP address',
             resolver=lambda root, *_: root.get('dstip')
         ),
         'inBytes': GraphQLField(
             type=GraphQLInt,
+            description='Input bytes',
             resolver=lambda root, *_: root.get('ibyt') or 0
         ),
         'inPkts': GraphQLField(
             type=GraphQLInt,
+            description='Input packets',
             resolver=lambda root, *_: root.get('ipkt') or 0
         )
     }
@@ -193,11 +232,12 @@ ScoredConnectionType = GraphQLObjectType(
     fields={
         'tstart': GraphQLField(
             type=SpotDatetimeType,
+            description='Time the flow was received by the flow collector',
             resolver=lambda root, *_: root.get('tstart')
         ),
         'srcIp': GraphQLField(
             type=SpotIpType,
-            description='Source Ip',
+            description='Source IP address',
             resolver=lambda root, *_: root.get('srcip')
         ),
         'srcPort': GraphQLField(
@@ -207,7 +247,7 @@ ScoredConnectionType = GraphQLObjectType(
         ),
         'dstIp': GraphQLField(
             type=SpotIpType,
-            description='Destination Ip',
+            description='Destination IP address',
             resolver=lambda root, *_: root.get('dstip')
         ),
         'dstPort': GraphQLField(
@@ -217,7 +257,7 @@ ScoredConnectionType = GraphQLObjectType(
         ),
         'score': GraphQLField(
             type=GraphQLInt,
-            description='Score value. 1->High, 2->Medium, 3->Low',
+            description='Risk score value. 1->High, 2->Medium, 3->Low',
             resolver=lambda root, *_: root.get('score') or 0
         )
     }
@@ -228,22 +268,22 @@ ThreatDetailsType = GraphQLObjectType(
     fields={
         'firstSeen': GraphQLField(
             type=SpotDatetimeType,
-            description='First time two ips were seen on one day data of network traffic',
+            description='First time two IPs were seen on a particular day of flow traffic data',
             resolver=lambda root, *_: root.get('firstseen')
         ),
         'lastSeen': GraphQLField(
             type=SpotDatetimeType,
-            description='Last time two ips were seen on one day data of network trafic',
+            description='Last time two IPs were seen on a particular day of flow traffic data',
             resolver=lambda root, *_: root.get('lastseen')
         ),
         'srcIp': GraphQLField(
             type=SpotIpType,
-            description='Source ip',
+            description='Source IP address',
             resolver=lambda root, *_: root.get('srcip')
         ),
         'dstIp': GraphQLField(
             type=SpotIpType,
-            description='Destination ip',
+            description='Destination IP address',
             resolver=lambda root, *_: root.get('dstip')
         ),
         'srcPort': GraphQLField(
@@ -258,7 +298,7 @@ ThreatDetailsType = GraphQLObjectType(
         ),
         'connections': GraphQLField(
             type=GraphQLInt,
-            description='Number of connections on one day of network traffic',
+            description='Number of connections on a particular day of flow traffic data',
             resolver=lambda root, *_: root.get('conns')
         ),
         'maxPkts': GraphQLField(
@@ -268,7 +308,7 @@ ThreatDetailsType = GraphQLObjectType(
         ),
         'avgPkts': GraphQLField(
             type=GraphQLInt,
-            description='Average number of packets transferred bwteen ips',
+            description='Average number of packets transferred bwteen IPs',
             resolver=lambda root, *_: root.get('avgpkts')
         ),
         'maxBytes': GraphQLField(
@@ -278,7 +318,7 @@ ThreatDetailsType = GraphQLObjectType(
         ),
         'avgBytes': GraphQLField(
             type=GraphQLInt,
-            description='Average number of bytes transferred bwteen ips',
+            description='Average number of bytes transferred bwteen IPs',
             resolver=lambda root, *_: root.get('avgbyts')
         )
     }
@@ -289,14 +329,17 @@ CommentType = GraphQLObjectType(
     fields={
         'ip': GraphQLField(
             type=SpotIpType,
+            description='High risk IP address',
             resolver=lambda root, *_: root.get('ip_threat')
         ),
         'title': GraphQLField(
             type=GraphQLString,
+            description='Threat title',
             resolver=lambda root, *_: root.get('title')
         ),
         'text': GraphQLField(
             type=GraphQLString,
+            description='Threat description',
             resolver=lambda root, *_: root.get('text')
         )
     }
@@ -307,11 +350,11 @@ ThreatsInformationType = GraphQLObjectType(
     fields={
         'list': GraphQLField(
             type=GraphQLList(ScoredConnectionType),
-            description='List of connections that have been scored',
+            description='List of suspicious IPs that have been scored',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as reference to retrieve the list of scored connections. Defaults to today'
+                    description='A date to use as reference to retrieve the list of scored IPs. Defaults to today'
                 )
             },
             resolver=lambda root, args, *
@@ -338,7 +381,7 @@ IncidentProgressionNodeType = create_spot_node_type(
 ImpactAnalysisNodeType = create_spot_node_type('NetflowImpactAnalysisNodeType', {
     'size': GraphQLField(
         type=GraphQLInt,
-        description='Node size',
+        description='Number of inbound, outbound and two-way connections',
         resolver=lambda root, *_: root.get('size') or 0
     )
 })
@@ -348,7 +391,7 @@ MapViewGeometryType = GraphQLObjectType(
     fields={
         'coordinates': GraphQLField(
             type=GraphQLList(GraphQLFloat),
-            description='Geo Latitude and longitude',
+            description='Geo latitude and longitude',
             resolver=lambda root, *_: root.get('coordinates')
         )
     }
@@ -359,12 +402,12 @@ MapViewPropertiesType = GraphQLObjectType(
     fields={
         'ip': GraphQLField(
             type=SpotIpType,
-            description='Ip',
+            description='IP',
             resolver=lambda root, *_: root.get('ip')
         ),
         'location': GraphQLField(
             type=GraphQLString,
-            description='Name of the ip\'s location',
+            description='Name of the IP\'s location',
             resolver=lambda root, *_: root.get('location')
         ),
         'type': GraphQLField(
@@ -396,12 +439,12 @@ MapViewType = GraphQLObjectType(
     fields={
         'srcIps': GraphQLField(
             type=GraphQLList(MapViewIpType),
-            description='A list of source ips',
+            description='A list of source IPs',
             resolver=lambda root, *_: root.get('sourceips', [])
         ),
         'dstIps': GraphQLField(
             type=GraphQLList(MapViewIpType),
-            description='A list of destination ips',
+            description='A list of destination IPs',
             resolver=lambda root, *_: root.get('destips', [])
         )
     }
@@ -422,12 +465,12 @@ TimelineType = GraphQLObjectType(
         ),
         'srcIp': GraphQLField(
             type=GraphQLNonNull(SpotIpType),
-            description='Source ip',
+            description='Source IP address',
             resolver=lambda root, *_: root.get('srcip')
         ),
         'dstIp': GraphQLField(
             type=GraphQLNonNull(SpotIpType),
-            description='Destination ip',
+            description='Destination IP address',
             resolver=lambda root, *_: root.get('dstip')
         ),
         'protocol': GraphQLField(
@@ -442,17 +485,17 @@ TimelineType = GraphQLObjectType(
         ),
         'dstPort': GraphQLField(
             type=GraphQLNonNull(GraphQLInt),
-            description='Destionation port',
+            description='Destination port',
             resolver=lambda root, *_: root.get('dport')
         ),
         'pkts': GraphQLField(
             type=GraphQLNonNull(GraphQLInt),
-            description='Packets tranferred between ips',
+            description='Packets tranferred between IPs',
             resolver=lambda root, *_: root.get('ipkt')
         ),
         'bytes': GraphQLField(
             type=GraphQLNonNull(GraphQLInt),
-            description='Bytes tranferred between ips',
+            description='Bytes tranferred between IPs',
             resolver=lambda root, *_: root.get('ibyt')
         )
     }
@@ -463,15 +506,15 @@ ThreatInformationType = GraphQLObjectType(
     fields={
         'details': GraphQLField(
             type=GraphQLList(ThreatDetailsType),
-            description='Detailed information about a high risk threat',
+            description='Detailed information about a high risk IP',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as reference for incident progression information. Defaults to today'
+                    description='A date to use as reference for high rist IP information. Defaults to today'
                 ),
                 'ip': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Threat\'s Ip'
+                    description='Suspicious IP'
                 )
             },
             resolver=lambda root, args, *
@@ -479,7 +522,7 @@ ThreatInformationType = GraphQLObjectType(
         ),
         'incidentProgression': GraphQLField(
             type=IncidentProgressionNodeType,
-            description='Incident progression information',
+            description='Details for the type of connections that conform the activity related to the threat',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -487,7 +530,7 @@ ThreatInformationType = GraphQLObjectType(
                 ),
                 'ip': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Threat\'s Ip'
+                    description='Suspicious IP'
                 )
             },
             resolver=lambda root, args, *
@@ -495,7 +538,7 @@ ThreatInformationType = GraphQLObjectType(
         ),
         'impactAnalysis': GraphQLField(
             type=ImpactAnalysisNodeType,
-            description='Impact analysis information',
+            description='Contains the number of inbound, outbound and two-way connections found related to the suspicious IP',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -503,7 +546,7 @@ ThreatInformationType = GraphQLObjectType(
                 ),
                 'ip': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Threat\'s Ip'
+                    description='Suspicious IP'
                 )
             },
             resolver=lambda root, args, *
@@ -511,7 +554,7 @@ ThreatInformationType = GraphQLObjectType(
         ),
         'geoLocalization': GraphQLField(
             type=MapViewType,
-            description='Gelocalization info about the ips related to this threat',
+            description='Gelocalization info about the IPs related to this threat',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -519,7 +562,7 @@ ThreatInformationType = GraphQLObjectType(
                 ),
                 'ip': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Threat\'s Ip'
+                    description='Suspicious IP'
                 )
             },
             resolver=lambda root, args, *
@@ -527,7 +570,7 @@ ThreatInformationType = GraphQLObjectType(
         ),
         'timeline': GraphQLField(
             type=GraphQLList(TimelineType),
-            description='Time based information about this threat',
+            description='Lists \'clusters\' of inbound connections to the IP, grouped by time; showing an overall idea of the times during the day with the most activity',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -535,7 +578,7 @@ ThreatInformationType = GraphQLObjectType(
                 ),
                 'ip': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Threat\'s Ip'
+                    description='Suspicious Ip'
                 )
             },
             resolver=lambda root, args, *
@@ -549,7 +592,7 @@ QueryType = GraphQLObjectType(
     fields={
         'suspicious': GraphQLField(
             type=GraphQLList(SuspiciousType),
-            description='Netflow Suspicious connections',
+            description='Flow suspicious connections',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -557,7 +600,7 @@ QueryType = GraphQLObjectType(
                 ),
                 'ip': GraphQLArgument(
                     type=SpotIpType,
-                    description='Ip of interest'
+                    description='IP of interest'
                 )
             },
             resolver=lambda root, args, *
@@ -565,7 +608,7 @@ QueryType = GraphQLObjectType(
         ),
         'edgeDetails': GraphQLField(
             type=GraphQLList(EdgeDetailsType),
-            description='Network acitvity between two ips around a particular moment in time',
+            description='Flow activity between two IPs around a particular moment in time',
             args={
                 'tstart': GraphQLArgument(
                     type=GraphQLNonNull(SpotDatetimeType),
@@ -573,11 +616,11 @@ QueryType = GraphQLObjectType(
                 ),
                 'srcIp': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Source ip'
+                    description='Source IP address'
                 ),
                 'dstIp': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Destination ip'
+                    description='Destination IP address'
                 )
             },
             resolver=lambda root, args, *_: Flow.details(
@@ -587,15 +630,15 @@ QueryType = GraphQLObjectType(
         ),
         'ipDetails': GraphQLField(
             type=GraphQLList(IpConnectionDetailsType),
-            description='Ip network activity details',
+            description='Flow activity details in between IP of interest and other suspicious IPs',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as reference for ip network activity details. Defaults to today'
+                    description='A date to use as reference for IP network activity details. Defaults to today'
                 ),
                 'ip': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Ip of interest'
+                    description='IP address of interest'
                 )
             },
             resolver=lambda root, args, *
@@ -603,17 +646,17 @@ QueryType = GraphQLObjectType(
         ),
         'threats': GraphQLField(
             type=ThreatsInformationType,
-            description='Advanced inforamtion about threats',
+            description='Advanced information about threats',
             resolver=lambda *_: {}
         ),
         'threat': GraphQLField(
             type=ThreatInformationType,
-            description='Advanced inforamtion about a single threat',
+            description='Advanced information about a single threat',
             resolver=lambda *_: {}
         ),
         'ingestSummary': GraphQLField(
             type=GraphQLList(IngestSummaryType),
-            description='Total of ingested netflows',
+            description='Summary of ingested flows in range',
             args={
                 'startDate': GraphQLArgument(
                     type=GraphQLNonNull(SpotDateType),

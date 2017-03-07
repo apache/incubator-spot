@@ -20,7 +20,7 @@ SuspiciousType = GraphQLObjectType(
     fields={
         'frameTime': GraphQLField(
             type=SpotDatetimeType,
-            description='Date and time of the frame',
+            description='Frame time',
             resolver=lambda root, *_: datetime.utcfromtimestamp(int(root.get('unix_tstamp') or 0))
         ),
         'frameLength': GraphQLField(
@@ -30,32 +30,32 @@ SuspiciousType = GraphQLObjectType(
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
-            description='Client\'s ip',
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('ip_dst')
         ),
         'dnsQuery': GraphQLField(
             type=GraphQLString,
-            description='Dns query sent by client',
+            description='DNS query name',
             resolver=lambda root, *_: root.get('dns_qry_name')
         ),
         'dnsQueryClass': GraphQLField(
             type=GraphQLInt,
-            description='Class of dns query sent by client',
+            description='DNS query class',
             resolver=lambda root, *_: int(root.get('dns_qry_class') or '0x0', 16)
         ),
         'dnsQueryType': GraphQLField(
             type=GraphQLInt,
-            description='Type of dns query send by client',
+            description='DNS query type',
             resolver=lambda root, *_: root.get('dns_qry_type') or 0
         ),
         'dnsQueryRcode': GraphQLField(
             type=GraphQLInt,
-            description='Return code sent to client',
+            description='DNS query response code',
             resolver=lambda root, *_: root.get('dns_qry_rcode') or 0
         ),
         'score': GraphQLField(
             type=GraphQLFloat,
-            description='Machine learning score value',
+            description='Spot ML score value',
             resolver=lambda root, *_: root.get('ml_score') or 0
         ),
         'tld': GraphQLField(
@@ -65,42 +65,42 @@ SuspiciousType = GraphQLObjectType(
         ),
         'dnsQueryRep': GraphQLField(
             type=GraphQLString,
-            description='Reputation of dns query',
+            description='DNS query name reputation metadata',
             resolver=lambda root, *_: root.get('query_rep')
         ),
         'clientIpSev': GraphQLField(
             type=GraphQLInt,
-            description='User\'s score value for client ip',
+            description='Client IP user risk score',
             resolver=lambda root, *_: root.get('ip_sev') or 0
         ),
         'dnsQuerySev': GraphQLField(
             type=GraphQLInt,
-            description='User\'s score value for dns query',
+            description='@deprecated DNS query name user risk score',
             resolver=lambda root, *_: root.get('dns_sev') or 0
         ),
         'dnsQueryClassLabel': GraphQLField(
             type=GraphQLString,
-            description='Human readable representation of dnsQueryClass value',
+            description='DNS query class name',
             resolver=lambda root, *_: root.get('dns_qry_class_name')
         ),
         'dnsQueryTypeLabel': GraphQLField(
             type=GraphQLString,
-            description='Human readable representation of dnsQueryType value',
+            description='DNS query type name',
             resolver=lambda root, *_: root.get('dns_qry_type_name')
         ),
         'dnsQueryRcodeLabel': GraphQLField(
             type=GraphQLString,
-            description='Human readable representation of dnsQueryRcode value',
+            description='DNS query response code name',
             resolver=lambda root, *_: root.get('dns_qry_rcode_name')
         ),
         'networkContext': GraphQLField(
             type=GraphQLString,
-            description='Network context for client ip',
+            description='@deprecated Network context for client ip',
             resolver=lambda root, *_: root.get('network_context')
         ),
         'unixTimestamp': GraphQLField(
             type=GraphQLInt,
-            description='Unix timestamp for this frame',
+            description='Frame unix timestamp',
             resolver=lambda root, *_: root.get('unix_tstamp') or 0
         )
     }
@@ -111,7 +111,7 @@ EdgeDetailsType = GraphQLObjectType(
     fields={
         'frameTime': GraphQLField(
             type=SpotDatetimeType,
-            description='Date and time of the frame',
+            description='Frame time',
             resolver=lambda root, *_: datetime.utcfromtimestamp(int(root.get('unix_tstamp') or 0))
         ),
         'frameLength': GraphQLField(
@@ -121,57 +121,57 @@ EdgeDetailsType = GraphQLObjectType(
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
-            description='Client\'s ip',
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('ip_dst')
         ),
         'serverIp': GraphQLField(
             type=SpotIpType,
-            description='Dns server\'s ip',
+            description='DNS server IP address',
             resolver=lambda root, *_: root.get('ip_src')
         ),
         'dnsQuery': GraphQLField(
             type=GraphQLString,
-            description='Dns query sent by client',
+            description='DNS query name',
             resolver=lambda root, *_: root.get('dns_qry_name')
         ),
         'dnsQueryClass': GraphQLField(
             type=GraphQLInt,
-            description='Class of dns query sent by client',
+            description='DNS query class',
             resolver=lambda root, *_: int(root.get('dns_qry_class') or '0x0', 16)
         ),
         'dnsQueryType': GraphQLField(
             type=GraphQLInt,
-            description='Type of dns query send by client',
+            description='DNS query type',
             resolver=lambda root, *_: root.get('dns_qry_type') or 0
         ),
         'dnsQueryRcode': GraphQLField(
             type=GraphQLInt,
-            description='Return code sent to client',
+            description='DNS query response code',
             resolver=lambda root, *_: root.get('dns_qry_rcode') or 0
         ),
         'dnsQueryClassLabel': GraphQLField(
             type=GraphQLString,
-            description='Human readable representation of dnsQueryClass value',
+            description='DNS query class name',
             resolver=lambda root, *_: root.get('dns_qry_class_name')
         ),
         'dnsQueryTypeLabel': GraphQLField(
             type=GraphQLString,
-            description='Human readable representation of dnsQueryType value',
+            description='DNS query type name',
             resolver=lambda root, *_: root.get('dns_qry_type_name')
         ),
         'dnsQueryRcodeLabel': GraphQLField(
             type=GraphQLString,
-            description='Human readable representation of dnsQueryRcode value',
+            description='DNS query response code name',
             resolver=lambda root, *_: root.get('dns_qry_rcode_name')
         ),
         'dnsQueryAnswers': GraphQLField(
             type=GraphQLList(GraphQLString),
-            description='Dns server\'s answers to query sent by client',
+            description='DNS answers',
             resolver=lambda root, *_: root.get('dns_a', '').split('|')
         ),
         'unixTimestamp': GraphQLField(
             type=GraphQLInt,
-            description='Unix timestamp for this frame',
+            description='Frame unix timestamp',
             resolver=lambda root, *_: root.get('unix_tstamp') or 0
         )
     }
@@ -182,17 +182,17 @@ ThreatDetailsType = GraphQLObjectType(
     fields={
         'total': GraphQLField(
             type=GraphQLInt,
-            description='Total threats',
+            description='The number of time an IP sent a dns query',
             resolver=lambda root, *_: root.get('total')
         ),
         'dnsQuery': GraphQLField(
             type=GraphQLString,
-            description='Dns Threats',
+            description='DNS query name',
             resolver=lambda root, *_: root.get('dns_qry_name')
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
-            description='Ip Threats',
+            description='Client IP address',
             resolver=lambda root, *_: root.get('ip_dst')
         )
     }
@@ -203,12 +203,12 @@ IpDetailsType = GraphQLObjectType(
     fields={
         'dnsQuery': GraphQLField(
             type=GraphQLString,
-            description='',
+            description='DNS query name',
             resolver=lambda root, *_: root.get('dns_qry_name')
         ),
         'dnsQueryAnswers': GraphQLField(
             type=GraphQLList(GraphQLString),
-            description='Dns server\'s answers to query sent by client',
+            description='DNS answers',
             resolver=lambda root, *_: root.get('dns_a', '').split('|')
         )
     }
@@ -217,27 +217,29 @@ IpDetailsType = GraphQLObjectType(
 ScoredThreatType = GraphQLObjectType(
     name='DnsScoredThreatType',
     fields={
-        'frameTime': GraphQLField(
+        'datetime': GraphQLField(
             type=SpotDatetimeType,
             description='Date and time of user score',
             resolver=lambda root, *_: datetime.utcfromtimestamp(int(root.get('unix_tstamp') or 0))
         ),
         'dnsQuery': GraphQLField(
             type=GraphQLString,
-            description='A dns query that has been scored as high risk (1)',
+            description='DNS query name',
             resolver=lambda root, *_: root.get('dns_qry_name')
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
-            description='A client ip that has been scored as high risk (1)',
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('ip_dst')
         ),
         'dnsScore': GraphQLField(
             type=GraphQLInt,
+            description='DNS query name risk score value. 1->High, 2->Medium, 3->Low',
             resolver=lambda root, *_: root.get('dns_sev') or 0
         ),
         'clientIpScore': GraphQLField(
             type=GraphQLInt,
+            description='Client IP address risk score value. 1->High, 2->Medium, 3->Low',
             resolver=lambda root, *_: root.get('ip_sev') or 0
         )
     }
@@ -258,16 +260,17 @@ QueryCommentType = GraphQLObjectType(
     fields={
         'dnsQuery': GraphQLField(
             type=GraphQLString,
+            description='High risk DNS query name',
             resolver=lambda root, *_: root.get('dns_threat')
         ),
         'title': GraphQLField(
             type=GraphQLString,
-            description='A title for the comment',
+            description='Threat title',
             resolver=lambda root, *_: root.get('title')
         ),
         'text': GraphQLField(
             type=GraphQLString,
-            description='A title for the comment',
+            description='Threat description',
             resolver=lambda root, *_: root.get('text')
         )
     }
@@ -279,14 +282,17 @@ ClientIpCommentType = GraphQLObjectType(
     fields={
         'clientIp': GraphQLField(
             type=SpotIpType,
+            description='High risk client IP address',
             resolver=lambda root, *_: root.get('ip_threat')
         ),
         'title': GraphQLField(
             type=GraphQLString,
+            description='Threat title',
             resolver=lambda root, *_: root.get('title')
         ),
         'text': GraphQLField(
             type=GraphQLString,
+            description='Threat description',
             resolver=lambda root, *_: root.get('text')
         )
     }
@@ -297,7 +303,7 @@ ThreatsInformationType = GraphQLObjectType(
     fields={
         'list': GraphQLField(
             type=GraphQLList(ScoredThreatType),
-            description='List of dns queries or client ips that have been scored as high risk (1)',
+            description='List of DNS query names or client IPs that have been scored',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -340,6 +346,7 @@ IncidentProgressionClientIpType = GraphQLObjectType(
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('ip_dst')
         )
     }
@@ -355,6 +362,7 @@ IncidentProgressionQueryType = GraphQLObjectType(
         ),
         'dnsQuery': GraphQLField(
             type=GraphQLString,
+            description='DNS query name',
             resolver=lambda root, *_: root.get('dns_qry_name')
         )
     }
@@ -365,7 +373,7 @@ ThreatInformationType = GraphQLObjectType(
     fields={
         'incidentProgression': GraphQLField(
             type=GraphQLList(IncidentProgressionInterface),
-            description='Incident progression information',
+            description='Details the type of connections that conform the activity related to the threat',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -392,14 +400,15 @@ ThreatInformationType = GraphQLObjectType(
                 ),
                 'dnsQuery': GraphQLArgument(
                     type=GraphQLString,
-                    description='DNS query of interest'
+                    description='DNS query name of interest'
                 ),
                 'clientIp': GraphQLArgument(
                     type=SpotIpType,
-                    description='Ip of interest'
+                    description='Client IP address of interest'
                 ),
                 'first': GraphQLArgument(
-                    type=GraphQLInt
+                    type=GraphQLInt,
+                    description='The number of records to return'
                 )
             },
             resolver=lambda root, args, *_: Dns.expanded_search(
@@ -416,26 +425,26 @@ QueryType = GraphQLObjectType(
     fields={
         'suspicious': GraphQLField(
             type=GraphQLList(SuspiciousType),
-            description='Suspicious dns queries',
+            description='Suspicious DNS query names',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as a reference for suspicous connections. Defaults to today'
+                    description='A date to use as a reference for suspicious connections. Defaults to today'
                 ),
                 'clientIp': GraphQLArgument(
                     type=SpotIpType,
-                    description='Ip of interest'
+                    description='Client IP of interest'
                 ),
                 'dnsQuery': GraphQLArgument(
                     type=GraphQLString,
-                    description='Partial query of interest'
+                    description='Partial query name of interest'
                 )
             },
             resolver=lambda root, args, *_: Dns.suspicious_queries(date=args.get('date', date.today()), ip=args.get('clientIp'), query=args.get('dnsQuery'))
         ),
         'edgeDetails': GraphQLField(
             type=GraphQLList(EdgeDetailsType),
-            description='Dns queries between client and dns server around a particular moment in time',
+            description='DNS queries between client and DNS server around a particular moment in time',
             args={
                 'frameTime': GraphQLArgument(
                     type=GraphQLNonNull(SpotDatetimeType),
@@ -443,14 +452,14 @@ QueryType = GraphQLObjectType(
                 ),
                 'dnsQuery': GraphQLArgument(
                     type=GraphQLNonNull(GraphQLString),
-                    description='Dns query of interest'
+                    description='DNS query name of interest'
                 )
             },
             resolver=lambda root, args, *_: Dns.details(frame_time=args.get('frameTime'), query=args.get('dnsQuery'))
         ),
         'ipDetails': GraphQLField(
             type=GraphQLList(IpDetailsType),
-            description='Queries made by client',
+            description='Query names made by client',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -458,7 +467,7 @@ QueryType = GraphQLObjectType(
                 ),
                 'clientIp': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Client\'s ip'
+                    description='Client\'s IP address'
                 )
             },
             resolver=lambda root, args, *_: Dns.client_details(date=args.get('date', date.today()), ip=args.get('clientIp'))
@@ -475,7 +484,7 @@ QueryType = GraphQLObjectType(
         ),
         'ingestSummary': GraphQLField(
             type=GraphQLList(IngestSummaryType),
-            description='Total of ingested dns queries',
+            description='Summary of ingested DNS records in range',
             args={
                 'startDate': GraphQLArgument(
                     type=GraphQLNonNull(SpotDateType),

@@ -36,51 +36,64 @@ ThreatDetailsInputType = GraphQLInputObjectType(
     name='ProxyThreatDetailsInputType',
     fields={
         'datetime': GraphQLInputObjectField(
-            type=SpotDatetimeType
+            type=SpotDatetimeType,
+            description='Start time of the request'
         ),
         'clientIp': GraphQLInputObjectField(
-            type=SpotIpType
+            type=SpotIpType,
+            description='Client\'s IP address'
         ),
         'username': GraphQLInputObjectField(
-            type=GraphQLString
+            type=GraphQLString,
+            description='Username used for authetication'
         ),
         'duration': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='Connection duration'
         ),
         'uri': GraphQLInputObjectField(
-            type=GraphQLString
+            type=GraphQLString,
+            description='The original URI requested'
         ),
         'webCategory': GraphQLInputObjectField(
-            type=GraphQLString
+            type=GraphQLString,
+            description='Web content categories'
         ),
         'responseCode': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='HTTP response code'
         ),
         'requestMethod': GraphQLInputObjectField(
             type=GraphQLString,
-            description='Http Method'
+            description='HTTP request method'
         ),
         'userAgent': GraphQLInputObjectField(
             type=GraphQLString,
             description='Client\'s user agent'
         ),
         'responseContentType': GraphQLInputObjectField(
-            type=GraphQLString
+            type=GraphQLString,
+            description='HTTP response content type (MIME)'
         ),
         'referer': GraphQLInputObjectField(
-            type=GraphQLString
+            type=GraphQLString,
+            description='The address of the webpage that linked to the resource being requested'
         ),
         'uriPort': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='URI port'
         ),
         'serverIp': GraphQLInputObjectField(
-            type=SpotIpType
+            type=SpotIpType,
+            description='The address of the webpage that linked to the resource being requested'
         ),
         'serverToClientBytes': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='Number of bytes sent from appliance to client'
         ),
         'clientToServerBytes': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='Number of bytes sent from client to appliance'
         )
     }
 )
@@ -90,25 +103,27 @@ CreateStoryboardInputType = GraphQLInputObjectType(
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
-            description='A reference date for the add comment process. Defaults to today'
+            description='A reference date for the storyboard being created. Defaults to today'
         ),
         'uri': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
-            description='Reference URI for the comment'
+            description='Threat UI'
         ),
         'title': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
-            description='A title for the comment'
+            description='Threat title'
         ),
         'text': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
-            description='A description text for the comment'
+            description='Threat description'
         ),
         'threatDetails': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ThreatDetailsInputType))),
+            description='Threat details. See ProxyThreatInformation.details'
         ),
         'first': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='The number of records to return'
         )
     }
 )
@@ -146,6 +161,7 @@ MutationType = GraphQLObjectType(
     fields={
         'score': GraphQLField(
             type=GraphQLList(SpotOperationOutputType),
+            description='Sets a score value to connections',
             args={
                 'input': GraphQLArgument(
                     type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ScoreInputType))),
@@ -159,7 +175,7 @@ MutationType = GraphQLObjectType(
             args={
                 'input': GraphQLArgument(
                     type=GraphQLNonNull(CreateStoryboardInputType),
-                    description='Generates every data needed to move a threat to the storyboard'
+                    description='Request Spot to create an entry on storyboard for a particular threat'
                 )
             },
             resolver=lambda root, args, *_: _create_storyboard(args)

@@ -22,17 +22,17 @@ SuspiciousType = GraphQLObjectType(
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
-            description='Clent\'s ip',
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('clientip')
         ),
         'host': GraphQLField(
             type=GraphQLString,
-            description='Target host of the request',
+            description='Host name from the client request URL',
             resolver=lambda root, *_: root.get('host')
         ),
         'requestMethod': GraphQLField(
             type=GraphQLString,
-            description='HTTP method',
+            description='HTTP request method',
             resolver=lambda root, *_: root.get('reqmethod')
         ),
         'userAgent': GraphQLField(
@@ -42,12 +42,12 @@ SuspiciousType = GraphQLObjectType(
         ),
         'responseContentType': GraphQLField(
             type=GraphQLString,
-            description='HTTP response content type',
+            description='HTTP response content type (MIME)',
             resolver=lambda root, *_: root.get('resconttype')
         ),
         'duration': GraphQLField(
             type=GraphQLInt,
-            description='Duration of the request',
+            description='Connection duration',
             resolver=lambda root, *_: root.get('duration')
         ),
         'username': GraphQLField(
@@ -57,12 +57,12 @@ SuspiciousType = GraphQLObjectType(
         ),
         'webCategory': GraphQLField(
             type=GraphQLString,
-            description='Web category',
+            description='Web content categories',
             resolver=lambda root, *_: root.get('webcat')
         ),
         'referer': GraphQLField(
             type=GraphQLString,
-            description='Request\'s referer',
+            description='The address of the webpage that linked to the resource being requested',
             resolver=lambda root, *_: root.get('referer')
         ),
         'responseCode': GraphQLField(
@@ -72,22 +72,22 @@ SuspiciousType = GraphQLObjectType(
         ),
         'uriPort': GraphQLField(
             type=GraphQLInt,
-            description='URI\'s port',
+            description='URI port',
             resolver=lambda root, *_: root.get('uriport')
         ),
         'uriPath': GraphQLField(
             type=GraphQLString,
-            description='URI\'s path',
+            description='URI path',
             resolver=lambda root, *_: root.get('uripath')
         ),
         'uriQuery': GraphQLField(
             type=GraphQLString,
-            description='URI\'s query',
+            description='URI query',
             resolver=lambda root, *_: root.get('uriquery')
         ),
         'serverIp': GraphQLField(
             type=SpotIpType,
-            description='Server\'s ip',
+            description='Server/Proxy IP',
             resolver=lambda root, *_: root.get('serverip')
         ),
         'serverToClientBytes': GraphQLField(
@@ -102,26 +102,27 @@ SuspiciousType = GraphQLObjectType(
         ),
         'uri': GraphQLField(
             type=GraphQLString,
-            description='The original URL requested',
+            description='The original URI requested',
             resolver=lambda root, *_: root.get('fulluri')
         ),
         'score': GraphQLField(
             type=GraphQLInt,
-            description='Score value assigned by machine learning algorithm',
+            description='Spot ML score value',
             resolver=lambda root, *_: root.get('ml_score') or 0
         ),
         'uriRep': GraphQLField(
             type=GraphQLString,
-            description='URI\'s reputation',
+            description='URI reputation metadata',
             resolver=lambda root, *_: root.get('uri_rep')
         ),
         'responseCodeLabel': GraphQLField(
             type=GraphQLString,
-            description='HTTP response code label',
+            description='HTTP response code name',
             resolver=lambda root, *_: root.get('respcode_name')
         ),
         'networkContext': GraphQLField(
             type=GraphQLString,
+            description='@deprecated',
             resolver=lambda root, *_: root.get('network_context')
         )
     }
@@ -137,17 +138,17 @@ EdgeDetailsType = GraphQLObjectType(
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
-            description='Clent\'s ip',
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('clientip')
         ),
         'host': GraphQLField(
             type=GraphQLString,
-            description='Target host of the request',
+            description='Host name from the client request URL',
             resolver=lambda root, *_: root.get('host')
         ),
         'webCategory': GraphQLField(
             type=GraphQLString,
-            description='Web category',
+            description='Web content categories',
             resolver=lambda root, *_: root.get('webcat')
         ),
         'responseCode': GraphQLField(
@@ -157,12 +158,12 @@ EdgeDetailsType = GraphQLObjectType(
         ),
         'responseCodeLabel': GraphQLField(
             type=GraphQLString,
-            description='HTTP response code label',
+            description='HTTP response code name',
             resolver=lambda root, *_: root.get('respcode_name')
         ),
         'requestMethod': GraphQLField(
             type=GraphQLString,
-            description='HTTP method',
+            description='HTTP request method',
             resolver=lambda root, *_: root.get('reqmethod')
         ),
         'userAgent': GraphQLField(
@@ -172,22 +173,22 @@ EdgeDetailsType = GraphQLObjectType(
         ),
         'responseContentType': GraphQLField(
             type=GraphQLString,
-            description='HTTP response content type',
+            description='HTTP response content type (MIME)',
             resolver=lambda root, *_: root.get('resconttype')
         ),
         'referer': GraphQLField(
             type=GraphQLString,
-            description='Request\'s referer',
+            description='The address of the webpage that linked to the resource being requested',
             resolver=lambda root, *_: root.get('referer')
         ),
         'uriPort': GraphQLField(
             type=GraphQLInt,
-            description='URI\'s port',
+            description='URI port',
             resolver=lambda root, *_: root.get('uriport')
         ),
         'serverIp': GraphQLField(
             type=SpotIpType,
-            description='Server\'s ip',
+            description='Server/Proxy IP',
             resolver=lambda root, *_: root.get('serverip')
         ),
         'serverToClientBytes': GraphQLField(
@@ -202,7 +203,7 @@ EdgeDetailsType = GraphQLObjectType(
         ),
         'uri': GraphQLField(
             type=GraphQLString,
-            description='The original URL requested',
+            description='The original URI requested',
             resolver=lambda root, *_: root.get('fulluri')
         )
     }
@@ -223,7 +224,7 @@ ScoredRequestType = GraphQLObjectType(
         ),
         'score': GraphQLField(
             type=GraphQLInt,
-            description='Score value. 1->High, 2->Medium, 3->Low',
+            description='URI risk score value. 1->High, 2->Medium, 3->Low',
             resolver=lambda root, *_: root.get('uri_sev') or 0
         )
     }
@@ -234,14 +235,17 @@ CommentType = GraphQLObjectType(
     fields={
         'uri': GraphQLField(
             type=GraphQLString,
+            description='High risk URI',
             resolver=lambda root, *_: root.get('p_threat')
         ),
         'title': GraphQLField(
             type=GraphQLString,
+            description='Threat title',
             resolver=lambda root, *_: root.get('title')
         ),
         'text': GraphQLField(
             type=GraphQLString,
+            description='Threat description',
             resolver=lambda root, *_: root.get('text')
         )
     }
@@ -252,11 +256,11 @@ ThreatsInformationType = GraphQLObjectType(
     fields={
         'list': GraphQLField(
             type=GraphQLList(ScoredRequestType),
-            description='List of requests that have been scored',
+            description='List of URIs that have been scored',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as reference to retrieve the list of scored requests. Defaults to today'
+                    description='A date to use as reference to retrieve the list of scored URI. Defaults to today'
                 )
             },
             resolver=lambda root, args, *_: Proxy.get_scored_requests(date=args.get('date', date.today()))
@@ -280,35 +284,42 @@ ThreatDetailsType = GraphQLObjectType(
     fields={
         'datetime': GraphQLField(
             type=SpotDatetimeType,
+            description='Start time of the request',
             resolver=lambda root, *_: '{} {}'.format(root.get('p_date') or '1970-01-01', root.get('p_time') or '00:00:00')
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('clientip')
         ),
         'username': GraphQLField(
             type=GraphQLString,
+            description='Username used for authetication',
             resolver=lambda root, *_: root.get('username')
         ),
         'duration': GraphQLField(
             type=GraphQLInt,
+            description='Connection duration',
             resolver=lambda root, *_: root.get('duration')
         ),
         'uri': GraphQLField(
             type=GraphQLString,
+            description='The original URI requested',
             resolver=lambda root, *_: root.get('fulluri')
         ),
         'webCategory': GraphQLField(
             type=GraphQLString,
+            description='Web content categories',
             resolver=lambda root, *_: root.get('webcat')
         ),
         'responseCode': GraphQLField(
             type=GraphQLInt,
+            description='HTTP response code',
             resolver=lambda root, *_: root.get('respcode')
         ),
         'requestMethod': GraphQLField(
             type=GraphQLString,
-            description='Http Method',
+            description='HTTP request method',
             resolver=lambda root, *_: root.get('reqmethod')
         ),
         'userAgent': GraphQLField(
@@ -318,26 +329,32 @@ ThreatDetailsType = GraphQLObjectType(
         ),
         'responseContentType': GraphQLField(
             type=GraphQLString,
+            description='HTTP response content type (MIME)',
             resolver=lambda root, *_: root.get('resconttype')
         ),
         'referer': GraphQLField(
             type=GraphQLString,
+            description='The address of the webpage that linked to the resource being requested',
             resolver=lambda root, *_: root.get('referer')
         ),
         'uriPort': GraphQLField(
             type=GraphQLInt,
+            description='URI port',
             resolver=lambda root, *_: root.get('uriport')
         ),
         'serverIp': GraphQLField(
             type=SpotIpType,
+            description='The address of the webpage that linked to the resource being requested',
             resolver=lambda root, *_: root.get('serverip')
         ),
         'serverToClientBytes': GraphQLField(
             type=GraphQLInt,
+            description='Number of bytes sent from appliance to client',
             resolver=lambda root, *_: root.get('scbytes')
         ),
         'clientToServerBytes': GraphQLField(
             type=GraphQLInt,
+            description='Number of bytes sent from client to appliance',
             resolver=lambda root, *_: root.get('csbytes')
         )
     }
@@ -348,12 +365,12 @@ IncidentProgressionRequestType = GraphQLObjectType(
     fields={
         'clientIp': GraphQLField(
             type=SpotIpType,
-            description='Client\'s ip',
+            description='Client\'s IP',
             resolver=lambda root, *_: root.get('clientip')
         ),
         'referer': GraphQLField(
             type=GraphQLString,
-            description='URI that refers to Threat\'s URI',
+            description='The address of the webpage that linked to the resource being requested',
             resolver=lambda root, *_: root.get('referer')
         ),
         'requestMethod': GraphQLField(
@@ -363,7 +380,7 @@ IncidentProgressionRequestType = GraphQLObjectType(
         ),
         'responseContentType': GraphQLField(
             type=GraphQLString,
-            description='Response Content Type',
+            description='HTTP response content type (MIME)',
             resolver=lambda root, *_: root.get('resconttype')
         )
     }
@@ -374,7 +391,7 @@ IncidentProgressionType = GraphQLObjectType(
     fields={
         'uri': GraphQLField(
             type=GraphQLString,
-            description='Threat\'s URI',
+            description='Threat URI',
             resolver=lambda root, *_: root.get('fulluri')
         ),
         'refererFor': GraphQLField(
@@ -395,26 +412,32 @@ TimelineType = GraphQLObjectType(
     fields={
         'startDatetime': GraphQLField(
             type=SpotDatetimeType,
+            description='Connection\'s start time',
             resolver=lambda root, *_: root.get('tstart') or '1970-01-01 00:00:00'
         ),
         'endDatetime': GraphQLField(
             type=SpotDatetimeType,
+            description='Connection\'s end time',
             resolver=lambda root, *_: root.get('tend') or '1970-01-01 00:00:00'
         ),
         'duration': GraphQLField(
             type=GraphQLInt,
+            description='Connection duration',
             resolver=lambda root, *_: root.get('duration')
         ),
         'clientIp': GraphQLField(
             type=SpotIpType,
+            description='Client\'s IP address',
             resolver=lambda root, *_: root.get('clientip')
         ),
         'responseCode': GraphQLField(
             type=GraphQLInt,
+            description='HTTP response code',
             resolver=lambda root, *_: root.get('respcode')
         ),
         'responseCodeLabel': GraphQLField(
             type=GraphQLString,
+            description='HTTP response code name',
             resolver=lambda root, *_: root.get('respcode_name')
         )
     }
@@ -429,7 +452,7 @@ ThreatInformationType = GraphQLObjectType(
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
-                    description='A date to use as reference for incident progression information. Defaults to today'
+                    description='A date to use as reference for detailed information. Defaults to today'
                 ),
                 'uri': GraphQLArgument(
                     type=GraphQLNonNull(GraphQLString),
@@ -440,7 +463,7 @@ ThreatInformationType = GraphQLObjectType(
         ),
         'incidentProgression': GraphQLField(
             type=IncidentProgressionType,
-            description='Incident progression information',
+            description='Details the type of connections that conform the activity related to the threat',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -448,14 +471,14 @@ ThreatInformationType = GraphQLObjectType(
                 ),
                 'uri': GraphQLArgument(
                     type=GraphQLNonNull(GraphQLString),
-                    description='Threat\'s uri'
+                    description='Threat URI'
                 )
             },
             resolver=lambda root, args, *_: Proxy.incident_progression(date=args.get('date', date.today()), uri=args.get('uri'))
         ),
         'timeline': GraphQLField(
             type=GraphQLList(TimelineType),
-            description='Time based information about this threat',
+            description='Lists \'clusters\' of inbound connections to the IP, grouped by time; showing an overall idea of the times during the day with the most activity',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -463,7 +486,7 @@ ThreatInformationType = GraphQLObjectType(
                 ),
                 'uri': GraphQLArgument(
                     type=GraphQLNonNull(GraphQLString),
-                    description='Threat\'s URI'
+                    description='Threat URI'
                 )
             },
             resolver=lambda root, args, *_: Proxy.time_line(date=args.get('date', date.today()), uri=args.get('uri'))
@@ -476,7 +499,7 @@ QueryType = GraphQLObjectType(
     fields={
         'suspicious': GraphQLField(
             type=GraphQLList(SuspiciousType),
-            description='Proxy Suspicious requests',
+            description='Proxy suspicious requests',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -495,7 +518,7 @@ QueryType = GraphQLObjectType(
         ),
         'edgeDetails': GraphQLField(
             type=GraphQLList(EdgeDetailsType),
-            description='HTTP requests to a particular uri',
+            description='HTTP requests to a particular URI',
             args={
                 'date': GraphQLArgument(
                     type=SpotDateType,
@@ -507,7 +530,7 @@ QueryType = GraphQLObjectType(
                 ),
                 'clientIp': GraphQLArgument(
                     type=GraphQLNonNull(SpotIpType),
-                    description='Client\'s ip'
+                    description='Client\'s IP'
                 )
             },
             resolver=lambda root, args, *_: Proxy.details(date=args.get('date', date.today()), uri=args.get('uri'), ip=args.get('clientIp'))
@@ -524,7 +547,7 @@ QueryType = GraphQLObjectType(
         ),
         'ingestSummary': GraphQLField(
             type=GraphQLList(IngestSummaryType),
-            description='Total of ingested http requests',
+            description='Summary of ingested proxy records in range',
             args={
                 'startDate': GraphQLArgument(
                     type=GraphQLNonNull(SpotDateType),

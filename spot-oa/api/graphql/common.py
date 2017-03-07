@@ -112,6 +112,7 @@ def create_spot_node_type(name, extra_fields={}):
 
 IngestSummaryType = GraphQLObjectType(
     name='SpotIngestSummaryType',
+    description='Number of ingested records',
     fields={
         'datetime': GraphQLField(
             type=SpotDatetimeType,

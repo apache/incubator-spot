@@ -28,19 +28,19 @@ ScoreInputType = GraphQLInputObjectType(
         ),
         'srcIp': GraphQLInputObjectField(
             type=SpotIpType,
-            description='Source ip'
+            description='Source IP to score'
         ),
         'dstIp': GraphQLInputObjectField(
             type=SpotIpType,
-            description='Destination ip'
+            description='Destination IP to score'
         ),
         'srcPort': GraphQLInputObjectField(
             type=GraphQLInt,
-            description='Source port'
+            description='Source port to score'
         ),
         'dstPort': GraphQLInputObjectField(
             type=GraphQLInt,
-            description='Destination port'
+            description='Destination port to score'
         )
     }
 )
@@ -50,19 +50,19 @@ ThreatDetailsInputType = GraphQLInputObjectType(
     fields={
         'firstSeen': GraphQLInputObjectField(
             type=SpotDatetimeType,
-            description='First time two ips were seen on one day data of network traffic'
+            description='First time two IPs were seen on a particular day of flow traffic data'
         ),
         'lastSeen': GraphQLInputObjectField(
             type=SpotDatetimeType,
-            description='Last time two ips were seen on one day data of network trafic'
+            description='Last time two IPs were seen on a particular day of flow traffic data'
         ),
         'srcIp': GraphQLInputObjectField(
             type=SpotIpType,
-            description='Source ip'
+            description='Source IP address'
         ),
         'dstIp': GraphQLInputObjectField(
             type=SpotIpType,
-            description='Destination ip'
+            description='Destination IP address'
         ),
         'srcPort': GraphQLInputObjectField(
             type=GraphQLInt,
@@ -74,7 +74,7 @@ ThreatDetailsInputType = GraphQLInputObjectType(
         ),
         'connections': GraphQLInputObjectField(
             type=GraphQLInt,
-            description='Number of connections on one day of network traffic'
+            description='Number of connections on a particular day of flow traffic data'
         ),
         'maxPkts': GraphQLInputObjectField(
             type=GraphQLInt,
@@ -82,7 +82,7 @@ ThreatDetailsInputType = GraphQLInputObjectType(
         ),
         'avgPkts': GraphQLInputObjectField(
             type=GraphQLInt,
-            description='Average number of packets transferred bwteen ips'
+            description='Average number of packets transferred bwteen IPs'
         ),
         'maxBytes': GraphQLInputObjectField(
             type=GraphQLInt,
@@ -90,7 +90,7 @@ ThreatDetailsInputType = GraphQLInputObjectType(
         ),
         'avgBytes': GraphQLInputObjectField(
             type=GraphQLInt,
-            description='Average number of bytes transferred bwteen ips'
+            description='Average number of bytes transferred bwteen IPs'
         )
     }
 )
@@ -100,25 +100,27 @@ CreateStoryboardInputType = GraphQLInputObjectType(
     fields={
         'date': GraphQLInputObjectField(
             type=SpotDateType,
-            description='A reference date for the add comment process. Defaults to today'
+            description='A reference date for the storyboard being created. Defaults to today'
         ),
         'ip': GraphQLInputObjectField(
             type=GraphQLNonNull(SpotIpType),
-            description='Reference IP for the comment'
+            description='High risk IP address'
         ),
         'title': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
-            description='A title for the comment'
+            description='Threat title'
         ),
         'text': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLString),
-            description='A description text for the comment'
+            description='Threat title description'
         ),
         'threatDetails': GraphQLInputObjectField(
             type=GraphQLNonNull(GraphQLList(ThreatDetailsInputType)),
+            description='Threat details. See NetflowThreatInformation.details'
         ),
         'first': GraphQLInputObjectField(
-            type=GraphQLInt
+            type=GraphQLInt,
+            description='The number of records to return'
         )
     }
 )
@@ -156,6 +158,7 @@ MutationType = GraphQLObjectType(
     fields={
         'score': GraphQLField(
             type=GraphQLList(SpotOperationOutputType),
+            description='Sets a score value to connections',
             args={
                 'input': GraphQLArgument(
                     type=GraphQLNonNull(GraphQLList(GraphQLNonNull(ScoreInputType))),
@@ -166,10 +169,11 @@ MutationType = GraphQLObjectType(
         ),
         'createStoryboard': GraphQLField(
             type=SpotOperationOutputType,
+            description='Request Spot to create an entry on storyboard for a particular threat',
             args={
                 'input': GraphQLArgument(
                     type=GraphQLNonNull(CreateStoryboardInputType),
-                    description='Generates every data needed to move a threat to the storyboard'
+                    description='Threat information'
                 )
             },
             resolver=lambda root, args, *_: _create_storyboard(args)

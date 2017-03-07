@@ -110,6 +110,7 @@ For every path found on this document, "SPOT" refers to the path where Spot UI i
 
 1. Install Spot UI. Follow this [guide](INSTALL.md#install-spot-ui).
 2. Run Spot UI. Follow this [guide](INSTALL.md#how-to-run-spot-ui).
+    1. Set SPOT_DEV env var to 1 to enable GraphiQL UI and run ipython in debug mode.
 3. Start watching for code changes
     1. $ cd SPOT/ui/PIPELINE/
     2. Watch one of the following modules
