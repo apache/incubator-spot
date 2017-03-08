@@ -91,7 +91,7 @@ def score_request(date,score,uri):
     # add score to connections
     insert_command = ("""
 		INSERT INTO {0}.proxy_threat_investigation PARTITION (y={1},m={2},d={3})
-		VALUES (""")
+		VALUES (""") \
         .format(db,date.year,date.month,date.day)
 
     fb_data =  []
@@ -112,7 +112,7 @@ def score_request(date,score,uri):
         first = False
 
     insert_command += ")"
-	ImpalaEngine.execute_query(insert_command)
+    ImpalaEngine.execute_query(insert_command)
 
     # create feedback file.
     app_path = Configuration.spot()

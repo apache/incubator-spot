@@ -235,7 +235,7 @@ def score_connection(score,date,src_ip=None,dst_ip=None,src_port=None,dst_port=N
     insert_command = ("""
         INSERT INTO {0}.flow_threat_investigation
         PARTITION (y={1},m={2},d={3})
-        VALUES (""")
+        VALUES (""") \
         .format(db,date.year,date.month,date.day)
 
     fb_data =  []
