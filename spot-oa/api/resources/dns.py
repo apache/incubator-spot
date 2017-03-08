@@ -153,7 +153,14 @@ def  score_connection(date,ip="", dns="", ip_sev=0, dns_sev=0):
     connections = ImpalaEngine.execute_query(sq_query + connections_filter)
 
     # add score to connections
+
+    insert_command = ("""INSERT INTO {0}.dns_threat_investigation
+                        PARTITION (y={1},m={2},d={3})
+                        VALUES (""") \
+                        .format(db,date.year,date.month,date.day)
+
     fb_data =  []
+    first = True
     for row in connections:
         # insert into dns_threat_investigation.
         threat_data = (row[1],row[3],row[4],ip_sev if ip == row[3] else 0,\
@@ -163,13 +170,11 @@ def  score_connection(date,ip="", dns="", ip_sev=0, dns_sev=0):
         row[8],row[9],row[10],row[11],ip_sev,dns_sev,row[12],row[13],row[14],\
         row[15],row[1]])
 
-        insert_command = ("""
-            INSERT INTO {0}.dns_threat_investigation
-            PARTITION (y={1},m={2},d={3})
-            VALUES {4}
-            """).format(db,date.year,date.month,date.day,threat_data)
+        insert_command += "{0}{1}".format("," if not first else "", threat_data)
+        first = False
 
-        ImpalaEngine.execute_query(insert_command)
+    insert_command += ")"
+    ImpalaEngine.execute_query(insert_command)
 
     # create feedback file.
     app_path = Configuration.spot()
@@ -324,7 +329,7 @@ def  save_comments(ip,query,title,text,date):
 
 """
 --------------------------------------------------------------------------
-Return a list(dict) with all the data ingested during the timeframe 
+Return a list(dict) with all the data ingested during the timeframe
 provided.
 --------------------------------------------------------------------------
 """

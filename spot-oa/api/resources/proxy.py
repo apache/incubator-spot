@@ -89,8 +89,13 @@ def score_request(date,score,uri):
     connections = ImpalaEngine.execute_query(p_query)
 
     # add score to connections
-    fb_data =  []
+    insert_command = ("""
+		INSERT INTO {0}.proxy_threat_investigation PARTITION (y={1},m={2},d={3})
+		VALUES (""")
+        .format(db,date.year,date.month,date.day)
 
+    fb_data =  []
+    first = True
     for row in connections:
         cip_index = row[2]
         uri_index = row[18]
@@ -103,11 +108,10 @@ def score_request(date,score,uri):
 			,row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15] \
 			,row[16],row[17],row[18],row[19],score,row[20],row[21],row[22], \
 			row[23],hash_field])
+        insert_command += "{0}{1}".format("," if not first else "", threat_data)
+        first = False
 
-	insert_command = ("""
-		INSERT INTO {0}.proxy_threat_investigation PARTITION (y={1},m={2},d={3})
-		VALUES {4}
-		""").format(db,date.year,date.month,date.day,threat_data)
+    insert_command += ")"
 	ImpalaEngine.execute_query(insert_command)
 
     # create feedback file.

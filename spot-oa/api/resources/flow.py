@@ -228,24 +228,27 @@ def score_connection(score,date,src_ip=None,dst_ip=None,src_port=None,dst_port=N
 
     connections_filter += " AND dport = {0}" \
     .format(str(dst_port)) if dst_port else ""
-
     connections = ImpalaEngine.execute_query(connections_query + connections_filter)
 
 
     # add score to connections
+    insert_command = ("""
+        INSERT INTO {0}.flow_threat_investigation
+        PARTITION (y={1},m={2},d={3})
+        VALUES (""")
+        .format(db,date.year,date.month,date.day)
+
     fb_data =  []
+    first = True
     for row in connections:
         # insert into flow_threat_investigation.
         threat_data = (row[0],row[1],row[2],row[3],row[4],score)
         fb_data.append([score,row[0],row[1],row[2],row[3],row[4],row[5],row[6]])
+        insert_command += "{0}{1}".format("," if not first else "", threat_data)
+        first = False
 
-        insert_command = ("""
-            INSERT INTO {0}.flow_threat_investigation
-            PARTITION (y={1},m={2},d={3})
-            VALUES {4}
-            """).format(db,date.year,date.month,date.day,threat_data)
-
-        ImpalaEngine.execute_query(insert_command)
+    insert_command += ")"
+    ImpalaEngine.execute_query(insert_command)
 
     # create feedback file.
     app_path = Configuration.spot()

@@ -1,5 +1,6 @@
 
 from hdfs import InsecureClient
+from hdfs.util import HdfsError
 from json import dump
 import api.resources.configurator as Config
 
@@ -39,8 +40,11 @@ def delete_folder(hdfs_file,user=None):
     client.delete(hdfs_file,recursive=True)
 
 def list_dir(hdfs_path):
-    client = _get_client()
-    return client.list(hdfs_path)
+    try:
+        client = _get_client()
+        return client.list(hdfs_path)
+    except HdfsError:
+        return {}
 
 def file_exists(hdfs_path,file_name):
     files = list_dir(hdfs_path)
