@@ -13,26 +13,28 @@ Here you will find instructions to get Spot UI up and running. For more informat
 
 ## Install Spot UI
 
-1. Go to Spot UI folder
+1. Install Python dependencies following the steps from [here](../README.md)
 
-	`$ cd PATH_TO_SPOT/ui/`
+2. Go to Spot UI dir
 
-2. With root privileges, install browserify and uglify as global commands on your system.
+    `$ cd PATH_TO_SPOT/spot-oa/ui/`
 
-	`# npm install -g browserify uglifyjs`
+3. With root privileges, install browserify and uglify as global commands on your system.
 
-3. Install dependencies and build Spot UI
+    `# npm install -g browserify uglifyjs`
 
-	`$ npm install`
+4. As a regular user install dependencies and build Spot UI
+
+    `$ npm install`
 
 ## How to run Spot UI
 
-1. Go to Spot UI folder
+1. Go to Spot OA dir
 
-	`$ cd PATH_TO_SPOT/`
+    `$ cd PATH_TO_SPOT/spot-oa/`
 
 2. Start the web server
 
-	`$ ./runIpython.sh`
+    `$ ./runIpython.sh`
 
-3. Verify your installation by going to one of the URLs found [here](https://github.com/Open-Network-Insight/open-network-insight/wiki/Suspicious%20Connects).
+3. Verify your installation, go to http://SPOT_OA_SERVER:8889/files/ui/flow/suspicious.html.
