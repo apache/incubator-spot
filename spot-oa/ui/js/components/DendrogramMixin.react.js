@@ -35,8 +35,8 @@ var DendrogramMixin = {
       const nodes = this.cluster.nodes(this.state.data);
       const links = this.cluster.links(nodes);
 
-      this.drawNodes(nodes);
       this.drawLinks(links);
+      this.drawNodes(nodes);
   },
   drawNodes(nodes) {
       const nodeSel = {};
@@ -64,12 +64,16 @@ var DendrogramMixin = {
                                         .style('fill', null);
                         });
 
-      nodeEl.append('text')
-                      .attr('dx', n => n.depth===0 ? -10 : 10)
-                      .attr('dy', 3)
-                      .style('text-anchor', n => n.depth===0 ? 'end' : 'start')
-                      .attr('fill', 'black')
-                      .text(n => n.name);
+      // foreignObject is not supported by IE
+      nodeEl.append('foreignObject')
+                        .attr({'width': (n => n.depth === 0 ? "100px" : "20%"), 'height':"150"})
+                        .style('text-align', n => n.depth === 0 ? "right" : "left")
+                        .attr('x', n => n.depth === 0 ? -100 : 8)
+                        .attr('y', -6)
+                        .append('xhtml:div')
+                        .attr({'class':'spot-text-wrapper','data-toggle': 'tooltip','fill': 'black'})
+                        .style('width','90%')
+                        .html(n => n.name);
 
     nodeSel.update.attr('transform', n => `translate(${n.y},${n.x})`);
 
