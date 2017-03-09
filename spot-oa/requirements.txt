@@ -18,3 +18,9 @@ flask
 flask-graphql
 graphql-core
 urllib3
+
+# API Resources
+setuptools>=3.4.4
+thrift==0.9.3
+impyla
+hdfs
