@@ -37,7 +37,7 @@ API Resources use [WebHDFS REST API] (https://hadoop.apache.org/docs/r1.0.4/webh
 * impyla
 * hdfs
 
-**NOTE:** all these requirements are already part of requirements.txt file, you don't need to install the python prerequisites manually.[OA install](../../../oa/INSTALL.md)
+**NOTE:** all these requirements are already part of requirements.txt file, you don't need to install the python prerequisites manually. For more information go to [install python requirements](../../README.md)
 
 #### Hadoop:
 
