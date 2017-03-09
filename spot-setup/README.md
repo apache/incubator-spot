@@ -18,7 +18,7 @@ To collaborate and run spot-setup, it is required the following prerequisites:
 
 ## General Description
 
-The main script in the repository is **hdfs_setup.sh** which is responsible of loading environment variables, creating folders in Hadoop for the different use cases (flow, DNS or Proxy), create the Hive database, and finally execute hive query scripts that creates Hive tables needed to access netflow, dns and proxy data.
+The main script in the repository is **hdfs_setup.sh** which is responsible of loading environment variables, creating folders in Hadoop for the different use cases (flow, DNS or Proxy), create the Impala database, and finally execute Impala query scripts that creates Impala tables needed to access netflow, dns and proxy data.
 
 ## Environment Variables
 
@@ -32,7 +32,7 @@ To read more about these variables, please review the [documentation] (http://sp
 
 spot-setup contains a script per use case, as of today, there is a table creation script for each DNS, flow and Proxy data.
 
-These HQL scripts are intended to be executed as a Hive statement and must comply HQL standards.
+These HQL scripts are intended to be executed as a Impala statement and must comply HQL standards.
 
 We create tables using Parquet format to get a faster query performance. This format is an industry standard and you can find more information about it on:
 - Parquet is a columnar storage format - https://parquet.apache.org/
