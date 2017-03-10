@@ -44,12 +44,12 @@ if (endDate < startDate)
   startDate = endDate;
   endDate = today;
 }
-
 const PIPELINES = IngestSummaryStore.PIPELINES;
-const DEFAULT_PIPELINE = Object.keys(PIPELINES)[0];
+//check if pipeline is on URL, if not the first element of PIPELINES is taken
+const DEFAULT_PIPELINE =  SpotUtils.getUrlParam('pipeline') || Object.keys(PIPELINES)[0];
 
 const loadPipeline = function loadPipeline(pipeline) {
-    IngestSummaryStore.setPipeline(pipeline);
+    SpotActions.setPipeline(pipeline);
     InSumActions.reloadSummary();
 }
 
@@ -106,9 +106,12 @@ ReactDOM.render(
   document.getElementById('spot-content-wrapper')
 );
 
+
+
 // Set period
 SpotActions.setDate(startDate, SpotConstants.START_DATE);
 SpotActions.setDate(endDate, SpotConstants.END_DATE);
+SpotActions.setPipeline(DEFAULT_PIPELINE);
 
 // Load data
 loadPipeline(DEFAULT_PIPELINE);

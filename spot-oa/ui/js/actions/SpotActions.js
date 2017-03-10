@@ -35,6 +35,12 @@ var SpotActions = {
             name: name
         });
     },
+    setPipeline(pipeline) {
+       SpotDispatcher.dispatch({
+           actionType: SpotConstants.UPDATE_PIPELINE,
+           pipeline
+       });
+   },
     expandPanel: function (panel) {
         SpotDispatcher.dispatch({
             actionType: SpotConstants.EXPAND_PANEL,

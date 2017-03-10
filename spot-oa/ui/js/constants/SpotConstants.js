@@ -4,6 +4,7 @@ const SpotConstants = {
   PIPELINE_NETFLOW: 'flow',
   PIPELINE_DNS: 'dns',
   PIPELINE_PROXY: 'proxy',
+  UPDATE_PIPELINE: 'UPDATE_PIPELINE',
   // Search Actions
   UPDATE_FILTER: 'UPDATE_FILTER',
   UPDATE_DATE: 'UPDATE_DATE',
