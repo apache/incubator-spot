@@ -8,7 +8,6 @@ import api.resources.configurator as Config
 def _get_client(user=None):
     hdfs_nm,hdfs_port,hdfs_user = Config.hdfs()
     client = InsecureClient('http://{0}:{1}'.format(hdfs_nm,hdfs_port), user= user if user else hdfs_user)
-    print hdfs_nm,hdfs_port,hdfs_user
     return client
 
 def get_file(hdfs_file):

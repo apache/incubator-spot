@@ -85,7 +85,7 @@ def incident_progression(date, query,ip):
         return None
 
     db = Configuration.db()
-    return_value = "dns_qry_name" if ip else "ip_dst"
+    return_value = "dns_qry_name" if query else "ip_dst"
     dns_threat_query = ("""
             SELECT
                 anchor,total,{0}
@@ -258,7 +258,7 @@ def create_storyboard(expanded_search,date,ip,query,title,text):
 
     anchor = ip if ip else query
     create_dendro(expanded_search,date,anchor)
-    save_comments(ip,query,title,text,date)
+    save_comments(anchor,ip,query,title,text,date)
 
 """
 --------------------------------------------------------------------------
@@ -299,7 +299,7 @@ def  save_comments(ip,query,title,text,date):
     # find value if already exists.
     saved = False
     for item in sb_data:
-        if item["ip_threat"] == ip or item["dns_threat"]== query:
+        if item["ip_threat"] == anchor or item["dns_threat"]== anchor:
             item["title"] = title
             item["text"] = text
             saved = True
