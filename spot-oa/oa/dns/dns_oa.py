@@ -324,7 +324,7 @@ class OA(object):
             if dns_iana:
                 self._logger.info("Adding IANA translation to details results") 
                     
-                dns_details = [ conn + (str(dns_iana.get_name(conn[5],"dns_qry_class")),str(dns_iana.get_name(conn[6],"dns_qry_type")),str(dns_iana.get_name(conn[7],"dns_qry_rcode"))) for conn in dns_details ]
+                dns_details = [ conn + (dns_iana.get_name(str(conn[5]),"dns_qry_class"),dns_iana.get_name(str(conn[6]),"dns_qry_type"),dns_iana.get_name(str(conn[7]),"dns_qry_rcode")) for conn in dns_details ]
             else: 
                 self._logger.info("WARNING: NO IANA configured.")
                 dns_details = [ conn + ("","","") for conn in dns_details ]
