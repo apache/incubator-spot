@@ -283,7 +283,7 @@ def create_dendro(expanded_search,date,anchor):
 Create save comments for StoryBoard.
 --------------------------------------------------------------------------
 """
-def  save_comments(ip,query,title,text,date):
+def  save_comments(anchor,ip,query,title,text,date):
 
     db = Configuration.db()
     sb_query = ("""
