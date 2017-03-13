@@ -85,7 +85,7 @@ def incident_progression(date, query,ip):
         return None
 
     db = Configuration.db()
-    return_value = "dns_qry_name" if query else "ip_dst"
+    return_value = "dns_qry_name" if ip else "ip_dst"
     dns_threat_query = ("""
             SELECT
                 anchor,total,{0}
@@ -96,7 +96,7 @@ def incident_progression(date, query,ip):
                 AND anchor = '{5}'
             """).format(return_value,db,date.year,date.month,date.day,\
             query if query else ip)
-
+                
     return ImpalaEngine.execute_query_as_list(dns_threat_query)
 
 """
