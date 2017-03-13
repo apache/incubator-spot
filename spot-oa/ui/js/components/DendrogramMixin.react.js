@@ -70,7 +70,6 @@ var DendrogramMixin = {
 
       // foreignObject is not supported by IE
       nodeEl.append('foreignObject')
-                        .style('width', n => n.depth === 1 ? foreignObject_width : 'auto' )
                         .attr('x', n => n.depth === 0 ? '-8em' : '1em') //<--- this is the 1em
                         .attr('y', -6)
                         .append('xhtml:div')
