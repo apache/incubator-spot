@@ -17,22 +17,30 @@ def get_file(hdfs_file):
         return results
 
 def put_file_csv(hdfs_file_content,hdfs_path,hdfs_file_name,append_file=False,overwrite_file=False):
-    client = _get_client()
-    hdfs_full_name = "{0}/{1}".format(hdfs_path,hdfs_file_name)
-    with client.write(hdfs_full_name,append=append_file,overwrite=overwrite_file) as writer:
-        for item in hdfs_file_content:
-            data = ','.join(str(d) for d in item)
-            writer.write("{0}\n".format(data))
-
-    return True
+    
+    try:
+        client = _get_client()
+        hdfs_full_name = "{0}/{1}".format(hdfs_path,hdfs_file_name)
+        with client.write(hdfs_full_name,append=append_file,overwrite=overwrite_file) as writer:
+            for item in hdfs_file_content:
+                data = ','.join(str(d) for d in item)
+                writer.write("{0}\n".format(data))
+        return True
+        
+    except HdfsError:
+        return False
 
 def put_file_json(hdfs_file_content,hdfs_path,hdfs_file_name,append_file=False,overwrite_file=False):
-    client = _get_client()
-    hdfs_full_name = "{0}/{1}".format(hdfs_path,hdfs_file_name)
-    with client.write(hdfs_full_name,append=append_file,overwrite=overwrite_file,encoding='utf-8') as writer:
-	    dump(hdfs_file_content, writer)
-
-    return True
+    
+    try:
+        client = _get_client()
+        hdfs_full_name = "{0}/{1}".format(hdfs_path,hdfs_file_name)
+        with client.write(hdfs_full_name,append=append_file,overwrite=overwrite_file,encoding='utf-8') as writer:
+	        dump(hdfs_file_content, writer)
+        return True
+    except HdfsError:
+        return False
+    
 
 def delete_folder(hdfs_file,user=None):
     client = _get_client(user)
