@@ -64,19 +64,21 @@ var DendrogramMixin = {
                                         .style('fill', null);
                         });
 
-      const y1 = nodes.find(n => n.depth === 1).y;
-      const y2 = nodes.find(n => n.depth === 2).y;
-      const foreignObject_width = (y2 - y1) - 16; // 16 is the 1em given on the "x" (see below) but we need to take it from the last part of the line
+      if(Object.keys(nodes[0]).indexOf("children") > 0) { //lets check if is necessary making a reduce or not, in case of empty nodes array
+        const y1 = nodes.find(n => n.depth === 1).y;
+        const y2 = nodes.find(n => n.depth === 2).y;
+        const foreignObject_width = (y2 - y1) - 16; // 16 is the 1em given on the "x" (see below) but we need to take it from the last part of the line
 
-      // foreignObject is not supported by IE
-      nodeEl.append('foreignObject')
-                        .attr('x', n => n.depth === 0 ? '-8em' : '1em') //<--- this is the 1em
-                        .attr('y', -6)
-                        .append('xhtml:div')
-                          .html(n => n.name)
-                          .filter(n => n.depth === 1)
-                            .style('width','auto')
-                            .attr({'class': 'spot-text-wrapper', 'data-toggle': 'tooltip'});
+        // foreignObject is not supported by IE
+        nodeEl.append('foreignObject')
+                          .attr('x', n => n.depth === 0 ? '-8em' : '1em') //<--- this is the 1em
+                          .attr('y', -6)
+                          .append('xhtml:div')
+                            .html(n => n.name)
+                            .filter(n => n.depth === 1)
+                              .style('width','auto')
+                              .attr({'class': 'spot-text-wrapper', 'data-toggle': 'tooltip'});
+      }
 
       nodeSel.update.selectAll('foreignObject')
                         .style('width', n => n.depth === 1 ? foreignObject_width : 'auto');
