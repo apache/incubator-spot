@@ -77,7 +77,7 @@ var DendrogramMixin = {
             break;
           }
         }
-        const foreignObject_width = (y2 - y1) - 16; // 16 is the 1em given on the "x" (see below) but we need to take it from the last part of the line
+        const foreignObject_width = ((y2 - y1) - 16 ) > 0 ? (y2 - y1) - 16 : '17%'; // 16 is the 1em given on the "x" (see below) but we need to take it from the last part of the line, 17% is the minimum width when there is no third node
 
         // foreignObject is not supported by IE
         nodeEl.append('foreignObject')
