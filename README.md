@@ -52,7 +52,7 @@ While inspecting specific, unique flows of data that may be important for indivi
 2. Run the container: `docker run -it -p 8889:8889 apachespot/spot-demo`
 3. visit [http://localhost:8889/files/ui/flow/suspicious.html#date=2016-07-08](http://localhost:8889/files/ui/proxy/suspicious.html#date=2016-07-08) in your browser to get started
 
-For the full instructions visit the [spot](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on Docker hub
+For the full instructions visit the [spot](https://hub.docker.com/r/apachespot/spot-demo/) on Docker hub
 
 ## **Getting Started**
 
