@@ -168,3 +168,66 @@ a.meanmenu-reveal {
 .mean-remove {
 	display: none !important;
 }
+
+.mean-container .mean-nav ul li ul.sub-menu.com-sm li.dropmenu-head {
+    display: block;
+    float: left;
+    width: 90%;
+    padding: 1em 5%;
+    margin: 0;
+    text-align: left;
+    color: #0b0b0b;
+    border-bottom:1px solid rgba(255,255,255,0.8);
+    border-top: 1px solid rgba(255,255,255,0.8);
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.mean-container .mean-nav .slack {
+	background-position:left 15px center !important;
+}
+.mean-container .mean-nav .github {
+	background-position:left 15px center !important;
+}
+.mean-container .mean-nav .jira {
+	background-position:left 15px center !important;
+}
+.mean-container .mean-nav .mail {
+	background-position:left 15px center !important;
+}
+.mean-container .mean-nav .twitter-icon {
+	background-position:left 15px center !important;
+}
+.mean-container .mean-nav .slack:hover {
+	background:rgba(255,255,255,.1) url('../images/slack_mark_16px.png') no-repeat;
+}
+.mean-container .mean-nav .github:hover {
+	background:rgba(255,255,255,.1) url('../images/github.png') no-repeat;
+}
+.mean-container .mean-nav .jira:hover {
+	background:rgba(255,255,255,.1) url('../images/jira.png') no-repeat;
+}
+.mean-container .mean-nav .mail:hover {
+	background:rgba(255,255,255,.1) url('../images/mail.png') no-repeat;
+}
+.mean-container .mean-nav .twitter-icon:hover {
+	background:rgba(255,255,255,.1) url('../images/twitter-icon.png') no-repeat;
+}
+
+@media only screen and (min-width:768px) {
+	.mean-container .mean-nav .slack {
+		background-position:left 7% center !important;
+	}
+	.mean-container .mean-nav .github {
+		background-position:left 7% center !important;
+	}
+	.mean-container .mean-nav .jira {
+		background-position:left 7% center !important;
+	}
+	.mean-container .mean-nav .mail {
+		background-position:left 7% center !important;
+	}
+	.mean-container .mean-nav .twitter-icon {
+		background-position:left 7% center !important;
+	}
+}

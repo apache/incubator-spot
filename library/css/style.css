@@ -40,6 +40,28 @@
   content: "\e900";
 }
 
+
+.slack {
+	background:url('../images/slack_mark_16px.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.github {
+	background:url('../images/github.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.mail {
+	background:url('../images/mail.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.jira {
+	background:url('../images/jira.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.twitter-icon {
+	background:url('../images/twitter-icon.png') no-repeat 0 center;
+	padding-left:21px;
+}
+
 /* Made with Bones: http://themble.com/bones :) */
 /******************************************************************
 Site Name:
@@ -618,7 +640,7 @@ style a page via class
 /*********************
 LAYOUT & GRID STYLES
 *********************/
-.wrap { width: 85%; margin: 0 auto; }
+.wrap { /*width: 85%;*/width:95%; margin: 0 auto; }
 
 .center { text-align: center; }
 
@@ -802,7 +824,7 @@ POSTS & CONTENT STYLES
 
 #use-case { padding: 50px 0; background: #fff; }
 #use-case h1 { text-align: center; margin-bottom: 0; }
-#use-case h3 { color: #860309; text-align: center; font-weight: 500; font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: 1px; margin: 10px 0 35px; font-size: 13pt;line-height:1.3em; text-transform:uppercase;}
+#use-case h3 { color: #c97644; text-align: center; font-weight: 600; font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: 1px; margin:15px 0; font-size: 13pt;line-height:1.3em; text-transform:uppercase;}
 #use-case .number { min-height: 100px; width: 95px; vertical-align: top; }
 #use-case .left img { margin-bottom: 50px; }
 #use-case .table { padding: 25px 0 25px 0; }
@@ -837,6 +859,46 @@ POSTS & CONTENT STYLES
 .page #content h3 {color:#a3a3a1;font-weight:700;text-transform:uppercase;line-height:1.3em;font-size:1.3em;}
 .page #content h4 {color:#8e8506;font-weight:400;}
 .page .wrap.with-sidebar {width:100%;}
+
+
+.divTable{
+	display: table;
+	width: 100%;
+}
+.divTableRow {
+	display: table-row;
+}
+.divTableCell {
+	border-top: 1px solid #999999;
+	border-right:1px solid #999;
+	display: table-cell;
+	padding: 3px 1%;
+	font-size:12px;
+}
+.divTableRow .divTableCell:nth-of-type(1) {
+	width:18%;
+}
+.divTableRow .divTableCell:nth-of-type(2) {
+	width:31.5%;
+}
+.divTableRow .divTableCell:last-of-type {
+	width:15%;
+}
+.divTableBody {
+	display: table-row-group;
+}
+.tableHeading .divTableCell {
+	font-weight:bold;
+}
+.divTableRow .divTableCell:first-of-type {
+	border-left:1px solid #999;
+}
+.divTableRow:last-of-type .divTableCell {
+	border-bottom:1px solid #999;
+}
+.divTableRow:nth-of-type(even) {
+	background-color:rgba(232,229,224,.6);
+}
 
 .hentry { padding: .75em; margin-bottom: 1.5em; }
 .hentry footer { padding: 1.5em 0; border-top: 1px solid #d6d6d6; }
@@ -1070,27 +1132,11 @@ you can add resource intensive styles.
   #masthead p { text-align: left; }
   .page #masthead .wrap {min-height:250px;}
   .page #masthead h1 {text-align:center;margin:0 auto;}
+  
 
-  /********************* NAVIGATION STYLES ********************/
-  .nav { border: 0; float: right; margin-top: 35px; /* end .menu ul li */ /* highlight current page */ /* end current highlighters */ }
-  .nav ul { background: #e8e5e0; margin-top: 0; }
-  .nav li { float: left; position: relative; /*
-plan your menus and drop-downs wisely.
-*/ /* showing sub-menus */ }
-  .nav li a { border-bottom: 0; color: #626366; font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; text-transform: uppercase; font-size: 10.2pt; letter-spacing: 1px; padding: .75em 1.5em; /*
-you can use hover styles here even though this size
-has the possibility of being a mobile device.
-*/ }
-  .nav li a:hover, .nav li a:focus { color: #c97644; }
-  .nav li.active > a {color:#c97644;}
-  .nav li ul.sub-menu, .nav li ul.children { margin-top: 0; position: absolute; visibility: hidden;opacity:0; z-index: 8999;padding-left:0; -webkit-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;-moz-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;-ms-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s; -o-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;  -webkit-transform: translateY(-2em); -moz-transform: translateY(-2em); -o-transform: translateY(-2em); -ms-transform: translateY(-2em);translateY(-2em);}
-
-  .nav li ul.sub-menu li a, .nav li ul.children li a { float:none;padding-left: 10px; border-right: 0; display: block; width: 235px; border-bottom: 1px solid #ccc; }
-  .nav li ul.sub-menu li a:hover, .nav li ul.children li a:hover {color:#c97644;}
-  .nav li ul.sub-menu li:last-child a, .nav li ul.children li:last-child a { border-bottom: 0; }
-  .nav li ul.sub-menu li ul, .nav li ul.children li ul { top: 0; left: 100%; }
-  .nav li:hover > ul { top: auto; visibility: visible; opacity:1;-moz-transform: translateY(0%);-webkit-transform: translateY(0%); -o-transform: translateY(0%);-ms-transform: translateY(0%); transform: translateY(0%); -webkit-transition-delay: 0s, 0s, 0.3s;-moz-transition-delay: 0s, 0s, 0.3s;-o-transition-delay: 0s, 0s, 0.3s;transition-delay: 0s, 0s, 0.3s; /* this removes the transition delay so the menu will be visible while the other styles transition */}
   /* end .nav */
+ 
+ 
   /********************* CONTENT ********************/
   #how-it-works { padding: 100px 0; text-align: left; }
   #how-it-works img { display: block; margin: 0 auto; }
@@ -1100,14 +1146,27 @@ has the possibility of being a mobile device.
   #use-case .table:first-of-type { padding-top: 0; }
   #use-case .table:last-of-type { padding-bottom: 0; }
   #use-case .left img { margin-bottom: 0; padding-right: 25px; }
-  #use-case h3 {margin: 10px 0 75px;}
-  .quotes .table-cell {display:table-cell;text-align:center;}  .table-cell.quote-man {padding-right:35px;text-align:center;}
+  #use-case h3 {margin: 0 0 15px;text-align:left;}
+  .quotes .table-cell {display:table-cell;text-align:left;}  .table-cell.quote-man {padding-right:35px;text-align:center;}
   .table-cell.quote-man img {text-align:center;}
   .arrow { height: 80px; }
   .arrow p { margin: 20px 85px 20px 25px; }
-  .arrow:after { border: 40px solid transparent; border-left: 40px solid #f9bf12; }
+  .arrow:after { border: 40px solid transparent; border-left: 40px solid #c97644; }
   .hentry { margin-right: 50px; }
 
+
+	.divTableCell {
+		font-size:11pt;
+	}
+	.divTableRow .divTableCell:nth-of-type(1) {
+		width:18%;
+	}
+	.divTableRow .divTableCell:nth-of-type(2) {
+		width:31.5%;
+	}
+	.divTableRow .divTableCell:last-of-type {
+		width:15%;
+	}
   /********************* SIDEBARS & ASIDES ********************/
   .sidebar { margin-top: 0; }
   .widgettitle { border-bottom: 2px solid #444; margin-bottom: 0.75em; }
@@ -1137,6 +1196,70 @@ you can add resource intensive styles.
   .cd-top { height: 60px; width: 60px; right: 30px;bottom: 30px; }  
   .nav li a { padding: .75em 1.6em; }
   .nav li:last-child a {padding-right:0;}
+  /********************* NAVIGATION STYLES ********************/
+  .nav { border: 0; float: right; margin-top: 35px; /* end .menu ul li */ /* highlight current page */ /* end current highlighters */ }
+  .nav ul { background: #e8e5e0; margin-top: 0; }
+  .nav li { float: left; position: relative; /*
+plan your menus and drop-downs wisely.
+*/ /* showing sub-menus */ }
+  .nav li a { border-bottom: 0; color: #626366; font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; text-transform: uppercase; font-size: 10.2pt; letter-spacing: 1px; padding: .75em 1.5em; /*
+you can use hover styles here even though this size
+has the possibility of being a mobile device.
+*/ }
+  .nav li a:hover, .nav li a:focus { color: #c97644; }
+  .nav li.active > a {color:#c97644;}
+  .nav li ul.sub-menu, .nav li ul.children { width:235px;margin-top: 0; position: absolute; visibility: hidden;opacity:0; z-index: 8999;padding-left:0; -webkit-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;-moz-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;-ms-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s; -o-transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;  -webkit-transform: translateY(-2em); -moz-transform: translateY(-2em); -o-transform: translateY(-2em); -ms-transform: translateY(-2em);translateY(-2em);}
+
+  .nav li ul.sub-menu li a, .nav li ul.children li a { float:none;padding-left: 10px; border-right: 0; display: block; width: 235px; border-bottom: 1px solid #ccc; }
+  .nav li ul.sub-menu li a:hover, .nav li ul.children li a:hover {color:#c97644;}
+  .nav li ul.sub-menu li:last-child a, .nav li ul.children li:last-child a { border-bottom: 0; }
+  .nav li ul.sub-menu li ul, .nav li ul.children li ul { top: 0; left: 100%; }
+  .nav li:hover > ul { top: auto; visibility: visible; opacity:1;-moz-transform: translateY(0%);-webkit-transform: translateY(0%); -o-transform: translateY(0%);-ms-transform: translateY(0%); transform: translateY(0%); -webkit-transition-delay: 0s, 0s, 0.3s;-moz-transition-delay: 0s, 0s, 0.3s;-o-transition-delay: 0s, 0s, 0.3s;transition-delay: 0s, 0s, 0.3s; /* this removes the transition delay so the menu will be visible while the other styles transition */}
+.nav li ul.sub-menu.com-sm li a {
+	border-bottom:none;
+}
+ .dropmenu-head {
+ 	float: none;
+	border-right: 0;
+	display: block;
+	width: 235px;
+	text-transform:uppercase;
+	color:#666;
+	padding:0 10px 0 15px;
+	border-bottom:none;
+	font-size:.95em;
+}
+.sub-menu.com-sm .dropmenu-head:first-child {
+	padding-top:10px;
+}
+.sub-menu.com-sm .mail,
+.sub-menu.com-sm .slack,
+.sub-menu.com-sm .github,
+.sub-menu.com-sm .twitter-icon,
+.sub-menu.com-sm .jira {
+	background-position:left 15px center;
+}
+.nav li ul.sub-menu.com-sm li .mail,
+.nav li ul.sub-menu.com-sm li .slack,
+.nav li ul.sub-menu.com-sm li .github,
+.nav li ul.sub-menu.com-sm li .twitter-icon,
+.nav li ul.sub-menu.com-sm li .jira {
+	padding-left:40px;
+}
+.sub-menu.com-sm li a {
+	padding:5px 10px 5px 25px;
+}
+li.divider {
+	border-bottom:1px solid #ccc;
+	width:100%;
+	margin:10px 0 !important;
+}
+.nav li ul.sub-menu.com-sm li {
+	margin-bottom:0;
+}
+.nav li ul.sub-menu.com-sm li a {
+	padding-left:15px;
+}
   img.oniguy { margin-top: 75px; }
   .page #masthead .wrap {min-height:360px;display: flex;  justify-content: flex-end;  align-items: center;  align-content: flex-end;text-align:right;}
   #and { display: table; border-collapse: separate; width: 100%; }

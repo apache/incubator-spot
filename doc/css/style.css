@@ -303,6 +303,27 @@ img { max-width: 100%; height: auto; }
 
 .orange-bold {color:#c97644;font-weight:bold;font-style:italic;}#configuration .orange-bold {margin-bottom:10px;}
 .short-mrg {margin-bottom:10px;}
+
+.slack {
+	background:url('../images/slack_mark_16px.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.github {
+	background:url('../images/github.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.mail {
+	background:url('../images/mail.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.jira {
+	background:url('../images/jira.png') no-repeat 0 center;
+	padding-left:21px;
+}
+.twitter-icon {
+	background:url('../images/twitter-icon.png') no-repeat 0 center;
+	padding-left:21px;
+}
 /*********************
 LAYOUT
 *********************/
@@ -535,6 +556,51 @@ table.configuration.config2 tr td:nth-child(2) {font-size:9.5pt !important;}
   .cd-top { height: 60px; width: 60px; right: 30px;bottom: 30px; }    
   .nav li a { padding: .75em 1.6em; }
   .nav li:last-child a {padding-right:0;}
+.nav li ul.sub-menu.com-sm li a {
+	border-bottom:none;
+}
+ .dropmenu-head {
+ 	float: none;
+	border-right: 0;
+	display: block;
+	width: 235px;
+	text-transform:uppercase;
+	color:#666;
+	padding:0 10px 0 15px;
+	border-bottom:none;
+	font-size:.95em;
+}
+.sub-menu.com-sm .dropmenu-head:first-child {
+	padding-top:10px;
+}
+.sub-menu.com-sm .mail,
+.sub-menu.com-sm .slack,
+.sub-menu.com-sm .github,
+.sub-menu.com-sm .twitter-icon,
+.sub-menu.com-sm .jira {
+	background-position:left 15px center;
+}
+.nav li ul.sub-menu.com-sm li .mail,
+.nav li ul.sub-menu.com-sm li .slack,
+.nav li ul.sub-menu.com-sm li .github,
+.nav li ul.sub-menu.com-sm li .twitter-icon,
+.nav li ul.sub-menu.com-sm li .jira {
+	padding-left:40px;
+}
+.sub-menu.com-sm li a {
+	padding:5px 10px 5px 25px;
+}
+li.divider {
+	border-bottom:1px solid #ccc;
+	width:100%;
+	margin:10px 0 !important;
+}
+.nav li ul.sub-menu.com-sm li {
+	margin-bottom:0;
+}
+.nav li ul.sub-menu.com-sm li a {
+	padding-left:15px;
+}
   #masthead .wrap {min-height:360px;display: flex;  justify-content: flex-end;  align-items: center;  align-content: flex-end;text-align:right;}  
   .cbp-spmenu {position:fixed;}
 
