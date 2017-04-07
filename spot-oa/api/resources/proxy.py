@@ -1,6 +1,7 @@
 import md5
 import api.resources.impala_engine as ImpalaEngine
 import api.resources.hdfs_client as HDFSClient
+from hdfs.util import HdfsError
 import api.resources.configurator as Configuration
 from collections import defaultdict
 import json
@@ -418,11 +419,16 @@ def reset_scored_connections(date):
     proxy_timeline = "proxy/hive/oa/threat_investigation"    
     app_path = Configuration.spot()   
 
-    # remove parquet files manually to allow the comments update.
-    HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
-        app_path,proxy_storyboard,date.year,date.month,date.day) , "impala")
-    HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
-        app_path,proxy_threat_investigation,date.year,date.month,date.day), "impala")
-    HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
-        app_path,proxy_timeline,date.year,date.month,date.day), "impala")
-    ImpalaEngine.execute_query("invalidate metadata")
+    try:
+        # remove parquet files manually to allow the comments update.
+        HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+            app_path,proxy_storyboard,date.year,date.month,date.day) , "impala")
+        HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+            app_path,proxy_threat_investigation,date.year,date.month,date.day), "impala")
+        HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+            app_path,proxy_timeline,date.year,date.month,date.day), "impala")
+        ImpalaEngine.execute_query("invalidate metadata")
+        return True
+
+    except HdfsError:
+        return False
