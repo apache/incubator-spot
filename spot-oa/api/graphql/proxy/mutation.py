@@ -142,6 +142,7 @@ def _score_connections(args):
         results.append({'success': result})
 
     return results
+ 
 
 def _create_storyboard(args):
     _input = args.get('input')
@@ -155,6 +156,15 @@ def _create_storyboard(args):
     result = Proxy.create_storyboard(date=_date, uri=uri, title=title, text=text, expanded_search=threat_details, top_results=first)
 
     return {'success': result}
+
+
+def _reset_scored_connections(args):
+    _input = args.get('date', date.today()) 
+
+    result = Proxy.reset_scored_connections(date=_date)
+
+    return {'success': result}
+
 
 MutationType = GraphQLObjectType(
     name='ProxyMutationType',
@@ -179,6 +189,17 @@ MutationType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: _create_storyboard(args)
+        ),
+        'resetScoredConnections': GraphQLField(
+            type=SpotOperationOutputType,
+            description='Resets all scored connections for a certain day',
+            args={
+                'date': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='Date to clean'
+                )
+            },
+            resolver=lambda root, args, *_: _reset_scored_connections(args)
         )
     }
 )

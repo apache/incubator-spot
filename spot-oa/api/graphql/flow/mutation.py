@@ -153,6 +153,15 @@ def _create_storyboard(args):
 
     return {'success': result}
 
+
+def _reset_scored_connections(args):
+    _input = args.get('date', date.today()) 
+
+    result = Flow.reset_scored_connections(date=_date)
+
+    return {'success': result}
+
+
 MutationType = GraphQLObjectType(
     name='NetflowMutationType',
     fields={
@@ -177,6 +186,17 @@ MutationType = GraphQLObjectType(
                 )
             },
             resolver=lambda root, args, *_: _create_storyboard(args)
+        ),
+        'resetScoredConnections': GraphQLField(
+            type=SpotOperationOutputType,
+            description='Resets all scored connections for a certain day',
+            args={
+                'date': GraphQLArgument(
+                    type=GraphQLNonNull(SpotDateType),
+                    description='Date to clean'
+                )
+            },
+            resolver=lambda root, args, *_: _reset_scored_connections(args)
         )
     }
 )
