@@ -404,3 +404,25 @@ def ingest_summary(start_date,end_date):
                 .format(db,start_date.year,end_date.year,start_date.month,end_date.month, start_date.day, end_date.day)
 
     return ImpalaEngine.execute_query_as_list(is_query)
+
+
+"""
+--------------------------------------------------------------------------
+Reset scored connections.
+--------------------------------------------------------------------------
+"""
+def reset_scored_connections(date):
+
+    proxy_storyboard =  "proxy/hive/oa/storyboard"
+    proxy_threat_investigation = "dns_threat_dendro/hive/oa/timeline"
+    proxy_timeline = "proxy/hive/oa/threat_investigation"    
+    app_path = Configuration.spot()   
+
+    # remove parquet files manually to allow the comments update.
+    HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+        app_path,proxy_storyboard,date.year,date.month,date.day) , "impala")
+    HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+        app_path,proxy_threat_investigation,date.year,date.month,date.day), "impala")
+    HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+        app_path,proxy_timeline,date.year,date.month,date.day), "impala")
+    ImpalaEngine.execute_query("invalidate metadata")
