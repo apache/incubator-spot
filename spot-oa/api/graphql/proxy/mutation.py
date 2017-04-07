@@ -159,7 +159,7 @@ def _create_storyboard(args):
 
 
 def _reset_scored_connections(args):
-    _input = args.get('date', date.today()) 
+    _date = args.get('date', date.today()) 
 
     result = Proxy.reset_scored_connections(date=_date)
 
