@@ -3,6 +3,7 @@ import api.resources.hdfs_client as HDFSClient
 import api.resources.configurator as Configuration
 import os
 import struct, socket
+from hdfs.util import HdfsError
 import json
 
 """
@@ -908,3 +909,29 @@ def get_ctx_name(full_context):
     elif "FW" in full_context:
         ctx = "FW"
     return ctx
+
+"""
+--------------------------------------------------------------------------
+Reset scored connections.
+--------------------------------------------------------------------------
+"""
+def reset_scored_connections(date):
+
+    flow_storyboard =  "flow/hive/oa/storyboard"
+    flow_threat_investigation = "flow/hive/oa/threat_investigation"
+    flow_timeline = "flow/hive/oa/timeline"    
+    app_path = Configuration.spot()   
+
+    try:
+        # remove parquet files manually to allow the comments update.
+        HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+            app_path,flow_storyboard,date.year,date.month,date.day) , "impala")
+        HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+            app_path,flow_threat_investigation,date.year,date.month,date.day), "impala")
+        HDFSClient.delete_folder("{0}/{1}/y={2}/m={3}/d={4}/".format( \
+            app_path,flow_timeline,date.year,date.month,date.day), "impala")
+        ImpalaEngine.execute_query("invalidate metadata")
+        return True
+        
+    except HdfsError:
+        return False
