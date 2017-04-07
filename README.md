@@ -96,15 +96,15 @@ and join our community.
 
 ### **Merge approval**
 
-ONI maintainers use LGTM (Looks Good to Me) in a comments on the code review to indicate acceptance, 
-at least 3 "LGTM" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
+Apache Spot maintainers use +1 in a comment on the code review to indicate acceptance, 
+at least 3 "+1" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
 
 
 ## **Licensing**
 
 Apache Spot is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
 
-* oni-nfdump [License](https://github.com/Open-Network-Insight/oni-nfdump/blob/master/BSD-license.txt)
+* spot-nfdump [License](https://github.com/Open-Network-Insight/spot-nfdump/blob/master/BSD-license.txt)
 
 ## **Maintainers**
 
