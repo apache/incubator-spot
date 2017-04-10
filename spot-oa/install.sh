@@ -123,5 +123,9 @@ fi
 
 install_npm
 
+# build ui
+cd ui
+npm install
+
 log_cmd "spot-oa dependencies installed"
 cleanup
