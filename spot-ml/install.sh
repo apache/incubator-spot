@@ -73,7 +73,7 @@ sbt_install () {
         if type sbt >/dev/null 2>&1; then
                 log_cmd "sbt found"
         else
-                log_cmd 'installing sbt for ${host_os}'    
+                log_cmd "installing sbt for ${host_os}"
                 if [[ ${host_os} == 'debian' ]]; then
                         echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
                         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
@@ -97,5 +97,16 @@ check_bin ${dependencies[@]}
 install_pkg
 
 sbt_install
+
+# build
+log_cmd 'assembling spot-ml jar'
+sbt assembly
+
+log_cmd "spot-ml dependencies installed"
+
+# post build
+log_cmd "copying generated files to /opt/spot/"
+cp ./target/scala-2.10/spot-ml-assembly-1.1.jar ${install_path}/jar/
+cp ./ml_ops.sh ${install_path}/bin
 
 log_cmd "spot-ml dependencies installed"
