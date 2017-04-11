@@ -106,7 +106,7 @@ log_cmd "spot-ml dependencies installed"
 
 # post build
 log_cmd "copying generated files to /opt/spot/"
-cp ./target/scala-2.10/spot-ml-assembly-1.1.jar ${install_path}/jar/
+cp ./target/scala-2.10/spot-ml-assembly-*.jar ${install_path}/jar/
 cp ./ml_ops.sh ${install_path}/bin
 
 log_cmd "spot-ml dependencies installed"

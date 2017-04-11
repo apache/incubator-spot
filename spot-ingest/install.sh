@@ -153,9 +153,11 @@ install_nfdump
 
 # python dependencies
 install_pip
-if [ -z ${local_path}/requirements.txt ]; then
+
+if [ -f ${local_path}/requirements.txt ]; then
     pip install -r requirements.txt
 fi
 
-log_cmd "dependencies satisfied, please run ./build.sh to complete setup"
+log_cmd "spot-ingest dependencies installed"
+
 cleanup

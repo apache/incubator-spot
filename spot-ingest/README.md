@@ -19,8 +19,12 @@ Ingest data is captured or transferred into the Hadoop cluster, where they are t
 
 ### Install
 
-1. run `sudo ./install.sh`
+run `sudo ./install.sh`
 
+* If your environment requires proxies we recommend using `sudo -E ./install.sh`
+* dependencies installed in /opt/spot/bin/
+* Installs [tshark](https://www.wireshark.org/docs/man-pages/tshark.html), [spot-nfdump](https://github.com/Open-Network-Insight/spot-nfdump), [Python PIP](https://pip.pypa.io/en/stable/) 
+ 
 ### Configure Kafka
 **Adding Kafka Service:**
 

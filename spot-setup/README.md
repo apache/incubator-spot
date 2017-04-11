@@ -37,6 +37,15 @@ To read more about these variables, please review the [wiki] (https://github.com
 1. run `sudo ./install.sh`
 2. run `hdfs_setup.sh`
 
+** install.sh ** 
+
+* Creates /opt/spot/ to store common spot applications
+* Creates /etc/profile.d/spot.sh for spot specific environment variables
+
+** hdfs_setup.sh **
+
+* Depending on your Apache Hadoop environment you may need to use sudo -u i.e.  `sudo -u hdfs ./hdfs_setup.sh`
+
 ## Database Query Scripts
 
 spot-setup contains a script per use case, as of today, there is a table creation script for each DNS, flow and Proxy data.

@@ -15,8 +15,9 @@ Some of the technologies used are:
 
 ## **Installation**
 
-1. run `sudo ./install.sh`
-2. run `./build.sh`
+run `sudo ./install.sh`
+
+Note: If your environment requires proxies we recommend using `sudo -E ./install.sh` 
 
 ## **Folder Structure**
 

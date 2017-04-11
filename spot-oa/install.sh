@@ -117,7 +117,7 @@ install_pkg
 
 install_pip
 
-if [ -z ${local_path}/requirements.txt ]; then
+if [ -f ${local_path}/requirements.txt ]; then
     pip install -r requirements.txt
 fi
 

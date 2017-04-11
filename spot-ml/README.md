@@ -13,9 +13,12 @@ component.
 
 ### Install
 
-1. run `sudo ./install.sh`
-2. run `./build.sh`
-3. run `sudo ./post_build.sh`
+run `sudo ./install.sh`
+
+* If your environment requires proxies we recommend using `sudo -E ./install.sh`
+* Installs [SBT](http://www.scala-sbt.org)
+* Compiles the spot-ml jar and copies to /opt/spot/jar/
+* Copies ml_ops.sh to /opt/spot/bin/
 
 ## Prepare data for input 
 
