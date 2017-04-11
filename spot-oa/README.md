@@ -17,7 +17,8 @@ Some of the technologies used are:
 
 run `sudo ./install.sh`
 
-Note: If your environment requires proxies we recommend using `sudo -E ./install.sh` 
+* If your environment requires proxies we recommend using `sudo -E ./install.sh`
+* Installs [NPM](https://docs.npmjs.com/cli/install), [Python PIP](https://pip.pypa.io/en/stable/)
 
 ## **Folder Structure**
 
