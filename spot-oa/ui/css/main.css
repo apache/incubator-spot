@@ -12,6 +12,7 @@
 
 .row.spot-row {
     margin: 0;
+    width: 100%;
 }
 
 .spot-frame > .spot-frame-content > .panel > .panel-heading {

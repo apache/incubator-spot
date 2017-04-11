@@ -49,10 +49,10 @@ While inspecting specific, unique flows of data that may be important for indivi
 *Running Demo on Docker*
 
 1. [Install Docker](https://docs.docker.com/engine/installation/) for your platform 
-2. Run the container: `docker run -it -p 8889:8889 opennetworkinsight/oni-demo`
+2. Run the container: `docker run -it -p 8889:8889 apachespot/spot-demo`
 3. visit [http://localhost:8889/files/ui/flow/suspicious.html#date=2016-07-08](http://localhost:8889/files/ui/proxy/suspicious.html#date=2016-07-08) in your browser to get started
 
-For the full instructions visit the [spot](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on Docker hub
+For the full instructions visit the [spot](https://hub.docker.com/r/apachespot/spot-demo/) on Docker hub
 
 ## **Getting Started**
 
@@ -72,7 +72,7 @@ Apache Spot functionality is divided into different modules, go to each module f
 Our Central repository for our Apache Spot solution is found here. If you find a bug, have question or something to discuss please contact us:
 
 * [Create an Issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT). 
-* [Go to our Slack channel](https://spot.slack.com/messages/general/). 
+* [Go to our Slack channel](https://apachespot.slack.com/messages/general/). 
 
 ## **Contributing to Apache Spot**
 

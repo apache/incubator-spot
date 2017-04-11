@@ -1,5 +1,5 @@
 # **Apache Spot (incubating)**
-Apache Spots (incubating) Operational Analytics (OA) is a collection of modules, which includes both the data processing and transformation as well as the GUI module for data visualization. 
+Apache Spot (incubating) Operational Analytics (OA) is a collection of modules, which includes both the data processing and transformation as well as the GUI module for data visualization.
 
 The visualization repository (UI folder) contains all the front-end code and files related to the Open Network Insight visual elements, such as styles, pages, data files, etc.
 Some of the technologies used are:
@@ -20,6 +20,7 @@ run `sudo ./install.sh`
 * If your environment requires proxies we recommend using `sudo -E ./install.sh`
 * Installs [NPM](https://docs.npmjs.com/cli/install), [Python PIP](https://pip.pypa.io/en/stable/)
 
+
 ## **Folder Structure**
 
 spot-oa is the root folder, below are more details about child folders:
@@ -37,19 +38,19 @@ spot-oa is the root folder, below are more details about child folders:
 
 ## **IPython Notebooks**
 * Flow
- * [EdgeNotebook](/spot-oa/oa/flow/ipynb_templates/EdgeNotebook.md) 
+ * [EdgeNotebook](/spot-oa/oa/flow/ipynb_templates/EdgeNotebook.md)
  * [ThreatInvestigation](/spot-oa/oa/flow/ipynb_templates/ThreatInvestigation.md)
 * DNS
- * [EdgeNotebook](/spot-oa/oa/dns/ipynb_templates/EdgeNotebook.md) 
+ * [EdgeNotebook](/spot-oa/oa/dns/ipynb_templates/EdgeNotebook.md)
  * [ThreatInvestigation](/spot-oa/oa/dns/ipynb_templates/ThreatInvestigation.md)
 * PROXY
- * [EdgeNotebook](/spot-oa/oa/proxy/ipynb_templates/EdgeNotebook.md) 
+ * [EdgeNotebook](/spot-oa/oa/proxy/ipynb_templates/EdgeNotebook.md)
  * [ThreatInvestigation](/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md)
 
 ##**Views**
 
 ###Analyst View (suspicious.html)
-The Analyst view provides a dashboard showing the top 250 suspicious connects. 
+The Analyst view provides a dashboard showing the top 250 suspicious connects.
 
 ###**Threat Investigation (threat-investigation.html)**
 HTML page container for the Threat Investigation Notebook
@@ -59,4 +60,3 @@ Executive Briefing dashboard
 
 ###**Ingest Summary (ingest-summary.html)**
 Interactive histogram dashboard that shows the amount of data captured in a certain period of time.
-
