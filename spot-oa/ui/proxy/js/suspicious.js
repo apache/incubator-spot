@@ -56,10 +56,8 @@ const Panel = require('../../js/components/Panel.react');
 
 const SuspiciousPanel = require('./components/SuspiciousPanel.react');
 const NetworkViewPanel = require('./components/NetworkViewPanel.react');
-const IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
+const ScoreNotebook = require('./components/ScoreNotebook.react');
 const DetailsPanel = require('./components/DetailsPanel.react');
-
-const ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure(SpotConstants.NOTEBOOK_PANEL);
 
 ReactDOM.render(
     <div id="spot-content">
@@ -73,8 +71,8 @@ ReactDOM.render(
             </Panel>
         </PanelRow>
         <PanelRow>
-            <Panel title={ipynbClosure.getTitle()} container  extraButtons={ipynbClosure.getButtons}>
-                <IPythonNotebookPanel title={ipynbClosure.getTitle()} date={SpotUtils.getCurrentDate()} ipynb="proxy/${date}/Edge_Investigation.ipynb" />
+            <Panel title={SpotConstants.SCORING_PANEL} reloadable onReload={EdInActions.reloadSuspicious}>
+                <ScoreNotebook />
             </Panel>
             <Panel title={SpotConstants.DETAILS_PANEL} expandable>
                 <DetailsPanel />
