@@ -18,6 +18,10 @@ function resetFilterAndReload()
   EdInActions.reloadSuspicious();
 };
 
+function switchComponents () {
+  SpotUtils.switchDivs(SpotConstants.DETAILS_PANEL, SpotConstants.SCORING_PANEL);
+};
+
 ReactDOM.render(
   (
     <form className="form-inline">
@@ -67,14 +71,18 @@ ReactDOM.render(
         <NetworkViewPanel />
       </Panel>
     </PanelRow>
-    <PanelRow>
-      <Panel title={SpotConstants.SCORING_PANEL} reloadable onReload={EdInActions.reloadSuspicious}>
-        <ScoreNotebook />
-      </Panel>
-      <Panel title={SpotConstants.DETAILS_PANEL} container expandable>
-        <DetailsPanel title={SpotConstants.DETAILS_PANEL} />
-      </Panel>
-    </PanelRow>
+    <div className="sortable">
+      <PanelRow title={SpotConstants.SCORING_PANEL}>
+        <Panel title={SpotConstants.SCORING_PANEL} reloadable switchable onReload={EdInActions.reloadSuspicious} onSwitch={switchComponents} className="col-md-12">
+          <ScoreNotebook />
+        </Panel>
+      </PanelRow>
+      <PanelRow title={SpotConstants.DETAILS_PANEL}>
+        <Panel title={SpotConstants.DETAILS_PANEL} container switchable expandable onSwitch={switchComponents} className="col-md-12">
+          <DetailsPanel title={SpotConstants.DETAILS_PANEL} />
+        </Panel>
+      </PanelRow>
+    </div>
   </div>,
   document.getElementById('spot-content-wrapper')
 );
