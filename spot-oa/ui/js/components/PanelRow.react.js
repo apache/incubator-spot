@@ -32,9 +32,10 @@ var PanelRow = React.createClass({
   },
   render: function () {
     var cssCls = this.state.maximized ? 'spot-maximized' : this.state.minimized ? 'spot-minimized' : '';
+    var sortable = {'order':1};
 
     return (
-      <div className={'spot-row row ' + cssCls}>
+      <div id={this.props.title || ''} className={'spot-row row fit ' + cssCls} style={sortable}>
         {this.props.children}
       </div>
     );

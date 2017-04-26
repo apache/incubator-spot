@@ -134,6 +134,21 @@ var SpotUtils = {
       return text.match(str);
     });
     $el.empty().append(newOptions);
+  },
+  switchDivs(elOne, elTwo) {
+    let elOneVal = $(`#${elOne}`).attr('style').split(';')[0].split(' ')[1] || '';
+    let elTwoVal = $(`#${elTwo}`).attr('style').split(';')[0].split(' ')[1] || '';
+
+    if (elOneVal === elTwoVal) {
+      $(`#${elOne}`).css({'order': '1'});
+      $(`#${elTwo}`).css({'order': '2'});
+    } else if(elOneVal === '1') {
+      $(`#${elOne}`).css({'order': '2'});
+      $(`#${elTwo}`).css({'order': '1'});
+    } else {
+      $(`#${elOne}`).css({'order': '1'});
+      $(`#${elTwo}`).css({'order': '2'});
+    }
   }
 };
 

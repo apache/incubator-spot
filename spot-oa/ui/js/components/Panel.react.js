@@ -39,6 +39,17 @@ var Panel = React.createClass({
 
         if (this.props.header) {
             buttons = [];
+            if (this.props.switchable) {
+                buttons.push(
+                    <li key="switchBtn">
+                        <button type="button" className="btn btn-default btn-xs pull-right"
+                                onClick={this.props.onSwitch}>
+                            <span className="glyphicon glyphicon-sort" aria-hidden="true"></span>
+                        </button>
+                    </li>
+                );
+            }
+
             if (this.props.reloadable) {
                 buttons.push(
                     <li key="realoadBtn" className="refresh">

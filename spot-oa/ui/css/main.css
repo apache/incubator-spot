@@ -71,6 +71,10 @@
     height: 85%;
 }
 
+.fit {
+    height: 50%;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
 }
