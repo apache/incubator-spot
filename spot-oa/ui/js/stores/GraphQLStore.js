@@ -59,6 +59,8 @@ class GraphQLStore {
             }
             else {
                 this.setData(response.data);
+                if(response.data !== undefined && JSON.stringify(response.data).indexOf('"success":true') !== -1)
+                  this.reloadElements();
             }
         })
         .fail((jqxhr, textStatus, error) => {
