@@ -58,6 +58,23 @@ var EdInActions = {
       ip: ip
     });
   },
+  saveScoring: function(scoredEmelents) {
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.SAVE_SCORED_ELEMENTS,
+      scoredElems: scoredEmelents
+    });
+  },
+  resetScoring: function(date) {
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.RESET_SCORED_ELEMENTS,
+      date: date
+    });
+  },
+  setClassWidth: function() {
+    SpotDispatcher.dispatch({
+      actionType: SpotConstants.CHANGE_CSS_CLS
+    });
+  }
 };
 
 module.exports = EdInActions;
