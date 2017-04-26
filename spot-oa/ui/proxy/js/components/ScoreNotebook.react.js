@@ -95,7 +95,7 @@ var ScoreNotebook = React.createClass({
           </div>
         );
     }
-    cssCls = this.state.size ? 'col-md-6 col-lg-6 col-xs-12' : 'col-md-12 col-lg-12 col-xs-12';
+    cssCls = this.state.size ? 'col-md-6 col-lg-6 col-xs-12' : 'col-md-offset-3 col-lg-offset-3 col-md-6 col-lg-6 col-xs-12';
 
     return(
       <div className={cssCls + ' spot-frame'}>
