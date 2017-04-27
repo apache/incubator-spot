@@ -34,14 +34,18 @@ import org.apache.spot.utilities.data.validation.InvalidDataHandler
   */
 
 
-class FlowScoreFunction(timeCuts: Array[Double],
+class FlowScoreFunction(useProtocol: Boolean,
+                        hourBinTime : Boolean,
+                        expBinBytes : Boolean,
+                        expBinPackets: Boolean,
+                         timeCuts: Array[Double],
                         ibytCuts: Array[Double],
                         ipktCuts: Array[Double],
                         topicCount: Int,
                         wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]]) extends Serializable {
 
 
-  val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts)
+  val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts, useProtocol, hourBinTime, expBinBytes, expBinPackets)
 
   /**
     * Estimate the probability of a netflow connection as distributed from the source IP and from the destination IP
@@ -67,14 +71,14 @@ class FlowScoreFunction(timeCuts: Array[Double],
             dstIP: String,
             srcPort: Int,
             dstPort: Int,
+            protocol: String,
             ipkt: Long,
             ibyt: Long,
             srcTopicMix: Seq[Double],
             dstTopicMix: Seq[Double]): Double = {
 
 
-    val FlowWords(srcWord, dstWord) = flowWordCreator.flowWords(hour: Int, minute: Int, second: Int,
-      srcPort: Int, dstPort: Int, ipkt: Long, ibyt: Long)
+    val FlowWords(srcWord, dstWord) = flowWordCreator.flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, protocol, ibyt: Long, ipkt: Long)
 
     val zeroProb = Array.fill(topicCount) {
       0.0

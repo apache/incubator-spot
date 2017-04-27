@@ -61,6 +61,10 @@ import scala.util.{Failure, Success, Try}
 class FlowSuspiciousConnectsModel(topicCount: Int,
                                   ipToTopicMix: DataFrame,
                                   wordToPerTopicProb: Map[String, Array[Double]],
+                                  useProtocol: Boolean,
+                                  hourBinTime: Boolean,
+                                  expBinBytes: Boolean,
+                                  expBinPackets: Boolean,
                                   timeCuts: Array[Double],
                                   ibytCuts: Array[Double],
                                   ipktCuts: Array[Double]) {
@@ -87,7 +91,11 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
       recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
     }
 
-    val scoreFunction = new FlowScoreFunction(timeCuts,
+    val scoreFunction = new FlowScoreFunction(useProtocol,
+      hourBinTime,
+      expBinBytes,
+      expBinPackets,
+      timeCuts,
       ibytCuts,
       ipktCuts,
       topicCount,
@@ -101,6 +109,7 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                           dstIP: String,
                           srcPort: Int,
                           dstPort: Int,
+                          protocol: String,
                           ipkt: Long,
                           ibyt: Long,
                           srcIpTopicMix: Seq[Double],
@@ -112,6 +121,7 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
         dstIP,
         srcPort,
         dstPort,
+        protocol,
         ipkt,
         ibyt,
         srcIpTopicMix,
@@ -139,8 +149,9 @@ object FlowSuspiciousConnectsModel {
     DestinationIPField,
     SourcePortField,
     DestinationPortField,
-    IpktField,
-    IbytField))
+    ProtocolField,
+    IbytField,
+    IpktField))
 
   val ModelColumns = ModelSchema.fieldNames.toList.map(col)
 
@@ -163,55 +174,80 @@ object FlowSuspiciousConnectsModel {
 
     // create quantile cut-offs
 
-    val timeCuts = Quantiles.computeDeciles(totalRecords
-      .select(Hour, Minute, Second)
-      .rdd
-      .flatMap({ case Row(hours: Int, minutes: Int, seconds: Int) =>
-        Try {
-          (3600 * hours + 60 * minutes + seconds).toDouble
-        } match {
-          case Failure(_) => Seq()
-          case Success(time) => Seq(time)
-        }
-      }))
+    val timeCuts = if (config.flatBinTime == false) {
+      logger.info("Using decile based time binning")
+      val timeCuts = Quantiles.computeDeciles(totalRecords
+        .select(Hour, Minute, Second)
+        .rdd
+        .flatMap({ case Row(hours: Int, minutes: Int, seconds: Int) =>
+          Try {
+            (3600 * hours + 60 * minutes + seconds).toDouble
+          } match {
+            case Failure(_) => Seq()
+            case Success(time) => Seq(time)
+          }
+        }))
 
-    logger.info(timeCuts.mkString(","))
+      logger.info(timeCuts.mkString(","))
+      timeCuts
+    } else {
+      logger.info("Using hour-based time binning")
+      null
+    }
 
-    logger.info("calculating byte cuts ...")
 
-    val ibytCuts = Quantiles.computeDeciles(totalRecords
-      .select(Ibyt)
-      .rdd
-      .flatMap({ case Row(ibyt: Long) =>
-        Try {
-          ibyt.toDouble
-        } match {
-          case Failure(_) => Seq()
-          case Success(ibyt) => Seq(ibyt)
-        }
-      }))
 
-    logger.info(ibytCuts.mkString(","))
+
+
+    val ibytCuts = if (config.expBinIBytes == false) {
+      logger.info("Using decile based ibytes binning")
+      val ibytCuts = Quantiles.computeDeciles(totalRecords
+        .select(Ibyt)
+        .rdd
+        .flatMap({ case Row(ibyt: Long) =>
+          Try {
+            ibyt.toDouble
+          } match {
+            case Failure(_) => Seq()
+            case Success(ibyt) => Seq(ibyt)
+          }
+        }))
+
+      logger.info(ibytCuts.mkString(","))
+      ibytCuts
+    } else {
+      logger.info("using exponential binning strategy for flow ibytes")
+      null
+    }
+
+
 
     logger.info("calculating pkt cuts")
 
-    val ipktCuts = Quantiles.computeQuintiles(totalRecords
-      .select(Ipkt)
-      .rdd
-      .flatMap({ case Row(ipkt: Long) =>
-        Try {
-          ipkt.toDouble
-        } match {
-          case Failure(_) => Seq()
-          case Success(ipkt) => Seq(ipkt)
-        }
-      }))
+    val ipktCuts = if (config.expBinIPkts == false) {
+      logger.info("Using quintile based ipkt count binning")
+      val ipktCuts =
+      Quantiles.computeQuintiles(totalRecords
+        .select(Ipkt)
+        .rdd
+        .flatMap({ case Row(ipkt: Long) =>
+          Try {
+            ipkt.toDouble
+          } match {
+            case Failure(_) => Seq()
+            case Success(ipkt) => Seq(ipkt)
+          }
+        }))
 
-    logger.info(ipktCuts.mkString(","))
+      logger.info(ipktCuts.mkString(","))
+      ipktCuts
+    } else {
+      logger.info("Using exponential binning for ipkts")
+      null
+    }
+    // simplify dflow log entries into "words"
 
-    // simplify DNS log entries into "words"
-
-    val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts)
+    val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts, config.useProtocol, config.flatBinTime, config.expBinIBytes, config.expBinIPkts)
 
     val dataWithWords = totalRecords.withColumn(SourceWord, flowWordCreator.srcWordUDF(ModelColumns: _*))
       .withColumn(DestinationWord, flowWordCreator.dstWordUDF(ModelColumns: _*))
@@ -258,6 +294,10 @@ object FlowSuspiciousConnectsModel {
     new FlowSuspiciousConnectsModel(topicCount,
       ipToTopicMix,
       wordToPerTopicProb,
+      config.useProtocol,
+      config.flatBinTime,
+      config.expBinIBytes,
+      config.expBinIPkts,
       timeCuts,
       ibytCuts,
       ipktCuts)

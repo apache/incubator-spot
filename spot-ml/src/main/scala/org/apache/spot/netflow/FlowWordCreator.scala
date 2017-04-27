@@ -42,7 +42,11 @@ case class FlowWords(srcWord: String, dstWord: String)
   */
 class FlowWordCreator(timeCuts: Array[Double],
                       ibytCuts: Array[Double],
-                      ipktCuts: Array[Double]) extends Serializable {
+                      ipktCuts: Array[Double],
+                      useProtocol: Boolean = false,
+                      hourBinTime: Boolean = false,
+                      expBinBytes: Boolean = false,
+                      expBinPackets: Boolean =false ) extends Serializable {
 
 
   /**
@@ -57,9 +61,10 @@ class FlowWordCreator(timeCuts: Array[Double],
                         dstIP: String,
                         srcPort: Int,
                         dstPort: Int,
-                        ipkt: Long,
-                        ibyt: Long) =>
-    flowWords(hour, minute, second, srcPort, dstPort, ipkt, ibyt).srcWord)
+                        protocol: String,
+                        ibyt: Long,
+                        ipkt: Long) =>
+    flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyt, ipkt).srcWord)
 
 
   /**
@@ -74,9 +79,10 @@ class FlowWordCreator(timeCuts: Array[Double],
                         dstIP: String,
                         srcPort: Int,
                         dstPort: Int,
-                        ipkt: Long,
-                        ibyt: Long) =>
-    flowWords(hour, minute, second, srcPort, dstPort, ipkt, ibyt).dstWord)
+                       protocol: String,
+                        ibyt: Long,
+                        ipkt: Long) =>
+    flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyt, ipkt).dstWord)
 
 
   /**
@@ -91,53 +97,76 @@ class FlowWordCreator(timeCuts: Array[Double],
     * @param ibyt
     * @return [[FlowWords]] containing source and destination words.
     */
-  def flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, ipkt: Long, ibyt: Long): FlowWords = {
+  def flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, protocol: String, ibyt: Long, ipkt: Long): FlowWords = {
 
     Try {
       val timeOfDay: Double = hour.toDouble + minute.toDouble / 60 + second.toDouble / 3600
 
-      val timeBin = Quantiles.bin(timeOfDay, timeCuts)
-      val ibytBin = Quantiles.bin(ibyt, ibytCuts)
-      val ipktBin = Quantiles.bin(ipkt, ipktCuts)
+      val timeBin = if (hourBinTime == true) {
+        hour
+      } else {
+        Quantiles.bin(timeOfDay, timeCuts)
+      }
+
+      val lnOf2 = scala.math.log(2) // natural log of 2
+      val ibytBin : Long = if (expBinBytes) {
+          scala.math.ceil(scala.math.log(ibyt) / lnOf2).toLong  // 0 values should never ever happen
+      } else {
+        Quantiles.bin(ibyt, ibytCuts)
+
+      }
+      val ipktBin : Long = if (expBinPackets) {
+        scala.math.ceil(scala.math.log(ipkt) / lnOf2).toLong // 0 values should never ever happen
+      } else {
+        Quantiles.bin(ipkt, ibytCuts)
+      }
 
       val LowToLowPortEncoding = 111111
       val HighToHighPortEncoding = 333333
 
+      val proto = if (useProtocol == true) {
+        protocol
+      } else {
+        ""
+      }
+
       if (dstPort == 0 && srcPort == 0) {
 
-        val baseWord = Array("0", timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array("0", proto, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = baseWord)
 
       } else if (dstPort == 0 && srcPort > 0) {
 
-        val baseWord = Array(srcPort.toString(), timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(srcPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
 
       } else if (srcPort == 0 && dstPort > 0) {
 
-        val baseWord = Array(dstPort.toString, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(dstPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
       } else if (srcPort <= 1024 && dstPort <= 1024) {
 
-        val baseWord = Array(LowToLowPortEncoding, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(LowToLowPortEncoding, proto, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = baseWord)
 
       } else if (srcPort <= 1024 && dstPort > 1024) {
 
-        val baseWord = Array(srcPort.toString, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(srcPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
 
       } else if (srcPort > 1024 && dstPort <= 1024) {
 
-        val baseWord = Array(dstPort.toString, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(dstPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
       } else {
 
         // this is the srcPort > 1024 && dstPort > 1024 case
 
-        val baseWord = Array(HighToHighPortEncoding, timeBin, ibytBin, ipktBin).mkString("_")
+
+
+        val baseWord = Array(HighToHighPortEncoding, proto, timeBin, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = baseWord)
       }
 
