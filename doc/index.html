@@ -113,7 +113,7 @@
 			        <a href="#environment">Environment <span class="icon-keyboard_arrow_right"></span></a>    
 			        <a href="#installation" class="sub-menu">Installation <span class="icon-keyboard_arrow_right"></span></a> 
 			        <ul>
-				        <li><a href="#cdh">CDH Requirements</a></li>
+				        <li><a href="#requirements">Requirements</a></li>
 				        <li><a href="#deployment">Deployment</a>  </li>  
 				        <li><a href="#configuration">Configuration</a></li>            
 				        <li><a href="#ingest">Ingest</a></li> 
@@ -156,7 +156,7 @@
 			            <h1>Environment</h1>
 			            <h3>Pure Hadoop</h3>
 			            <p>
-			                Apache Spot (incubating) can be installed on a new or existing Hadoop cluster, its components viewed as services and distributed according to common roles in the cluster. One approach is to follow the recommended deployment of CDH (see diagram below).<br><br>
+			                Apache Spot (incubating) can be installed on a new or existing Hadoop cluster, its components viewed as services and distributed according to common roles in the cluster. One approach is to follow the community validated deployment of CDH (see diagram below).<br><br>
 			
 			                This approach is recommended for customers with a dedicated cluster for use of the solution or a security data lake; it takes advantage of existing investment in hardware and software. The disadvantage of this approach is that it does require the installation of software on Hadoop nodes not managed by systems like Cloudera Manager.<br><br>
 			            </p>
@@ -185,9 +185,9 @@
 		      <div class="main">
 			        <div id="installation">
 			            <h1>Installation</h1>
-			            <div id="cdh">
+			            <div id="requirements">
 			                
-			                    This installation guide assumes that a cluster with HDFS is running CDH.<br>
+			                    This version of the installation guide has been validated for clusters with HDFS running CDH.<br>
 			                    <h3>1. CDH (Cloudera Distribution of Hadoop) Requirements:</h3>
 			                    <p>
 			                    <strong>Minimum required version:</strong> 5.4<br>
@@ -518,7 +518,8 @@
 			                        <p class="terminal">
 			                            which screen
 			                        </p><br>
-			                        <p class="short-mrg">If screen is not available, install it.</p>
+			                        <p class="short-mrg">If screen is not available, install it.</p>
+
 			                        <p class="terminal">
 			                            sudo yum install screen
 			                        </p><br>
@@ -555,7 +556,8 @@
 			                    scp -r spot-ml "ml-node":/home/"solution-user"/. ssh "ml-node"
 			                    mv spot-ml ml
 			                    cd /home/"solution-user"/ml
-			                </p>
+			                </p>
+
 			
 			                <h4 class="gray">5.1 ML dependencies</h4>
 			                <ul>
@@ -674,7 +676,8 @@
 			                        <p class="terminal">npm install –g browserify uglifyjs</p>
 			                    </li>
 			                    <li>
-			                        <p class="short-mrg">Install dependencies and build Spot UI.</p>
+			                        <p class="short-mrg">Install dependencies and build Spot UI.</p>
+
 			                        <p class="terminal">npm install</p>
 			                    </li>
 			                </ol>
@@ -717,11 +720,13 @@
 			                            <li>Input Bytes - Reported Input Bytes for the Netflow Record</li>                        
 			                        </ul>
 			                    </p>
-			                    <p class="orange-bold" style="margin-bottom:0;">Additional functionality in Suspicious frame</strong>
+			                    <p class="orange-bold" style="margin-bottom:0;">Additional functionality in Suspicious frame</strong>
+
 			                        <ol>                        
 			                            <li>
 			                                By selecting a specific row within the Suspicious frame, the connection in the Network View will be highlighted.<br><br>
-			                                <img src="images/1.1_sc2.jpg" class="box-shadow" alt="" />
+			                                <img src="images/1.1_sc2.jpg" class="box-shadow" alt="" />
+
 			                            </li>
 			                            <li>
 			                                In addition, by performing this row selection the Details Frame presents all the Netflow records in between Source &amp; Destination IP Addresses that happened in the same minute as the Suspicious Record selected<br><br>
@@ -746,7 +751,8 @@
 			                        <ol>                        
 			                            <li>
 			                                <p class="short-mrg">As soon as you move your mouse over a node, a dialog shows IP address information of that particular node.</p>
-			                                <img src="images/1.1_sc7.jpg" class="box-shadow" alt="" />
+			                                <img src="images/1.1_sc7.jpg" class="box-shadow" alt="" />
+
 			                            </li>
 			                            <li>
 			                                <p class="short-mrg">A primary mouse click over one of the nodes will bring a chord diagram into the Details frame.</p>
@@ -846,7 +852,8 @@
 		                        <h4 class="gray">Save Comments</h4>
 		                        <p class="short-mrg">In addition, a web form is displayed under the title of 'Threat summary', where the analyst can enter a Title &amp; Description on the kind of attack/behavior described by the particular IP address that is under investigation.</p>
 		                        <p class="short-mrg">Click on the Save button after entering the data to write it into a CSV file, which eventually will be used in the Storyboard Analyst View.</p>
-		                        <img src="images/1.1_ti03.jpg" class="box-shadow" alt="" />			
+		                        <img src="images/1.1_ti03.jpg" class="box-shadow" alt="" />
+			
 		                        <p class="short-mrg">After creating the csv file with the analysis description, the following functions will generate all graphs and diagrams related to the IP under investigation, to populate the Storyboard Analyst view.</p>
 		
 	                            <ul>
@@ -867,7 +874,8 @@
 	                             <p><strong>details_inbound()</strong> - This function executes a query to the flow table, to find additional details on the IP under investigation and its connections grouping them by time; so the result will be a graph showing the number of connections occurring in a customizable timeframe.<br>
 	                            <strong>Output:</strong> sbdet-<ip>.tsv</p>
 		
-		                        <p><strong>add_threat()</strong> - This function updates/creates the threats.csv file, appending a new line for every threat analyzed. This file will serve as an index for the Storyboard and is displayed in the 'Executive Threat Briefing' panel.<br><strong>Output:</strong> threats.csv</p>
+		                        <p><strong>add_threat()</strong> - This function updates/creates the threats.csv file, appending a new line for every threat analyzed. This file will serve as an index for the Storyboard and is displayed in the 'Executive Threat Briefing' panel.<br><strong>Output:</strong> threats.csv</p>
+
 		
 		                        <p>Each function will print a message to let you know if its output file was successfully updated.</p>
 		
@@ -914,7 +922,8 @@
 			
 			                            <p class="orange-bold" style="margin-bottom:0;">Executive Threat Briefing</p>
 			                            <p class="short-mrg"><strong>Data source file:</strong> threats.csv Executive Threat Briefing lists all the incident titles you entered at the Threat Investigation notebook. You can click on any title and the additional information will be displayed.</p>
-			                            <p class="short-mrg" style="text-align: center"><img src="images/flow_sb_2.JPG" class="box-shadow" alt="" /></p>
+			                            <p class="short-mrg" style="text-align: center"><img src="images/flow_sb_2.JPG" class="box-shadow" alt="" /></p>
+
 			
 			                           <p class="short-mrg">Clicking on a threat from the list will also update the additional frames.</p>
 			
@@ -1060,7 +1069,8 @@
 			                    <p class="short-mrg">Select any value from the list and press the "Search" button. The system will execute a query to the dns table, looking into the raw data initially collected to find additional activity of the selected IP or DNS Name according to the following criteria:</p>
 			
 			                    <p class="orange-bold" style="margin-bottom:0;">Expanded Search for a particular Domain Name</p>
-			                    <p class="short-mrg">The query results will provide the different unique IP Addresses list that have queried this particular Domain, the list will be sorted by the quantity of connections.</p>
+			                    <p class="short-mrg">The query results will provide the different unique IP Addresses list that have queried this particular Domain, the list will be sorted by the quantity of connections.</p>
+
 			                    <p style="text-align:center;"><img src="images/1.1_dns_ti03.jpg" class="box-shadow" alt="" /></p>
 			
 			                    <p class="orange-bold" style="margin-bottom:0;">Expanded Search for a particular IP</p>
@@ -1127,7 +1137,8 @@
 			            <div id="uproxy">
 			                <h3 style="margin-bottom: 0;">Proxy</h3>
 			                <div id="psc">
-			                    <h4 class="gray">Suspicious Proxy</h4>
+			                    <h4 class="gray">Suspicious Proxy</h4>
+
 			                    <strong>Walk-through</strong>
 			                    <ol>
 			                        <li>
@@ -1226,7 +1237,8 @@
 			                        <li>LUSER</li>
 			                    </ul>            
 			                    
-			                    <p>For this process to work correctly, it's important to create an ssh key to enable secure communication between nodes, in this case, the ML node and the node where the UI runs. To learn more on how to create and copy the ssh key, please refer to the "Configure User Accounts" section.</p>
+			                    <p>For this process to work correctly, it's important to create an ssh key to enable secure communication between nodes, in this case, the ML node and the node where the UI runs. To learn more on how to create and copy the ssh key, please refer to the "Configure User Accounts" section.</p>
+
 			
 			                    <p class="orange-bold" style="margin-bottom:0;">Input files</p>
 			                    <ul>
@@ -1314,7 +1326,8 @@
 			                        <p class="short-mrg"><strong>Data source file:</strong> timeline-{id}.tsv<br>Timeline is created using the connections found during the Threat Investigation process. It will display 'clusters' of IP connections to the Proxy Record (URL), grouped by time; showing an overall idea of the times during the day with the most activity. You can zoom in or out into the graphs timeline using your mouse scroll. The number next to the IP Address represents the quantity of connections made from that particular IP to the Proxy Record in the displayed time.</p>
 			                        <img src="images/1.1_proxy_sb05.jpg" class="box-shadow" alt="" /><br><br>
 			
-			                        <p class="orange-bold" style="margin-bottom:0;">Input files</p>
+			                        <p class="orange-bold" style="margin-bottom:0;">Input files</p>
+
 			                        <ul>
 			                            <li>threats.csv</li>
 			                            <li>incident-progression-{id}.json</li>
