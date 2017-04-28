@@ -47,6 +47,7 @@
 .spot-frame > .spot-frame-content > .panel > .panel-body > .panel-body-container {
     width: 100%;
     overflow-x: auto;
+    height: 1px;
 }
 
 .spot-frame .panel-body-container.container-box > * {
