@@ -11,6 +11,7 @@ const SpotUtils = require('../../js/utils/SpotUtils');
 // Build and Render Toolbar
 const FilterInput = require('./components/FilterInput.react');
 const DateInput = require('../../js/components/DateInput.react');
+const MainMenu = require('../../js/menu/components/MainMenu.react');
 
 function resetFilterAndReload() {
     EdInActions.setFilter('');
@@ -20,6 +21,11 @@ function resetFilterAndReload() {
 function switchComponents () {
   SpotUtils.switchDivs(SpotConstants.DETAILS_PANEL, SpotConstants.SCORING_PANEL);
 };
+
+ReactDOM.render(
+  <MainMenu />,
+  document.getElementById('main-menu')
+);
 
 ReactDOM.render(
     (
