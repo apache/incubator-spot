@@ -37,13 +37,20 @@ object FlowSuspiciousConnectsAnalysis {
 
 
   def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
-          inputFlowRecords: DataFrame) = {
+          inputFlowRecords: DataFrame) : DataFrame = {
 
     logger.info("Starting flow suspicious connects analysis.")
 
-    val cleanFlowRecords = filterAndSelectCleanFlowRecords(inputFlowRecords)
+    val flows : DataFrame = cleanFlowRecords(inputFlowRecords)
 
-    val scoredFlowRecords = detectFlowAnomalies(cleanFlowRecords, config, sparkContext, sqlContext, logger)
+
+    logger.info("Fitting probabilistic model to data")
+    val model =
+      FlowSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, flows.select(InSchema: _*), config.topicCount)
+
+    logger.info("Identifying outliers")
+    val scoredFlowRecords = model.score(sparkContext, sqlContext, flows)
+
 
     val filteredFlowRecords = filterScoredFlowRecords(scoredFlowRecords, config.threshold)
 
@@ -61,39 +68,18 @@ object FlowSuspiciousConnectsAnalysis {
     val invalidFlowRecords = filterAndSelectInvalidFlowRecords(inputFlowRecords)
     dataValidation.showAndSaveInvalidRecords(invalidFlowRecords, config.hdfsScoredConnect, logger)
 
+    outputFlowRecords
   }
 
-  /**
-    * Identify anomalous netflow log entries in in the provided data frame.
-    *
-    * @param data Data frame of netflow entries
-    * @param config
-    * @param sparkContext
-    * @param sqlContext
-    * @param logger
-    * @return
-    */
-  def detectFlowAnomalies(data: DataFrame,
-                          config: SuspiciousConnectsConfig,
-                          sparkContext: SparkContext,
-                          sqlContext: SQLContext,
-                          logger: Logger): DataFrame = {
 
 
-    logger.info("Fitting probabilistic model to data")
-    val model =
-      FlowSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, data, config.topicCount)
-
-    logger.info("Identifying outliers")
-    model.score(sparkContext, sqlContext, data)
-  }
 
   /**
     *
     * @param inputFlowRecords raw flow records
     * @return
     */
-  def filterAndSelectCleanFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
+  def cleanFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
 
     val cleanFlowRecordsFilter = inputFlowRecords(Hour).between(0, 23) &&
       inputFlowRecords(Minute).between(0, 59) &&
@@ -108,8 +94,6 @@ object FlowSuspiciousConnectsAnalysis {
 
     inputFlowRecords
       .filter(cleanFlowRecordsFilter)
-      .select(InSchema: _*)
-
   }
 
   /**

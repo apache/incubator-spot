@@ -26,7 +26,7 @@ object SuspiciousConnectsArgumentParser {
   case class SuspiciousConnectsConfig(analysis: String = "",
                                       inputPath: String = "",
                                       feedbackFile: String = "",
-                                      duplicationFactor: Int = 1,
+                                      duplicationFactor: Int = 1000,
                                       topicCount: Int = 20,
                                       userDomain: String = "",
                                       hdfsScoredConnect: String = "",

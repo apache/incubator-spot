@@ -22,6 +22,7 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
+import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
 
@@ -73,12 +74,17 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
 
-    val scoredData: DataFrame = FlowSuspiciousConnectsAnalysis.detectFlowAnomalies(data,
-      testConfig,
-      sparkContext,
-      sqlContext,
-      logger)
 
+    import FlowSuspiciousConnectsAnalysis.{cleanFlowRecords, InSchema}
+    val flows : DataFrame = cleanFlowRecords(data)
+
+
+    logger.info("Fitting probabilistic model to data")
+    val model =
+      FlowSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfig, flows.select(InSchema: _*), testConfig.topicCount)
+
+    logger.info("Identifying outliers")
+    val scoredData = model.score(sparkContext, sqlContext, flows)
 
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
@@ -100,8 +106,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
   }
   "filterAndSelectCleanFlowRecords" should "return data set without garbage" in {
 
-    val cleanedFlowRecords = FlowSuspiciousConnectsAnalysis
-      .filterAndSelectCleanFlowRecords(testFlowRecords.inputFlowRecordsDF)
+    val cleanedFlowRecords = FlowSuspiciousConnectsAnalysis.cleanFlowRecords(testFlowRecords.inputFlowRecordsDF)
 
     cleanedFlowRecords.count should be(5)
     cleanedFlowRecords.schema.size should be(17)
