@@ -19,8 +19,8 @@ package org.apache.spot.proxy
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.functions._
+import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.{DomainProcessor, Entropy, Quantiles, TimeUtilities}
 
 import scala.util.{Success, Try}
 
@@ -29,9 +29,7 @@ object ProxyWordCreation {
 
   def udfWordCreation(topDomains : Broadcast[Set[String]],
                       agentCounts : Broadcast[Map[String, Long]],
-                      timeCuts: Array[Double],
-                      entropyCuts: Array[Double],
-                      agentCuts: Array[Double]) =
+                      entropyCuts: Array[Double]) =
     udf((host: String, time: String, reqMethod: String, uri: String, contentType: String, userAgent: String, responseCode: String) =>
       ProxyWordCreation.proxyWord(host,
         time,
@@ -42,9 +40,7 @@ object ProxyWordCreation {
         responseCode,
         topDomains,
         agentCounts,
-        timeCuts,
-        entropyCuts,
-        agentCuts))
+        entropyCuts))
 
 
   def proxyWord(proxyHost: String,
@@ -56,18 +52,22 @@ object ProxyWordCreation {
                 responseCode: String,
                 topDomains: Broadcast[Set[String]],
                 agentCounts: Broadcast[Map[String, Long]],
-                timeCuts: Array[Double],
-                entropyCuts: Array[Double],
-                agentCuts: Array[Double]): String = {
+                entropyCuts: Array[Double]): String = {
     Try{
       List(topDomain(proxyHost, topDomains.value).toString,
-        Quantiles.bin(TimeUtilities.getTimeAsDouble(time), timeCuts).toString,
+        // Time binned by hours
+        TimeUtilities.getTimeAsHour(time).toString,
         reqMethod,
+        // Fixed and equally spaced cutoffs
         Quantiles.bin(Entropy.stringEntropy(uri), entropyCuts),
+        // Just the top level content type for now
         if (contentType.split('/').length > 0) contentType.split('/')(0) else "unknown_content_type",
-        // just the top level content type for now
-        Quantiles.bin(agentCounts.value(userAgent), agentCuts),
-        if (responseCode != null) responseCode(0) else "unknown_response_code").mkString("_")
+        // Exponential cutoffs base 2
+        ExponentialCutoffs.logBaseXInt(agentCounts.value(userAgent), 2),
+        // Exponential cutoffs base 2
+        ExponentialCutoffs.logBaseXInt(uri.length(), 2),
+        // Response code using all 3 digits
+        if (responseCode != null) responseCode else "unknown_response_code").mkString("_")
     } match {
       case Success(proxyWord) => proxyWord
       case _ => InvalidDataHandler.WordError

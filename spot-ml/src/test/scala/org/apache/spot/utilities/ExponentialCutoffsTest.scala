@@ -15,38 +15,30 @@
  * limitations under the License.
  */
 
+
 package org.apache.spot.utilities
 
+import org.apache.spot.testutils.TestingSparkContextFlatSpec
+import org.scalatest.Matchers
 
-object TimeUtilities {
+/**
+  * Created by galujanm on 5/17/17.
+  */
+class ExponentialCutoffsTest extends TestingSparkContextFlatSpec with Matchers {
+
+  "logBaseXInt" should "return the power in which the base is raised, in order to yield x rounded down to the nearest integer" in {
+
+    val power1 = ExponentialCutoffs.logBaseXInt(4.0, 2)
+    val power2 = ExponentialCutoffs.logBaseXInt(8.0, 2)
+    val power3 = ExponentialCutoffs.logBaseXInt(1.9, 2)
+    val power4 = ExponentialCutoffs.logBaseXInt(9.5, 3)
+
+    power1 shouldBe 2
+    power2 shouldBe 3
+    power3 shouldBe 0
+    power4 shouldBe 2
 
 
-  /**
-    * It converts HH:MM:SS string to seconds
-    *
-    * @param timeStr This is time in the form of a string
-    * @return It returns time converted to seconds
-    */
-
-  def getTimeAsDouble(timeStr: String) : Double = {
-    val s = timeStr.split(":")
-    val hours = s(0).toInt
-    val minutes = s(1).toInt
-    val seconds = s(2).toInt
-
-    (3600*hours + 60*minutes + seconds).toDouble
-  }
-
-  /**
-    * It takes only the hour element of time
-    *
-    * @param timeStr This is time in the form of a string
-    * @return It returns only the hour of time
-    */
-  def getTimeAsHour(timeStr: String): Int = {
-    val s = timeStr.split(":")
-    val hours = s(0).toInt
-    hours
   }
 
 }

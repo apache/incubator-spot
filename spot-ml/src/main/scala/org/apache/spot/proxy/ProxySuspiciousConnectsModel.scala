@@ -31,24 +31,18 @@ import org.apache.spot.proxy.ProxySchema._
 import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
-import scala.util.{Failure, Success, Try}
-
 /**
   * Encapsulation of a proxy suspicious connections model.
   *
   * @param topicCount         Number of "topics" used to cluster IPs and proxy "words" in the topic modelling analysis.
   * @param ipToTopicMIx       Maps each IP to a vector measuring Prob[ topic | this IP] for each topic.
   * @param wordToPerTopicProb Maps each word to a vector measuring Prob[word | topic] for each topic.
-  * @param timeCuts           Decile cutoffs for time-of-day in seconds.
-  * @param entropyCuts        Quintile cutoffs for measurement of full URI string entropy.
-  * @param agentCuts          Quintiile cutoffs for frequency of user agent.
+  * @param entropyCuts        Fixed cutoffs for measurement of full URI string entropy.
   */
 class ProxySuspiciousConnectsModel(topicCount: Int,
                                    ipToTopicMIx: Map[String, Array[Double]],
                                    wordToPerTopicProb: Map[String, Array[Double]],
-                                   timeCuts: Array[Double],
-                                   entropyCuts: Array[Double],
-                                   agentCuts: Array[Double]) {
+                                   entropyCuts: Array[Double]) {
 
   /**
     * Calculate suspicious connection scores for an incoming dataframe using this proxy suspicious connects model.
@@ -68,7 +62,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
     val agentToCountBC = sc.broadcast(agentToCount)
 
     val udfWordCreation =
-      ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC, timeCuts, entropyCuts, agentCuts)
+      ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC, entropyCuts)
 
     val wordedDataFrame = dataFrame.withColumn(Word,
       udfWordCreation(dataFrame(Host),
@@ -118,35 +112,20 @@ object ProxySuspiciousConnectsModel {
     logger.info("training new proxy suspcious connects model")
 
 
-    val selectedRecords = inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
+    val selectedRecords =
+      inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
       .unionAll(ProxyFeedback.loadFeedbackDF(sparkContext, sqlContext, config.feedbackFile, config.duplicationFactor))
 
-    val timeCuts =
-      Quantiles.computeDeciles(selectedRecords
-        .select(Time)
-        .rdd
-        .flatMap({ case Row(t: String) =>
-          Try {
-            TimeUtilities.getTimeAsDouble(t)
-          } match {
-            case Failure(_) => Seq()
-            case Success(time) => Seq(time)
-
-          }
-        }))
-
-    val entropyCuts = Quantiles.computeQuintiles(selectedRecords
-      .select(FullURI)
-      .rdd
-      .flatMap({ case Row(uri: String) =>
-        Try {
-          Entropy.stringEntropy(uri)
-        } match {
-          case Failure(_) => Seq()
-          case Success(entropy) => Seq(entropy)
-        }
-
-      }))
+    // These buckets are optimized to datasets used for training. Last bucket is of larger size to ensure fit.
+    // The maximum value of entropy is given by log k where k is the number of distinct categories.
+    // Given that the alphabet and number of characters is finite the maximum value for entropy is upper bounded.
+    // Assuming 10,000 distinct categories the entropy is bounded by 13.38. Empirical tests showed a maximum
+    // value of 6.2 in our training set.
+    // Bucket number and size can be changed to provide less/more granularity
+    val entropyCuts = Array(0.0, 0.3, 0.6, 0.9, 1.2,
+      1.5, 1.8, 2.1, 2.4, 2.7,
+      3.0, 3.3, 3.6, 3.9, 4.2,
+      4.5, 4.8, 5.1, 5.4, 20)
 
     val agentToCount: Map[String, Long] =
       selectedRecords.select(UserAgent)
@@ -157,14 +136,11 @@ object ProxySuspiciousConnectsModel {
 
     val agentToCountBC = sparkContext.broadcast(agentToCount)
 
-    val agentCuts =
-      Quantiles.computeQuintiles(selectedRecords
-        .select(UserAgent)
-        .rdd
-        .map({ case Row(agent: String) => agentToCountBC.value(agent) }))
+
 
     val docWordCount: RDD[SpotLDAInput] =
-      getIPWordCounts(sparkContext, sqlContext, logger, selectedRecords, config.feedbackFile, config.duplicationFactor, agentToCount, timeCuts, entropyCuts, agentCuts)
+      getIPWordCounts(sparkContext, sqlContext, logger, selectedRecords, config.feedbackFile, config.duplicationFactor,
+        agentToCount, entropyCuts)
 
 
     val SpotLDAOutput(ipToTopicMixDF, wordResults) = SpotLDAWrapper.runLDA(sparkContext,
@@ -190,7 +166,7 @@ object ProxySuspiciousConnectsModel {
       .toMap
 
 
-    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults, timeCuts, entropyCuts, agentCuts)
+    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults, entropyCuts)
 
   }
 
@@ -207,15 +183,13 @@ object ProxySuspiciousConnectsModel {
                       feedbackFile: String,
                       duplicationFactor: Int,
                       agentToCount: Map[String, Long],
-                      timeCuts: Array[Double],
-                      entropyCuts: Array[Double],
-                      agentCuts: Array[Double]): RDD[SpotLDAInput] = {
+                      entropyCuts: Array[Double]): RDD[SpotLDAInput] = {
 
 
     logger.info("Read source data")
     val selectedRecords = inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
 
-    val wc = ipWordCountFromDF(sc, selectedRecords, agentToCount, timeCuts, entropyCuts, agentCuts)
+    val wc = ipWordCountFromDF(sc, selectedRecords, agentToCount, entropyCuts)
     logger.info("proxy pre LDA completed")
 
     wc
@@ -224,14 +198,12 @@ object ProxySuspiciousConnectsModel {
   def ipWordCountFromDF(sc: SparkContext,
                         dataFrame: DataFrame,
                         agentToCount: Map[String, Long],
-                        timeCuts: Array[Double],
-                        entropyCuts: Array[Double],
-                        agentCuts: Array[Double]): RDD[SpotLDAInput] = {
+                        entropyCuts: Array[Double]): RDD[SpotLDAInput] = {
 
     val topDomains: Broadcast[Set[String]] = sc.broadcast(TopDomains.TopDomains)
 
     val agentToCountBC = sc.broadcast(agentToCount)
-    val udfWordCreation = ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC, timeCuts, entropyCuts, agentCuts)
+    val udfWordCreation = ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC, entropyCuts)
 
     val ipWord = dataFrame.withColumn(Word,
       udfWordCreation(dataFrame(Host),

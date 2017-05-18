@@ -18,9 +18,9 @@
 package org.apache.spot
 
 import org.apache.spark.rdd.RDD
+import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.apache.spot.utilities.Quantiles
 import org.scalatest.Matchers
-import testutils.TestingSparkContextFlatSpec
 
 
 class QuantilesTest extends TestingSparkContextFlatSpec with Matchers {
