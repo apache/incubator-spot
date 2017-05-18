@@ -32,6 +32,51 @@ import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataVali
   */
 object ProxySuspiciousConnectsAnalysis {
 
+  val DefaultUserAgent = "-"
+  val DefaultResponseContentType = "-"
+  val InSchema = StructType(
+    List(DateField,
+      TimeField,
+      ClientIPField,
+      HostField,
+      ReqMethodField,
+      UserAgentField,
+      ResponseContentTypeField,
+      DurationField,
+      UserNameField,
+      WebCatField,
+      RefererField,
+      RespCodeField,
+      URIPortField,
+      URIPathField,
+      URIQueryField,
+      ServerIPField,
+      SCBytesField,
+      CSBytesField,
+      FullURIField)).fieldNames.map(col)
+  val OutSchema = StructType(
+    List(DateField,
+      TimeField,
+      ClientIPField,
+      HostField,
+      ReqMethodField,
+      UserAgentField,
+      ResponseContentTypeField,
+      DurationField,
+      UserNameField,
+      WebCatField,
+      RefererField,
+      RespCodeField,
+      URIPortField,
+      URIPathField,
+      URIQueryField,
+      ServerIPField,
+      SCBytesField,
+      CSBytesField,
+      FullURIField,
+      WordField,
+      ScoreField)).fieldNames.map(col)
+
   /**
     * Run suspicious connections analysis on proxy data.
     *
@@ -122,50 +167,4 @@ object ProxySuspiciousConnectsAnalysis {
     scoredProxyRecords.filter(filteredProxyRecordsFilter)
   }
 
-  val DefaultUserAgent = "-"
-  val DefaultResponseContentType = "-"
-
-  val InSchema = StructType(
-    List(DateField,
-      TimeField,
-      ClientIPField,
-      HostField,
-      ReqMethodField,
-      UserAgentField,
-      ResponseContentTypeField,
-      DurationField,
-      UserNameField,
-      WebCatField,
-      RefererField,
-      RespCodeField,
-      URIPortField,
-      URIPathField,
-      URIQueryField,
-      ServerIPField,
-      SCBytesField,
-      CSBytesField,
-      FullURIField)).fieldNames.map(col)
-
-  val OutSchema = StructType(
-    List(DateField,
-      TimeField,
-      ClientIPField,
-      HostField,
-      ReqMethodField,
-      UserAgentField,
-      ResponseContentTypeField,
-      DurationField,
-      UserNameField,
-      WebCatField,
-      RefererField,
-      RespCodeField,
-      URIPortField,
-      URIPathField,
-      URIQueryField,
-      ServerIPField,
-      SCBytesField,
-      CSBytesField,
-      FullURIField,
-      WordField,
-      ScoreField)).fieldNames.map(col)
 }

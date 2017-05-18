@@ -35,6 +35,14 @@ LPATH=${LUSER}/ml/${DSOURCE}/test
 HPATH=${HUSER}/${DSOURCE}/test/scored_results
 # prepare parameters pipeline stages
 
+# pass the user domain designation if not empty
+
+if [ ! -z $USER_DOMAIN ] ; then
+    USER_DOMAIN_CMD="--userdomain $USER_DOMAIN"
+else
+    USER_DOMAIN_CMD=''
+fi
+
 FEEDBACK_PATH=${LPATH}/${DSOURCE}_scores.csv
 
 HDFS_SCORED_CONNECTS=${HPATH}/scores
@@ -47,20 +55,17 @@ hdfs dfs -rm -R -f ${HDFS_SCORED_CONNECTS}
 time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --master yarn-client \
   --driver-memory ${SPK_DRIVER_MEM} \
+  --num-executors ${SPK_EXEC} \
   --conf spark.driver.maxResultSize=${SPK_DRIVER_MAX_RESULTS} \
   --conf spark.driver.maxPermSize=512m \
-  --conf spark.driver.cores=1 \
   --conf spark.dynamicAllocation.enabled=true \
-  --conf spark.dynamicAllocation.minExecutors=1 \
-  --conf spark.dynamicAllocation.maxExecutors=${SPK_EXEC} \
   --conf spark.executor.cores=${SPK_EXEC_CORES} \
   --conf spark.executor.memory=${SPK_EXEC_MEM} \
+  --conf spark.sql.autoBroadcastJoinThreshold=${SPK_AUTO_BRDCST_JOIN_THR} \
   --conf "spark.executor.extraJavaOptions=-XX:MaxPermSize=512M -XX:PermSize=512M" \
-  --conf spark.shuffle.io.preferDirectBufs=false    \
   --conf spark.kryoserializer.buffer.max=512m \
-  --conf spark.shuffle.service.enabled=true \
-  --conf spark.yarn.am.waitTime=1000000 \
-  --conf spark.yarn.driver.memoryOverhead=${SPK_DRIVER_MEM_OVERHEAD} \
+  --conf spark.yarn.am.waitTime=100s \
+  --conf spark.yarn.am.memoryOverhead=${SPK_DRIVER_MEM_OVERHEAD} \
   --conf spark.yarn.executor.memoryOverhead=${SPK_EXEC_MEM_OVERHEAD} target/scala-2.10/spot-ml-assembly-1.1.jar \
   --analysis ${DSOURCE} \
   --input ${RAWDATA_PATH}  \
@@ -70,4 +75,6 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --scored ${HDFS_SCORED_CONNECTS} \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
-  --ldamaxiterations 11
+  --ldamaxiterations 20 \
+  --scalingOption ${SCALING_OPTION} \
+  $USER_DOMAIN_CMD

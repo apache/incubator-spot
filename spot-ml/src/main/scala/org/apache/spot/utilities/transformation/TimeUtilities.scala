@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spot.utilities
-
+package org.apache.spot.utilities.transformation
 
 object TimeUtilities {
 

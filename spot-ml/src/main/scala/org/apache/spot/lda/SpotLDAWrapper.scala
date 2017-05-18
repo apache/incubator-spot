@@ -24,8 +24,8 @@ import org.apache.spark.mllib.linalg.{Matrix, Vector, Vectors}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
-
-import SpotLDAWrapperSchema._
+import org.apache.spot.lda.SpotLDAWrapperSchema._
+import org.apache.spot.utilities.transformation.ProbabilityConverter
 
 import scala.collection.immutable.Map
 
@@ -40,11 +40,6 @@ import scala.collection.immutable.Map
 
 object SpotLDAWrapper {
 
-  case class SpotLDAInput(doc: String, word: String, count: Int) extends Serializable
-
-  case class SpotLDAOutput(docToTopicMix: DataFrame, wordResults: Map[String, Array[Double]])
-
-
   def runLDA(sparkContext: SparkContext,
              sqlContext: SQLContext,
              docWordCount: RDD[SpotLDAInput],
@@ -53,7 +48,8 @@ object SpotLDAWrapper {
              ldaSeed: Option[Long],
              ldaAlpha: Double,
              ldaBeta: Double,
-             maxIterations: Int): SpotLDAOutput = {
+             maxIterations: Int,
+             probabilityConversionOption: ProbabilityConverter): SpotLDAOutput = {
 
     import sqlContext.implicits._
 
@@ -123,7 +119,7 @@ object SpotLDAWrapper {
 
     //Create doc results from vector: convert docID back to string, convert vector of probabilities to array
     val docToTopicMixDF =
-      formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sqlContext)
+      formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sqlContext, probabilityConversionOption)
 
     documentDictionary.unpersist()
 
@@ -186,20 +182,27 @@ object SpotLDAWrapper {
     wordProbs.zipWithIndex.map({ case (topicProbs, wordInd) => (wordMap(wordInd), topicProbs) }).toMap
   }
 
-  def formatSparkLDADocTopicOutput(docTopDist: RDD[(Long, Vector)], documentDictionary: DataFrame, sqlContext: SQLContext):
+  def formatSparkLDADocTopicOutput(docTopDist: RDD[(Long, Vector)], documentDictionary: DataFrame, sqlContext:
+  SQLContext, probabilityConversionOption: ProbabilityConverter):
   DataFrame = {
     import sqlContext.implicits._
 
     val topicDistributionToArray = udf((topicDistribution: Vector) => topicDistribution.toArray)
     val documentToTopicDistributionDF = docTopDist.toDF(DocumentNumber, TopicProbabilityMix)
 
-    documentToTopicDistributionDF
+    val documentToTopicDistributionArray = documentToTopicDistributionDF
       .join(documentDictionary, documentToTopicDistributionDF(DocumentNumber) === documentDictionary(DocumentNumber))
       .drop(documentDictionary(DocumentNumber))
       .drop(documentToTopicDistributionDF(DocumentNumber))
       .select(DocumentName, TopicProbabilityMix)
       .withColumn(TopicProbabilityMixArray, topicDistributionToArray(documentToTopicDistributionDF(TopicProbabilityMix)))
       .selectExpr(s"$DocumentName  AS $DocumentName", s"$TopicProbabilityMixArray AS $TopicProbabilityMix")
+
+    probabilityConversionOption.convertDataFrameColumn(documentToTopicDistributionArray, TopicProbabilityMix)
   }
+
+  case class SpotLDAInput(doc: String, word: String, count: Int) extends Serializable
+
+  case class SpotLDAOutput(docToTopicMix: DataFrame, wordResults: Map[String, Array[Double]])
 
 }

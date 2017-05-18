@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.spot.utilities
+package org.apache.spot.utilities.transformation
 
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.scalatest.{FunSuite, Matchers}
-import org.apache.spot.utilities.DomainProcessor._
+import org.apache.spot.utilities.transformation
+import org.apache.spot.utilities.transformation.DomainProcessor._
+import org.scalatest.Matchers
 
 
 class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
-  val countryCodesSet = CountryCodes.CountryCodes
+  val countryCodesSet = transformation.CountryCodes.CountryCodes
 
 
   "extractDomain" should "return domain when provided a url with top-level domain and country code" in {

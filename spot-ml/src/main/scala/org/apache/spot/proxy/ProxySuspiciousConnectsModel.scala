@@ -27,6 +27,7 @@ import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.SuspiciousConnectsScoreFunction
 import org.apache.spot.lda.SpotLDAWrapper
 import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
+import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.proxy.ProxySchema._
 import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
@@ -39,7 +40,7 @@ import org.apache.spot.utilities.data.validation.InvalidDataHandler
   * @param wordToPerTopicProb Maps each word to a vector measuring Prob[word | topic] for each topic.
   */
 class ProxySuspiciousConnectsModel(topicCount: Int,
-                                   ipToTopicMIx: Map[String, Array[Double]],
+                                   ipToTopicMIx: DataFrame,
                                    wordToPerTopicProb: Map[String, Array[Double]]) {
 
   /**
@@ -50,7 +51,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
     *                  (as defined in ProxySchema object).
     * @return Dataframe with Score column added.
     */
-  def score(sc: SparkContext, dataFrame: DataFrame): DataFrame = {
+  def score(sc: SparkContext, dataFrame: DataFrame, probabilityConversionOption: ProbabilityConverter): DataFrame = {
 
     val topDomains: Broadcast[Set[String]] = sc.broadcast(TopDomains.TopDomains)
 
@@ -71,15 +72,18 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
         dataFrame(UserAgent),
         dataFrame(RespCode)))
 
-    val ipToTopicMixBC = sc.broadcast(ipToTopicMIx)
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
+    val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
-    val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, ipToTopicMixBC, wordToPerTopicProbBC)
+    def udfScoreFunction = udf((documentTopicMix: Seq[probabilityConversionOption.ScalingType], word: String) =>
+      scoreFunction.score(probabilityConversionOption)(documentTopicMix, word))
 
-
-    def udfScoreFunction = udf((ip: String, word: String) => scoreFunction.score(ip, word))
-    wordedDataFrame.withColumn(Score, udfScoreFunction(wordedDataFrame(ClientIP), wordedDataFrame(Word)))
+    wordedDataFrame
+      .join(org.apache.spark.sql.functions.broadcast(ipToTopicMIx), dataFrame(ClientIP) === ipToTopicMIx(DocumentName), "left_outer")
+      .selectExpr(wordedDataFrame.schema.fieldNames :+ TopicProbabilityMix: _*)
+      .withColumn(Score, udfScoreFunction(col(TopicProbabilityMix), col(Word)))
+      .drop(TopicProbabilityMix)
   }
 }
 
@@ -141,7 +145,7 @@ object ProxySuspiciousConnectsModel {
         agentToCount)
 
 
-    val SpotLDAOutput(ipToTopicMixDF, wordResults) = SpotLDAWrapper.runLDA(sparkContext,
+    val SpotLDAOutput(ipToTopicMix, wordResults) = SpotLDAWrapper.runLDA(sparkContext,
       sqlContext,
       docWordCount,
       config.topicCount,
@@ -149,20 +153,8 @@ object ProxySuspiciousConnectsModel {
       config.ldaPRGSeed,
       config.ldaAlpha,
       config.ldaBeta,
-      config.ldaMaxiterations)
-
-
-    // Since Proxy is still broadcasting ip to topic mix, we need to convert data frame to Map[String, Array[Double]]
-    val ipToTopicMix = ipToTopicMixDF
-      .rdd
-      .map({ case (ipToTopicMixRow: Row) => ipToTopicMixRow.toSeq.toArray })
-      .map({
-        case (ipToTopicMixSeq) => (ipToTopicMixSeq(0).asInstanceOf[String], ipToTopicMixSeq(1).asInstanceOf[Seq[Double]]
-          .toArray)
-      })
-      .collectAsMap
-      .toMap
-
+      config.ldaMaxiterations,
+      config.probabilityConversionOption)
 
     new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults)
 

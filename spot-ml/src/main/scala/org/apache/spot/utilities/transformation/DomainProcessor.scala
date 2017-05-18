@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spot.utilities
+package org.apache.spot.utilities.transformation
 
 import org.apache.spark.broadcast.Broadcast
 
@@ -41,25 +41,6 @@ object DomainProcessor extends Serializable {
 
   val TopLevelDomainNames = Set("com", "org", "net", "int", "edu", "gov", "mil")
   val None = "None"
-
-
-  /**
-    * Commonly extracted domain features.
-    * @param domain           Domain (if any) of a url.
-    * @param topDomain        Numerical class of domain: 2 for Intel, 1 for Alexa top domains, 0 for others.
-    * @param subdomain        Subdomain (if any) in the url.
-    * @param subdomainLength  Length of the subdomain. 0 if there is none.
-    * @param subdomainEntropy Entropy of the subdomain viewed as a distribution on its character set.
-    *                         0 if there is no subdomain.
-    * @param numPeriods Number of periods + 1 in the url. (Number of sub-strings where url is split by periods.)
-    */
-  case class DomainInfo(domain: String,
-                        topDomain: Int,
-                        subdomain: String,
-                        subdomainLength: Int,
-                        subdomainEntropy: Double,
-                        numPeriods: Int)
-
 
   /**
     * Extract domain info from a url.
@@ -94,7 +75,6 @@ object DomainProcessor extends Serializable {
 
     DomainInfo(domain, topDomainClass, subdomain, subdomainLength, subdomainEntropy, numParts)
   }
-
 
   /**
     *
@@ -163,4 +143,22 @@ object DomainProcessor extends Serializable {
       urlComponents
     }
   }
+
+  /**
+    * Commonly extracted domain features.
+    *
+    * @param domain           Domain (if any) of a url.
+    * @param topDomain        Numerical class of domain: 2 for Intel, 1 for Alexa top domains, 0 for others.
+    * @param subdomain        Subdomain (if any) in the url.
+    * @param subdomainLength  Length of the subdomain. 0 if there is none.
+    * @param subdomainEntropy Entropy of the subdomain viewed as a distribution on its character set.
+    *                         0 if there is no subdomain.
+    * @param numPeriods       Number of periods + 1 in the url. (Number of sub-strings where url is split by periods.)
+    */
+  case class DomainInfo(domain: String,
+                        topDomain: Int,
+                        subdomain: String,
+                        subdomainLength: Int,
+                        subdomainEntropy: Double,
+                        numPeriods: Int)
 }

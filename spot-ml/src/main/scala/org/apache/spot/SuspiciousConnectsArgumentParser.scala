@@ -17,26 +17,13 @@
 
 package org.apache.spot
 
+import org.apache.spot.utilities.transformation.{ProbabilityConverter, ProbabilityConverterDouble, ProbabilityConverterFloat}
+
 
 /**
   * Parses arguments for the suspicious connections analysis.
   */
 object SuspiciousConnectsArgumentParser {
-
-  case class SuspiciousConnectsConfig(analysis: String = "",
-                                      inputPath: String = "",
-                                      feedbackFile: String = "",
-                                      duplicationFactor: Int = 1000,
-                                      topicCount: Int = 20,
-                                      userDomain: String = "",
-                                      hdfsScoredConnect: String = "",
-                                      threshold: Double = 1.0d,
-                                      maxResults: Int = -1,
-                                      outputDelimiter: String = "\t",
-                                      ldaPRGSeed: Option[Long] = None,
-                                      ldaMaxiterations: Int = 20,
-                                      ldaAlpha: Double = 1.02,
-                                      ldaBeta: Double = 1.001)
 
   val parser: scopt.OptionParser[SuspiciousConnectsConfig] = new scopt.OptionParser[SuspiciousConnectsConfig]("LDA") {
 
@@ -100,7 +87,27 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(ldaBeta = x)).
       text("topic concentration for lda, default 1.001")
 
-
-
+    opt[Int]("scalingOption").optional().valueName("int").
+      action((x, c) => c.copy(probabilityConversionOption = x match {
+        case 32 => ProbabilityConverterFloat
+        case 64 => ProbabilityConverterDouble
+        case _ => ProbabilityConverterDouble
+      }))
   }
+
+  case class SuspiciousConnectsConfig(analysis: String = "",
+                                      inputPath: String = "",
+                                      feedbackFile: String = "",
+                                      duplicationFactor: Int = 1,
+                                      topicCount: Int = 20,
+                                      userDomain: String = "",
+                                      hdfsScoredConnect: String = "",
+                                      threshold: Double = 1.0d,
+                                      maxResults: Int = -1,
+                                      outputDelimiter: String = "\t",
+                                      ldaPRGSeed: Option[Long] = None,
+                                      ldaMaxiterations: Int = 20,
+                                      ldaAlpha: Double = 1.02,
+                                      ldaBeta: Double = 1.001,
+                                      probabilityConversionOption: ProbabilityConverter = ProbabilityConverterDouble)
 }

@@ -37,7 +37,6 @@ if [[ "${#FDATE}" != "8" || -z "${DSOURCE}" ]]; then
     exit
 fi
 
-
 # read in variables (except for date) from etc/.conf file
 # note: FDATE and DSOURCE *must* be defined prior sourcing this conf file
 
@@ -91,6 +90,7 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --conf spark.dynamicAllocation.maxExecutors=${SPK_EXEC} \
   --conf spark.executor.cores=${SPK_EXEC_CORES} \
   --conf spark.executor.memory=${SPK_EXEC_MEM} \
+  --conf spark.sql.autoBroadcastJoinThreshold=${SPK_AUTO_BRDCST_JOIN_THR} \
   --conf "spark.executor.extraJavaOptions=-XX:MaxPermSize=512M -XX:PermSize=512M" \
   --conf spark.kryoserializer.buffer.max=512m \
   --conf spark.yarn.am.waitTime=100s \
@@ -105,5 +105,6 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
   --ldamaxiterations 20 \
+  --scalingOption ${SCALING_OPTION} \
   $USER_DOMAIN_CMD
 

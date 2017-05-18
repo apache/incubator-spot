@@ -38,6 +38,22 @@ import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataVali
 object DNSSuspiciousConnectsAnalysis {
 
 
+  val DefaultQueryClass = "unknown"
+  val DefaultQueryType = -1
+  val DefaultQueryResponseCode = -1
+  val InStructType = StructType(List(TimestampField, UnixTimestampField, FrameLengthField, ClientIPField,
+    QueryNameField, QueryClassField, QueryTypeField, QueryResponseCodeField))
+  val InSchema = InStructType.fieldNames.map(col)
+  val OutSchema = StructType(
+    List(TimestampField,
+      UnixTimestampField,
+      FrameLengthField,
+      ClientIPField,
+      QueryNameField,
+      QueryClassField,
+      QueryTypeField,
+      QueryResponseCodeField,
+      ScoreField)).fieldNames.map(col)
 
   /**
     * Run suspicious connections analysis on DNS log data.
@@ -113,7 +129,6 @@ object DNSSuspiciousConnectsAnalysis {
       .filter(cleanDNSRecordsFilter)
   }
 
-
   /**
     *
     * @param inputDNSRecords raw DNS records.
@@ -143,7 +158,6 @@ object DNSSuspiciousConnectsAnalysis {
       .filter(invalidDNSRecordsFilter)
   }
 
-
   /**
     *
     * @param scoredDNSRecords scored DNS records.
@@ -158,27 +172,5 @@ object DNSSuspiciousConnectsAnalysis {
 
     scoredDNSRecords.filter(filteredDNSRecordsFilter)
   }
-
-  val DefaultQueryClass = "unknown"
-  val DefaultQueryType = -1
-  val DefaultQueryResponseCode = -1
-
-  val InStructType = StructType(List(TimestampField, UnixTimestampField, FrameLengthField, ClientIPField,
-    QueryNameField, QueryClassField, QueryTypeField, QueryResponseCodeField))
-
-  val InSchema = InStructType.fieldNames.map(col)
-
-  assert(ModelSchema.fields.forall(InStructType.fields.contains(_)))
-
-  val OutSchema = StructType(
-    List(TimestampField,
-      UnixTimestampField,
-      FrameLengthField,
-      ClientIPField,
-      QueryNameField,
-      QueryClassField,
-      QueryTypeField,
-      QueryResponseCodeField,
-      ScoreField)).fieldNames.map(col)
 
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spot.utilities
+package org.apache.spot.utilities.transformation
 
 import org.apache.spark.rdd.RDD
 
@@ -27,41 +27,25 @@ import scala.math._
 
 object Quantiles extends Serializable {
 
+  val DECILES = Array(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+  val QUINTILES = Array(0.2, 0.4, 0.6, 0.8, 1.0)
+
   /**
-    * Compute the empirical cumulative distribution function,
-    * cf. [[https://en.wikipedia.org/wiki/Empirical_distribution_function]]
+    * Compute the deciles of a distribution.
     *
-    * @param data An RDD of doubles.
-    * @return RDD[(Double,Double)] where each pair is of the form (value, ecdf at value)
-    *         That is, each pair is a value and the fraction of the input data less-than-or-equal to the value.
+    * @param data RDD[Double] Incoming data.
+    * @return Array[Double].  The deciles of the distribution.
     */
 
-  def computeEcdf(data: RDD[Double]): RDD[(Double, Double)] = {
+  def computeDeciles(data: RDD[Double]): Array[Double] = computeQuantiles(data, DECILES)
 
-    // pair each distinct value with the number of times it appears in the data, then sort by the data values
-    val valueCountPairs = data.map(v => (v, 1L)).reduceByKey(_ + _).sortByKey().persist()
-
-    // for each partition, sum the counts of all values in the partition
-    val countsPerPartition: Array[Double] = valueCountPairs.mapPartitionsWithIndex {
-      case (_, partition) => Iterator(partition.map({ case (_, count) => count }).sum.toDouble)
-    }.collect()
-
-    val totalCount = countsPerPartition.sum
-
-    // pair each value v with the sum of counts of all values <= v in the data
-    val valueCountLEQPairs : RDD[(Double, Double)] = valueCountPairs.mapPartitionsWithIndex {
-      case (index, partition) =>
-        val countInPrecedingPartitions = countsPerPartition.take(index).sum
-        val p = partition.scanLeft((0.0, countInPrecedingPartitions))({ case ((_, countOfLEQValues), (value, countOfValue)) =>
-          (value, countOfLEQValues + countOfValue)})
-
-        // first element is an extraneous zero and must be dropped
-        p.drop(1)
-    }
-    valueCountPairs.unpersist()
-    // normalize counts by  total number entries in the data to obtain the ecdf
-    valueCountLEQPairs.map({case (value, countToLeftOfValue) => (value, countToLeftOfValue / totalCount)})
-  }
+  /**
+    * Compute the quintiles of a distribution.
+    *
+    * @param data RDD[Double] Incoming data.
+    * @return Array[Double].  The quintiles of the distribution.
+    */
+  def computeQuintiles(data: RDD[Double]): Array[Double] = computeQuantiles(data, QUINTILES)
 
   /**
     * Compute the quantiles for a given dataset and array of thresholds for the cumulative distribution.
@@ -98,25 +82,41 @@ object Quantiles extends Serializable {
     computeEcdf(data).aggregate(initialCutoffs)(addDataPointToKnownCutoffs, mergeCutoffs)
   }
 
-
   /**
-    * Compute the deciles of a distribution.
+    * Compute the empirical cumulative distribution function,
+    * cf. [[https://en.wikipedia.org/wiki/Empirical_distribution_function]]
     *
-    * @param data RDD[Double] Incoming data.
-    * @return Array[Double].  The deciles of the distribution.
+    * @param data An RDD of doubles.
+    * @return RDD[(Double,Double)] where each pair is of the form (value, ecdf at value)
+    *         That is, each pair is a value and the fraction of the input data less-than-or-equal to the value.
     */
 
-  def computeDeciles(data: RDD[Double]): Array[Double] = computeQuantiles(data, DECILES)
-  val DECILES = Array(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
-  /**
-    * Compute the quintiles of a distribution.
-    *
-    * @param data RDD[Double] Incoming data.
-    * @return Array[Double].  The quintiles of the distribution.
-    */
-  def computeQuintiles(data: RDD[Double]): Array[Double] = computeQuantiles(data, QUINTILES)
-  val QUINTILES = Array(0.2, 0.4, 0.6, 0.8, 1.0)
+  def computeEcdf(data: RDD[Double]): RDD[(Double, Double)] = {
 
+    // pair each distinct value with the number of times it appears in the data, then sort by the data values
+    val valueCountPairs = data.map(v => (v, 1L)).reduceByKey(_ + _).sortByKey().persist()
+
+    // for each partition, sum the counts of all values in the partition
+    val countsPerPartition: Array[Double] = valueCountPairs.mapPartitionsWithIndex {
+      case (_, partition) => Iterator(partition.map({ case (_, count) => count }).sum.toDouble)
+    }.collect()
+
+    val totalCount = countsPerPartition.sum
+
+    // pair each value v with the sum of counts of all values <= v in the data
+    val valueCountLEQPairs : RDD[(Double, Double)] = valueCountPairs.mapPartitionsWithIndex {
+      case (index, partition) =>
+        val countInPrecedingPartitions = countsPerPartition.take(index).sum
+        val p = partition.scanLeft((0.0, countInPrecedingPartitions))({ case ((_, countOfLEQValues), (value, countOfValue)) =>
+          (value, countOfLEQValues + countOfValue)})
+
+        // first element is an extraneous zero and must be dropped
+        p.drop(1)
+    }
+    valueCountPairs.unpersist()
+    // normalize counts by  total number entries in the data to obtain the ecdf
+    valueCountLEQPairs.map({case (value, countToLeftOfValue) => (value, countToLeftOfValue / totalCount)})
+  }
 
   def bin(value: Double, cuts: Array[Double]) : Int = {
     cuts.indexWhere(cut => value <= cut)

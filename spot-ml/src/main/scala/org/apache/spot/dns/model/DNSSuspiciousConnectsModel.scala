@@ -28,10 +28,11 @@ import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.DNSWordCreation
 import org.apache.spot.lda.SpotLDAWrapper
-import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
-import org.apache.spot.utilities.DomainProcessor.DomainInfo
+import org.apache.spot.lda.SpotLDAWrapper._
+import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.{CountryCodes, DomainProcessor, Quantiles, TopDomains}
+import org.apache.spot.utilities.transformation.DomainProcessor.DomainInfo
+import org.apache.spot.utilities.transformation._
 
 import scala.util.{Failure, Success, Try}
 
@@ -60,7 +61,7 @@ import scala.util.{Failure, Success, Try}
   * @param inEntropyCuts         Quantile cut-offs for discretizing the subdomain entropy in word construction.
   */
 class DNSSuspiciousConnectsModel(inTopicCount: Int,
-                                 inIpToTopicMix: Map[String, Array[Double]],
+                                 inIpToTopicMix: DataFrame,
                                  inWordToPerTopicProb: Map[String, Array[Double]],
                                  inTimeCuts: Array[Double],
                                  inFrameLengthCuts: Array[Double],
@@ -88,12 +89,11 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     * @return Dataframe with a column named [[org.apache.spot.dns.DNSSchema.Score]] that contains the
     *         probability estimated for the network event at that row
     */
-  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String): DataFrame = {
+  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String
+            , probabilityConversionOption: ProbabilityConverter): DataFrame = {
 
     val topDomainsBC = sc.broadcast(TopDomains.TopDomains)
-    val ipToTopicMixBC = sc.broadcast(ipToTopicMix)
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
-
 
     val scoreFunction =
       new DNSScoreFunction(frameLengthCuts,
@@ -102,7 +102,6 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
         entropyCuts,
         numberPeriodsCuts,
         topicCount,
-        ipToTopicMixBC,
         wordToPerTopicProbBC,
         topDomainsBC,
         userDomain)
@@ -115,17 +114,24 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
                           queryName: String,
                           queryClass: String,
                           queryType: Int,
-                          queryResponseCode: Int) =>
-      scoreFunction.score(timeStamp,
+                          queryResponseCode: Int,
+                          documentTopicMix: Seq[probabilityConversionOption.ScalingType]) =>
+      scoreFunction.score(probabilityConversionOption)(timeStamp,
         unixTimeStamp,
         frameLength,
         clientIP,
         queryName,
         queryClass,
         queryType,
-        queryResponseCode))
+        queryResponseCode,
+        documentTopicMix))
 
-    inDF.withColumn(Score, scoringUDF(DNSSuspiciousConnectsModel.modelColumns: _*))
+    inDF
+      .join(org.apache.spark.sql.functions.broadcast(ipToTopicMix), inDF(ClientIP) === ipToTopicMix(DocumentName),
+        "left_outer")
+      .selectExpr(inDF.schema.fieldNames :+ TopicProbabilityMix: _*)
+      .withColumn(Score, scoringUDF(DNSSuspiciousConnectsModel.modelColumns :+ col(TopicProbabilityMix): _*))
+      .drop(TopicProbabilityMix)
   }
 }
 
@@ -273,7 +279,7 @@ object DNSSuspiciousConnectsModel {
         .map({ case ((ipDst, word), count) => SpotLDAInput(ipDst, word, count) })
 
 
-    val SpotLDAOutput(ipToTopicMixDF, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
+    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
       sqlContext,
       ipDstWordCounts,
       config.topicCount,
@@ -281,19 +287,8 @@ object DNSSuspiciousConnectsModel {
       config.ldaPRGSeed,
       config.ldaAlpha,
       config.ldaBeta,
-      config.ldaMaxiterations)
-
-    // Since DNS is still broadcasting ip to topic mix, we need to convert data frame to Map[String, Array[Double]]
-    val ipToTopicMix = ipToTopicMixDF
-      .rdd
-      .map({ case (ipToTopicMixRow: Row) => ipToTopicMixRow.toSeq.toArray })
-      .map({
-        case (ipToTopicMixSeq) => (ipToTopicMixSeq(0).asInstanceOf[String], ipToTopicMixSeq(1).asInstanceOf[Seq[Double]]
-          .toArray)
-      })
-      .collectAsMap
-      .toMap
-
+      config.ldaMaxiterations,
+      config.probabilityConversionOption)
 
     new DNSSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,
@@ -333,9 +328,6 @@ object DNSSuspiciousConnectsModel {
     sqlContext.createDataFrame(domainStatsRDD, DomainStatsSchema)
   }
 
-
-  case class TempFields(topDomainClass: Int, subdomainLength: Integer, subdomainEntropy: Double, numPeriods: Integer)
-
   /**
     *
     * @param countryCodesBC Broadcast of the country codes set.
@@ -358,4 +350,6 @@ object DNSSuspiciousConnectsModel {
       subdomainEntropy = subdomainEntropy,
       numPeriods = numPeriods)
   }
+
+  case class TempFields(topDomainClass: Int, subdomainLength: Integer, subdomainEntropy: Double, numPeriods: Integer)
 }

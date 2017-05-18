@@ -37,6 +37,43 @@ import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataVali
 object FlowSuspiciousConnectsAnalysis {
 
 
+  val InSchema = StructType(List(TimeReceivedField,
+    YearField,
+    MonthField,
+    DayField,
+    HourField,
+    MinuteField,
+    SecondField,
+    DurationField,
+    SourceIPField,
+    DestinationIPField,
+    SourcePortField,
+    DestinationPortField,
+    ProtocolField,
+    IpktField,
+    IbytField,
+    OpktField,
+    ObytField)).fieldNames.map(col)
+  val OutSchema = StructType(
+    List(TimeReceivedField,
+      YearField,
+      MonthField,
+      DayField,
+      HourField,
+      MinuteField,
+      SecondField,
+      DurationField,
+      SourceIPField,
+      DestinationIPField,
+      SourcePortField,
+      DestinationPortField,
+      ProtocolField,
+      IpktField,
+      IbytField,
+      OpktField,
+      ObytField,
+      ScoreField)).fieldNames.map(col)
+
   def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
           inputFlowRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
@@ -127,43 +164,5 @@ object FlowSuspiciousConnectsAnalysis {
 
     scoredFlowRecords.filter(filteredFlowRecordsFilter)
   }
-
-  val InSchema = StructType(List(TimeReceivedField,
-    YearField,
-    MonthField,
-    DayField,
-    HourField,
-    MinuteField,
-    SecondField,
-    DurationField,
-    SourceIPField,
-    DestinationIPField,
-    SourcePortField,
-    DestinationPortField,
-    ProtocolField,
-    IpktField,
-    IbytField,
-    OpktField,
-    ObytField)).fieldNames.map(col)
-
-  val OutSchema = StructType(
-    List(TimeReceivedField,
-      YearField,
-      MonthField,
-      DayField,
-      HourField,
-      MinuteField,
-      SecondField,
-      DurationField,
-      SourceIPField,
-      DestinationIPField,
-      SourcePortField,
-      DestinationPortField,
-      ProtocolField,
-      IpktField,
-      IbytField,
-      OpktField,
-      ObytField,
-      ScoreField)).fieldNames.map(col)
 
 }

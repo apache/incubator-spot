@@ -18,8 +18,9 @@
 package org.apache.spot.netflow.model
 
 import org.apache.spark.broadcast.Broadcast
+import org.apache.spot.SuspiciousConnectsScoreFunction
 import org.apache.spot.netflow.{FlowWordCreator, FlowWords}
-import org.apache.spot.utilities.data.validation.InvalidDataHandler
+import org.apache.spot.utilities.transformation.ProbabilityConverter
 
 
 /**
@@ -34,6 +35,8 @@ import org.apache.spot.utilities.data.validation.InvalidDataHandler
 class FlowScoreFunction(topicCount: Int,
                         wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]]) extends Serializable {
 
+  val suspiciousConnectsScoreFunction =
+    new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
   /**
     * Estimate the probability of a netflow connection as distributed from the source IP and from the destination IP
@@ -50,45 +53,23 @@ class FlowScoreFunction(topicCount: Int,
     * @param dstTopicMix topic mix assigned of destination IP
     * @return Minium of probability of this word from the source IP and probability of this word from the dest IP.
     */
-  def score(hour: Int,
-            srcIP: String,
-            dstIP: String,
-            srcPort: Int,
-            dstPort: Int,
-            protocol: String,
-            ibyt: Long,
-            ipkt: Long,
-            srcTopicMix: Seq[Double],
-            dstTopicMix: Seq[Double]): Double = {
+  def score[P <: ProbabilityConverter](probabilityConverter: P)(hour: Int,
+                                                                srcIP: String,
+                                                                dstIP: String,
+                                                                srcPort: Int,
+                                                                dstPort: Int,
+                                                                protocol: String,
+                                                                ibyt: Long,
+                                                                ipkt: Long,
+                                                                srcTopicMix: Seq[probabilityConverter.ScalingType],
+                                                                dstTopicMix: Seq[probabilityConverter.ScalingType]): Double = {
 
 
     val FlowWords(srcWord, dstWord) = FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyt, ipkt)
 
-    val zeroProb = Array.fill(topicCount) {
-      0.0
-    }
+    val scoreOfConnectionFromSrcIP = suspiciousConnectsScoreFunction.score(probabilityConverter)(srcTopicMix, srcWord)
+    val scoreOfConnectionsFromDstIP = suspiciousConnectsScoreFunction.score(probabilityConverter)(dstTopicMix, dstWord)
 
-    /** WordError indicates there was a problem creating a word and should not be used for scoring.
-      * *
-      * A null value for srcTopicMix or dstTopicMix indicated the ip (source or dest respectively)
-      * were not seen in training.
-      */
-    if (srcWord == InvalidDataHandler.WordError || dstWord == InvalidDataHandler.WordError) {
-      InvalidDataHandler.ScoreError
-    } else if (srcTopicMix == null || dstTopicMix == null) {
-      0.0
-    } else {
-
-      val scoreOfConnectionFromSrcIP = srcTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(srcWord, zeroProb))
-        .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
-        .sum
-
-      val scoreOfConnectionsFromDstIP = dstTopicMix.zip(wordToPerTopicProbBC.value.getOrElse(dstWord, zeroProb))
-        .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
-        .sum
-
-      Math.min(scoreOfConnectionFromSrcIP, scoreOfConnectionsFromDstIP)
-
-    }
+    Math.min(scoreOfConnectionFromSrcIP, scoreOfConnectionsFromDstIP)
   }
 }

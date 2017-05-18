@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spot
+package org.apache.spot.utilities
 
 import org.apache.spark.rdd.RDD
 import org.apache.spot.testutils.TestingSparkContextFlatSpec

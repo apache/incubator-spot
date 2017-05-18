@@ -30,6 +30,7 @@ import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
+import org.apache.spot.utilities.transformation.{ProbabilityConverter, Quantiles}
 
 import scala.util.{Failure, Success, Try}
 
@@ -58,7 +59,8 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                                   ipToTopicMix: DataFrame,
                                   wordToPerTopicProb: Map[String, Array[Double]]) {
 
-  def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame): DataFrame = {
+  def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame,
+            probabilityConversionOption: ProbabilityConverter): DataFrame = {
 
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
@@ -68,13 +70,13 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
       */
     val dataWithSrcTopicMix = {
 
-      val recordsWithSrcIPTopicMixes = flowRecords.join(ipToTopicMix,
+      val recordsWithSrcIPTopicMixes = flowRecords.join(org.apache.spark.sql.functions.broadcast(ipToTopicMix),
         flowRecords(SourceIP) === ipToTopicMix(DocumentName), "left_outer")
       val schemaWithSrcTopicMix = flowRecords.schema.fieldNames :+ TopicProbabilityMix
       val dataWithSrcIpProb: DataFrame = recordsWithSrcIPTopicMixes.selectExpr(schemaWithSrcTopicMix: _*)
         .withColumnRenamed(TopicProbabilityMix, SrcIpTopicMix)
 
-      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(ipToTopicMix,
+      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(org.apache.spark.sql.functions.broadcast(ipToTopicMix),
         dataWithSrcIpProb(DestinationIP) === ipToTopicMix(DocumentName), "left_outer")
       val schema = dataWithSrcIpProb.schema.fieldNames :+ TopicProbabilityMix
       recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
@@ -92,9 +94,9 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                           protocol: String,
                           ibyt: Long,
                           ipkt: Long,
-                          srcIpTopicMix: Seq[Double],
-                          dstIpTopicMix: Seq[Double]) =>
-      scoreFunction.score(hour,
+                          srcIpTopicMix: Seq[probabilityConversionOption.ScalingType],
+                          dstIpTopicMix: Seq[probabilityConversionOption.ScalingType]) =>
+      scoreFunction.score(probabilityConversionOption)(hour,
         srcIP,
         dstIP,
         srcPort,
@@ -176,16 +178,16 @@ object FlowSuspiciousConnectsModel {
         .map({ case ((ip, word), count) => SpotLDAInput(ip, word, count) })
 
 
-      val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) =
-        SpotLDAWrapper.runLDA(sparkContext,
-          sqlContext,
-          ipWordCounts,
-          config.topicCount,
-          logger,
-          config.ldaPRGSeed,
-          config.ldaAlpha,
-          config.ldaBeta,
-          config.ldaMaxiterations)
+    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
+      sqlContext,
+      ipWordCounts,
+      config.topicCount,
+      logger,
+      config.ldaPRGSeed,
+      config.ldaAlpha,
+      config.ldaBeta,
+      config.ldaMaxiterations,
+      config.probabilityConversionOption)
 
     new FlowSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,
