@@ -46,7 +46,7 @@ object FlowSuspiciousConnectsAnalysis {
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      FlowSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, flows.select(InSchema: _*), config.topicCount)
+      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, flows.select(InSchema: _*))
 
     logger.info("Identifying outliers")
     val scoredFlowRecords = model.score(sparkContext, sqlContext, flows)

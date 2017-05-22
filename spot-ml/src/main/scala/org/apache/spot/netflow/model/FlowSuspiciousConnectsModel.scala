@@ -155,12 +155,30 @@ object FlowSuspiciousConnectsModel {
 
   val ModelColumns = ModelSchema.fieldNames.toList.map(col)
 
-  def trainNewModel(sparkContext: SparkContext,
-                    sqlContext: SQLContext,
-                    logger: Logger,
-                    config: SuspiciousConnectsConfig,
-                    inputRecords: DataFrame,
-                    topicCount: Int): FlowSuspiciousConnectsModel = {
+
+  def cleanData(flows: DataFrame): DataFrame = {
+
+    val legalFlowsFilter = flows(Hour).between(0, 23) &&
+      flows(Minute).between(0, 59) &&
+      flows(Second).between(0, 59) &&
+      flows(TimeReceived).isNotNull &&
+      flows(SourceIP).isNotNull &&
+      flows(DestinationIP).isNotNull &&
+      flows(SourcePort).isNotNull &&
+      flows(DestinationPort).isNotNull &&
+      flows(Ibyt).isNotNull &&
+      flows(Ipkt).isNotNull
+
+    flows.filter(legalFlowsFilter)
+  }
+
+
+    def trainModel(sparkContext: SparkContext,
+                   sqlContext: SQLContext,
+                   logger: Logger,
+                   config: SuspiciousConnectsConfig,
+                   inputRecords: DataFrame): FlowSuspiciousConnectsModel = {
+
 
     logger.info("Training netflow suspicious connects model from " + config.inputPath)
 
@@ -281,17 +299,18 @@ object FlowSuspiciousConnectsModel {
         .map({ case ((ip, word), count) => SpotLDAInput(ip, word, count) })
 
 
-    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkContext,
-      sqlContext,
-      ipWordCounts,
-      config.topicCount,
-      logger,
-      config.ldaPRGSeed,
-      config.ldaAlpha,
-      config.ldaBeta,
-      config.ldaMaxiterations)
+      val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) =
+        SpotLDAWrapper.runLDA(sparkContext,
+          sqlContext,
+          ipWordCounts,
+          config.topicCount,
+          logger,
+          config.ldaPRGSeed,
+          config.ldaAlpha,
+          config.ldaBeta,
+          config.ldaMaxiterations)
 
-    new FlowSuspiciousConnectsModel(topicCount,
+    new FlowSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,
       wordToPerTopicProb,
       config.useProtocol,
