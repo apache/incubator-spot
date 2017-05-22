@@ -40,8 +40,8 @@ file exist a section for _Spark_ properties, below is the explanation for each o
             SPK_EXEC_CORES=''           ---> Cores per executor i.e. 4
             SPK_DRIVER_MEM_OVERHEAD=''  ---> Driver memory overhead in MB i.e. 3047. Note that there is no "m" at the end.
             SPK_EXEC_MEM_OVERHEAD=''    ---> Executor memory overhead in MB i.e. 3047. Note that there is no "m" at the end.
-            SPK_AUTO_BRDCST_JOIN_THR='10485760' ---> Spark's spark.sql.autoBroadcastJoinThreshold. Default is 10MB, increase this value to make Spark broadcast tables lager than 10 MB and speed up joins.
-            SCALING_OPTION='64'         --->
+            SPK_AUTO_BRDCST_JOIN_THR='10485760' ---> Spark's spark.sql.autoBroadcastJoinThreshold. Default is 10MB, increase this value to make Spark broadcast tables larger than 10 MB and speed up joins.
+            SCALING_OPTION='64'         ---> Indicates Spot whether to use Double precision probabilities or Float.  
        
 Besides the variables in spot.conf, users can modify the rest of the properties in ml_ops.sh based on their needs.
  
@@ -134,20 +134,21 @@ and 50 GB. Driver maximum results should be something equal or bigger than 8 GB.
  
  In this case, the big data set is the entire set of records and the lookup table is a dictionary of documents and probabilities per topic or words and probabilities per topic. 
  
- Given the possible diversity of documents/IPs, the lookup table containing document probability distribution can grow to something bigger than 10 MB. Since 10 MB is Spark's default auto broadcast threshold for joins, a join with a lookup table bigger than that threshold will result in the execution of a tradional join with lots of shuffeling. 
+ Given the possible diversity of documents/IPs, the lookup table containing document probability distribution can grow to something bigger than 10 MB. Since 10 MB is Spark's default auto broadcast threshold for joins, a join with a lookup table bigger than that threshold will result in the execution of a traditional join with lots of shuffling. 
  
 Setting SPK_AUTO_BRDCST_JOIN_THR and SCALING_OPTION correctly can help to always broadcast document probability distribution lookup table and avoid slow joins. 
 
-First, users need decide wheter they want to scale Double precesion probabilities to Float, that way the document probability distribution lookup table will be half the size and easyly broadcasted. If users want to cut the payload in half, set scaling option to 32.
+First, users need to decide whether they want to scale Double precision probabilities to Float, that way the document probability distribution lookup table will be half the size and easily broadcasted. If users want to cut the payload in half, set scaling option to 32.
+
  >SCALING_OPTION='32' 
  
  If users prefer to keep Double precision data type, set scaling option to 64 (default).
  
  >SCALING_OPTION='64'
 
-Now, given the approximate number of distinct IPs in every batch or data set being analized, users should set SPK_AUTO_BRDCST_JOIN_THR to something that can fit the document probability distribution lookup table. 
+Now, given the approximate number of distinct IPs in every batch or data set being analyzed, users should set SPK_AUTO_BRDCST_JOIN_THR to something that can fit the document probability distribution lookup table. 
 
-For instance, if a user knows there can be 2,000,000 distinct IP addresses, and is using 20 Topics, the document probability distribution lookup table can grow to something like 190 bytes per row if using SCALING_OPTIN as 64 and 110 bytes per row if using 32 bit scaling option.
+For instance, if a user knows there can be 2,000,000 distinct IP addresses and is using 20 Topics, the document probability distribution lookup table can grow to something like 190 bytes per row if using SCALING_OPTIN as 64 and 110 bytes per row if using 32-bit scaling option.
 
 > Document probability distribution lookup table record example: 
 
