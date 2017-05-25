@@ -29,7 +29,7 @@ object ProxyWordCreation {
 
   def udfWordCreation(topDomains : Broadcast[Set[String]],
                       agentCounts : Broadcast[Map[String, Long]],
-                      entropyCuts: Array[Double]) =
+                      EntropyCuts: Array[Double]) =
     udf((host: String, time: String, reqMethod: String, uri: String, contentType: String, userAgent: String, responseCode: String) =>
       ProxyWordCreation.proxyWord(host,
         time,
@@ -40,7 +40,7 @@ object ProxyWordCreation {
         responseCode,
         topDomains,
         agentCounts,
-        entropyCuts))
+        EntropyCuts))
 
 
   def proxyWord(proxyHost: String,
@@ -52,14 +52,14 @@ object ProxyWordCreation {
                 responseCode: String,
                 topDomains: Broadcast[Set[String]],
                 agentCounts: Broadcast[Map[String, Long]],
-                entropyCuts: Array[Double]): String = {
+                EntropyCuts: Array[Double]): String = {
     Try{
       List(topDomain(proxyHost, topDomains.value).toString,
         // Time binned by hours
         TimeUtilities.getTimeAsHour(time).toString,
         reqMethod,
-        // Fixed and equally spaced cutoffs
-        Quantiles.bin(Entropy.stringEntropy(uri), entropyCuts),
+        // Fixed cutoffs
+        Quantiles.bin(Entropy.stringEntropy(uri), EntropyCuts),
         // Just the top level content type for now
         if (contentType.split('/').length > 0) contentType.split('/')(0) else "unknown_content_type",
         // Exponential cutoffs base 2

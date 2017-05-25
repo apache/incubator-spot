@@ -116,16 +116,14 @@ object ProxySuspiciousConnectsModel {
       inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
       .unionAll(ProxyFeedback.loadFeedbackDF(sparkContext, sqlContext, config.feedbackFile, config.duplicationFactor))
 
-    // These buckets are optimized to datasets used for training. Last bucket is of larger size to ensure fit.
+    // These buckets are optimized to datasets used for training. Last bucket is of infinite size to ensure fit.
     // The maximum value of entropy is given by log k where k is the number of distinct categories.
     // Given that the alphabet and number of characters is finite the maximum value for entropy is upper bounded.
-    // Assuming 10,000 distinct categories the entropy is bounded by 13.38. Empirical tests showed a maximum
-    // value of 6.2 in our training set.
     // Bucket number and size can be changed to provide less/more granularity
-    val entropyCuts = Array(0.0, 0.3, 0.6, 0.9, 1.2,
+    val EntropyCuts = Array(0.0, 0.3, 0.6, 0.9, 1.2,
       1.5, 1.8, 2.1, 2.4, 2.7,
       3.0, 3.3, 3.6, 3.9, 4.2,
-      4.5, 4.8, 5.1, 5.4, 20)
+      4.5, 4.8, 5.1, 5.4, 1.0 / 0)
 
     val agentToCount: Map[String, Long] =
       selectedRecords.select(UserAgent)
@@ -140,7 +138,7 @@ object ProxySuspiciousConnectsModel {
 
     val docWordCount: RDD[SpotLDAInput] =
       getIPWordCounts(sparkContext, sqlContext, logger, selectedRecords, config.feedbackFile, config.duplicationFactor,
-        agentToCount, entropyCuts)
+        agentToCount, EntropyCuts)
 
 
     val SpotLDAOutput(ipToTopicMixDF, wordResults) = SpotLDAWrapper.runLDA(sparkContext,
@@ -166,7 +164,7 @@ object ProxySuspiciousConnectsModel {
       .toMap
 
 
-    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults, entropyCuts)
+    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults, EntropyCuts)
 
   }
 
