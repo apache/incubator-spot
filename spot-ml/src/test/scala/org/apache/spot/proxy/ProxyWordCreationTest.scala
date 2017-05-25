@@ -1,12 +1,27 @@
-package org.apache.spot.proxy
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package org.apache.spot.proxy
 
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.proxy.ProxySchema.Word
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
-
 
 class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
 
@@ -24,7 +39,7 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
     ldaAlpha = 1.02,
     ldaBeta = 1.001)
 
-  "proxy word creation" should "return the correct word given the rules to form the word" in {
+  "proxy word creation" should "return the correct word given the set of rules to form the word" in {
 
     val logger = LogManager.getLogger("ProxyWordCreation")
     logger.setLevel(Level.WARN)
@@ -50,220 +65,67 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
     // 18 csbytes:Int,
     // 19 fulluri:String)     <- currently used for feature creation
 
-    val record1 = ProxyInput(
-      "2016-10-03",
-      "00:57:36",
-      "127.0.0.1",
-      "intel.com",
-      "PUT",
-      "Mozilla/5.0",
-      "text/plain",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "202",
-      80,
+    val noAlexaPutLoEntroTextRareAgentShortUri202 = ProxyInput("2016-10-03", "00:57:36", "127.0.0.1", "intel.com", "PUT",
+      "Mozilla/5.0", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "ab") //entropy = 1.0
+      "-", "127.0.0.1", 338, 647, "ab")
 
-    val record2 = ProxyInput(
-      "2016-10-03",
-      "01:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "PUT",
-      "Safari/537.36",
-      "image",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "202",
-      80,
+    val AlexaPutMidEntroImagePopularAgentShortUri202 = ProxyInput("2016-10-03", "01:57:36", "127.0.0.1", "maw.bronto.com",
+      "PUT", "Safari/537.36", "image", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "abc") //entropy = 1.5849625007211559
+      "-", "127.0.0.1", 338, 647, "abc")
 
-    val record3 = ProxyInput(
-      "2016-10-03",
-      "02:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "PUT",
-      "Safari/537.36",
-      "image",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "304",
-      80,
+    val AlexaPutMidEntroImagePopularAgentShortUri304 = ProxyInput("2016-10-03", "02:57:36", "127.0.0.1", "maw.bronto.com",
+      "PUT", "Safari/537.36", "image", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "304", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "abcd") //entropy = 2.0
+      "-", "127.0.0.1", 338, 647, "abcd")
 
-    val record4 = ProxyInput(
-      "2016-10-03",
-      "03:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "PUT",
-      "Safari/537.36",
-      "binary",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "304",
-      80,
+    val AlexaPutMidEntroBinaryPopularAgentShortUri304 = ProxyInput("2016-10-03", "03:57:36", "127.0.0.1", "maw.bronto.com",
+      "PUT", "Safari/537.36", "binary", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "304", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "abcde") // entropy = 2.321928094887362
+      "-", "127.0.0.1", 338, 647, "abcde")
 
-    val record5 = ProxyInput(
-      "2016-10-03",
-      "10:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "PUT",
-      "Safari/537.36",
-      "binary",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "206",
-      80,
+    val AlexaPutMidEntroBinaryPopularAgentShortUri206 = ProxyInput("2016-10-03", "10:57:36", "127.0.0.1", "maw.bronto.com",
+      "PUT", "Safari/537.36", "binary", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "206", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "abcdef") //entropy = 2.584962500721155
+      "-", "127.0.0.1", 338, 647, "abcdef")
 
-    val record6 = ProxyInput(
-      "2016-10-03",
-      "11:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "GET",
-      "Safari/537.36",
-      "binary",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "206",
-      80,
+    val AlexaGetHiEntroBinaryPopularAgentShortUri206 = ProxyInput("2016-10-03", "11:57:36", "127.0.0.1", "maw.bronto.com",
+      "GET", "Safari/537.36", "binary", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "206", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "abcdefghijklmnopqrstuvwxyz") //4.70043971814109
+      "-", "127.0.0.1", 338, 647, "abcdefghijklmnopqrstuvwxyz")
 
-    val record7 = ProxyInput(
-      "2016-10-03",
-      "13:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "GET",
-      "Safari/537.36",
-      "text/plain",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "200",
-      80,
+    val AlexaGetZeroEntroTextPopularAgentShortUri200 = ProxyInput("2016-10-03", "13:57:36", "127.0.0.1", "maw.bronto.com",
+      "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "200", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "aaa") //entropy = 0.0
+      "-", "127.0.0.1", 338, 647, "aaa")
 
-    val record8 = ProxyInput(
-      "2016-10-03",
-      "14:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "GET",
-      "Safari/537.36",
-      "text/plain",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "200",
-      80,
+    val AlexaGetLoEntroTextPopularAgentShortUri200 = ProxyInput("2016-10-03", "14:57:36", "127.0.0.1", "maw.bronto.com",
+      "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "200", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "aaabbb") //entropy 1.0
+      "-", "127.0.0.1", 338, 647, "aaabbb")
 
-    val record9 = ProxyInput(
-      "2016-10-03",
-      "22:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "GET",
-      "Safari/537.36",
-      "text/plain",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "302",
-      80,
+    val AlexaGetMidEntroTextPopularAgentMidUri302 = ProxyInput("2016-10-03", "22:57:36", "127.0.0.1", "maw.bronto.com",
+      "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "302", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "aaaaaaaaaaabbbbbbbbbbbccccccccccc") //entropy = 1.5849625007211559
+      "-", "127.0.0.1", 338, 647, "aaaaaaaaaaabbbbbbbbbbbccccccccccc")
 
-    val record10 = ProxyInput(
-      "2016-10-03",
-      "23:57:36",
-      "127.0.0.1",
-      "maw.bronto.com",
-      "GET",
-      "Safari/537.36",
-      "text/plain",
-      230,
-      "-",
-      "Technology/Internet",
-      "http://www.spoonflower.com/tags/color",
-      "302",
-      80,
-      "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
-      "-",
-      "127.0.0.1",
-      338,
-      647,
-      "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd" +
-        "-4e804fd354ef/fiddle") // entropy = 4.832854333602748
+    val AlexaGetHiEntroTextPopularAgentLargeUri302 = ProxyInput("2016-10-03", "23:57:36", "127.0.0.1", "maw.bronto.com",
+      "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "302",
+      80, "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
+      "-", "127.0.0.1", 338, 647, "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts" +
+        "/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle")
 
-
-    val data = sqlContext.createDataFrame(Seq(record1, record2, record3, record4, record5, record6, record7, record8,
-      record9, record10))
+    val data = sqlContext.createDataFrame(Seq(noAlexaPutLoEntroTextRareAgentShortUri202,
+      AlexaPutMidEntroImagePopularAgentShortUri202,
+      AlexaPutMidEntroImagePopularAgentShortUri304,
+      AlexaPutMidEntroBinaryPopularAgentShortUri304,
+      AlexaPutMidEntroBinaryPopularAgentShortUri206,
+      AlexaGetHiEntroBinaryPopularAgentShortUri206,
+      AlexaGetZeroEntroTextPopularAgentShortUri200,
+      AlexaGetLoEntroTextPopularAgentShortUri200,
+      AlexaGetMidEntroTextPopularAgentMidUri302,
+      AlexaGetHiEntroTextPopularAgentLargeUri302))
 
     val scoredData = ProxySuspiciousConnectsAnalysis.detectProxyAnomalies(data, testConfigProxy,
       sparkContext,
@@ -282,6 +144,5 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
     words(7) shouldBe "1_14_GET_4_text_3_2_200"
     words(8) shouldBe "1_22_GET_6_text_3_5_302"
     words(9) shouldBe "1_23_GET_17_text_3_6_302"
-
   }
 }

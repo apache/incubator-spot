@@ -123,7 +123,7 @@ object ProxySuspiciousConnectsModel {
     val EntropyCuts = Array(0.0, 0.3, 0.6, 0.9, 1.2,
       1.5, 1.8, 2.1, 2.4, 2.7,
       3.0, 3.3, 3.6, 3.9, 4.2,
-      4.5, 4.8, 5.1, 5.4, 1.0 / 0)
+      4.5, 4.8, 5.1, 5.4, Double.PositiveInfinity)
 
     val agentToCount: Map[String, Long] =
       selectedRecords.select(UserAgent)

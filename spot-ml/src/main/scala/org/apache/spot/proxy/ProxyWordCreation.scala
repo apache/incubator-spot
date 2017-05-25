@@ -63,9 +63,9 @@ object ProxyWordCreation {
         // Just the top level content type for now
         if (contentType.split('/').length > 0) contentType.split('/')(0) else "unknown_content_type",
         // Exponential cutoffs base 2
-        ExponentialCutoffs.logBaseXInt(agentCounts.value(userAgent), 2),
+        MathUtils.logBaseXInt(agentCounts.value(userAgent), 2),
         // Exponential cutoffs base 2
-        ExponentialCutoffs.logBaseXInt(uri.length(), 2),
+        MathUtils.logBaseXInt(uri.length(), 2),
         // Response code using all 3 digits
         if (responseCode != null) responseCode else "unknown_response_code").mkString("_")
     } match {

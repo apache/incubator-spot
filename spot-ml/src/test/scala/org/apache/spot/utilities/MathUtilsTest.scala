@@ -17,17 +17,24 @@
 
 package org.apache.spot.utilities
 
-import scala.math.log10
+import org.apache.spot.testutils.TestingSparkContextFlatSpec
+import org.scalatest.Matchers
 
 
-object ExponentialCutoffs {
-  /**
-    * Answers the question "To what power must "base" be raised, in order to yield "x"?  https://en.wikipedia.org/wiki/Logarithm
-    *
-    * @param x    This is a Double which is the result of the formula: base to the power of y = x
-    * @param base This is the base of the number we are trying to find
-    * @return A rounded down integer of y
-    */
-  def logBaseXInt(x: Double, base: Int): Int = if (x == 0) 0 else (log10(x) / log10(base)).toInt
+class MathUtilsTest extends TestingSparkContextFlatSpec with Matchers {
 
+  "logBaseXInt" should "return the power in which the base is raised, in order to yield x rounded down to the nearest integer" in {
+
+    val power1 = MathUtils.logBaseXInt(4.0, 2)
+    val power2 = MathUtils.logBaseXInt(8.0, 2)
+    val power3 = MathUtils.logBaseXInt(1.9, 2)
+    val power4 = MathUtils.logBaseXInt(9.5, 3)
+
+    power1 shouldBe 2
+    power2 shouldBe 3
+    power3 shouldBe 0
+    power4 shouldBe 2
+
+
+  }
 }
