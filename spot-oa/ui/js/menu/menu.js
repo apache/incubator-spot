@@ -29,11 +29,6 @@ let menu =
                 ]
               },
               {name: 'Ingest Summary', link: '../ingest-summary.html#end-date=${date}|pipeline=proxy', glyphicon: '', labelledby: '', sub: [], target: '_self'},
-              {name: '', link: '', glyphicon: 'glyphicon-cog', labelledby: 'configMenu', sub:
-                [
-                  {name: 'Manage Plugins', link: '../config/plugins.html#date=${date}', target: '_self'}
-                ]
-              },
               {name: 'Plugins', link: '', glyphicon: '', labelledby: 'pluginsMenu', sub: []}
 
           ]
