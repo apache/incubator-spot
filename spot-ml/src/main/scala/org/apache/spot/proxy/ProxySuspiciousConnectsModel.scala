@@ -138,7 +138,7 @@ object ProxySuspiciousConnectsModel {
 
     val docWordCount: RDD[SpotLDAInput] =
       getIPWordCounts(sparkContext, sqlContext, logger, selectedRecords, config.feedbackFile, config.duplicationFactor,
-        agentToCount, EntropyCuts)
+        agentToCount)
 
 
     val SpotLDAOutput(ipToTopicMixDF, wordResults) = SpotLDAWrapper.runLDA(sparkContext,
@@ -180,14 +180,13 @@ object ProxySuspiciousConnectsModel {
                       inputRecords: DataFrame,
                       feedbackFile: String,
                       duplicationFactor: Int,
-                      agentToCount: Map[String, Long],
-                      entropyCuts: Array[Double]): RDD[SpotLDAInput] = {
+                      agentToCount: Map[String, Long]): RDD[SpotLDAInput] = {
 
 
     logger.info("Read source data")
     val selectedRecords = inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
 
-    val wc = ipWordCountFromDF(sc, selectedRecords, agentToCount, entropyCuts)
+    val wc = ipWordCountFromDF(sc, selectedRecords, agentToCount)
     logger.info("proxy pre LDA completed")
 
     wc
@@ -195,8 +194,7 @@ object ProxySuspiciousConnectsModel {
 
   def ipWordCountFromDF(sc: SparkContext,
                         dataFrame: DataFrame,
-                        agentToCount: Map[String, Long],
-                        entropyCuts: Array[Double]): RDD[SpotLDAInput] = {
+                        agentToCount: Map[String, Long]): RDD[SpotLDAInput] = {
 
     val topDomains: Broadcast[Set[String]] = sc.broadcast(TopDomains.TopDomains)
 
