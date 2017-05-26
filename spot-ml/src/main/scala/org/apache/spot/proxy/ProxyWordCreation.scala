@@ -19,6 +19,7 @@ package org.apache.spot.proxy
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.functions._
+import org.apache.spot.proxy.ProxySuspiciousConnectsModel.EntropyCuts
 import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
@@ -28,8 +29,7 @@ import scala.util.{Success, Try}
 object ProxyWordCreation {
 
   def udfWordCreation(topDomains : Broadcast[Set[String]],
-                      agentCounts : Broadcast[Map[String, Long]],
-                      EntropyCuts: Array[Double]) =
+                      agentCounts: Broadcast[Map[String, Long]]) =
     udf((host: String, time: String, reqMethod: String, uri: String, contentType: String, userAgent: String, responseCode: String) =>
       ProxyWordCreation.proxyWord(host,
         time,
@@ -39,8 +39,7 @@ object ProxyWordCreation {
         userAgent,
         responseCode,
         topDomains,
-        agentCounts,
-        EntropyCuts))
+        agentCounts))
 
 
   def proxyWord(proxyHost: String,
@@ -51,8 +50,7 @@ object ProxyWordCreation {
                 userAgent: String,
                 responseCode: String,
                 topDomains: Broadcast[Set[String]],
-                agentCounts: Broadcast[Map[String, Long]],
-                EntropyCuts: Array[Double]): String = {
+                agentCounts: Broadcast[Map[String, Long]]): String = {
     Try{
       List(topDomain(proxyHost, topDomains.value).toString,
         // Time binned by hours

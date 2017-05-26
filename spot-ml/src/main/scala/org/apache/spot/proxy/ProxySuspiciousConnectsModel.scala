@@ -37,12 +37,10 @@ import org.apache.spot.utilities.data.validation.InvalidDataHandler
   * @param topicCount         Number of "topics" used to cluster IPs and proxy "words" in the topic modelling analysis.
   * @param ipToTopicMIx       Maps each IP to a vector measuring Prob[ topic | this IP] for each topic.
   * @param wordToPerTopicProb Maps each word to a vector measuring Prob[word | topic] for each topic.
-  * @param entropyCuts        Fixed cutoffs for measurement of full URI string entropy.
   */
 class ProxySuspiciousConnectsModel(topicCount: Int,
                                    ipToTopicMIx: Map[String, Array[Double]],
-                                   wordToPerTopicProb: Map[String, Array[Double]],
-                                   entropyCuts: Array[Double]) {
+                                   wordToPerTopicProb: Map[String, Array[Double]]) {
 
   /**
     * Calculate suspicious connection scores for an incoming dataframe using this proxy suspicious connects model.
@@ -62,7 +60,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
     val agentToCountBC = sc.broadcast(agentToCount)
 
     val udfWordCreation =
-      ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC, entropyCuts)
+      ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC)
 
     val wordedDataFrame = dataFrame.withColumn(Word,
       udfWordCreation(dataFrame(Host),
@@ -90,6 +88,15 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
   */
 object ProxySuspiciousConnectsModel {
 
+  // These buckets are optimized to datasets used for training. Last bucket is of infinite size to ensure fit.
+  // The maximum value of entropy is given by log k where k is the number of distinct categories.
+  // Given that the alphabet and number of characters is finite the maximum value for entropy is upper bounded.
+  // Bucket number and size can be changed to provide less/more granularity
+  val EntropyCuts = Array(0.0, 0.3, 0.6, 0.9, 1.2,
+    1.5, 1.8, 2.1, 2.4, 2.7,
+    3.0, 3.3, 3.6, 3.9, 4.2,
+    4.5, 4.8, 5.1, 5.4, Double.PositiveInfinity)
+
   /**
     * Factory for ProxySuspiciousConnectsModel.
     * Trains the model from the incoming DataFrame using the specified number of topics
@@ -116,14 +123,7 @@ object ProxySuspiciousConnectsModel {
       inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
       .unionAll(ProxyFeedback.loadFeedbackDF(sparkContext, sqlContext, config.feedbackFile, config.duplicationFactor))
 
-    // These buckets are optimized to datasets used for training. Last bucket is of infinite size to ensure fit.
-    // The maximum value of entropy is given by log k where k is the number of distinct categories.
-    // Given that the alphabet and number of characters is finite the maximum value for entropy is upper bounded.
-    // Bucket number and size can be changed to provide less/more granularity
-    val EntropyCuts = Array(0.0, 0.3, 0.6, 0.9, 1.2,
-      1.5, 1.8, 2.1, 2.4, 2.7,
-      3.0, 3.3, 3.6, 3.9, 4.2,
-      4.5, 4.8, 5.1, 5.4, Double.PositiveInfinity)
+
 
     val agentToCount: Map[String, Long] =
       selectedRecords.select(UserAgent)
@@ -164,7 +164,7 @@ object ProxySuspiciousConnectsModel {
       .toMap
 
 
-    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults, EntropyCuts)
+    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults)
 
   }
 
@@ -201,7 +201,7 @@ object ProxySuspiciousConnectsModel {
     val topDomains: Broadcast[Set[String]] = sc.broadcast(TopDomains.TopDomains)
 
     val agentToCountBC = sc.broadcast(agentToCount)
-    val udfWordCreation = ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC, entropyCuts)
+    val udfWordCreation = ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC)
 
     val ipWord = dataFrame.withColumn(Word,
       udfWordCreation(dataFrame(Host),
