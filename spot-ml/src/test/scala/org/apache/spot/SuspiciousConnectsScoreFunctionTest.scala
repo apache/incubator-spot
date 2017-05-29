@@ -19,7 +19,7 @@ package org.apache.spot
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.apache.spot.utilities.transformation.{ProbabilityConverterDouble, ProbabilityConverterFloat}
+import org.apache.spot.utilities.transformation.{PrecisionUtilityDouble, PrecisionUtilityFloat}
 import org.scalatest.Matchers
 
 /**
@@ -33,12 +33,12 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
     val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
-    val probabilityConversionOption = ProbabilityConverterDouble
+    val precisionUtility = PrecisionUtilityDouble
     val documentProbabilities = Seq(0.05d, 0.05d, 0.05d, 0.05d)
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
-    val score = scoreFunction.score(probabilityConversionOption)(documentProbabilities, "word_1")
+    val score = scoreFunction.score(precisionUtility)(documentProbabilities, "word_1")
 
     score shouldBe 0.010000000000000002d
 
@@ -50,12 +50,12 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
     val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
-    val probabilityConversionOption = ProbabilityConverterFloat
+    val precisionUtility = PrecisionUtilityFloat
     val documentProbabilities = Seq(0.05f, 0.05f, 0.05f, 0.05f)
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
-    val score = scoreFunction.score(probabilityConversionOption)(documentProbabilities, "word_1")
+    val score = scoreFunction.score(precisionUtility)(documentProbabilities, "word_1")
 
     score shouldBe 0.010000000149011612d
 
@@ -66,12 +66,12 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
     val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
-    val probabilityConversionOption = ProbabilityConverterFloat
+    val precisionUtility = PrecisionUtilityFloat
     val documentProbabilities = Seq(0.05f, 0.05f, 0.05f, 0.05f)
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
-    val score = scoreFunction.score(probabilityConversionOption)(documentProbabilities, "word_error")
+    val score = scoreFunction.score(precisionUtility)(documentProbabilities, "word_error")
 
     score shouldBe -1d
   }

@@ -8,35 +8,35 @@ import org.scalatest.Matchers
 /**
   * Created by rabarona on 5/17/17.
   */
-class ProbabilityConverterFloatTest extends TestingSparkContextFlatSpec with Matchers {
+class PrecisionUtilityFloatTest extends TestingSparkContextFlatSpec with Matchers {
 
-  "convertProbability" should "just return value converted to Float" in {
+  "toTargetType" should "just return value converted to Float" in {
     val testValue: Double = 5d
 
-    val result = ProbabilityConverterFloat.convertProbability(testValue)
+    val result = PrecisionUtilityFloat.toTargetType(testValue)
 
     result shouldBe 5f
     result shouldBe a[java.lang.Float]
 
   }
 
-  "convertBackSetOfProbabilities" should "convert a Seq of Float to Seq of Double" in {
+  "toDoubles" should "convert a Seq of Float to Seq of Double" in {
 
     val testSeq: Seq[Float] = Seq(1f, 2f, 3f)
 
-    val result = ProbabilityConverterFloat.convertBackSetOfProbabilities(testSeq)
+    val result: Seq[Double] = PrecisionUtilityFloat.toDoubles(testSeq)
 
     result(0) shouldBe a[java.lang.Double]
     result(1) shouldBe a[java.lang.Double]
     result(2) shouldBe a[java.lang.Double]
   }
 
-  "convertDataFrameColumn" should "return the exact same data frame" in {
+  "castColumn" should "return a data frame with a schema modified, Seq[Float] instead of Seq[Double]" in {
 
     val testDataFrame = sqlContext.createDataFrame(Seq(("doc1", Array(1d, 2d)), ("doc2", Array(2d, 3d))))
       .withColumnRenamed("_1", DocumentName).withColumnRenamed("_2", TopicProbabilityMix)
 
-    val result = ProbabilityConverterFloat.convertDataFrameColumn(testDataFrame, TopicProbabilityMix)
+    val result = PrecisionUtilityFloat.castColumn(testDataFrame, TopicProbabilityMix)
     result.count
 
     val schema = StructType(

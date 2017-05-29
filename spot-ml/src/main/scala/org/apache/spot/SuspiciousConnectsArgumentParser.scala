@@ -17,7 +17,7 @@
 
 package org.apache.spot
 
-import org.apache.spot.utilities.transformation.{ProbabilityConverter, ProbabilityConverterDouble, ProbabilityConverterFloat}
+import org.apache.spot.utilities.transformation.{PrecisionUtility, PrecisionUtilityDouble, PrecisionUtilityFloat}
 
 
 /**
@@ -87,11 +87,11 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(ldaBeta = x)).
       text("topic concentration for lda, default 1.001")
 
-    opt[Int]("scalingOption").optional().valueName("int").
-      action((x, c) => c.copy(probabilityConversionOption = x match {
-        case 32 => ProbabilityConverterFloat
-        case 64 => ProbabilityConverterDouble
-        case _ => ProbabilityConverterDouble
+    opt[Int]("precision").optional().valueName("int").
+      action((x, c) => c.copy(precisionUtility = x match {
+        case 32 => PrecisionUtilityFloat
+        case 64 => PrecisionUtilityDouble
+        case _ => PrecisionUtilityDouble
       }))
   }
 
@@ -109,5 +109,5 @@ object SuspiciousConnectsArgumentParser {
                                       ldaMaxiterations: Int = 20,
                                       ldaAlpha: Double = 1.02,
                                       ldaBeta: Double = 1.001,
-                                      probabilityConversionOption: ProbabilityConverter = ProbabilityConverterDouble)
+                                      precisionUtility: PrecisionUtility = PrecisionUtilityDouble)
 }

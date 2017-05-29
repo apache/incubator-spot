@@ -51,7 +51,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
     *                  (as defined in ProxySchema object).
     * @return Dataframe with Score column added.
     */
-  def score(sc: SparkContext, dataFrame: DataFrame, probabilityConversionOption: ProbabilityConverter): DataFrame = {
+  def score(sc: SparkContext, dataFrame: DataFrame, precisionUtility: PrecisionUtility): DataFrame = {
 
     val topDomains: Broadcast[Set[String]] = sc.broadcast(TopDomains.TopDomains)
 
@@ -76,8 +76,8 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
-    def udfScoreFunction = udf((documentTopicMix: Seq[probabilityConversionOption.ScalingType], word: String) =>
-      scoreFunction.score(probabilityConversionOption)(documentTopicMix, word))
+    def udfScoreFunction = udf((documentTopicMix: Seq[precisionUtility.TargetType], word: String) =>
+      scoreFunction.score(precisionUtility)(documentTopicMix, word))
 
     wordedDataFrame
       .join(org.apache.spark.sql.functions.broadcast(ipToTopicMIx), dataFrame(ClientIP) === ipToTopicMIx(DocumentName), "left_outer")
@@ -154,7 +154,7 @@ object ProxySuspiciousConnectsModel {
       config.ldaAlpha,
       config.ldaBeta,
       config.ldaMaxiterations,
-      config.probabilityConversionOption)
+      config.precisionUtility)
 
     new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults)
 

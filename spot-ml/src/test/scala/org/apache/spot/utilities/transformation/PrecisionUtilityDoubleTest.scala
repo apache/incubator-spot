@@ -8,34 +8,34 @@ import org.scalatest.Matchers
 /**
   * Created by rabarona on 5/17/17.
   */
-class ProbabilityConverterDoubleTest extends TestingSparkContextFlatSpec with Matchers {
+class PrecisionUtilityDoubleTest extends TestingSparkContextFlatSpec with Matchers {
 
-  "convertProbability" should "just return the same value with the same type" in {
+  "toTargetType" should "just return the same value with the same type" in {
     val testValue: Double = 5d
 
-    val result = ProbabilityConverterDouble.convertProbability(testValue)
+    val result = PrecisionUtilityDouble.toTargetType(testValue)
 
     result shouldBe testValue
     result shouldBe a[java.lang.Double]
 
   }
 
-  "convertBackSetOfProbabilities" should "return a array of the same type" in {
+  "toDoubles" should "return an array of the same type" in {
 
     val testSeq: Seq[Double] = Seq(1d, 2d, 3d)
 
-    val result = ProbabilityConverterDouble.convertBackSetOfProbabilities(testSeq)
+    val result: Seq[Double] = PrecisionUtilityDouble.toDoubles(testSeq)
 
-    result shouldBe a[Array[Double]]
+    result shouldBe a[Seq[Double]]
     result.length shouldBe 3
   }
 
-  "convertDataFrameColumn" should "return the exact same data frame" in {
+  "castColumn" should "return the exact same data frame" in {
 
     val testDataFrame = sqlContext.createDataFrame(Seq(("doc1", Array(1d, 2d)), ("doc2", Array(2d, 3d))))
       .withColumnRenamed("_1", DocumentName).withColumnRenamed("_2", TopicProbabilityMix)
 
-    val result = ProbabilityConverterDouble.convertDataFrameColumn(testDataFrame, TopicProbabilityMix)
+    val result = PrecisionUtilityDouble.castColumn(testDataFrame, TopicProbabilityMix)
 
     val schema = StructType(
       Array(StructField(DocumentName, StringType, true),

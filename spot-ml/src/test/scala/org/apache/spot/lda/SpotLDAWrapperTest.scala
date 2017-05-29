@@ -25,7 +25,7 @@ import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spot.lda.SpotLDAWrapper._
 import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.apache.spot.utilities.transformation.{ProbabilityConverterDouble, ProbabilityConverterFloat}
+import org.apache.spot.utilities.transformation.{PrecisionUtilityDouble, PrecisionUtilityFloat}
 import org.scalatest.Matchers
 
 import scala.collection.immutable.Map
@@ -45,7 +45,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
 
     val data = sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkContext, sqlContext, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
-      ldaMaxIterations, ProbabilityConverterDouble)
+      ldaMaxIterations, PrecisionUtilityDouble)
 
     val topicMixDF = out.docToTopicMix
 
@@ -68,7 +68,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
 
     val data = sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkContext, sqlContext, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
-      ldaMaxIterations, ProbabilityConverterFloat)
+      ldaMaxIterations, PrecisionUtilityFloat)
 
     val topicMixDF = out.docToTopicMix
 
@@ -90,7 +90,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
 
     val data = sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkContext, sqlContext, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
-      ldaMaxIterations, ProbabilityConverterDouble)
+      ldaMaxIterations, PrecisionUtilityDouble)
 
     val topicMixDF = out.docToTopicMix
     val dogTopicMix: Array[Double] =
@@ -116,7 +116,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
 
     val data = sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkContext, sqlContext, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
-      ldaMaxIterations, ProbabilityConverterFloat)
+      ldaMaxIterations, PrecisionUtilityFloat)
 
     val topicMixDF = out.docToTopicMix
     val dogTopicMix: Array[Float] =
@@ -161,7 +161,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
   }
 
   "formatSparkLDADocTopicOutput" should "return RDD[(String,Array(Double))] after converting doc results from vector " +
-    "using ProbabilityConverterDouble: convert docID back to string, convert vector of probabilities to array" in {
+    "using PrecisionUtilityDouble: convert docID back to string, convert vector of probabilities to array" in {
 
     val documentWordData = sparkContext.parallelize(Seq(SpotLDAInput("192.168.1.1", "333333_7.0_0.0_1.0", 8),
       SpotLDAInput("10.10.98.123", "1111111_6.0_3.0_5.0", 4),
@@ -179,7 +179,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
         (2.toLong, Vectors.dense(0.4, 0.1, 0.3, 0.2))))
 
     val sparkDocRes: DataFrame = formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sqlContext,
-      ProbabilityConverterDouble)
+      PrecisionUtilityDouble)
 
     val documents = sparkDocRes.select(DocumentName).map(documentName => documentName.toString.replaceAll("\\[", "")
       .replaceAll("\\]", "")).collect()
@@ -195,7 +195,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
   }
 
   it should "return RDD[(String,Array(Float))] after converting doc results from vector " +
-    "using ProbabilityConverterFloat: convert docID back to string, convert vector of probabilities to array" in {
+    "using PrecisionUtilityFloat: convert docID back to string, convert vector of probabilities to array" in {
 
     val documentWordData = sparkContext.parallelize(Seq(SpotLDAInput("192.168.1.1", "333333_7.0_0.0_1.0", 8),
       SpotLDAInput("10.10.98.123", "1111111_6.0_3.0_5.0", 4),
@@ -213,7 +213,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
         (2.toLong, Vectors.dense(0.4, 0.1, 0.3, 0.2))))
 
     val sparkDocRes: DataFrame = formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sqlContext,
-      ProbabilityConverterFloat)
+      PrecisionUtilityFloat)
 
     val documents = sparkDocRes.select(DocumentName).map(documentName => documentName.toString.replaceAll("\\[", "")
       .replaceAll("\\]", "")).collect()

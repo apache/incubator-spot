@@ -30,7 +30,7 @@ import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.transformation.{ProbabilityConverter, Quantiles}
+import org.apache.spot.utilities.transformation.{PrecisionUtility, Quantiles}
 
 import scala.util.{Failure, Success, Try}
 
@@ -60,7 +60,7 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                                   wordToPerTopicProb: Map[String, Array[Double]]) {
 
   def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame,
-            probabilityConversionOption: ProbabilityConverter): DataFrame = {
+            precisionUtility: PrecisionUtility): DataFrame = {
 
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
@@ -94,9 +94,11 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                           protocol: String,
                           ibyt: Long,
                           ipkt: Long,
-                          srcIpTopicMix: Seq[probabilityConversionOption.ScalingType],
-                          dstIpTopicMix: Seq[probabilityConversionOption.ScalingType]) =>
-      scoreFunction.score(probabilityConversionOption)(hour,
+                          srcIpTopicMix: Seq[precisionUtility.TargetType],
+                          dstIpTopicMix: Seq[precisionUtility.TargetType]) =>
+      scoreFunction.score(precisionUtility)(hour,
+        minute,
+        second,
         srcIP,
         dstIP,
         srcPort,
@@ -187,7 +189,7 @@ object FlowSuspiciousConnectsModel {
       config.ldaAlpha,
       config.ldaBeta,
       config.ldaMaxiterations,
-      config.probabilityConversionOption)
+      config.precisionUtility)
 
     new FlowSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,

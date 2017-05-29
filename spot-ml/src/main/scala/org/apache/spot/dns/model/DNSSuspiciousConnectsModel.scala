@@ -90,7 +90,7 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     *         probability estimated for the network event at that row
     */
   def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String
-            , probabilityConversionOption: ProbabilityConverter): DataFrame = {
+            , precisionUtility: PrecisionUtility): DataFrame = {
 
     val topDomainsBC = sc.broadcast(TopDomains.TopDomains)
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
@@ -115,8 +115,8 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
                           queryClass: String,
                           queryType: Int,
                           queryResponseCode: Int,
-                          documentTopicMix: Seq[probabilityConversionOption.ScalingType]) =>
-      scoreFunction.score(probabilityConversionOption)(timeStamp,
+                          documentTopicMix: Seq[precisionUtility.TargetType]) =>
+      scoreFunction.score(precisionUtility)(timeStamp,
         unixTimeStamp,
         frameLength,
         clientIP,
@@ -288,7 +288,7 @@ object DNSSuspiciousConnectsModel {
       config.ldaAlpha,
       config.ldaBeta,
       config.ldaMaxiterations,
-      config.probabilityConversionOption)
+      config.precisionUtility)
 
     new DNSSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,

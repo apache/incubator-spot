@@ -25,7 +25,7 @@ import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis.InSchema
 import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.apache.spot.utilities.transformation.ProbabilityConverterFloat
+import org.apache.spot.utilities.transformation.PrecisionUtilityFloat
 import org.scalatest.Matchers
 
 
@@ -60,7 +60,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     ldaMaxiterations = 20,
     ldaAlpha = 1.02,
     ldaBeta = 1.001,
-    probabilityConversionOption = ProbabilityConverterFloat)
+    precisionUtility = PrecisionUtilityFloat)
 
   "netflow suspicious connects" should "correctly identify time-of-day anomalies" in {
 

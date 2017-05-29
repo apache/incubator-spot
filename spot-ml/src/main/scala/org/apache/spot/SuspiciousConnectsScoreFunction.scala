@@ -19,7 +19,7 @@ package org.apache.spot
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.transformation.ProbabilityConverter
+import org.apache.spot.utilities.transformation.PrecisionUtility
 
 /**
   * Base class for scoring suspicious connects models.
@@ -32,8 +32,8 @@ import org.apache.spot.utilities.transformation.ProbabilityConverter
 class SuspiciousConnectsScoreFunction(topicCount: Int,
                                       wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]]) extends Serializable {
 
-  def score[P <: ProbabilityConverter](probabilityConversionOption: P)
-                                      (documentTopicMix: Seq[probabilityConversionOption.ScalingType], word: String): Double = {
+  def score[P <: PrecisionUtility](precisionUtility: P)
+                                  (documentTopicMix: Seq[precisionUtility.TargetType], word: String): Double = {
 
     val zeroProb = Array.fill(topicCount) {
       0d
@@ -44,8 +44,9 @@ class SuspiciousConnectsScoreFunction(topicCount: Int,
     } else {
       // If either the ip or the word key value cannot be found it means that it was not seen in training.
       val wordGivenTopicProbabilities = wordToPerTopicProbBC.value.getOrElse(word, zeroProb)
+      val documentTopicMixDouble: Seq[Double] = precisionUtility.toDoubles(documentTopicMix)
 
-      probabilityConversionOption.convertBackSetOfProbabilities(documentTopicMix).zip(wordGivenTopicProbabilities)
+      documentTopicMixDouble.zip(wordGivenTopicProbabilities)
         .map({ case (pWordGivenTopic, pTopicGivenDoc) => pWordGivenTopic * pTopicGivenDoc })
         .sum
     }

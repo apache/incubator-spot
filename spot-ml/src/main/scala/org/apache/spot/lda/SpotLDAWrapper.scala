@@ -25,7 +25,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.lda.SpotLDAWrapperSchema._
-import org.apache.spot.utilities.transformation.ProbabilityConverter
+import org.apache.spot.utilities.transformation.PrecisionUtility
 
 import scala.collection.immutable.Map
 
@@ -49,7 +49,7 @@ object SpotLDAWrapper {
              ldaAlpha: Double,
              ldaBeta: Double,
              maxIterations: Int,
-             probabilityConversionOption: ProbabilityConverter): SpotLDAOutput = {
+             precisionUtility: PrecisionUtility): SpotLDAOutput = {
 
     import sqlContext.implicits._
 
@@ -119,7 +119,7 @@ object SpotLDAWrapper {
 
     //Create doc results from vector: convert docID back to string, convert vector of probabilities to array
     val docToTopicMixDF =
-      formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sqlContext, probabilityConversionOption)
+      formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sqlContext, precisionUtility)
 
     documentDictionary.unpersist()
 
@@ -183,7 +183,7 @@ object SpotLDAWrapper {
   }
 
   def formatSparkLDADocTopicOutput(docTopDist: RDD[(Long, Vector)], documentDictionary: DataFrame, sqlContext:
-  SQLContext, probabilityConversionOption: ProbabilityConverter):
+  SQLContext, precisionUtility: PrecisionUtility):
   DataFrame = {
     import sqlContext.implicits._
 
@@ -198,7 +198,7 @@ object SpotLDAWrapper {
       .withColumn(TopicProbabilityMixArray, topicDistributionToArray(documentToTopicDistributionDF(TopicProbabilityMix)))
       .selectExpr(s"$DocumentName  AS $DocumentName", s"$TopicProbabilityMixArray AS $TopicProbabilityMix")
 
-    probabilityConversionOption.convertDataFrameColumn(documentToTopicDistributionArray, TopicProbabilityMix)
+    precisionUtility.castColumn(documentToTopicDistributionArray, TopicProbabilityMix)
   }
 
   case class SpotLDAInput(doc: String, word: String, count: Int) extends Serializable
