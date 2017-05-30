@@ -21,7 +21,6 @@
 
 DSOURCE=$1
 RAWDATA_PATH=$2
-LDAOPTIMIZER="online"
 
 # read in variables (except for date) from etc/.conf file
 
