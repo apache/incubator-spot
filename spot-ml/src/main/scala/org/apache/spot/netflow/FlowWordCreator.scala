@@ -35,18 +35,8 @@ case class FlowWords(srcWord: String, dstWord: String)
 /**
   * Contains methods and Spark SQL udf objects for calculation of netflow words from netflow records.
   *
-  * @param timeCuts Quantile cut-offs for the time of day. Time of day is a floating point number
-  *                 >= 0.0 and < 24.0
-  * @param ibytCuts Quantile cut-offs for the inbytes.
-  * @param ipktCuts Quantile cut-offs if the incoming packet counts.
   */
-class FlowWordCreator(timeCuts: Array[Double],
-                      ibytCuts: Array[Double],
-                      ipktCuts: Array[Double],
-                      useProtocol: Boolean = false,
-                      hourBinTime: Boolean = false,
-                      expBinBytes: Boolean = false,
-                      expBinPackets: Boolean =false ) extends Serializable {
+object FlowWordCreator extends Serializable {
 
 
   /**
@@ -102,33 +92,20 @@ class FlowWordCreator(timeCuts: Array[Double],
     Try {
       val timeOfDay: Double = hour.toDouble + minute.toDouble / 60 + second.toDouble / 3600
 
-      val timeBin = if (hourBinTime == true) {
-        hour
-      } else {
-        Quantiles.bin(timeOfDay, timeCuts)
-      }
+      val timeBin = hour
+
 
       val lnOf2 = scala.math.log(2) // natural log of 2
-      val ibytBin : Long = if (expBinBytes) {
+      val ibytBin : Long =
           scala.math.ceil(scala.math.log(ibyt) / lnOf2).toLong  // 0 values should never ever happen
-      } else {
-        Quantiles.bin(ibyt, ibytCuts)
 
-      }
-      val ipktBin : Long = if (expBinPackets) {
-        scala.math.ceil(scala.math.log(ipkt) / lnOf2).toLong // 0 values should never ever happen
-      } else {
-        Quantiles.bin(ipkt, ibytCuts)
-      }
+      val ipktBin : Long =  scala.math.ceil(scala.math.log(ipkt) / lnOf2).toLong // 0 values should never ever happen
 
       val LowToLowPortEncoding = 111111
       val HighToHighPortEncoding = 333333
 
-      val proto = if (useProtocol == true) {
-        protocol
-      } else {
-        ""
-      }
+      val proto = protocol
+
 
       if (dstPort == 0 && srcPort == 0) {
 

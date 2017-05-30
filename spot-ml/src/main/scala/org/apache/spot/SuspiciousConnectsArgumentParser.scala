@@ -36,14 +36,7 @@ object SuspiciousConnectsArgumentParser {
                                       ldaPRGSeed: Option[Long] = None,
                                       ldaMaxiterations: Int = 20,
                                       ldaAlpha: Double = 1.02,
-                                      ldaBeta: Double = 1.001,
-                                      // flow tuning options
-                                      // these are for the flow tuning branch only!
-
-                                      flatBinTime: Boolean = false,
-                                      expBinIBytes: Boolean = false,
-                                      expBinIPkts: Boolean = false,
-                                      useProtocol: Boolean = false)
+                                      ldaBeta: Double = 1.001)
 
   val parser: scopt.OptionParser[SuspiciousConnectsConfig] = new scopt.OptionParser[SuspiciousConnectsConfig]("LDA") {
 
@@ -108,22 +101,6 @@ object SuspiciousConnectsArgumentParser {
       text("topic concentration for lda, default 1.001")
 
 
-    // these are for the flow tuning branch only!
-    opt[Boolean]("hourbins").optional().
-      action((x, c) => c.copy(flatBinTime = true)).
-      text("use per-hour binning strategy for flow time of day")
-
-    opt[Boolean]("expbinbytes").optional().
-      action((x, c) => c.copy(expBinIBytes = true)).
-      text("use exponential binning strategy for flow byte counts")
-
-    opt[Boolean]("expbinpkts").optional().
-      action((x, c) => c.copy(expBinIPkts = true)).
-      text("use exponential binning strategy for flow packet counts")
-
-    opt[Boolean]("protocol").optional().
-      action((x, c) => c.copy(useProtocol = true)).
-      text("incorporate flow protocol into netflow word creation")
 
   }
 }

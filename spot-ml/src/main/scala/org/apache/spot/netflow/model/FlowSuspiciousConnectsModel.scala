@@ -53,21 +53,11 @@ import scala.util.{Failure, Success, Try}
   * @param ipToTopicMix       DataFrame assigning a distribution on topics to each document or IP.
   * @param wordToPerTopicProb Map assigning to each word it's per-topic probabilities.
   *                           Ie. Prob [word | t ] for t = 0 to topicCount -1
-  * @param timeCuts           Quantile cut-offs for binning time-of-day values when forming words from netflow records.
-  * @param ibytCuts           Quantile cut-offs for binning ibyt values when forming words from netflow records.
-  * @param ipktCuts           Quantile cut-offs for binning ipkt values when forming words from netflow records.
   */
 
 class FlowSuspiciousConnectsModel(topicCount: Int,
                                   ipToTopicMix: DataFrame,
-                                  wordToPerTopicProb: Map[String, Array[Double]],
-                                  useProtocol: Boolean,
-                                  hourBinTime: Boolean,
-                                  expBinBytes: Boolean,
-                                  expBinPackets: Boolean,
-                                  timeCuts: Array[Double],
-                                  ibytCuts: Array[Double],
-                                  ipktCuts: Array[Double]) {
+                                  wordToPerTopicProb: Map[String, Array[Double]]) {
 
   def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame): DataFrame = {
 
@@ -91,15 +81,8 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
       recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)
     }
 
-    val scoreFunction = new FlowScoreFunction(useProtocol,
-      hourBinTime,
-      expBinBytes,
-      expBinPackets,
-      timeCuts,
-      ibytCuts,
-      ipktCuts,
-      topicCount,
-      wordToPerTopicProbBC)
+
+    val scoreFunction = new FlowScoreFunction(topicCount, wordToPerTopicProbBC)
 
 
     val scoringUDF = udf((hour: Int,
@@ -122,8 +105,8 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
         srcPort,
         dstPort,
         protocol,
-        ipkt,
         ibyt,
+        ipkt,
         srcIpTopicMix,
         dstIpTopicMix))
 
@@ -190,85 +173,13 @@ object FlowSuspiciousConnectsModel {
       config.feedbackFile,
       config.duplicationFactor))
 
-    // create quantile cut-offs
-
-    val timeCuts = if (config.flatBinTime == false) {
-      logger.info("Using decile based time binning")
-      val timeCuts = Quantiles.computeDeciles(totalRecords
-        .select(Hour, Minute, Second)
-        .rdd
-        .flatMap({ case Row(hours: Int, minutes: Int, seconds: Int) =>
-          Try {
-            (3600 * hours + 60 * minutes + seconds).toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(time) => Seq(time)
-          }
-        }))
-
-      logger.info(timeCuts.mkString(","))
-      timeCuts
-    } else {
-      logger.info("Using hour-based time binning")
-      null
-    }
 
 
 
+    // simplify netflow log entries into "words"
 
-
-    val ibytCuts = if (config.expBinIBytes == false) {
-      logger.info("Using decile based ibytes binning")
-      val ibytCuts = Quantiles.computeDeciles(totalRecords
-        .select(Ibyt)
-        .rdd
-        .flatMap({ case Row(ibyt: Long) =>
-          Try {
-            ibyt.toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(ibyt) => Seq(ibyt)
-          }
-        }))
-
-      logger.info(ibytCuts.mkString(","))
-      ibytCuts
-    } else {
-      logger.info("using exponential binning strategy for flow ibytes")
-      null
-    }
-
-
-
-    logger.info("calculating pkt cuts")
-
-    val ipktCuts = if (config.expBinIPkts == false) {
-      logger.info("Using quintile based ipkt count binning")
-      val ipktCuts =
-      Quantiles.computeQuintiles(totalRecords
-        .select(Ipkt)
-        .rdd
-        .flatMap({ case Row(ipkt: Long) =>
-          Try {
-            ipkt.toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(ipkt) => Seq(ipkt)
-          }
-        }))
-
-      logger.info(ipktCuts.mkString(","))
-      ipktCuts
-    } else {
-      logger.info("Using exponential binning for ipkts")
-      null
-    }
-    // simplify dflow log entries into "words"
-
-    val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts, config.useProtocol, config.flatBinTime, config.expBinIBytes, config.expBinIPkts)
-
-    val dataWithWords = totalRecords.withColumn(SourceWord, flowWordCreator.srcWordUDF(ModelColumns: _*))
-      .withColumn(DestinationWord, flowWordCreator.dstWordUDF(ModelColumns: _*))
+    val dataWithWords = totalRecords.withColumn(SourceWord, FlowWordCreator.srcWordUDF(ModelColumns: _*))
+      .withColumn(DestinationWord, FlowWordCreator.dstWordUDF(ModelColumns: _*))
 
     dataWithWords.cache()
     dataWithWords.count
@@ -312,13 +223,6 @@ object FlowSuspiciousConnectsModel {
 
     new FlowSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,
-      wordToPerTopicProb,
-      config.useProtocol,
-      config.flatBinTime,
-      config.expBinIBytes,
-      config.expBinIPkts,
-      timeCuts,
-      ibytCuts,
-      ipktCuts)
+      wordToPerTopicProb)
   }
 }

@@ -25,27 +25,15 @@ import org.apache.spot.utilities.data.validation.InvalidDataHandler
 /**
   * Estimate the probabilities of network events using a [[FlowSuspiciousConnectsModel]]
   *
-  * @param timeCuts Quantile cut-offs for binning time-of-day values when forming words from netflow records.
-  * @param ibytCuts Quantile cut-offs for binning ibyt values when forming words from netflow records.
-  * @param ipktCuts Quantile cut-offs for binning ipkt values when forming words from netflow records.
   * @param topicCount Number of topics used in the topic modelling analysis.
   * @param wordToPerTopicProbBC Broadcast map assigning to each word it's per-topic probabilities.
   *                           Ie. Prob [word | t ] for t = 0 to topicCount -1
   */
 
 
-class FlowScoreFunction(useProtocol: Boolean,
-                        hourBinTime : Boolean,
-                        expBinBytes : Boolean,
-                        expBinPackets: Boolean,
-                         timeCuts: Array[Double],
-                        ibytCuts: Array[Double],
-                        ipktCuts: Array[Double],
-                        topicCount: Int,
+class FlowScoreFunction(topicCount: Int,
                         wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]]) extends Serializable {
 
-
-  val flowWordCreator = new FlowWordCreator(timeCuts, ibytCuts, ipktCuts, useProtocol, hourBinTime, expBinBytes, expBinPackets)
 
   /**
     * Estimate the probability of a netflow connection as distributed from the source IP and from the destination IP
@@ -78,7 +66,7 @@ class FlowScoreFunction(useProtocol: Boolean,
             dstTopicMix: Seq[Double]): Double = {
 
 
-    val FlowWords(srcWord, dstWord) = flowWordCreator.flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, protocol, ibyt: Long, ipkt: Long)
+    val FlowWords(srcWord, dstWord) = FlowWordCreator.flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, protocol, ibyt: Long, ipkt: Long)
 
     val zeroProb = Array.fill(topicCount) {
       0.0
