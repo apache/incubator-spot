@@ -19,7 +19,7 @@ package org.apache.spot
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.apache.spot.utilities.transformation.{PrecisionUtilityDouble, PrecisionUtilityFloat}
+import org.apache.spot.utilities.{FloatPointPrecisionUtility32, FloatPointPrecisionUtility64}
 import org.scalatest.Matchers
 
 /**
@@ -33,7 +33,7 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
     val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
-    val precisionUtility = PrecisionUtilityDouble
+    val precisionUtility = FloatPointPrecisionUtility64
     val documentProbabilities = Seq(0.05d, 0.05d, 0.05d, 0.05d)
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
@@ -50,7 +50,7 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
     val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
-    val precisionUtility = PrecisionUtilityFloat
+    val precisionUtility = FloatPointPrecisionUtility32
     val documentProbabilities = Seq(0.05f, 0.05f, 0.05f, 0.05f)
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
@@ -66,7 +66,7 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
     val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
-    val precisionUtility = PrecisionUtilityFloat
+    val precisionUtility = FloatPointPrecisionUtility32
     val documentProbabilities = Seq(0.05f, 0.05f, 0.05f, 0.05f)
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)

@@ -1,6 +1,6 @@
 ## Spark Configuration
 
-spot-ml main component uses Spark and Spark SQL to analyze network events and produce a list of least probable events
+spot-ml main component uses Spark and Spark SQL to analyze network events and those considered the most unlikely
 or most suspicious.
 
 To run spot-ml with its best performance and scalability, it will probably be necessary to configure Yarn, Spark and Spot. Here are our recommended settings.  
@@ -138,7 +138,7 @@ The correct setting of  SPK_AUTO_BRDCST_JOIN_THR and PRECISION can help to alway
 
 As a first step, users need to decide whether they want to change from 64 bit floating point probabilities to 32 bit floating point probabilities; if users decide to change from 64 to 32 bit, the document probability distribution lookup table will be half the size and more easily broadcasted. 
 
-If users want to cut the payload on half, they should set precision option to 32.
+If users want to cut payload memory consumption roughly in half, they should set the precision option to 32.
 
  >PRECISION='32' 
  

@@ -17,7 +17,7 @@
 
 package org.apache.spot
 
-import org.apache.spot.utilities.transformation.{PrecisionUtility, PrecisionUtilityDouble, PrecisionUtilityFloat}
+import org.apache.spot.utilities.{FloatPointPrecisionUtility, FloatPointPrecisionUtility32, FloatPointPrecisionUtility64}
 
 
 /**
@@ -89,9 +89,9 @@ object SuspiciousConnectsArgumentParser {
 
     opt[Int]("precision").optional().valueName("int").
       action((x, c) => c.copy(precisionUtility = x match {
-        case 32 => PrecisionUtilityFloat
-        case 64 => PrecisionUtilityDouble
-        case _ => PrecisionUtilityDouble
+        case 32 => FloatPointPrecisionUtility32
+        case 64 => FloatPointPrecisionUtility64
+        case _ => FloatPointPrecisionUtility64
       }))
   }
 
@@ -109,5 +109,5 @@ object SuspiciousConnectsArgumentParser {
                                       ldaMaxiterations: Int = 20,
                                       ldaAlpha: Double = 1.02,
                                       ldaBeta: Double = 1.001,
-                                      precisionUtility: PrecisionUtility = PrecisionUtilityDouble)
+                                      precisionUtility: FloatPointPrecisionUtility = FloatPointPrecisionUtility64)
 }

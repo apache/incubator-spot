@@ -18,8 +18,8 @@
 package org.apache.spot
 
 import org.apache.spark.broadcast.Broadcast
+import org.apache.spot.utilities.FloatPointPrecisionUtility
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.transformation.PrecisionUtility
 
 /**
   * Base class for scoring suspicious connects models.
@@ -32,8 +32,8 @@ import org.apache.spot.utilities.transformation.PrecisionUtility
 class SuspiciousConnectsScoreFunction(topicCount: Int,
                                       wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]]) extends Serializable {
 
-  def score[P <: PrecisionUtility](precisionUtility: P)
-                                  (documentTopicMix: Seq[precisionUtility.TargetType], word: String): Double = {
+  def score[P <: FloatPointPrecisionUtility](precisionUtility: P)
+                                            (documentTopicMix: Seq[precisionUtility.TargetType], word: String): Double = {
 
     val zeroProb = Array.fill(topicCount) {
       0d

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spot.utilities.transformation
+package org.apache.spot.utilities
 
 import org.apache.spark.rdd.RDD
 

@@ -25,7 +25,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.lda.SpotLDAWrapperSchema._
-import org.apache.spot.utilities.transformation.PrecisionUtility
+import org.apache.spot.utilities.FloatPointPrecisionUtility
 
 import scala.collection.immutable.Map
 
@@ -49,7 +49,7 @@ object SpotLDAWrapper {
              ldaAlpha: Double,
              ldaBeta: Double,
              maxIterations: Int,
-             precisionUtility: PrecisionUtility): SpotLDAOutput = {
+             precisionUtility: FloatPointPrecisionUtility): SpotLDAOutput = {
 
     import sqlContext.implicits._
 
@@ -183,7 +183,7 @@ object SpotLDAWrapper {
   }
 
   def formatSparkLDADocTopicOutput(docTopDist: RDD[(Long, Vector)], documentDictionary: DataFrame, sqlContext:
-  SQLContext, precisionUtility: PrecisionUtility):
+  SQLContext, precisionUtility: FloatPointPrecisionUtility):
   DataFrame = {
     import sqlContext.implicits._
 

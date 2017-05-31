@@ -30,9 +30,9 @@ import org.apache.spot.dns.DNSWordCreation
 import org.apache.spot.lda.SpotLDAWrapper
 import org.apache.spot.lda.SpotLDAWrapper._
 import org.apache.spot.lda.SpotLDAWrapperSchema._
+import org.apache.spot.utilities.DomainProcessor.DomainInfo
+import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.transformation.DomainProcessor.DomainInfo
-import org.apache.spot.utilities.transformation._
 
 import scala.util.{Failure, Success, Try}
 
@@ -90,7 +90,7 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     *         probability estimated for the network event at that row
     */
   def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String
-            , precisionUtility: PrecisionUtility): DataFrame = {
+            , precisionUtility: FloatPointPrecisionUtility): DataFrame = {
 
     val topDomainsBC = sc.broadcast(TopDomains.TopDomains)
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)

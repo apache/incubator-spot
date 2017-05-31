@@ -1,4 +1,4 @@
-package org.apache.spot.utilities.transformation
+package org.apache.spot.utilities
 
 import org.apache.spark.sql.types._
 import org.apache.spot.lda.SpotLDAWrapperSchema.{DocumentName, TopicProbabilityMix}
@@ -8,12 +8,12 @@ import org.scalatest.Matchers
 /**
   * Created by rabarona on 5/17/17.
   */
-class PrecisionUtilityFloatTest extends TestingSparkContextFlatSpec with Matchers {
+class FloatPointPrecisionUtility32Test extends TestingSparkContextFlatSpec with Matchers {
 
   "toTargetType" should "just return value converted to Float" in {
     val testValue: Double = 5d
 
-    val result = PrecisionUtilityFloat.toTargetType(testValue)
+    val result = FloatPointPrecisionUtility32.toTargetType(testValue)
 
     result shouldBe 5f
     result shouldBe a[java.lang.Float]
@@ -24,7 +24,7 @@ class PrecisionUtilityFloatTest extends TestingSparkContextFlatSpec with Matcher
 
     val testSeq: Seq[Float] = Seq(1f, 2f, 3f)
 
-    val result: Seq[Double] = PrecisionUtilityFloat.toDoubles(testSeq)
+    val result: Seq[Double] = FloatPointPrecisionUtility32.toDoubles(testSeq)
 
     result(0) shouldBe a[java.lang.Double]
     result(1) shouldBe a[java.lang.Double]
@@ -36,7 +36,7 @@ class PrecisionUtilityFloatTest extends TestingSparkContextFlatSpec with Matcher
     val testDataFrame = sqlContext.createDataFrame(Seq(("doc1", Array(1d, 2d)), ("doc2", Array(2d, 3d))))
       .withColumnRenamed("_1", DocumentName).withColumnRenamed("_2", TopicProbabilityMix)
 
-    val result = PrecisionUtilityFloat.castColumn(testDataFrame, TopicProbabilityMix)
+    val result = FloatPointPrecisionUtility32.castColumn(testDataFrame, TopicProbabilityMix)
     result.count
 
     val schema = StructType(

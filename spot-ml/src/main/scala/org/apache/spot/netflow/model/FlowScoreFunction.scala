@@ -20,7 +20,7 @@ package org.apache.spot.netflow.model
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spot.SuspiciousConnectsScoreFunction
 import org.apache.spot.netflow.{FlowWordCreator, FlowWords}
-import org.apache.spot.utilities.transformation.PrecisionUtility
+import org.apache.spot.utilities.FloatPointPrecisionUtility
 
 
 /**
@@ -53,17 +53,16 @@ class FlowScoreFunction(topicCount: Int,
     * @param dstTopicMix topic mix assigned of destination IP
     * @return Minium of probability of this word from the source IP and probability of this word from the dest IP.
     */
-  def score[P <: PrecisionUtility](precisionUtility: P)(hour: Int,
-                                                        srcIP: String,
-                                                        dstIP: String,
-                                                        srcPort: Int,
-                                                        dstPort: Int,
-                                                        protocol: String,
-                                                        ibyt: Long,
-                                                        ipkt: Long,
-                                                        srcTopicMix: Seq[precisionUtility.TargetType],
-                                                        dstTopicMix: Seq[precisionUtility.TargetType]): Double = {
-
+  def score[P <: FloatPointPrecisionUtility](precisionUtility: P)(hour: Int,
+                                                                  srcIP: String,
+                                                                  dstIP: String,
+                                                                  srcPort: Int,
+                                                                  dstPort: Int,
+                                                                  protocol: String,
+                                                                  ibyt: Long,
+                                                                  ipkt: Long,
+                                                                  srcTopicMix: Seq[precisionUtility.TargetType],
+                                                                  dstTopicMix: Seq[precisionUtility.TargetType]): Double = {
 
     val FlowWords(srcWord, dstWord) = FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyt, ipkt)
 

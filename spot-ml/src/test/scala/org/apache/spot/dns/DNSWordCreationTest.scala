@@ -18,7 +18,7 @@
 package org.apache.spot.dns
 
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.apache.spot.utilities.transformation.Entropy
+import org.apache.spot.utilities.Entropy
 import org.scalatest.Matchers
 
 class DNSWordCreationTest extends TestingSparkContextFlatSpec with Matchers {

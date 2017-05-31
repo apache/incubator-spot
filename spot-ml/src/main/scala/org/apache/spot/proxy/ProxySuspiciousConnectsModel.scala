@@ -51,7 +51,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
     *                  (as defined in ProxySchema object).
     * @return Dataframe with Score column added.
     */
-  def score(sc: SparkContext, dataFrame: DataFrame, precisionUtility: PrecisionUtility): DataFrame = {
+  def score(sc: SparkContext, dataFrame: DataFrame, precisionUtility: FloatPointPrecisionUtility): DataFrame = {
 
     val topDomains: Broadcast[Set[String]] = sc.broadcast(TopDomains.TopDomains)
 

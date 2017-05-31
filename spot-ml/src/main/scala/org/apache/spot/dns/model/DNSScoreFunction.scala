@@ -20,7 +20,7 @@ package org.apache.spot.dns.model
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spot.SuspiciousConnectsScoreFunction
 import org.apache.spot.dns.DNSWordCreation
-import org.apache.spot.utilities.transformation.PrecisionUtility
+import org.apache.spot.utilities.FloatPointPrecisionUtility
 
 
 /**
@@ -58,15 +58,15 @@ class DNSScoreFunction(frameLengthCuts: Array[Double],
     topDomainsBC,
     userDomain)
 
-  def score[P <: PrecisionUtility](precisionUtility: P)(timeStamp: String,
-                                                        unixTimeStamp: Long,
-                                                        frameLength: Int,
-                                                        clientIP: String,
-                                                        queryName: String,
-                                                        queryClass: String,
-                                                        queryType: Int,
-                                                        queryResponseCode: Int,
-                                                        documentTopicMix: Seq[precisionUtility.TargetType]): Double = {
+  def score[P <: FloatPointPrecisionUtility](precisionUtility: P)(timeStamp: String,
+                                                                  unixTimeStamp: Long,
+                                                                  frameLength: Int,
+                                                                  clientIP: String,
+                                                                  queryName: String,
+                                                                  queryClass: String,
+                                                                  queryType: Int,
+                                                                  queryResponseCode: Int,
+                                                                  documentTopicMix: Seq[precisionUtility.TargetType]): Double = {
 
     val word = dnsWordCreator.dnsWord(timeStamp,
       unixTimeStamp,

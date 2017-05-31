@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spot.utilities.transformation
+package org.apache.spot.utilities
 
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
@@ -24,19 +24,13 @@ import org.apache.spark.sql.functions._
   * PrecisionUtility will transform a number from Double to Float if precision option is set to 32 bit,
   * if default or 64 bit is selected, it will just return the same number type Double.
   *
-  * This abstract class permits the execution of a single path during the entire analysis. Instead of checking what
-  * type should the data be converted, each implementation will know what type should be converted into and converted
-  * back.
-  *
   */
-
-sealed trait PrecisionUtility extends Serializable {
+sealed trait FloatPointPrecisionUtility extends Serializable {
 
   type TargetType
 
   /**
     * Converts a number into the precision type; it can be Float (32) or Double (64).
-    * For the Double implementation it will just return the same value without any transformation.
     *
     * @param double a number to convert from Double to Target type.
     * @return
@@ -53,8 +47,7 @@ sealed trait PrecisionUtility extends Serializable {
   def toDoubles[A <% Traversable[TargetType], B <% Traversable[Double]](targetTypeIterable: A): B
 
   /**
-    * Converts a DataFrame column from Seq[Double] to a Seq[TargetType]. If the TargetType is Double, it will
-    * just return the same DataFrame without any transformation.
+    * Converts a DataFrame column from Seq[Double] to a Seq[TargetType].
     *
     * @param dataFrame  a DataFrame containing a column to be converted from Double to the TargetType
     * @param columnName the name of the column to convert, the column should be Seq[Double]
@@ -66,10 +59,10 @@ sealed trait PrecisionUtility extends Serializable {
 
 /**
   * PrecisionUtility implementation for Float.
-  * Will convert numbers from Double to Float and back to Double to make the workload half the size. This conversion
-  * will allow to broadcast dictionaries if it fits in the autoBroadcastJoinThreshold - defined by users.
+  * Will convert numbers from Double to Float and back to Double.
+  *
   */
-object PrecisionUtilityFloat extends PrecisionUtility {
+object FloatPointPrecisionUtility32 extends FloatPointPrecisionUtility {
 
   type TargetType = Float
 
@@ -95,14 +88,14 @@ object PrecisionUtilityFloat extends PrecisionUtility {
 
 /**
   * PrecisionUtility implementation for Double.
-  * Users that don't want to reduce the workload, can continue working with Doubles. This implementation will receive
-  * and send the same value, it won't do any transformation. The reason for this to exists is to avoid multiple code
-  * paths depending on the user wanting to change precision or not.
+  * This implementation will receive and send the same value, it won't do any transformation.
+  *
   */
-object PrecisionUtilityDouble extends PrecisionUtility {
+object FloatPointPrecisionUtility64 extends FloatPointPrecisionUtility {
 
   type TargetType = Double
 
+  // For this implementation it will just return the same value without any transformation.
   def toTargetType(double: Double): Double = double
 
   // Since Double is the default data type, this code is going to return the same array without any transformation.

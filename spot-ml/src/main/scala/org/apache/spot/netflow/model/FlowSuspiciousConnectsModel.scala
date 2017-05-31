@@ -30,7 +30,7 @@ import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.transformation.{PrecisionUtility, Quantiles}
+import org.apache.spot.utilities.{FloatPointPrecisionUtility, Quantiles}
 
 import scala.util.{Failure, Success, Try}
 
@@ -60,7 +60,7 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                                   wordToPerTopicProb: Map[String, Array[Double]]) {
 
   def score(sc: SparkContext, sqlContext: SQLContext, flowRecords: DataFrame,
-            precisionUtility: PrecisionUtility): DataFrame = {
+            precisionUtility: FloatPointPrecisionUtility): DataFrame = {
 
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
