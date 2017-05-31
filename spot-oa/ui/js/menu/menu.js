@@ -28,7 +28,7 @@ let menu =
                   // {name: 'Advanced Mode', link: '../proxy/ipython_notebook.html#date=${date}', target: '_blank'}
                 ]
               },
-              {name: 'Ingest Summary', link: '../ingest-summary.html#end-date=${date}|pipeline=proxy', glyphicon: '', labelledby: '', sub: [], target: '_self'},
+              {name: 'Ingest Summary', link: '../ingest/ingest-summary.html#end-date=${date}|pipeline=proxy', glyphicon: '', labelledby: '', sub: [], target: '_self'},
               {name: 'Plugins', link: '', glyphicon: '', labelledby: 'pluginsMenu', sub: []}
 
           ]
