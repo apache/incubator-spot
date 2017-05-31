@@ -84,10 +84,10 @@ hdfs dfs -rm -R -f ${HDFS_SCORED_CONNECTS}
 time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --master yarn-client \
   --driver-memory ${SPK_DRIVER_MEM} \
-  --num-executors ${SPK_EXEC} \
   --conf spark.driver.maxResultSize=${SPK_DRIVER_MAX_RESULTS} \
   --conf spark.driver.maxPermSize=512m \
   --conf spark.dynamicAllocation.enabled=true \
+  --conf spark.dynamicAllocation.maxExecutors=${SPK_EXEC} \
   --conf spark.executor.cores=${SPK_EXEC_CORES} \
   --conf spark.executor.memory=${SPK_EXEC_MEM} \
   --conf "spark.executor.extraJavaOptions=-XX:MaxPermSize=512M -XX:PermSize=512M" \
