@@ -20,8 +20,8 @@ package org.apache.spot.proxy
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.functions._
 import org.apache.spot.proxy.ProxySuspiciousConnectsModel.EntropyCuts
+import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.{DomainProcessor, Entropy, Quantiles, TimeUtilities}
 
 import scala.util.{Success, Try}
 
