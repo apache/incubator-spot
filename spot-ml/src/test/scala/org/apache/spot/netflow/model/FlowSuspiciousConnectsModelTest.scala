@@ -30,7 +30,7 @@ class FlowSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with M
 
     val cleanedFlowRecords = FlowSuspiciousConnectsModel.cleanData(testFlowRecords.inputFlowRecordsDF)
 
-    cleanedFlowRecords.count should be(5)
+    cleanedFlowRecords.count should be(7)
     cleanedFlowRecords.schema.size should be(17)
   }
 
@@ -39,8 +39,8 @@ class FlowSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with M
 
     val inputFlowRecordsRDD = sparkContext.parallelize(wrapRefArray(Array(
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 24, 54, 58, 0.972, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l, 12522l, 0, 0),
-      Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 60, 0.972, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l, 12522l, 0, 0),
-      Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 60, 58, 0.972, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l, 12522l, 0, 0),
+      Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 59, 0.972, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l, 12522l, 0, 0),
+      Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 59, 58, 0.972, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l, 12522l, 0, 0),
       Seq(null, 2016, 5, 5, 13, 54, 58, 0.972, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l, 12522l, 0, 0),
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972, null, "10.0.2.202", 1024, 80, "TCP", 39l, 12522l, 0, 0),
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972, "172.16.0.129", null, 1024, 80, "TCP", 39l, 12522l, 0, 0),

@@ -40,8 +40,6 @@ class FlowScoreFunction(topicCount: Int,
     * and assign it the least of these two values.
     *
     * @param hour Hour of flow record.
-    * @param minute Minute of flow record.
-    * @param second Second of flow record.
     * @param srcIP Source IP of flow record.
     * @param dstIP Destination IP of flow record.
     * @param srcPort Source port of flow record.
@@ -53,20 +51,18 @@ class FlowScoreFunction(topicCount: Int,
     * @return Minium of probability of this word from the source IP and probability of this word from the dest IP.
     */
   def score(hour: Int,
-            minute: Int,
-            second: Int,
             srcIP: String,
             dstIP: String,
             srcPort: Int,
             dstPort: Int,
             protocol: String,
-            ipkt: Long,
             ibyt: Long,
+            ipkt: Long,
             srcTopicMix: Seq[Double],
             dstTopicMix: Seq[Double]): Double = {
 
 
-    val FlowWords(srcWord, dstWord) = FlowWordCreator.flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, protocol, ibyt: Long, ipkt: Long)
+    val FlowWords(srcWord, dstWord) = FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyt, ipkt)
 
     val zeroProb = Array.fill(topicCount) {
       0.0

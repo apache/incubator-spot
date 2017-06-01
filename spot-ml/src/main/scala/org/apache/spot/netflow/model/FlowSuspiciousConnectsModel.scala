@@ -29,7 +29,6 @@ import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
 import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
-import org.apache.spot.utilities.Quantiles
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
 import scala.util.{Failure, Success, Try}
@@ -86,20 +85,16 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
 
 
     val scoringUDF = udf((hour: Int,
-                          minute: Int,
-                          second: Int,
                           srcIP: String,
                           dstIP: String,
                           srcPort: Int,
                           dstPort: Int,
                           protocol: String,
-                          ipkt: Long,
                           ibyt: Long,
+                          ipkt: Long,
                           srcIpTopicMix: Seq[Double],
                           dstIpTopicMix: Seq[Double]) =>
       scoreFunction.score(hour,
-        minute,
-        second,
         srcIP,
         dstIP,
         srcPort,
@@ -126,8 +121,6 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
 object FlowSuspiciousConnectsModel {
 
   val ModelSchema = StructType(List(HourField,
-    MinuteField,
-    SecondField,
     SourceIPField,
     DestinationIPField,
     SourcePortField,
@@ -142,8 +135,6 @@ object FlowSuspiciousConnectsModel {
   def cleanData(flows: DataFrame): DataFrame = {
 
     val legalFlowsFilter = flows(Hour).between(0, 23) &&
-      flows(Minute).between(0, 59) &&
-      flows(Second).between(0, 59) &&
       flows(TimeReceived).isNotNull &&
       flows(SourceIP).isNotNull &&
       flows(DestinationIP).isNotNull &&

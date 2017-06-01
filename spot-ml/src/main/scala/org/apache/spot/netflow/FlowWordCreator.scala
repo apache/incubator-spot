@@ -18,7 +18,6 @@
 package org.apache.spot.netflow
 
 import org.apache.spark.sql.functions._
-import org.apache.spot.utilities.Quantiles
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
 import scala.util.{Success, Try}
@@ -45,8 +44,6 @@ object FlowWordCreator extends Serializable {
     * @return String "word" summarizing a netflow connection.
     */
   def srcWordUDF = udf((hour: Int,
-                        minute: Int,
-                        second: Int,
                         srcIP: String,
                         dstIP: String,
                         srcPort: Int,
@@ -54,7 +51,7 @@ object FlowWordCreator extends Serializable {
                         protocol: String,
                         ibyt: Long,
                         ipkt: Long) =>
-    flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyt, ipkt).srcWord)
+    flowWords(hour, srcPort, dstPort, protocol, ibyt, ipkt).srcWord)
 
 
   /**
@@ -63,43 +60,34 @@ object FlowWordCreator extends Serializable {
     * @return String "word" summarizing a netflow connection.
     */
   def dstWordUDF = udf((hour: Int,
-                        minute: Int,
-                        second: Int,
                         srcIP: String,
                         dstIP: String,
                         srcPort: Int,
                         dstPort: Int,
-                       protocol: String,
+                        protocol: String,
                         ibyt: Long,
                         ipkt: Long) =>
-    flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyt, ipkt).dstWord)
+    flowWords(hour, srcPort, dstPort, protocol, ibyt, ipkt).dstWord)
 
 
   /**
     * Calculate the source and destination words summarizing a netflow record.
     *
     * @param hour
-    * @param minute
-    * @param second
     * @param srcPort
     * @param dstPort
     * @param ipkt
     * @param ibyt
     * @return [[FlowWords]] containing source and destination words.
     */
-  def flowWords(hour: Int, minute: Int, second: Int, srcPort: Int, dstPort: Int, protocol: String, ibyt: Long, ipkt: Long): FlowWords = {
+  def flowWords(hour: Int, srcPort: Int, dstPort: Int, protocol: String, ibyt: Long, ipkt: Long): FlowWords = {
 
     Try {
-      val timeOfDay: Double = hour.toDouble + minute.toDouble / 60 + second.toDouble / 3600
-
-      val timeBin = hour
-
-
       val lnOf2 = scala.math.log(2) // natural log of 2
-      val ibytBin : Long =
-          scala.math.ceil(scala.math.log(ibyt) / lnOf2).toLong  // 0 values should never ever happen
+      val ibytBin: Long =
+        scala.math.ceil(scala.math.log(ibyt) / lnOf2).toLong // 0 values should never ever happen
 
-      val ipktBin : Long =  scala.math.ceil(scala.math.log(ipkt) / lnOf2).toLong // 0 values should never ever happen
+      val ipktBin: Long = scala.math.ceil(scala.math.log(ipkt) / lnOf2).toLong // 0 values should never ever happen
 
       val LowToLowPortEncoding = 111111
       val HighToHighPortEncoding = 333333
@@ -109,32 +97,32 @@ object FlowWordCreator extends Serializable {
 
       if (dstPort == 0 && srcPort == 0) {
 
-        val baseWord = Array("0", proto, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array("0", proto, hour, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = baseWord)
 
       } else if (dstPort == 0 && srcPort > 0) {
 
-        val baseWord = Array(srcPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(srcPort, proto, hour, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
 
       } else if (srcPort == 0 && dstPort > 0) {
 
-        val baseWord = Array(dstPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(dstPort, proto, hour, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
       } else if (srcPort <= 1024 && dstPort <= 1024) {
 
-        val baseWord = Array(LowToLowPortEncoding, proto, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(LowToLowPortEncoding, proto, hour, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = baseWord)
 
       } else if (srcPort <= 1024 && dstPort > 1024) {
 
-        val baseWord = Array(srcPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(srcPort, proto, hour, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = "-1_" + baseWord, dstWord = baseWord)
 
       } else if (srcPort > 1024 && dstPort <= 1024) {
 
-        val baseWord = Array(dstPort,  proto, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(dstPort, proto, hour, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = "-1_" + baseWord)
 
       } else {
@@ -142,8 +130,7 @@ object FlowWordCreator extends Serializable {
         // this is the srcPort > 1024 && dstPort > 1024 case
 
 
-
-        val baseWord = Array(HighToHighPortEncoding, proto, timeBin, ibytBin, ipktBin).mkString("_")
+        val baseWord = Array(HighToHighPortEncoding, proto, hour, ibytBin, ipktBin).mkString("_")
         FlowWords(srcWord = baseWord, dstWord = baseWord)
       }
 

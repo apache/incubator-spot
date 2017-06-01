@@ -41,7 +41,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 23
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
 
     dstWord shouldBe "-1_23_UDP_12_8_2"
@@ -56,7 +56,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 2132
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "23_UDP_12_8_2"
     srcWord shouldBe "-1_23_UDP_12_8_2"
@@ -68,7 +68,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 9874
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "333333_UDP_12_8_2"
     srcWord shouldBe "333333_UDP_12_8_2"
@@ -80,7 +80,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 0
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
 
     dstWord shouldBe "80_UDP_12_8_2"
@@ -95,7 +95,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
 
     dstWord shouldBe "-1_43_UDP_12_8_2"
@@ -109,7 +109,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "111111_UDP_12_8_2"
     srcWord shouldBe "111111_UDP_12_8_2"
@@ -122,7 +122,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "0_UDP_12_8_2"
     srcWord shouldBe "0_UDP_12_8_2"
@@ -135,7 +135,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "-1_43_UDP_12_8_2"
     srcWord shouldBe "43_UDP_12_8_2"
@@ -148,7 +148,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 2435
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "80_UDP_12_8_2"
     srcWord shouldBe "-1_80_UDP_12_8_2"
@@ -162,7 +162,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "333333_UDP_12_8_2"
     srcWord shouldBe "333333_UDP_12_8_2"
@@ -175,7 +175,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "80_UDP_12_8_2"
     srcWord shouldBe "-1_80_UDP_12_8_2"
@@ -188,7 +188,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "-1_2435_UDP_12_8_2"
     srcWord shouldBe "2435_UDP_12_8_2"
@@ -201,7 +201,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "111111_UDP_12_8_2"
     srcWord shouldBe "111111_UDP_12_8_2"
@@ -214,7 +214,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "0_UDP_12_8_2"
     srcWord shouldBe "0_UDP_12_8_2"
@@ -227,7 +227,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
     val protocol = "TCP"
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour,  srcPort, dstPort, protocol, ibyts, ipkts)
 
 
     dstWord shouldBe "-1_23_TCP_12_8_2"
@@ -242,7 +242,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 0
     val protocol = "TCP"
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "0_TCP_12_8_2"
     srcWord shouldBe "0_TCP_12_8_2"
@@ -255,7 +255,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 23
 
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
 
     dstWord shouldBe "-1_23_UDP_12_8_2"
@@ -270,7 +270,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     val dstPort = 0
     val protocol = "TCP"
     val FlowWords(srcWord, dstWord) =
-      FlowWordCreator.flowWords(hour, minute, second, srcPort, dstPort, protocol, ibyts, ipkts)
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
     dstWord shouldBe "0_TCP_12_8_2"
     srcWord shouldBe "0_TCP_12_8_2"
