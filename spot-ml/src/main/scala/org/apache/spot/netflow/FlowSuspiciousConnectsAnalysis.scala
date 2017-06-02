@@ -37,7 +37,7 @@ object FlowSuspiciousConnectsAnalysis {
 
 
   def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
-          inputFlowRecords: DataFrame) : DataFrame = {
+          inputFlowRecords: DataFrame)  = {
 
     logger.info("Starting flow suspicious connects analysis.")
 
@@ -46,7 +46,7 @@ object FlowSuspiciousConnectsAnalysis {
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, flows.select(InSchema: _*))
+      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, flows)
 
     logger.info("Identifying outliers")
     val scoredFlowRecords = model.score(sparkContext, sqlContext, flows)
@@ -68,7 +68,6 @@ object FlowSuspiciousConnectsAnalysis {
     val invalidFlowRecords = filterAndSelectInvalidFlowRecords(inputFlowRecords)
     dataValidation.showAndSaveInvalidRecords(invalidFlowRecords, config.hdfsScoredConnect, logger)
 
-    outputFlowRecords
   }
 
 

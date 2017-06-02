@@ -63,7 +63,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 3. Test when sip is less than dip and sip is not 0 and dport and sport are > 1024 +
-  it should "create word with ip_pair as sourceIp-destIp, port is 333333 and both words direction is 1 (not showing)" in {
+  it should "create word with ip_pair as sourceIp-destIp, port is 333333 and both words direction is positive" in {
     val srcPort = 8392
     val dstPort = 9874
 
@@ -88,7 +88,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 5. Test when sip is less than dip and sip is not 0 and sport is 0 but dport is not +
-  it should "create word with ip_pair as sourceIp-destIp, port is dport and dest_word direction is -1 II" in {
+  it should "create word with ip_pair as sourceIp-destIp, port is dport and dest_word direction is -1 (case 2)" in {
 
     val srcPort = 0
     val dstPort = 43
@@ -103,7 +103,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 6. Test when sip is less than dip and sip is not 0 and sport and dport are less or equal than 1024 +
-  it should "create word with ip_pair as sourceIp-destIp, port is 111111 and both words direction is 1 (not showing)" in {
+  it should "create word with ip_pair as sourceIp-destIp, port is 111111 and both words in positive direction" in {
     val srcPort = 1024
     val dstPort = 80
 
@@ -116,7 +116,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 7. Test when sip is less than dip and sip is not 0 and sport and dport are 0+
-  it should "create word with ip_pair as sourceIp-destIp, port is max(0,0) and both words direction is 1 (not showing)" in {
+  it should "create word with ip_pair as sourceIp-destIp, port is max(0,0) and both words in positive direction" in {
     val srcPort = 0
     val dstPort = 0
 
@@ -156,7 +156,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 10. Test when sip is not less than dip and dport and sport are > 1024 +
-  it should "create word with ip_pair as destIp-sourceIp, port is 333333 and both words direction is 1 (not showing)" in {
+  it should "create word with ip_pair as destIp-sourceIp, port is 333333 and both words direction is positive" in {
     val srcPort = 2354
     val dstPort = 2435
 
@@ -169,7 +169,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 11. Test when sip is not less than dip and dport is 0 but sport is not +
-  it should "create word with ip_pair as destIp-sourceIp, port is sport and src_word direction is -1 II" in {
+  it should "create word with ip_pair as destIp-sourceIp, port is sport and src_word direction is -1 (Case 2)" in {
     val srcPort = 80
     val dstPort = 0
 
@@ -182,7 +182,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 12. Test when sip is not less than dip and sport is 0 but dport is not +
-  it should "create word with ip_pair as destIp-sourceIp, port is dport and dest_word direction is -1 II" in {
+  it should "create word with ip_pair as destIp-sourceIp, port is dport and dest_word direction is -1 (case 2)" in {
     val srcPort = 0
     val dstPort = 2435
 
@@ -195,7 +195,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 13. Test when sip is not less than dip and sport and dport are less or equal than 1024
-  it should "create word with ip_pair as destIp-sourceIp, port 111111 and both words direction is 1 (not showing)" in {
+  it should "create word with ip_pair as destIp-sourceIp, port 111111 and both words direction is positive" in {
     val srcPort = 80
     val dstPort = 1024
 
@@ -208,7 +208,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
   // 14. Test when sip is not less than dip and sport and dport are 0
-  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is 1 (not showing)" in {
+  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is positive, protocol UDP" in {
     val srcPort = 0
     val dstPort = 0
 
@@ -220,8 +220,8 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
     srcWord shouldBe "0_UDP_12_8_2"
   }
 
-  // 15. Test when sip is less than dip and sip is not 0 and dport is <= 1024 & sport > 1024 and min(dport, sport) !=0 +
-  "flowWords" should "create word with ip_pair as sourceIp-destIp, port is dport and dest_word direction is -1 and including protocol" in {
+  // 15. Test when sip is less than dip and sip is not 0 and dport is <= 1024 & sport > 1024 and min(dport, sport) !=0
+  "flowWords" should "create word with ip_pair as sourceIp-destIp, port is dport and dest_word direction is -1 and protocol is TCP" in {
     val srcPort = 2132
     val dstPort = 23
 
@@ -237,7 +237,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
   // 16. Test when sip is not less than dip and sport and dport are 0
-  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is 1 (not showing) and including protocol" in {
+  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is positive, protocol TCP" in {
     val srcPort = 0
     val dstPort = 0
     val protocol = "TCP"
@@ -249,8 +249,8 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
 
-  // 17. Test when sip is less than dip and sip is not 0 and dport is <= 1024 & sport > 1024 and min(dport, sport) !=0 +
-  "flowWords" should "create word with ip_pair as sourceIp-destIp, port is dport and dest_word direction is -1 with protocol + modified bins" in {
+  // 17. Test when sip is less than dip and sip is not 0 and dport is <= 1024 & sport > 1024 and min(dport, sport) !=0
+  "flowWords" should "create word with ip_pair as sourceIp-destIp, port is dport and dest_word direction is -1 and protocol is UDP" in {
     val srcPort = 2132
     val dstPort = 23
 
@@ -265,7 +265,7 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
 
 
   // 18. Test when sip is not less than dip and sport and dport are 0
-  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is 1 (not showing) with protocol + modified bins" in {
+  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is positive " in {
     val srcPort = 0
     val dstPort = 0
     val protocol = "TCP"
@@ -277,9 +277,32 @@ class FlowWordCreatorTest extends FlatSpec with Matchers {
   }
 
 
+  // 19. Test when sip is not less than dip and sport and dport are 0 and bytecount is 0
+  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is positive with zero bytes" in {
+    val srcPort = 0
+    val dstPort = 0
+    val protocol = "TCP"
+    val ibyts = 0
+    val FlowWords(srcWord, dstWord) =
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
+
+    dstWord shouldBe "0_TCP_12_0_2"
+    srcWord shouldBe "0_TCP_12_0_2"
+  }
 
 
+  // 20. Test when sip is not less than dip and sport and dport are 0 and packet count is 0
+  it should "create word with ip_pair as destIp-sourceIp, port is max(0,0) and both words direction is positive with protocol with zero packets" in {
+    val srcPort = 0
+    val dstPort = 0
+    val protocol = "TCP"
+    val ipkts = 0
+    val FlowWords(srcWord, dstWord) =
+      FlowWordCreator.flowWords(hour, srcPort, dstPort, protocol, ibyts, ipkts)
 
+    dstWord shouldBe "0_TCP_12_8_0"
+    srcWord shouldBe "0_TCP_12_8_0"
+  }
 
 
 

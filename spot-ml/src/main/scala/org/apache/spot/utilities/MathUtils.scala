@@ -28,4 +28,12 @@ object MathUtils {
     * @return y rounded down to an integer
     */
   def logBaseXInt(x: Double, base: Int): Int = if (x == 0) 0 else (log10(x) / log10(base)).toInt
+
+  /**
+    * Returns the ceiling of the logarithm base 2 of the incoming double.
+    *
+    * @param x A double.
+    * @return Integer ceiling of logarithm base-2 of x.
+    */
+  def ceilLog2(x: Double) : Int = Math.ceil(log10(x) / log10(2d)).toInt
 }

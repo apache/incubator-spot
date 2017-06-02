@@ -19,6 +19,7 @@ package org.apache.spot.netflow
 
 import org.apache.spark.sql.functions._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
+import org.apache.spot.utilities.MathUtils.ceilLog2
 
 import scala.util.{Success, Try}
 
@@ -83,11 +84,9 @@ object FlowWordCreator extends Serializable {
   def flowWords(hour: Int, srcPort: Int, dstPort: Int, protocol: String, ibyt: Long, ipkt: Long): FlowWords = {
 
     Try {
-      val lnOf2 = scala.math.log(2) // natural log of 2
-      val ibytBin: Long =
-        scala.math.ceil(scala.math.log(ibyt) / lnOf2).toLong // 0 values should never ever happen
 
-      val ipktBin: Long = scala.math.ceil(scala.math.log(ipkt) / lnOf2).toLong // 0 values should never ever happen
+      val ibytBin = ceilLog2(ibyt + 1)
+      val ipktBin = ceilLog2(ipkt + 1)
 
       val LowToLowPortEncoding = 111111
       val HighToHighPortEncoding = 333333

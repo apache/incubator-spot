@@ -132,21 +132,6 @@ object FlowSuspiciousConnectsModel {
   val ModelColumns = ModelSchema.fieldNames.toList.map(col)
 
 
-  def cleanData(flows: DataFrame): DataFrame = {
-
-    val legalFlowsFilter = flows(Hour).between(0, 23) &&
-      flows(TimeReceived).isNotNull &&
-      flows(SourceIP).isNotNull &&
-      flows(DestinationIP).isNotNull &&
-      flows(SourcePort).isNotNull &&
-      flows(DestinationPort).isNotNull &&
-      flows(Ibyt).isNotNull &&
-      flows(Ipkt).isNotNull
-
-    flows.filter(legalFlowsFilter)
-  }
-
-
     def trainModel(sparkContext: SparkContext,
                    sqlContext: SQLContext,
                    logger: Logger,

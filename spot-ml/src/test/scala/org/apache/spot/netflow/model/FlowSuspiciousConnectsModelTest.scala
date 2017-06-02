@@ -1,7 +1,7 @@
 package org.apache.spot.netflow.model
 
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spot.netflow.FlowRecord
+import org.apache.spot.netflow.{FlowRecord, FlowSuspiciousConnectsAnalysis}
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
@@ -28,7 +28,7 @@ class FlowSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with M
 
   "filterAndSelectCleanFlowRecords" should "return data set without garbage" in {
 
-    val cleanedFlowRecords = FlowSuspiciousConnectsModel.cleanData(testFlowRecords.inputFlowRecordsDF)
+    val cleanedFlowRecords = FlowSuspiciousConnectsAnalysis.cleanFlowRecords(testFlowRecords.inputFlowRecordsDF)
 
     cleanedFlowRecords.count should be(7)
     cleanedFlowRecords.schema.size should be(17)
