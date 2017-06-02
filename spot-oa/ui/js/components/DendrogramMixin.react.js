@@ -35,8 +35,8 @@ var DendrogramMixin = {
       const nodes = this.cluster.nodes(this.state.data);
       const links = this.cluster.links(nodes);
 
-      this.drawNodes(nodes);
       this.drawLinks(links);
+      this.drawNodes(nodes);
   },
   drawNodes(nodes) {
       const nodeSel = {};
@@ -64,12 +64,33 @@ var DendrogramMixin = {
                                         .style('fill', null);
                         });
 
-      nodeEl.append('text')
-                      .attr('dx', n => n.depth===0 ? -10 : 10)
-                      .attr('dy', 3)
-                      .style('text-anchor', n => n.depth===0 ? 'end' : 'start')
-                      .attr('fill', 'black')
-                      .text(n => n.name);
+        let y1 = 0;
+        let y2 = 0;
+        for(let x = 0; x < nodes.length; x++) {
+          if(y1 === 0 && nodes[x].depth === 1) {
+            y1 = nodes[x].y;
+          }
+          if(y2 === 0 && nodes[x].depth === 2) {
+            y2 = nodes[x].y;
+          }
+          if(y1 !== 0 && y2 !== 0) {
+            break;
+          }
+        }
+        const foreignObject_width = ((y2 - y1) - 16 ) > 0 ? (y2 - y1) - 16 : '17%'; // 16 is the 1em given on the "x" (see below) but we need to take it from the last part of the line, 17% is the minimum width when there is no third node
+
+        // foreignObject is not supported by IE
+        nodeEl.append('foreignObject')
+                          .attr('x', n => n.depth === 0 ? '-8em' : '1em') //<--- this is the 1em
+                          .attr('y', -10)
+                          .append('xhtml:div')
+                            .html(n => n.name)
+                            .filter(n => n.depth === 1)
+                              .style('width','auto')
+                              .attr({'class': 'spot-text-wrapper', 'data-toggle': 'tooltip'});
+
+      nodeSel.update.selectAll('foreignObject')
+                        .style('width', n => n.depth === 1 ? foreignObject_width : 'auto');
 
     nodeSel.update.attr('transform', n => `translate(${n.y},${n.x})`);
 

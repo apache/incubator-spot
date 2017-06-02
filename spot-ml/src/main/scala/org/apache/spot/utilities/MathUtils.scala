@@ -17,36 +17,15 @@
 
 package org.apache.spot.utilities
 
+import scala.math.log10
 
-object TimeUtilities {
-
-
+object MathUtils {
   /**
-    * It converts HH:MM:SS string to seconds
+    * Answers the question "To what power must "base" be raised, in order to yield "x"?  https://en.wikipedia.org/wiki/Logarithm
     *
-    * @param timeStr This is time in the form of a string
-    * @return It returns time converted to seconds
+    * @param x    This is a Double which is the result of the formula: base to the power of y = x
+    * @param base This is the base of the number we are trying to find
+    * @return y rounded down to an integer
     */
-
-  def getTimeAsDouble(timeStr: String) : Double = {
-    val s = timeStr.split(":")
-    val hours = s(0).toInt
-    val minutes = s(1).toInt
-    val seconds = s(2).toInt
-
-    (3600*hours + 60*minutes + seconds).toDouble
-  }
-
-  /**
-    * It takes only the hour element of time
-    *
-    * @param timeStr This is time in the form of a string
-    * @return It returns only the hour of time
-    */
-  def getTimeAsHour(timeStr: String): Int = {
-    val s = timeStr.split(":")
-    val hours = s(0).toInt
-    hours
-  }
-
+  def logBaseXInt(x: Double, base: Int): Int = if (x == 0) 0 else (log10(x) / log10(base)).toInt
 }
