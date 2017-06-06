@@ -41,15 +41,11 @@ object FlowSuspiciousConnectsAnalysis {
 
     logger.info("Starting flow suspicious connects analysis.")
 
-    val flows : DataFrame = cleanFlowRecords(inputFlowRecords)
+    val flows : DataFrame = filterAndSelectCleanFlowRecords(inputFlowRecords)
 
-
-    logger.info("Fitting probabilistic model to data")
-    val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, flows)
 
     logger.info("Identifying outliers")
-    val scoredFlowRecords = model.score(sparkContext, sqlContext, flows)
+     val scoredFlowRecords = detectFlowAnomalies(flows, config, sparkContext, sqlContext, logger)
 
 
     val filteredFlowRecords = filterScoredFlowRecords(scoredFlowRecords, config.threshold)
@@ -71,6 +67,27 @@ object FlowSuspiciousConnectsAnalysis {
   }
 
 
+  /**
+    * Identify anomalous netflow log entries in in the provided data frame.
+    *
+    * @param data Data frame of netflow entries
+    * @param config
+    * @param sparkContext
+    * @param sqlContext
+    * @param logger
+    * @return
+    */
+  def detectFlowAnomalies(data: DataFrame,
+                          config: SuspiciousConnectsConfig,
+                          sparkContext: SparkContext,
+                          sqlContext: SQLContext,
+                          logger: Logger): DataFrame = {
+    logger.info("Fitting probabilistic model to data")
+    val model =
+      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, data)
+    logger.info("Identifying outliers")
+    model.score(sparkContext, sqlContext, data)
+  }
 
 
   /**
@@ -78,8 +95,7 @@ object FlowSuspiciousConnectsAnalysis {
     * @param inputFlowRecords raw flow records
     * @return
     */
-  def cleanFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
-
+  def filterAndSelectCleanFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
     val cleanFlowRecordsFilter = inputFlowRecords(Hour).between(0, 23) &&
       inputFlowRecords(Minute).between(0, 59) &&
       inputFlowRecords(Second).between(0, 59) &&
@@ -90,9 +106,9 @@ object FlowSuspiciousConnectsAnalysis {
       inputFlowRecords(DestinationPort).isNotNull &&
       inputFlowRecords(Ibyt).isNotNull &&
       inputFlowRecords(Ipkt).isNotNull
-
     inputFlowRecords
       .filter(cleanFlowRecordsFilter)
+      .select(InSchema: _*)
   }
 
   /**

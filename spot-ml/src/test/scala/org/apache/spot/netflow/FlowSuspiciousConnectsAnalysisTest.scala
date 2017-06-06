@@ -59,7 +59,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
 
 
-    val flows : DataFrame = FlowSuspiciousConnectsAnalysis.cleanFlowRecords(data)
+    val flows : DataFrame = FlowSuspiciousConnectsAnalysis.filterAndSelectCleanFlowRecords(data)
 
 
     logger.info("Fitting probabilistic model to data")
@@ -120,7 +120,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
 
 
-    val flows : DataFrame = FlowSuspiciousConnectsAnalysis.cleanFlowRecords(data)
+    val flows : DataFrame = FlowSuspiciousConnectsAnalysis.filterAndSelectCleanFlowRecords(data)
 
 
     logger.info("Fitting probabilistic model to data")
