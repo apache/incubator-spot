@@ -18,9 +18,9 @@
 package org.apache.spot.proxy
 
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
-import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{Row, SQLContext}
+import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.proxy.ProxySchema._
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
@@ -87,12 +87,9 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val scoredData = ProxySuspiciousConnectsAnalysis.detectProxyAnomalies(data, testConfigProxy,
-      sparkContext,
-      sqlContext,
-      logger)
+    val model = ProxySuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfigProxy, data)
 
-
+    val scoredData = model.score(sparkContext, data)
 
     val anomalyScore = scoredData.filter(scoredData(Host) ===  "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -114,7 +111,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
   "filterAndSelectCleanProxyRecords" should "return data without garbage" in {
 
     val cleanedProxyRecords = ProxySuspiciousConnectsAnalysis
-      .filterAndSelectCleanProxyRecords(testProxyRecords.inputProxyRecordsDF)
+      .filterRecords(testProxyRecords.inputProxyRecordsDF)
 
     cleanedProxyRecords.count should be(1)
     cleanedProxyRecords.schema.size should be(19)
@@ -123,7 +120,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
   "filterAndSelectInvalidProxyRecords" should "return invalir records" in {
 
     val invalidProxyRecords = ProxySuspiciousConnectsAnalysis
-      .filterAndSelectInvalidProxyRecords(testProxyRecords.inputProxyRecordsDF)
+      .filterInvalidRecords(testProxyRecords.inputProxyRecordsDF)
 
     invalidProxyRecords.count should be(5)
     invalidProxyRecords.schema.size should be(19)
@@ -135,19 +132,10 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val threshold = 10e-5
 
     val scoredProxyRecords = ProxySuspiciousConnectsAnalysis
-      .filterScoredProxyRecords(testProxyRecords.scoredProxyRecordsDF, threshold)
+      .filterScoredRecords(testProxyRecords.scoredProxyRecordsDF, threshold)
 
     scoredProxyRecords.count should be(2)
 
-  }
-
-  "filterAndSelectCorruptProxyRecords" should "return records where Score is equal to -1" in {
-
-    val corruptProxyRecords = ProxySuspiciousConnectsAnalysis
-      .filterAndSelectCorruptProxyRecords(testProxyRecords.scoredProxyRecordsDF)
-
-    corruptProxyRecords.count should be(1)
-    corruptProxyRecords.schema.size should be(21)
   }
 
   def testProxyRecords = new {

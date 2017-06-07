@@ -22,6 +22,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel
@@ -37,78 +38,54 @@ object FlowSuspiciousConnectsAnalysis {
 
 
   def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
-          inputFlowRecords: DataFrame)  = {
+          inputFlowRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
     logger.info("Starting flow suspicious connects analysis.")
 
-    val flows : DataFrame = filterAndSelectCleanFlowRecords(inputFlowRecords)
+    val flowRecords = filterRecords(inputFlowRecords).select(InSchema: _*)
 
+    logger.info("Fitting probabilistic model to data")
+    val model =
+      FlowSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, flowRecords, config.topicCount)
 
     logger.info("Identifying outliers")
-     val scoredFlowRecords = detectFlowAnomalies(flows, config, sparkContext, sqlContext, logger)
+    val scoredFlowRecords = model.score(sparkContext, sqlContext, flowRecords)
 
+    val filteredScored = filterScoredRecords(scoredFlowRecords, config.threshold)
 
-    val filteredFlowRecords = filterScoredFlowRecords(scoredFlowRecords, config.threshold)
-
-    val orderedFlowRecords = filteredFlowRecords.orderBy(Score)
+    val orderedFlowRecords = filteredScored.orderBy(Score)
 
     val mostSuspiciousFlowRecords =
       if (config.maxResults > 0) orderedFlowRecords.limit(config.maxResults) else orderedFlowRecords
 
     val outputFlowRecords = mostSuspiciousFlowRecords.select(OutSchema: _*)
 
-    logger.info("Netflow  suspicious connects analysis completed.")
-    logger.info("Saving results to : " + config.hdfsScoredConnect)
-    outputFlowRecords.map(_.mkString(config.outputDelimiter)).saveAsTextFile(config.hdfsScoredConnect)
+    val invalidFlowRecords = filterInvalidRecords(inputFlowRecords).select(InSchema: _*)
 
-    val invalidFlowRecords = filterAndSelectInvalidFlowRecords(inputFlowRecords)
-    dataValidation.showAndSaveInvalidRecords(invalidFlowRecords, config.hdfsScoredConnect, logger)
+    SuspiciousConnectsAnalysisResults(outputFlowRecords, invalidFlowRecords)
 
   }
-
-
-  /**
-    * Identify anomalous netflow log entries in in the provided data frame.
-    *
-    * @param data Data frame of netflow entries
-    * @param config
-    * @param sparkContext
-    * @param sqlContext
-    * @param logger
-    * @return
-    */
-  def detectFlowAnomalies(data: DataFrame,
-                          config: SuspiciousConnectsConfig,
-                          sparkContext: SparkContext,
-                          sqlContext: SQLContext,
-                          logger: Logger): DataFrame = {
-    logger.info("Fitting probabilistic model to data")
-    val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, data)
-    logger.info("Identifying outliers")
-    model.score(sparkContext, sqlContext, data)
-  }
-
 
   /**
     *
     * @param inputFlowRecords raw flow records
     * @return
     */
-  def filterAndSelectCleanFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
+  def filterRecords(inputFlowRecords: DataFrame): DataFrame = {
+
     val cleanFlowRecordsFilter = inputFlowRecords(Hour).between(0, 23) &&
       inputFlowRecords(Minute).between(0, 59) &&
       inputFlowRecords(Second).between(0, 59) &&
       inputFlowRecords(TimeReceived).isNotNull &&
       inputFlowRecords(SourceIP).isNotNull &&
       inputFlowRecords(DestinationIP).isNotNull &&
-      inputFlowRecords(SourcePort).isNotNull &&
-      inputFlowRecords(DestinationPort).isNotNull &&
-      inputFlowRecords(Ibyt).isNotNull &&
-      inputFlowRecords(Ipkt).isNotNull
+      inputFlowRecords(SourcePort).geq(0) &&
+      inputFlowRecords(DestinationPort).geq(0) &&
+      inputFlowRecords(Ibyt).geq(0) &&
+      inputFlowRecords(Ipkt).geq(0)
+
     inputFlowRecords
       .filter(cleanFlowRecordsFilter)
-      .select(InSchema: _*)
   }
 
   /**
@@ -116,7 +93,7 @@ object FlowSuspiciousConnectsAnalysis {
     * @param inputFlowRecords raw flow records.
     * @return
     */
-  def filterAndSelectInvalidFlowRecords(inputFlowRecords: DataFrame): DataFrame = {
+  def filterInvalidRecords(inputFlowRecords: DataFrame): DataFrame = {
 
     val invalidFlowRecordsFilter = inputFlowRecords(Hour).between(0, 23) &&
       inputFlowRecords(Minute).between(0, 59) &&
@@ -125,13 +102,16 @@ object FlowSuspiciousConnectsAnalysis {
       inputFlowRecords(SourceIP).isNull ||
       inputFlowRecords(DestinationIP).isNull ||
       inputFlowRecords(SourcePort).isNull ||
+      inputFlowRecords(SourcePort).lt(0) ||
       inputFlowRecords(DestinationPort).isNull ||
+      inputFlowRecords(DestinationPort).lt(0) ||
       inputFlowRecords(Ibyt).isNull ||
-      inputFlowRecords(Ipkt).isNull
+      inputFlowRecords(Ibyt).lt(0) ||
+      inputFlowRecords(Ipkt).isNull ||
+      inputFlowRecords(Ipkt).lt(0)
 
     inputFlowRecords
       .filter(invalidFlowRecordsFilter)
-      .select(InSchema: _*)
   }
 
   /**
@@ -140,29 +120,13 @@ object FlowSuspiciousConnectsAnalysis {
     * @param threshold         score tolerance.
     * @return
     */
-  def filterScoredFlowRecords(scoredFlowRecords: DataFrame, threshold: Double): DataFrame = {
+  def filterScoredRecords(scoredFlowRecords: DataFrame, threshold: Double): DataFrame = {
 
     val filteredFlowRecordsFilter = scoredFlowRecords(Score).leq(threshold) &&
       scoredFlowRecords(Score).gt(dataValidation.ScoreError)
 
     scoredFlowRecords.filter(filteredFlowRecordsFilter)
   }
-
-  /**
-    *
-    * @param scoredFlowRecords scored flow records.
-    * @return
-    */
-  def filterAndSelectCorruptFlowRecords(scoredFlowRecords: DataFrame): DataFrame = {
-
-    val corruptFlowRecordsFilter = scoredFlowRecords(Score).equalTo(dataValidation.ScoreError)
-
-    scoredFlowRecords
-      .filter(corruptFlowRecordsFilter)
-      .select(OutSchema: _*)
-
-  }
-
 
   val InSchema = StructType(List(TimeReceivedField,
     YearField,

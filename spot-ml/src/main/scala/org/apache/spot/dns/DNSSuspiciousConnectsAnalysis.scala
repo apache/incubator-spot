@@ -22,6 +22,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel
@@ -48,58 +49,38 @@ object DNSSuspiciousConnectsAnalysis {
     * @param logger
     */
   def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
-          inputDNSRecords: DataFrame) = {
+          inputDNSRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
 
     logger.info("Starting DNS suspicious connects analysis.")
 
-    val cleanDNSRecords = filterAndSelectCleanDNSRecords(inputDNSRecords)
-
-    val scoredDNSRecords = scoreDNSRecords(cleanDNSRecords, config, sparkContext, sqlContext, logger)
-
-    val filteredDNSRecords = filterScoredDNSRecords(scoredDNSRecords, config.threshold)
-
-    val orderedDNSRecords = filteredDNSRecords.orderBy(Score)
-
-    val mostSuspiciousDNSRecords = if(config.maxResults > 0)  orderedDNSRecords.limit(config.maxResults) else orderedDNSRecords
-
-    val outputDNSRecords = mostSuspiciousDNSRecords.select(OutSchema:_*).sort(Score)
-
-    logger.info("DNS  suspicious connects analysis completed.")
-    logger.info("Saving results to : " + config.hdfsScoredConnect)
-
-    outputDNSRecords.map(_.mkString(config.outputDelimiter)).saveAsTextFile(config.hdfsScoredConnect)
-
-    val invalidDNSRecords = filterAndSelectInvalidDNSRecords(inputDNSRecords)
-    dataValidation.showAndSaveInvalidRecords(invalidDNSRecords, config.hdfsScoredConnect, logger)
-
-    val corruptDNSRecords = filterAndSelectCorruptDNSRecords(scoredDNSRecords)
-    dataValidation.showAndSaveCorruptRecords(corruptDNSRecords, config.hdfsScoredConnect, logger)
-  }
-
-
-  /**
-    * Identify anomalous DNS log entries in in the provided data frame.
-    *
-    * @param data Data frame of DNS entries
-    * @param config
-    * @param sparkContext
-    * @param sqlContext
-    * @param logger
-    * @return
-    */
-
-  def scoreDNSRecords(data: DataFrame, config: SuspiciousConnectsConfig,
-                      sparkContext: SparkContext,
-                      sqlContext: SQLContext,
-                      logger: Logger) : DataFrame = {
+    val dnsRecords = filterRecords(inputDNSRecords)
+      .select(InSchema: _*)
+      .na.fill(DefaultQueryClass, Seq(QueryClass))
+      .na.fill(DefaultQueryType, Seq(QueryType))
+      .na.fill(DefaultQueryResponseCode, Seq(QueryResponseCode))
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, data, config.topicCount)
+      DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, dnsRecords, config.topicCount)
 
     logger.info("Identifying outliers")
-    model.score(sparkContext, sqlContext, data, config.userDomain)
+    val scoredDNSRecords = model.score(sparkContext, sqlContext, dnsRecords, config.userDomain)
+
+    val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold).orderBy(Score)
+
+    val orderedDNSRecords = filteredScored.orderBy(Score)
+
+    val mostSuspiciousDNSRecords =
+      if (config.maxResults > 0) orderedDNSRecords.limit(config.maxResults)
+      else orderedDNSRecords
+
+    val outputDNSRecords = mostSuspiciousDNSRecords.select(OutSchema: _*)
+
+    val invalidDNSRecords = filterInvalidRecords(inputDNSRecords).select(InSchema: _*)
+
+    SuspiciousConnectsAnalysisResults(outputDNSRecords, invalidDNSRecords)
+
   }
 
 
@@ -108,13 +89,13 @@ object DNSSuspiciousConnectsAnalysis {
     * @param inputDNSRecords raw DNS records.
     * @return
     */
-  def filterAndSelectCleanDNSRecords(inputDNSRecords: DataFrame): DataFrame ={
+  def filterRecords(inputDNSRecords: DataFrame): DataFrame = {
 
     val cleanDNSRecordsFilter = inputDNSRecords(Timestamp).isNotNull &&
       inputDNSRecords(Timestamp).notEqual("") &&
       inputDNSRecords(Timestamp).notEqual("-") &&
-      inputDNSRecords(UnixTimestamp).isNotNull &&
-      inputDNSRecords(FrameLength).isNotNull &&
+      inputDNSRecords(UnixTimestamp).geq(0) &&
+      inputDNSRecords(FrameLength).geq(0) &&
       inputDNSRecords(QueryName).isNotNull &&
       inputDNSRecords(QueryName).notEqual("") &&
       inputDNSRecords(QueryName).notEqual("-") &&
@@ -126,14 +107,10 @@ object DNSSuspiciousConnectsAnalysis {
         inputDNSRecords(QueryClass).notEqual("") &&
         inputDNSRecords(QueryClass).notEqual("-")) ||
         inputDNSRecords(QueryType).isNotNull ||
-        inputDNSRecords(QueryResponseCode).isNotNull)
+        inputDNSRecords(QueryResponseCode).geq(0))
 
     inputDNSRecords
       .filter(cleanDNSRecordsFilter)
-      .select(InSchema: _*)
-      .na.fill(DefaultQueryClass, Seq(QueryClass))
-      .na.fill(DefaultQueryType, Seq(QueryType))
-      .na.fill(DefaultQueryResponseCode, Seq(QueryResponseCode))
   }
 
 
@@ -142,7 +119,7 @@ object DNSSuspiciousConnectsAnalysis {
     * @param inputDNSRecords raw DNS records.
     * @return
     */
-  def filterAndSelectInvalidDNSRecords(inputDNSRecords: DataFrame): DataFrame ={
+  def filterInvalidRecords(inputDNSRecords: DataFrame): DataFrame = {
 
     val invalidDNSRecordsFilter = inputDNSRecords(Timestamp).isNull ||
       inputDNSRecords(Timestamp).equalTo("") ||
@@ -164,7 +141,6 @@ object DNSSuspiciousConnectsAnalysis {
 
     inputDNSRecords
       .filter(invalidDNSRecordsFilter)
-      .select(InSchema: _*)
   }
 
 
@@ -174,7 +150,7 @@ object DNSSuspiciousConnectsAnalysis {
     * @param threshold score tolerance.
     * @return
     */
-  def filterScoredDNSRecords(scoredDNSRecords: DataFrame, threshold: Double): DataFrame ={
+  def filterScoredRecords(scoredDNSRecords: DataFrame, threshold: Double): DataFrame = {
 
 
     val filteredDNSRecordsFilter = scoredDNSRecords(Score).leq(threshold) &&
@@ -182,22 +158,6 @@ object DNSSuspiciousConnectsAnalysis {
 
     scoredDNSRecords.filter(filteredDNSRecordsFilter)
   }
-
-  /**
-    *
-    * @param scoredDNSRecords scored DNS records.
-    * @return
-    */
-  def filterAndSelectCorruptDNSRecords(scoredDNSRecords: DataFrame): DataFrame = {
-
-    val corruptDNSRecordsFilter = scoredDNSRecords(Score).equalTo(dataValidation.ScoreError)
-
-    scoredDNSRecords
-      .filter(corruptDNSRecordsFilter)
-      .select(OutSchema: _*)
-
-  }
-
 
   val DefaultQueryClass = "unknown"
   val DefaultQueryType = -1

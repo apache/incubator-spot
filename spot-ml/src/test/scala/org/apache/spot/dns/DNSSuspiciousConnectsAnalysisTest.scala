@@ -19,10 +19,11 @@ package org.apache.spot.dns
 
 
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
+import org.apache.spot.dns.model.DNSSuspiciousConnectsModel
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
 
@@ -61,7 +62,8 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     val anomalousRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 1, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
-    val scoredData = DNSSuspiciousConnectsAnalysis.scoreDNSRecords(data, testConfig, sparkContext, sqlContext, logger)
+    val model = DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfig, data, testConfig.topicCount)
+    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain)
     val anomalyScore = scoredData.filter(scoredData(FrameLength) === 1).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(FrameLength) === 168).collect().map(_.getAs[Double](Score))
 
@@ -96,7 +98,8 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       1,
       0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
-    val scoredData = DNSSuspiciousConnectsAnalysis.scoreDNSRecords(data, testConfig, sparkContext, sqlContext, logger)
+    val model = DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfig, data, testConfig.topicCount)
+    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain)
     val anomalyScore = scoredData.
       filter(scoredData(QueryName) === "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com").
       first().
@@ -114,7 +117,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
 
   "filterAndSelectCleanDNSRecords" should "return data set without garbage" in {
 
-    val cleanedDNSRecords = DNSSuspiciousConnectsAnalysis.filterAndSelectCleanDNSRecords(testDNSRecords.inputDNSRecordsDF)
+    val cleanedDNSRecords = DNSSuspiciousConnectsAnalysis.filterRecords(testDNSRecords.inputDNSRecordsDF)
 
     cleanedDNSRecords.count should be(8)
     cleanedDNSRecords.schema.size should be(8)
@@ -122,7 +125,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
 
   "filterAndSelectInvalidDNSRecords" should "return invalid records" in {
 
-    val invalidDNSRecords = DNSSuspiciousConnectsAnalysis.filterAndSelectInvalidDNSRecords(testDNSRecords.inputDNSRecordsDF)
+    val invalidDNSRecords = DNSSuspiciousConnectsAnalysis.filterInvalidRecords(testDNSRecords.inputDNSRecordsDF)
 
     invalidDNSRecords.count should be(15)
     invalidDNSRecords.schema.size should be(8)
@@ -132,18 +135,9 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
 
     val threshold = 10e-5
     val scoredDNSRecords = DNSSuspiciousConnectsAnalysis
-      .filterScoredDNSRecords(testDNSRecords.scoredDNSRecordsDF, threshold)
+      .filterScoredRecords(testDNSRecords.scoredDNSRecordsDF, threshold)
 
     scoredDNSRecords.count should be(2)
-  }
-
-  "filterAndSelectCorruptDNSRecords" should "return records where Score is equal to -1" in {
-
-    val corruptDNSRecords = DNSSuspiciousConnectsAnalysis
-      .filterAndSelectCorruptDNSRecords(testDNSRecords.scoredDNSRecordsDF)
-
-    corruptDNSRecords.count should be(1)
-    corruptDNSRecords.schema.size should be(9)
   }
 
   def testDNSRecords = new {
