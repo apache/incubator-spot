@@ -67,7 +67,7 @@ object DNSSuspiciousConnectsAnalysis {
     logger.info("Identifying outliers")
     val scoredDNSRecords = model.score(sparkContext, sqlContext, dnsRecords, config.userDomain)
 
-    val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold).orderBy(Score)
+    val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold)
 
     val orderedDNSRecords = filteredScored.orderBy(Score)
 
