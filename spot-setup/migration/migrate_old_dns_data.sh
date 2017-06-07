@@ -1,5 +1,4 @@
 #!/bin/bash
-
 OLD_DATA_PATH=$1
 STAGING_DB=$2
 HDFS_STAGING_PATH=$3
@@ -7,7 +6,7 @@ DEST_DB=$4
 IMPALA_DEM=$5
 
 # Execution example:
-#./migrate_old_dns_data.sh '/home/spot/spot-csv-data' 'spot_migration' '/user/duxbury/spot_migration/' 'migrated' 'node01'
+#./migrate_old_dns_data.sh '/home/spot/spot-csv-data' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
 
 # OLD_DATA_PATH='/home/spot/spot-csv-data'
 # STAGING_DB='spot_migration'

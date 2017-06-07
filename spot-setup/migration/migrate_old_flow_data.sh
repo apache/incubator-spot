@@ -6,7 +6,7 @@ DEST_DB=$4
 IMPALA_DEM=$5
 
 # Execution example:
-#./migrate_old_flow_data.sh '/home/spot/spot-csv-data' 'spot_migration' '/user/duxbury/spot_migration/' 'migrated' 'node01'
+#./migrate_old_flow_data.sh '/home/spot/spot-csv-data' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
 
 # OLD_DATA_PATH='/home/spot/spot-csv-data'
 # STAGING_DB='spot_migration'
@@ -28,25 +28,6 @@ hdfs dfs -setfacl -R -m user:impala:rwx $HDFS_STAGING_PATH
 
 #Creating Staging tables in Impala
 impala-shell -i ${IMPALA_DEM} --var=hpath=${HDFS_STAGING_PATH} --var=dbname=${STAGING_DB} -c -f create_flow_migration_tables.hql
-
-
-# ##flow_ingest_summary
-# echo "Processing Flow Ingest Summary"
-
-# if [ -f $OLD_DATA_PATH/flow/ingest_summary/is-*.csv ]
-#   then
-#     command="LOAD DATA LOCAL INPATH '$OLD_DATA_PATH/flow/ingest_summary/is-*.csv' OVERWRITE INTO TABLE $STAGING_DB.flow_ingest_summary_tmp;"
-#     echo $command
-#     hive -e "$command"
-
-#     command="INSERT INTO $DEST_DB.flow_ingest_summary PARTITION (y=$y, m=$m, d=$d) 
-# select tdate, total
-# from $STAGING_DB.flow_ingest_summary_tmp;"
-#     echo $command
-#     hive -e "$command"
-
-#   fi
-
 
 DAYS=$OLD_DATA_PATH/flow/*
 

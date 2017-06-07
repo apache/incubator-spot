@@ -1,15 +1,18 @@
 #!/bin/bash
-# OLD_DATA_PATH=$1
-# STAGING_DB=$2
-# HDFS_STAGING_PATH=$3
-# DEST_DB=$4
-# IMPALA_DEM=$5
+OLD_DATA_PATH=$1
+STAGING_DB=$2
+HDFS_STAGING_PATH=$3
+DEST_DB=$4
+IMPALA_DEM=$5
 
-OLD_DATA_PATH='/home/duxbury/moy/spot-csv-data'
-HDFS_STAGING_PATH='/user/duxbury/spot_migration'
-STAGING_DB='spot_migration'
-DEST_DB='migrated'
-IMPALA_DEM='gmsonidw01'
+# Execution example:
+#./migrate_old_proxy_data.sh '/home/spot/spot-csv-data' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
+
+# OLD_DATA_PATH='/home/spot/spot-csv-data'
+# STAGING_DB='spot_migration'
+# HDFS_STAGING_PATH='/user/spot/spot_migration/'
+# DEST_DB='migrated'
+# IMPALA_DEM='node01'
 
 
 hadoop fs -mkdir $HDFS_STAGING_PATH
