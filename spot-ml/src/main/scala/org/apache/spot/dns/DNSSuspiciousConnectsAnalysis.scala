@@ -62,7 +62,7 @@ object DNSSuspiciousConnectsAnalysis {
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, dnsRecords, config.topicCount)
+      DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, dnsRecords)
 
     logger.info("Identifying outliers")
     val scoredDNSRecords = model.score(sparkContext, sqlContext, dnsRecords, config.userDomain)

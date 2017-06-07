@@ -158,15 +158,13 @@ object DNSSuspiciousConnectsModel {
     * @param config       Analysis configuration object containing CLI parameters.
     *                     Contains the path to the feedback file in config.scoresFile
     * @param inputRecords Data used to train the model.
-    * @param topicCount   Number of topics (traffic profiles) used to build the model.
     * @return A new [[DNSSuspiciousConnectsModel]] instance trained on the dataframe and feedback file.
     */
-  def trainNewModel(sparkContext: SparkContext,
-                    sqlContext: SQLContext,
-                    logger: Logger,
-                    config: SuspiciousConnectsConfig,
-                    inputRecords: DataFrame,
-                    topicCount: Int): DNSSuspiciousConnectsModel = {
+  def trainModel(sparkContext: SparkContext,
+                 sqlContext: SQLContext,
+                 logger: Logger,
+                 config: SuspiciousConnectsConfig,
+                 inputRecords: DataFrame): DNSSuspiciousConnectsModel = {
 
     logger.info("Training DNS suspicious connects model from " + config.inputPath)
 
@@ -297,7 +295,7 @@ object DNSSuspiciousConnectsModel {
       .toMap
 
 
-    new DNSSuspiciousConnectsModel(topicCount,
+    new DNSSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,
       wordToPerTopicProb,
       timeCuts,

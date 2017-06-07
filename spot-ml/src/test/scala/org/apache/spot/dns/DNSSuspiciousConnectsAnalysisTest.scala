@@ -54,7 +54,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     ldaBeta = 1.001)
 
 
-  "dns supicious connects analysis" should "estimate correct probabilities in toy data with framelength anomaly" in {
+  "dns suspicious connects analysis" should "estimate correct probabilities in toy data with framelength anomaly" in {
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
     logger.setLevel(Level.WARN)
@@ -62,7 +62,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     val anomalousRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 1, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
-    val model = DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfig, data, testConfig.topicCount)
+    val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, data)
     val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain)
     val anomalyScore = scoredData.filter(scoredData(FrameLength) === 1).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(FrameLength) === 168).collect().map(_.getAs[Double](Score))
@@ -76,7 +76,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
   }
 
 
-  "dns supicious connects analysis" should "estimate correct probabilities in toy data with subdomain length anomaly" in {
+  "dns suspicious connects analysis" should "estimate correct probabilities in toy data with subdomain length anomaly" in {
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
     logger.setLevel(Level.WARN)
@@ -98,7 +98,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       1,
       0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
-    val model = DNSSuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfig, data, testConfig.topicCount)
+    val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, data)
     val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain)
     val anomalyScore = scoredData.
       filter(scoredData(QueryName) === "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com").
@@ -115,7 +115,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
   }
 
 
-  "filterAndSelectCleanDNSRecords" should "return data set without garbage" in {
+  "filterRecords" should "return data set without garbage" in {
 
     val cleanedDNSRecords = DNSSuspiciousConnectsAnalysis.filterRecords(testDNSRecords.inputDNSRecordsDF)
 
@@ -123,7 +123,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     cleanedDNSRecords.schema.size should be(8)
   }
 
-  "filterAndSelectInvalidDNSRecords" should "return invalid records" in {
+  "filterInvalidRecords" should "return invalid records" in {
 
     val invalidDNSRecords = DNSSuspiciousConnectsAnalysis.filterInvalidRecords(testDNSRecords.inputDNSRecordsDF)
 
@@ -131,7 +131,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     invalidDNSRecords.schema.size should be(8)
   }
 
-  "filterScoredDNSRecords" should "return records with score less or equal to threshold" in {
+  "filterScoredRecords" should "return records with score less or equal to threshold" in {
 
     val threshold = 10e-5
     val scoredDNSRecords = DNSSuspiciousConnectsAnalysis

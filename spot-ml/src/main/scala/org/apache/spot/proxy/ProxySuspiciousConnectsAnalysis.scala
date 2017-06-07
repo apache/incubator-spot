@@ -51,7 +51,7 @@ object ProxySuspiciousConnectsAnalysis {
       .na.fill(DefaultResponseContentType, Seq(ResponseContentType))
 
     logger.info("Fitting probabilistic model to data")
-    val model = ProxySuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, config, proxyRecords)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, proxyRecords)
 
     logger.info("Identifying outliers")
     val scoredProxyRecords = model.score(sparkContext, proxyRecords)

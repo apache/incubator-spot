@@ -127,7 +127,7 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
       AlexaGetMidEntroTextPopularAgentMidUri302,
       AlexaGetHiEntroTextPopularAgentLargeUri302))
 
-    val model = ProxySuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfigProxy, data)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfigProxy, data)
 
     val scoredData = model.score(sparkContext, data)
 

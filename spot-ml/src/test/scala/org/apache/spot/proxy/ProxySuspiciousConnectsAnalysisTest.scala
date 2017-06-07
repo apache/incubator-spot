@@ -87,7 +87,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val model = ProxySuspiciousConnectsModel.trainNewModel(sparkContext, sqlContext, logger, testConfigProxy, data)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfigProxy, data)
 
     val scoredData = model.score(sparkContext, data)
 
@@ -108,7 +108,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
   }
 
 
-  "filterAndSelectCleanProxyRecords" should "return data without garbage" in {
+  "filterRecords" should "return data without garbage" in {
 
     val cleanedProxyRecords = ProxySuspiciousConnectsAnalysis
       .filterRecords(testProxyRecords.inputProxyRecordsDF)
@@ -117,7 +117,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     cleanedProxyRecords.schema.size should be(19)
   }
 
-  "filterAndSelectInvalidProxyRecords" should "return invalir records" in {
+  "filterInvalidRecords" should "return invalir records" in {
 
     val invalidProxyRecords = ProxySuspiciousConnectsAnalysis
       .filterInvalidRecords(testProxyRecords.inputProxyRecordsDF)
@@ -127,7 +127,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
   }
 
-  "filterScoredProxyRecords" should "return records with score less or equal to threshold" in {
+  "filterScoredRecords" should "return records with score less or equal to threshold" in {
 
     val threshold = 10e-5
 

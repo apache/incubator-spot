@@ -110,11 +110,11 @@ object ProxySuspiciousConnectsModel {
     *                     UserAgent, RespCode (as defined in ProxySchema object).
     * @return ProxySuspiciousConnectsModel
     */
-  def trainNewModel(sparkContext: SparkContext,
-                    sqlContext: SQLContext,
-                    logger: Logger,
-                    config: SuspiciousConnectsConfig,
-                    inputRecords: DataFrame): ProxySuspiciousConnectsModel = {
+  def trainModel(sparkContext: SparkContext,
+                 sqlContext: SQLContext,
+                 logger: Logger,
+                 config: SuspiciousConnectsConfig,
+                 inputRecords: DataFrame): ProxySuspiciousConnectsModel = {
 
     logger.info("training new proxy suspcious connects model")
 
