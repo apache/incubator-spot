@@ -1,6 +1,6 @@
 # DNS
 
-DNS sub-module extracts and transforms DNS (Domain Name Service) data already ranked by spot-ml and will load into csv files for presentation layer.
+DNS sub-module extracts and transforms DNS (Domain Name Service) data already ranked by spot-ml and will load it into into impala tables for the presentation layer.
 
 ## DNS Components
 
@@ -15,30 +15,26 @@ DNS spot-oa main script executes the following steps:
 			ipython Notebooks: ipynb/dns/<date>/
 		
 		2. Creates a copy of the notebooks templates into the ipython Notebooks path and renames them removing the "_master" part from the name.
-		
+
 		3. Gets the dns_results.csv from the HDFS location according to the selected date, and copies it back to the corresponding data path.
-		 
+
 		4. Reads a given number of rows from the results file.
 
-		5. Gets the top level domain out of the dns_qry_name, and adds it in the new column 'tld' 
-		 
+		5. Gets the top level domain out of the dns_qry_name, and adds it in the new column 'tld'.
+
 		6. Checks reputation for the query_name of each connection.
-		 
+
 		7. Adds two new columns for the severity of the query_name and the client ip of each connection.
 
 		8. Adds a new column with the hour part of the frame_time.
-		 
-		9. Translates the 'dns_query_class', 'dns_query_type','dns_query_rcode' to human readable text according to the IANA specification. The translated values are stored in the dns_qry_class_name, dns_qry_type_name, dns_qry_rcode_name columns, respectively. 
-		 
+
+		9. Translates the 'dns_query_class', 'dns_query_type','dns_query_rcode' to human readable text according to the IANA specification. The translated values are stored in the dns_qry_class_name, dns_qry_type_name, dns_qry_rcode_name columns, respectively.
+
 		10. Adds Network Context.
-		
-		11. Saves dns_scores.csv file.
-		 
-		12. Creates a backup of dns_scores.csv file named dns_scores_bu.csv.
-		
-		13. Creates dns data details files.
-		
-		14. Creates dendrogram data files.
+
+		11. Saves results to the dns_scores table.
+
+    	12. Generates details and dendrogram diagram data. These details include information about aditional connections to display the details table in the UI.
 
 
 **Dependencies**
@@ -51,9 +47,8 @@ DNS spot-oa main script executes the following steps:
 - [components/data](/spot-oa/oa/components#data)
 - [components/nc](/spot-oa/oa/components#network-context-nc)
 - [components/reputation](/spot-oa/oa/components/reputation)
-- dns_conf.json
-
-
+- dns_conf.json 
+ 
     
 **Prerequisites**
 
@@ -70,12 +65,12 @@ Before running DNS OA users need to configure components for the first time. It 
 
 **Output**
 
-- dns_scores.csv: Main results file for DNS OA. This file will contain suspicious connects information and it's limited to the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
- 
-		Schema with zero-indexed columns: 
-		
+- DNS suspicious connections. _dns\_scores_ table.
+
+Main results for Flow OA. Main results file for DNS OA. The data stored in this table is limited by the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage). (/spot-oa/oa/INSTALL.md#usage).
+  
 		0.frame_time: string		
-		1.frame_len: int		
+		1.unix_tstamp: bigint		
 		2.ip_dst: string		
 		3.dns_qry_name: string		
 		4.dns_qry_class: string		
@@ -84,49 +79,60 @@ Before running DNS OA users need to configure components for the first time. It 
 		7.score: double	
 		8.tld: string		
 		9.query_rep: string		
-		10.hh: string		
-		11.ip_sev: int		
-		12.dns_sev: int		
-		13.dns_qry_class_name: string		
-		14.dns_qry_type_name: string		
-		15.dns_qry_rcode_name: string		
-		16.network_context: string		
-		17.unix_tstamp: bigint
-
-- dns_scores_bu.csv: The backup file of suspicious connects in case user wants to roll back any changes made during analysis. Schema is same as dns_scores.csv.
+		10.hh: string	
+		11.dns_qry_class_name: string		
+		12.dns_qry_type_name: string		
+		13.dns_qry_rcode_name: string		
+		14.network_context: string	 
 
 
-- dendro-\<DNS query name>.csv: One file for each source IP. This file includes information about all the queries made to a particular DNS query name. The number of retrieved rows is limited by the value of "\_details\_limit" parameter
+- DNS details _dns\_scores_ table.  
 
-		Schema with zero-indexed columns:
-		
-		0.dns_a: string		
-		1.dns_qry_name: string		
-		2.ip_dst: string
+One file for each source IP. This file includes information about all the queries made to a particular DNS query name. The number of retrieved rows is limited by the value of "\_details\_limit" parameter
+ 
+		0.unix_tstamp bigint 
+		1.dns_a string
+		2.dns_qry_name string
+		3.ip_dst string 
 
-- edge-\<DNS query name>_\<HH>_00.csv: One file for each DNS query name for each hour of the day. This file contains details for each
+
+- DNS Details: _dns\_dendro_ table.  
+
+One file for each DNS query name for each hour of the day. This file contains details for each
 connection between DNS and source IP.
+ 
+		0.unix_tstamp bigint
+    	1.frame_len bigint
+    	2.ip_dst string
+    	3.ip_src string
+    	4.ns_qry_name string
+    	5.dns_qry_class string
+    	6.dns_qry_type int
+    	7.dns_qry_rcode int
+    	8.dns_a string
+    	9.hh int
+    	10.dns_qry_class_name string
+    	11.dns_qry_type_name string
+    	12.dns_qry_rcode_name string
+    	13.network_context string
 
-		Schema with zero-indexed columns:
-		
-		0.frame_time: string		
-		1.frame_len: int		
-		2.ip_dst: string		
-		3.ip_src: string		
-		4.dns_qry_name: string		
-		5.dns_qry_class_name: string		
-		6.dns_qry_type_name: string		
-		7.dns_qry_rcode_name: string		
-		8.dns_a: string
 
+- DNS Ingest summary. _dns\_ingest\_summary_ table.
+
+This table is populated with the number of connections ingested by minute during that day.
+
+        Table schema:
+        0. tdate:      string
+        1. total:      bigint 
+ 
 
 ###dns_conf.json
-This file is part of the initial configuration for the DNS pipeline. It will contain mapped all the columns included in the dns_results.csv and dns_scores.csv files.
+This file is part of the initial configuration for the DNS pipeline. It will contain mapped all the columns included in the _dns\_edge_ and _dns\_dendro_ tables.
 
 This file contains three main arrays:
 
 	-  dns_results_fields: Reference of the column name and indexes in the dns_results.csv file.	 
-	-  dns_score_fields:  Reference of the column name and indexes in the dns_scores.csv file.	
+	-  dns_score_fields:  Reference of the column name and indexes in the _dns\_edge_ table.
 	-  add_reputation: According to the dns_results.csv file, this is the column index of the value which will be evaluated using the reputation services.
 
 

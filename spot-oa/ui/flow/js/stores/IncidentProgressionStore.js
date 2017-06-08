@@ -1,46 +1,70 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-const assign = require('object-assign');
-
 const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
 const SpotConstants = require('../../../js/constants/SpotConstants');
-const FlowConstants = require('../constants/NetflowConstants');
-const JsonStore = require('../../../js/stores/JsonStore');
 
-const IP_FILTER_NAME = 'ip';
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-const IncidentProgressionStore = assign(new JsonStore(FlowConstants.API_INCIDENT_PROGRESSION), {
-    errorMessages: {
-        404: 'Please choose a different date, no data has been found'
-    },
-    setDate: function (date)
-    {
-        this.setEndpoint(FlowConstants.API_INCIDENT_PROGRESSION.replace('${date}', date.replace(/-/g, '')));
-    },
-    setIp: function (value)
-    {
-        this.setRestFilter(IP_FILTER_NAME, value);
-    },
-    getIp: function ()
-    {
-        return this.getRestFilter(IP_FILTER_NAME);
+const DATE_VAR = 'date';
+const IP_VAR = 'ip';
+
+class IncidentProgressionStore extends ObservableGraphQLStore {
+    getQuery() {
+        return `
+            query($date:SpotDateType!, $ip:SpotIpType!) {
+                flow {
+                    threat {
+                        incidentProgression(date: $date, ip: $ip) {
+                            name
+                            children {
+                                name
+                                children {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
     }
-});
+
+    unboxData(data) {
+        return data.flow.threat.incidentProgression;
+    }
+
+    setDate(date)
+    {
+        this.setVariable(DATE_VAR, date);
+    }
+
+    setIp(ip)
+    {
+        this.setVariable(IP_VAR, ip);
+    }
+
+    getIp()
+    {
+        return this.getVariable(IP_VAR);
+    }
+}
+
+const ips = new IncidentProgressionStore();
 
 SpotDispatcher.register(function (action) {
     switch (action.actionType) {
         case SpotConstants.UPDATE_DATE:
-            IncidentProgressionStore.setDate(action.date);
+            ips.setDate(action.date);
             break;
         case SpotConstants.RELOAD_COMMENTS:
-            IncidentProgressionStore.resetData();
+            ips.resetData();
             break;
         case SpotConstants.SELECT_COMMENT:
-            IncidentProgressionStore.setIp(action.comment.ip);
-            IncidentProgressionStore.reload();
+            ips.setIp(action.comment.ip);
+            ips.sendQuery();
 
             break;
     }
 });
 
-module.exports = IncidentProgressionStore;
+module.exports = ips;

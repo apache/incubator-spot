@@ -1,182 +1,182 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-var assign = require('object-assign');
-var d3 = require('d3');
+const SpotConstants = require('../../../js/constants/SpotConstants');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotUtils = require('../../../js/utils/SpotUtils');
 
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotUtils = require('../../../js/utils/SpotUtils');
-var ProxyConstants = require('../constants/ProxyConstants');
-var RestStore = require('../../../js/stores/RestStore');
+const ObservableWithHeadersGraphQLStore = require('../../../js/stores/ObservableWithHeadersGraphQLStore');
 
-var ALL_FILTER = 'all';
-var URI_FILTER = 'fulluri';
+const DATE_VAR = 'date';
+const URI_VAR = 'uri';
+const CLIENT_IP_VAR = 'clientIp';
 
-var CHANGE_FILTER_EVENT = 'change_filter';
-var HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
-var UNHIGHLIGHT_THREAT_EVENT = 'unhightlight_thread';
-var SELECT_THREAT_EVENT = 'select_treath';
+const CHANGE_FILTER_EVENT = 'change_filter';
+const HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
+const UNHIGHLIGHT_THREAT_EVENT = 'unhightlight_thread';
+const SELECT_THREAT_EVENT = 'select_treath';
 
-var filterName = '';
-var highlightedThread = null;
-var selectedThread = null;
+class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
+    constructor() {
+        super();
 
-var SuspiciousStore = assign(new RestStore(ProxyConstants.API_SUSPICIOUS), {
-    _parser: d3.tsv,
-    errorMessages: {
-        404: 'Please choose a different date, no data has been found'
-    },
-    headers: {
-        p_date: 'Time',
-        clientip: 'Client IP',
-        host: 'Host',
-        uri_rep: ' ',
-        webcat: 'Web Category',
-        respcode_name: 'Response Code'
-    },
-    ITERATOR: ['p_date', 'clientip', 'host', 'uri_rep', 'webcat', 'respcode_name'],
-    getData: function () {
-        var state, filter;
+        this.filterName = null;
+        this.highlightedThread = null;
+        this.selectedThread = null;
 
-        filter = this.getFilter();
+        this.headers = {
+            datetime: 'Time',
+            clientip: 'Client IP',
+            host: 'Host',
+            uri_rep: ' ',
+            webcat: 'Web Category',
+            respcode_name: 'Response Code'
+        };
 
-        if (!filter || !this._data) {
-            state = this._data || {data: []};
-        }
-        else {
-            state = assign(
-                {},
-                this._data
-            );
+        this.ITERATOR = ['datetime', 'clientip', 'host', 'uri_rep', 'webcat', 'respcode_name'];
+    }
 
-            if (state.data) {
-                state.data = state.data.filter((item) => {
-                    return filterName === URI_FILTER ?
-                                                // Only look on URI field
-                                                item[URI_FILTER].indexOf(filter) >= 0 :
-                                                // Look on clientip and URI fields
-                                                item.clientip == filter || item.fulluri.indexOf(filter) >= 0;
-                });
+    getQuery() {
+        return `
+            query($date:SpotDateType!,$uri:String,$clientIp:SpotIpType) {
+                proxy {
+                    suspicious(date: $date, uri:$uri,clientIp:$clientIp) {
+                        uriport: uriPort
+                        uripath: uriPath
+                        uriquery: uriQuery
+                        datetime
+                        network_context: networkContext
+                        duration
+                        useragent: userAgent
+                        uri_rep: uriRep
+                        score
+                        username
+                        webcat: webCategory
+                        resconttype: responseContentType
+                        host
+                        referer
+                        csbytes: clientToServerBytes
+                        fulluri: uri
+                        serverip: serverIp
+                        reqmethod: requestMethod
+                        respcode: responseCode
+                        clientip: clientIp
+                        respcode_name: responseCodeLabel
+                        scbytes: serverToClientBytes
+                    }
+                }
             }
-        }
+        `;
+    }
 
-        if (state.data) {
-            state.data = state.data.filter(function (item) {
-                return item.uri_sev == "0";
-            });
+    unboxData(data) {
+        return data.proxy.suspicious;
+    }
 
-            if (state.data.length > SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
-        }
+    setDate(date) {
+        this.setVariable(DATE_VAR, date);
+    }
 
-        return state;
-    },
-    setData: function (data) {
-        this._data = data;
-
-        this.emitChangeData();
-    },
-    setDate: function (date) {
-        this.setEndpoint(ProxyConstants.API_SUSPICIOUS.replace('${date}', date.replace(/-/g, '')));
-    },
-    setFilter: function (filter) {
+    setFilter(filter) {
         if (filter === '') {
-            filterName = '';
-            this.removeRestFilter(ALL_FILTER);
-            this.removeRestFilter(URI_FILTER);
+            this.filterName = null;
+            this.unsetVariable(URI_VAR);
+            this.unsetVariable(CLIENT_IP_VAR);
         }
         else if (SpotUtils.IP_V4_REGEX.test(filter)) {
-            this.removeRestFilter(URI_FILTER);
-            this.setRestFilter(ALL_FILTER, filter);
-            filterName = ALL_FILTER;
+            this.unsetVariable(URI_VAR, filter);
+            this.setVariable(CLIENT_IP_VAR, filter);
         }
         else {
-            this.removeRestFilter(ALL_FILTER);
-            this.setRestFilter(URI_FILTER, filter);
-            filterName = URI_FILTER;
+            this.unsetVariable(CLIENT_IP_VAR);
+            this.setVariable(URI_VAR, filter);
         }
 
-        this.emitChangeFilter();
-    },
-    getFilter: function () {
-        return this.getRestFilter(filterName);
-    },
-    emitChangeFilter: function () {
-        this.emit(CHANGE_FILTER_EVENT);
-    },
-    addChangeFilterListener: function (callback) {
-        this.on(CHANGE_FILTER_EVENT, callback);
-    },
-    removeChangeFilterListener: function (callback) {
-        this.removeListener(CHANGE_FILTER_EVENT, callback);
-    },
-    highlightThreat: function (threat) {
-        highlightedThread = threat;
-        this.emitHighlightThreat();
-    },
-    getHighlightedThreat: function () {
-        return highlightedThread;
-    },
-    addThreatHighlightListener: function (callback) {
-        this.on(HIGHLIGHT_THREAT_EVENT, callback);
-    },
-    removeThreatHighlightListener: function (callback) {
-        this.removeListener(HIGHLIGHT_THREAT_EVENT, callback);
-    },
-    emitHighlightThreat: function () {
-        this.emit(HIGHLIGHT_THREAT_EVENT);
-    },
-    unhighlightThreat: function () {
-        highlightedThread = null;
-        this.emitUnhighlightThreat();
-    },
-    addThreatUnhighlightListener: function (callback) {
-        this.on(UNHIGHLIGHT_THREAT_EVENT, callback);
-    },
-    removeThreatUnhighlightListener: function (callback) {
-        this.removeListener(UNHIGHLIGHT_THREAT_EVENT, callback);
-    },
-    emitUnhighlightThreat: function () {
-        this.emit(UNHIGHLIGHT_THREAT_EVENT);
-    },
-    selectThreat: function (threat) {
-        selectedThread = threat;
-        this.emitThreatSelect();
-    },
-    getSelectedThreat: function () {
-        return selectedThread;
-    },
-    addThreatSelectListener: function (callback) {
-        this.on(SELECT_THREAT_EVENT, callback);
-    },
-    removeThreatSelectListener: function (callback) {
-        this.removeListener(SELECT_THREAT_EVENT, callback);
-    },
-    emitThreatSelect: function () {
-        this.emit(SELECT_THREAT_EVENT);
+        this.notifyListeners(CHANGE_FILTER_EVENT);
     }
-});
+
+    getFilter() {
+        return this.getVariable(CLIENT_IP_VAR) || this.getVariable(URI_VAR) || '';
+    }
+
+    addChangeFilterListener(callback) {
+        this.addListener(CHANGE_FILTER_EVENT, callback);
+    }
+
+    removeChangeFilterListener(callback) {
+        this.removeListener(CHANGE_FILTER_EVENT, callback);
+    }
+
+    highlightThreat(threat) {
+        this.highlightedThread = threat;
+        this.notifyListeners(HIGHLIGHT_THREAT_EVENT);
+    }
+
+    getHighlightedThreat() {
+        return this.highlightedThread;
+    }
+
+    addThreatHighlightListener(callback) {
+        this.addListener(HIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    removeThreatHighlightListener(callback) {
+        this.removeListener(HIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    unhighlightThreat() {
+        this.highlightedThread = null;
+        this.notifyListeners(UNHIGHLIGHT_THREAT_EVENT);
+    }
+
+    addThreatUnhighlightListener(callback) {
+        this.addListener(UNHIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    removeThreatUnhighlightListener(callback) {
+        this.removeListener(UNHIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    selectThreat(threat) {
+        this.selectedThread = threat;
+        this.notifyListeners(SELECT_THREAT_EVENT);
+    }
+
+    getSelectedThreat() {
+        return this.selectedThread;
+    }
+
+    addThreatSelectListener(callback) {
+        this.addListener(SELECT_THREAT_EVENT, callback);
+    }
+
+    removeThreatSelectListener(callback) {
+        this.removeListener(SELECT_THREAT_EVENT, callback);
+    }
+}
+
+const ss = new SuspiciousStore();
 
 SpotDispatcher.register(function (action) {
     switch (action.actionType) {
         case SpotConstants.UPDATE_FILTER:
-            SuspiciousStore.setFilter(action.filter);
+            ss.setFilter(action.filter);
             break;
         case SpotConstants.UPDATE_DATE:
-            SuspiciousStore.setDate(action.date);
+            ss.setDate(action.date);
             break;
         case SpotConstants.RELOAD_SUSPICIOUS:
-            SuspiciousStore.reload();
+            ss.sendQuery();
             break;
         case SpotConstants.HIGHLIGHT_THREAT:
-            SuspiciousStore.highlightThreat(action.threat);
+            ss.highlightThreat(action.threat);
             break;
         case SpotConstants.UNHIGHLIGHT_THREAT:
-            SuspiciousStore.unhighlightThreat();
+            ss.unhighlightThreat();
             break;
         case SpotConstants.SELECT_THREAT:
-            SuspiciousStore.selectThreat(action.threat);
+            ss.selectThreat(action.threat);
             break;
     }
 });
 
-module.exports = SuspiciousStore;
+module.exports = ss;

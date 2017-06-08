@@ -22,27 +22,30 @@ import sys
 import json
 import numpy as np
 import linecache, bisect
-import csv
+import csv, math
 import pandas as pd
+import subprocess
+import numbers
+import api.resources.hdfs_client as HDFSClient
+import api.resources.impala_engine as impala
 
 from collections import OrderedDict
 from multiprocessing import Process
-from utils import Util,ProgressBar
+from utils import Util, ProgressBar
 from components.data.data import Data
 from components.geoloc.geoloc import GeoLocalization
 from components.reputation.gti import gti
-
+from impala.util import as_pandas
 import time
 
 
 class OA(object):
 
-    def __init__(self,date,limit=500,logger=None):       
-       
-       self._initialize_members(date,limit,logger)
-       
-    def _initialize_members(self,date,limit,logger):
-        
+    def __init__(self,date,limit=500,logger=None):
+        self._initialize_members(date,limit,logger)
+
+    def _initialize_members(self,date,limit,logger): 
+
         # get logger if exists. if not, create new instance.
         self._logger = logging.getLogger('OA.Flow') if logger else Util.get_logger('OA.Flow',create_file=False)
 
@@ -57,31 +60,32 @@ class OA(object):
         self._ingest_summary_path = None
         self._flow_scores = []
         self._results_delimiter = '\t'
+        
 
         # get app configuration.
         self._spot_conf = Util.get_spot_conf()
 
-        # get scores fields conf
+        # # get scores fields conf
         conf_file = "{0}/flow_conf.json".format(self._scrtip_path)
-        self._conf = json.loads(open (conf_file).read(),object_pairs_hook=OrderedDict)     
- 
+        self._conf = json.loads(open (conf_file).read(),object_pairs_hook=OrderedDict)
+
         # initialize data engine
-        self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
-        self._engine = Data(self._db, self._table_name,self._logger)
-                      
+        self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')        
+                
     def start(self):       
         
         ####################
         start = time.time()
-        ####################
+        ####################         
 
         self._create_folder_structure()
+        self._clear_previous_executions()        
         self._add_ipynb()  
         self._get_flow_results()
         self._add_network_context()
         self._add_geo_localization()
         self._add_reputation()        
-        self._create_flow_scores_csv()
+        self._create_flow_scores()
         self._get_oa_details()
         self._ingest_summary()
 
@@ -89,12 +93,31 @@ class OA(object):
         end = time.time()
         print(end - start)
         ##################
-       
-    def _create_folder_structure(self):
+        
 
-        # create date folder structure if it does not exist.
+    def _clear_previous_executions(self):
+        
+        self._logger.info("Cleaning data from previous executions for the day")       
+        yr = self._date[:4]
+        mn = self._date[4:6]
+        dy = self._date[6:]  
+        table_schema = []
+        HUSER = self._spot_conf.get('conf', 'HUSER').replace("'", "").replace('"', '')
+        table_schema=['suspicious', 'edge','chords','threat_investigation', 'timeline', 'storyboard', 'summary' ] 
+
+        for path in table_schema:
+            HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}/d={5}".format(HUSER,self._table_name,path,yr,int(mn),int(dy)),user="impala")        
+        impala.execute_query("invalidate metadata")
+        #removes Feedback file
+        HDFSClient.delete_folder("{0}/{1}/scored_results/{2}{3}{4}/feedback/ml_feedback.csv".format(HUSER,self._table_name,yr,mn,dy))
+        #removes json files from the storyboard
+        HDFSClient.delete_folder("{0}/{1}/oa/{2}/{3}/{4}/{5}".format(HUSER,self._table_name,"storyboard",yr,mn,dy))
+
+    def _create_folder_structure(self):   
+
         self._logger.info("Creating folder structure for OA (data and ipynb)")       
         self._data_path,self._ingest_summary_path,self._ipynb_path = Util.create_oa_folders("flow",self._date)
+ 
 
     def _add_ipynb(self):     
 
@@ -109,6 +132,7 @@ class OA(object):
         else:
             self._logger.error("There was a problem adding the IPython Notebooks, please check the directory exists.")
             
+            
     def _get_flow_results(self):
                
         self._logger.info("Getting {0} Machine Learning Results from HDFS".format(self._date))
@@ -117,8 +141,8 @@ class OA(object):
         # get hdfs path from conf file 
         HUSER = self._spot_conf.get('conf', 'HUSER').replace("'", "").replace('"', '')
         hdfs_path = "{0}/flow/scored_results/{1}/scores/flow_results.csv".format(HUSER,self._date)
-               
-        # get results file from hdfs
+        
+         # get results file from hdfs
         get_command = Util.get_ml_results_form_hdfs(hdfs_path,self._data_path)
         self._logger.info("{0}".format(get_command))
 
@@ -134,36 +158,36 @@ class OA(object):
             self._logger.error("There was an error getting ML results from HDFS")
             sys.exit(1)
 
-        # add headers.        
-        self._logger.info("Adding headers based on configuration file: score_fields.json")
-        self._flow_scores = [ [ str(key) for (key,value) in self._conf['flow_score_fields'].items()] ]
-
-        # filter results add sev and rank.
+        # filter results add rank.
         self._logger.info("Filtering required columns based on configuration")
-        self._flow_scores.extend([ [0] +  [ conn[i] for i in self._conf['column_indexes_filter'] ] + [n] for n, conn in enumerate(self._flow_results) ])
+
+        self._flow_scores.extend([ [ conn[i] for i in self._conf['column_indexes_filter'] ] + [n] for n, conn in enumerate(self._flow_results) ])
      
-    def _create_flow_scores_csv(self):
 
-        flow_scores_csv = "{0}/flow_scores.csv".format(self._data_path)
-        Util.create_csv_file(flow_scores_csv,self._flow_scores)
+    def _create_flow_scores(self):
 
-        # create bk file
-        flow_scores_bu_csv = "{0}/flow_scores_bu.csv".format(self._data_path)
-        Util.create_csv_file(flow_scores_bu_csv,self._flow_scores)  
+        # get date parameters.
+        yr = self._date[:4]
+        mn = self._date[4:6]
+        dy = self._date[6:] 
+        value_string = ""
+
+        for row in self._flow_scores:
+            value_string += str(tuple(Util.cast_val(item) for item in row)) + ","              
+    
+        load_into_impala = ("""
+             INSERT INTO {0}.flow_scores partition(y={2}, m={3}, d={4}) VALUES {1}
+        """).format(self._db, value_string[:-1], yr, mn, dy) 
+        impala.execute_query(load_into_impala)
+ 
 
     def _add_network_context(self):
 
         # use ipranges to see if the IPs are internals.         
         ip_ranges_file = "{0}/context/ipranges.csv".format(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-        # add new headers (srcIpInternal/destIpInternal).
-        self._logger.info("Adding network context headers")
-        flow_headers = self._flow_scores[0]
-        flow_headers.extend(["srcIpInternal","destIpInternal"])
-
         # add values to srcIpInternal and destIpInternal.
         flow_scores = iter(self._flow_scores)
-        next(flow_scores)
 
         if os.path.isfile(ip_ranges_file):
 
@@ -184,11 +208,9 @@ class OA(object):
             self._flow_scores = [ conn + [ self._is_ip_internal(conn[src_ip_index],ip_internal_ranges)]+[ self._is_ip_internal(conn[dst_ip_index],ip_internal_ranges)] for conn in flow_scores]
            
         else:
-
-            self._flow_scores = [ conn + ["",""] for conn in flow_scores ]            
+            self._flow_scores = [ conn + [0,0] for conn in flow_scores ]            
             self._logger.info("WARNING: Network context was not added because the file ipranges.csv does not exist.")
         
-        self._flow_scores.insert(0,flow_headers)
 
     def _is_ip_internal(self,ip, ranges):
         result = 0
@@ -204,14 +226,10 @@ class OA(object):
         # use ipranges to see if the IPs are internals.         
         iploc_file = "{0}/context/iploc.csv".format(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-        # add new headers (srcIpInternal/destIpInternal).     
         self._logger.info("Adding geo localization headers")
-        flow_headers = self._flow_scores[0]
-        flow_headers.extend(["srcGeo","dstGeo","srcDomain","dstDomain"]) 
 
         # add values to srcIpInternal and destIpInternal.
         flow_scores = iter(self._flow_scores)
-        next(flow_scores)
 
         if os.path.isfile(iploc_file):
 
@@ -241,16 +259,10 @@ class OA(object):
             self._flow_scores = [ conn + ["","","",""] for conn in flow_scores ]   
             self._logger.info("WARNING: IP location was not added because the file {0} does not exist.".format(iploc_file))
 
-        self._flow_scores.insert(0,flow_headers)       
-
+        
     def _add_reputation(self):
         
         reputation_conf_file = "{0}/components/reputation/reputation_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        
-        # add new headers (gtiSrcRep/gtiDstRep).
-        self._logger.info("Adding reputation headers")
-        flow_headers_rep = self._flow_scores[0]
-        flow_headers_rep.extend(["srcIP_rep","dstIP_rep"])
         
         # read configuration.
         self._logger.info("Reading reputation configuration file: {0}".format(reputation_conf_file))
@@ -268,7 +280,6 @@ class OA(object):
 
             self._logger.info("Getting GTI reputation for src IPs")
             flow_scores_src = iter(self._flow_scores)
-            next(flow_scores_src)
 
             # getting reputation for src IPs
             src_ips = [ conn[src_ip_index] for conn in flow_scores_src ]            
@@ -276,29 +287,24 @@ class OA(object):
 
             self._logger.info("Getting GTI reputation for dst IPs")
             flow_scores_dst = iter(self._flow_scores)
-            next(flow_scores_dst)
 
             # getting reputation for dst IPs            
             dst_ips = [  conn[dst_ip_index] for conn in flow_scores_dst ]
             dst_rep_results = flow_gti.check(dst_ips)
 
             flow_scores_final = iter(self._flow_scores)
-            next(flow_scores_final)
 
             self._flow_scores = []
-            flow_scores = [conn + [src_rep_results[conn[src_ip_index]]] + [dst_rep_results[conn[dst_ip_index]]]  for conn in  flow_scores_final ]
+            flow_scores = [conn + [src_rep_results[conn[src_ip_index]]] + [dst_rep_results[conn[dst_ip_index]]] for conn in flow_scores_final ]
             self._flow_scores = flow_scores           
             
         else:
             # add values to gtiSrcRep and gtiDstRep.
             flow_scores = iter(self._flow_scores)
-            next(flow_scores)
 
             self._flow_scores = [ conn + ["",""] for conn in flow_scores ]   
             self._logger.info("WARNING: IP reputation was not added. No refclient configured")  
 
-
-        self._flow_scores.insert(0,flow_headers_rep)       
 
     def _get_oa_details(self):
 
@@ -319,8 +325,6 @@ class OA(object):
         
         # skip header
         sp_connections = iter(self._flow_scores)
-        next(sp_connections)
-      
         # loop connections.
         connections_added = [] 
         for conn in sp_connections:
@@ -330,7 +334,7 @@ class OA(object):
                 continue
             else:
                 connections_added.append(conn)
-           
+            
             src_ip_index = self._conf["flow_score_fields"]["srcIP"]
             dst_ip_index = self._conf["flow_score_fields"]["dstIP"]
 
@@ -340,34 +344,32 @@ class OA(object):
             dip = conn[dst_ip_index]
 
             # get hour and date  (i.e. 2014-07-08 10:10:40)
-            date_array = conn[1].split(' ')
+            
+            date_array = conn[0].split(' ')
             date_array_1 = date_array[0].split('-')
             date_array_2 = date_array[1].split(':')
-
+	    
             yr = date_array_1[0]                   
             dy = date_array_1[2]
             mh = date_array_1[1]
 
             hr = date_array_2[0]
             mm = date_array_2[1]
-        
-            # connection details query.
-            sp_query = ("SELECT treceived as tstart,sip as srcip,dip as dstip,sport as sport,dport as dport,proto as proto,flag as flags,stos as TOS,ibyt as ibytes,ipkt as ipkts,input as input, output as output,rip as rip, obyt as obytes, opkt as opkts from {0}.{1} where ((sip='{2}' AND dip='{3}') or (sip='{3}' AND dip='{2}')) AND y={8} AND m={4} AND d={5} AND h={6} AND trminute={7} order by tstart limit 100")
-                 
-            # sp query.
-            sp_query = sp_query.format(self._db,self._table_name,sip,dip,mh,dy,hr,mm,yr)
+            
+            query_to_load = ("""
+                INSERT INTO TABLE {0}.flow_edge PARTITION (y={2}, m={3}, d={4})
+                SELECT treceived as tstart,sip as srcip,dip as dstip,sport as sport,dport as dport,proto as proto,flag as flags,
+                stos as tos,ibyt as ibyt,ipkt as ipkt, input as input, output as output,rip as rip, obyt as obyt, 
+                opkt as opkt, h as hh, trminute as mn from {0}.{1} where ((sip='{7}' AND dip='{8}') or (sip='{8}' AND dip='{7}')) 
+                AND y={2} AND m={3} AND d={4} AND h={5} AND trminute={6};
+                """).format(self._db,self._table_name,yr, mh, dy, hr, mm, sip,dip)
+            impala.execute_query(query_to_load)
+            
 
-            # output file.
-            edge_file = "{0}/edge-{1}-{2}-{3}-{4}.tsv".format(self._data_path,sip.replace(".","_"),dip.replace(".","_"),hr,mm)
-
-            # execute query
-            self._engine.query(sp_query,output_file=edge_file,delimiter="\\t")
-    
     def _get_chord_details(self,bar=None):
 
          # skip header
         sp_connections = iter(self._flow_scores)
-        next(sp_connections) 
 
         src_ip_index = self._conf["flow_score_fields"]["srcIP"]
         dst_ip_index = self._conf["flow_score_fields"]["dstIP"] 
@@ -389,21 +391,24 @@ class OA(object):
             if n > 1:
                 ip_list = []                
                 sp_connections = iter(self._flow_scores)
-                next(sp_connections)
                 for row in sp_connections:                    
-                    if ip == row[2] : ip_list.append(row[3])
-                    if ip == row[3] :ip_list.append(row[2])    
+                    if ip == row[1] : ip_list.append(row[2])
+                    if ip == row[2] :ip_list.append(row[1])    
                 ips = list(set(ip_list))
              
                 if len(ips) > 1:
                     ips_filter = (",".join(str("'{0}'".format(ip)) for ip in ips))
-                    chord_file = "{0}/chord-{1}.tsv".format(self._data_path,ip.replace(".","_"))                     
-                    ch_query = ("SELECT sip as srcip, dip as dstip, SUM(ibyt) as ibytes, SUM(ipkt) as ipkts from {0}.{1} where y={2} and m={3} \
-                        and d={4} and ( (sip='{5}' and dip IN({6})) or (sip IN({6}) and dip='{5}') ) group by sip,dip")
-                    self._engine.query(ch_query.format(self._db,self._table_name,yr,mn,dy,ip,ips_filter),chord_file,delimiter="\\t")
+ 
+                    query_to_load = ("""
+                        INSERT INTO TABLE {0}.flow_chords PARTITION (y={2}, m={3}, d={4})
+                        SELECT '{5}' as ip_threat, sip as srcip, dip as dstip, SUM(ibyt) as ibyt, SUM(ipkt) as ipkt from {0}.{1} where y={2} and m={3}
+                        and d={4} and ((sip='{5}' and dip IN({6})) or (sip IN({6}) and dip='{5}')) group by sip,dip,m,d;
+                        """).format(self._db,self._table_name,yr,mn,dy,ip,ips_filter)
 
-     
-    def _ingest_summary(self): 
+                    impala.execute_query(query_to_load)
+ 
+ 
+    def _ingest_summary(self):
         # get date parameters.
         yr = self._date[:4]
         mn = self._date[4:6]
@@ -412,46 +417,52 @@ class OA(object):
         self._logger.info("Getting ingest summary data for the day")
         
         ingest_summary_cols = ["date","total"]		
-        result_rows = []       
-        df_filtered =  pd.DataFrame() 
+        result_rows = []        
+        df_filtered =  pd.DataFrame()
 
-        ingest_summary_file = "{0}/is_{1}{2}.csv".format(self._ingest_summary_path,yr,mn)			
-        ingest_summary_tmp = "{0}.tmp".format(ingest_summary_file)
-        if os.path.isfile(ingest_summary_file):
-            df = pd.read_csv(ingest_summary_file, delimiter=',',names=ingest_summary_cols, skiprows=1)
-            df_filtered = df[df['date'].str.contains("{0}-{1}-{2}".format(yr, mn, dy)) == False] 
-        else:
-            df = pd.DataFrame()
+        # get ingest summary.
+
+        query_to_load=("""
+                SELECT tryear, trmonth, trday, trhour, trminute, COUNT(*) as total
+                FROM {0}.{1} WHERE y={2} AND m={3} AND d={4}
+                AND unix_tstamp IS NOT NULL
+                AND sip IS NOT NULL
+                AND sport IS NOT NULL
+                AND dip IS NOT NULL
+                AND dport IS NOT NULL
+                AND ibyt IS NOT NULL
+                AND ipkt IS NOT NULL
+                AND tryear={2}
+                AND cast(treceived as timestamp) IS NOT NULL
+                GROUP BY tryear, trmonth, trday, trhour, trminute;
+        """).format(self._db,self._table_name, yr, mn, dy)
         
-        # get ingest summary.           
-        ingest_summary_qry = ("SELECT tryear, trmonth, trday, trhour, trminute, COUNT(*) total"
-                            " FROM {0}.{1} "
-                            " WHERE "
-                            " y={2} "
-                            " AND m={3} "
-                            " AND d={4} "
-                            " AND unix_tstamp IS NOT NULL AND sip IS NOT NULL "
-                            " AND sport IS NOT NULL AND dip IS NOT NULL "
-                            " AND dport IS NOT NULL AND ibyt IS NOT NULL "
-                            " AND ipkt IS NOT NULL "
-                            " GROUP BY tryear, trmonth, trday, trhour, trminute;")
+        results = impala.execute_query(query_to_load) 
+ 
+        if results:
+            df_results = as_pandas(results) 
+            
+            #Forms a new dataframe splitting the minutes from the time column
+            df_new = pd.DataFrame([["{0}-{1}-{2} {3}:{4}".format(val['tryear'],val['trmonth'],val['trday'], val['trhour'], val['trminute']), int(val['total']) if not math.isnan(val['total']) else 0 ] for key,val in df_results.iterrows()],columns = ingest_summary_cols)
+            value_string = ''
+            #Groups the data by minute 
 
+            sf = df_new.groupby(by=['date'])['total'].sum()
+            df_per_min = pd.DataFrame({'date':sf.index, 'total':sf.values})
+            
+            df_final = df_filtered.append(df_per_min, ignore_index=True).to_records(False,False) 
+            if len(df_final) > 0:
+                query_to_insert=("""
+                    INSERT INTO {0}.flow_ingest_summary PARTITION (y={1}, m={2}, d={3}) VALUES {4};
+                """).format(self._db, yr, mn, dy, tuple(df_final))
 
-        ingest_summary_qry = ingest_summary_qry.format(self._db,self._table_name, yr, mn, dy)
-        results_file = "{0}/results_{1}.csv".format(self._ingest_summary_path,self._date)
-        self._engine.query(ingest_summary_qry,output_file=results_file,delimiter=",")
-
-        if os.path.isfile(results_file):
-            result_rows = pd.read_csv(results_file, delimiter=',') 
-
-            df_new = pd.DataFrame([["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy, str(val['trhour']).zfill(2), str(val['trminute']).zfill(2)), int(val[5])] for key,val in result_rows.iterrows()],columns = ingest_summary_cols)						
-
-            df_filtered = df_filtered.append(df_new, ignore_index=True)
-            df_filtered.to_csv(ingest_summary_tmp,sep=',', index=False)
-
-            os.remove(results_file)
-            os.rename(ingest_summary_tmp,ingest_summary_file)
+                impala.execute_query(query_to_insert)
+                
         else:
             self._logger.info("No data found for the ingest summary")
+
+
+
+ 
 
         

@@ -1,6 +1,6 @@
 # PROXY
 
-Proxy sub-module will extract and transform Proxy data already ranked by spot-ml and will load into csv files for presentation layer.
+Proxy sub-module will extract and transform Proxy data already ranked by spot-ml and will load it into impala tables for the presentation layer.
 
 ## Proxy Components
 
@@ -12,7 +12,6 @@ Proxy spot-oa main script executes the following steps:
 		
 			data: data/proxy/<date>/
 			ipython Notebooks: ipynb/proxy/<date>/
-		
 		
 		2. Creates a copy of the notebooks templates into the ipython Notebooks path and renames them removing the "_master" part from the name.
 		
@@ -30,11 +29,9 @@ Proxy spot-oa main script executes the following steps:
 		
 		9. Creates a hash for every full_uri + clientip pair to use as filename.  
 		 
-		10. Saves proxy_scores.tsv file.
-		 
-		11. Creates a backup of proxy_scores.tsv file.
+		10. Saves the data in the _proxy_\scores_ table. 
 		
-		12. Creates proxy data details files. 
+    	12. Collects information about aditional connections to display the details table in the UI.
 
 
 **Dependencies**
@@ -60,63 +57,70 @@ Before running Proxy OA, users need to configure components for the first time. 
 
 **Output**
 
-- proxy_scores.tsv: Main results file for Proxy OA. This file is tab separated and it's limited to the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
+- Proxy suspicious connections. _proxy\_scores_ table.
 
-		Schema with zero-indexed columns: 
-
-		0.p_date: string 
-		1.p_time: string 
-		2.clientip: string 
-		3.host: string 
-		4.reqmethod: string
-		5.useragent: string
-		6.resconttype: string
-		7.duration: int
-		8.username: string 
-		9.webcat: string 
-		10.referer: string 
-		11.respcode: string 
-		12.uriport: string 
-		13.uripath: string
-		14.uriquery: string 
-		15.serverip: string
-		16.scbytes: int
-		17.csbytes: int
-		18.fulluri: string
-		19.word: string
-		20.score: string 
-		21.uri_rep: string
-		22.uri_sev: string 
-		23.respcode_name: string 
-		24.network_context: string
-		25.hash: string
+Main results file for Proxy OA. The data stored in this table is limited by the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
+ 
+		0.tdate string
+		1.time string
+		2.clientip string
+		3.host string
+		4.reqmethod string
+		5.useragent string
+		6.resconttype string
+		7.duration int
+		8.username string
+		9.webcat string
+		10.referer string
+		11.respcode string
+		12.uriport string
+		13.uripath string
+		14.uriquery string
+		15.serverip string
+		16.scbytes int
+		17.csbytes int
+		18.fulluri string
+		19.word string
+		20.ml_score Float
+		21.uri_rep string
+		22.respcode_name string
+		23.network_context string 
 
 
-- proxy_scores_bu.tsv: The backup file of suspicious connects in case user want to roll back any changes made during analysis. Schema is same as proxy_scores.tsv.
-     
+- Proxy details. _proxy\_edge_ table.
 
-- edge-clientip-\<hash>HH.tsv: One file for each fulluri + clientip connection for each hour of the day.
+A query will be executed for each fulluri + clientip connection for each hour of the day.
+ 
+		0.tdate STRING
+		1.time STRING
+		2.clientIp STRING
+		3.host string
+		4.webcat string
+		5.respcode string
+		6.reqmethod string
+		7.useragent string
+		8.resconttype string
+		9.referer string
+		10.uriport string
+		11.serverip string
+		12.scbytes int
+		13.csbytes int
+		14.fulluri string
+		15.hh int
+		16.respcode_name string
 
-		Schema with zero-indexed columns:
 
-		0.p_date: string
-		1.p_time: string
-		2.clientip: string
-		3.host: string
-		4.webcat: string
-		5.respcode: string
-		6.reqmethod: string
-		7.useragent: string
-		8.resconttype: string
-		9.referer: string
-		10.uriport: string
-		11.serverip: string
-		12.scbytes: int
-		13.csbytes: int
-		14.fulluri: string
+- Proxy Ingest summary. _proxy\_ingest\_summary_ table.
+
+This table is populated with the number of connections ingested by minute during that day.
+
+        Table schema:
+        0. tdate:      string
+        1. total:      bigint 
+
 
 ###proxy_conf.json
-This file is part of the initial configuration for the proxy pipeline It will contain mapped all the columns included in the proxy_results.csv and proxy_scores.tsv files.
+This file is part of the initial configuration for the proxy pipeline It will contain mapped all the columns included in the proxy_results.csv and proxy tables.
 
 This file contains three main arrays:
 

@@ -1,55 +1,71 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-const assign = require('object-assign');
-const d3 = require('d3');
-
 const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-const FlowConstants = require('../constants/NetflowConstants');
 const SpotConstants = require('../../../js/constants/SpotConstants');
-const RestStore = require('../../../js/stores/RestStore');
 
-const IP_FILTER_NAME = 'ip';
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-const TimelineStore = assign(new RestStore(FlowConstants.API_TIMELINE), {
-    _parser: d3.tsv,
-    errorMessages: {
-        404: 'Please choose a different date, no data has been found'
-    },
-    setDate: function (date)
-    {
-        this.setEndpoint(FlowConstants.API_TIMELINE.replace('${date}', date.replace(/-/g, '')));
-        this._date = date;
-    },
-    getDate() {
-        return this._date;
-    },
-    setIp: function (value)
-    {
-        this.setRestFilter(IP_FILTER_NAME, value);
-    },
-    getIp: function ()
-    {
-        return this.getRestFilter(IP_FILTER_NAME);
+const DATE_VAR = 'date';
+const IP_VAR = 'ip';
+
+class TimelineStore extends ObservableGraphQLStore {
+    getQuery() {
+        return `
+            query($date:SpotDateType!, $ip:SpotIpType!) {
+                flow {
+                    threat {
+                        timeline(date: $date, ip: $ip) {
+                            tstart
+                            srcip: srcIp
+                            sport: srcPort
+                            dstip: dstIp
+                            dport: dstPort
+                        }
+                    }
+                }
+            }
+        `;
     }
-});
 
+    unboxData(data) {
+        return data.flow.threat.timeline;
+    }
+
+    setDate(date){
+        this.setVariable(DATE_VAR, date);
+    }
+
+    getDate() {
+        return this.getVariable(DATE_VAR);
+    }
+
+    setIp(ip) {
+        this.setVariable(IP_VAR, ip);
+    }
+
+    getIp () {
+        return this.getVariable(IP_VAR);
+    }
+}
+
+const ts = new TimelineStore();
 
 SpotDispatcher.register(function (action) {
     switch (action.actionType) {
         case SpotConstants.UPDATE_DATE:
-            TimelineStore.setDate(action.date);
+            ts.setDate(action.date);
 
             break;
         case SpotConstants.RELOAD_COMMENTS:
-            TimelineStore.resetData();
+            ts.resetData();
             break;
         case SpotConstants.SELECT_COMMENT:
-            TimelineStore.setIp(action.comment.ip);
+            ts.setIp(action.comment.ip);
 
-            TimelineStore.reload();
+            ts.sendQuery();
 
             break;
     }
 });
 
-module.exports = TimelineStore;
+module.exports = ts;

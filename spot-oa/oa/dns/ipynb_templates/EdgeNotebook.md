@@ -7,70 +7,50 @@
 
 The following python modules will be imported for the notebook to work correctly:    
 
-        import urllib2  
-        import json  
-        import os  
-        import csv  
+        import urllib2
+        import json
+        import os 
+        import datetime  
+        import subprocess 
         import ipywidgets #For jupyter/ipython >= 1.4  
         from IPython.html import widgets # For jupyter/ipython < 1.4  
         from IPython.display import display, HTML, clear_output, Javascript   
-        import datetime  
-        import subprocess 
-
+        
 
 ###Pre-requisites
-- Execution of the spot-oa process for DNS
-- Correct setup the spot.conf file. [Read more](/wiki/Edit%20Solution%20Configuration) 
-- Have a public key authentication between the current UI node and the ML node. [Read more](/wiki/Configure%20User%20Accounts#configure-user-accounts)
+- Execute hdfs_setup.sh script to create OA tables and setup permissions
+- Correct setup the spot.conf file. [Read more](http://spot.incubator.apache.org/doc/#configuration)
+- Execution of the spot-oa process for Flow
+- Correct installation of the UI [Read more](/ui/INSTALL.md)
 
 
 ##Data source
-
-The whole process in this notebook depends entirely on the existence of `dns_scores.csv` file, which is generated at the OA process.  
-The data is directly manipulated on the .csv files, so a `dns_scores_bu.csv` is created as a backup to allow the user to restore the original data at any point, 
-and this can be performed executing the last cell on the notebook with the following command:  
-
-        !cp $sconnectbu $sconnect
+The whole process in this notebook depends entirely on the existence of `dns_scores` table in the database.  
+The data is manipulated through the graphql api also included in the repository.
 
 
 **Input files**  
-All these paths should be relative to the main OA path.    
-Schema for these files can be found [here](/spot-oa/oa/dns)
+The data to be processed should be stored in the following tables:
 
-        data/dns/<date>/dns_scores.csv  
-        data/dns/<date>/dns_scores_bu.csv
+        dns_scores
+        dns
 
-**Temporary Files**
 
-        data/dns/<date>/score_tmp.csv
+**Output**
+The following tables will be populated after the scoring process:
+        dns_threat_investigation
 
-**Output files**
-
-        data/dns/<date>/dns_scores.csv  (Updated with severity values)
-        data/dns/<date>/dns_scores_fb.csv (File with scored connections that will be used for ML feedback)
 
 ###Functions
 **Widget configuration**
 This is not a function, but more like global code to set up styles and widgets to format the output of the notebook. 
 
-`data_loader():` - This function loads the source file into a csv dictionary reader with all suspicious unscored connections, creating separated lists for 
+`data_loader():` - This function calls the graphql api query *suspicious* to list all suspicious unscored connections, creating separated lists for 
 the 'client_ip' and 'dns_qry_name'.
  Also displays the widgets for the listboxes, textbox, radiobutton list and the 'Score' and 'Save' buttons.  
   
-`fill_list(list_control,source):` - This function loads the given dictionary into a listbox and appends an empty item at the top with the value '--Select--' (Just for design sake)
+`fill_list(list_control,source):` - This function loads the given dictionary into a listbox widget
 
-` assign_score(b):` - This function is executed on the onclick event of the ‘Score’ button. The system will first try to get the value from the 'Quick search' textbox ignoring the selections from the listboxes; in case the textbox is empty, it will then
- get the selected values from the 'Client IP' and 'Query' listboxes to then search through the dns_scores.csv file to find matching values. 
-A linear search on the file is then performed:  
-The value in the 'Quick Scoring' textbox, will be compared against the `dns_qry_name` column. Partial matches will be considered as a positive match and the `dns_sev` column will be updated to the value selected from the radiobutton list.   
-The column `ip_dst` will be compared against the 'Client IP' selected value; if a match is found, the `ip_sev` column will be updated to the value selected from the radiobutton list.   
-The column `dns_qry_name` will be compared against the 'Query' selected value; if a match is found, the `dns_sev` column will be updated to the value selected from the radiobutton list.     
-Every row will be appended to the `dns_scores_tmp.csv` file. This file will replace the original `dns_scores.csv` at the end of the process.  
+` assign_score(b):` - This function is executed on the onclick event of the ‘Score’ button. The system will first try to get the value from the 'Quick search' textbox ignoring the selections from the listboxes; in case the textbox is empty, it will then get the selected values from the 'Client IP' and 'Query' listboxes to append them to a temporary list. 
 
-Only the scored rows will also be appended to the `dns_scores_fb.csv` file, which will later be used for the ML feedback.
-
-`save(b):` - This event is triggered by the 'Save' button, and executes javascript functions to refresh the data on all the panels in Suspicious Connects. Since the data source file has been updated, the scored connections will be removed from all
-the panels, since those panels will only display connections where the `dns_sev` value is zero.
-This function also removes the widget panel and reloads it again to update the results, removing the need of a manual refresh, and calls the `ml_feedback():` function.
-
-`ml_feedback():` - A shell script is executed, transferring thru secure copy the _proxy_scores_fb.csv_ file into ML Master node, where the destination path is defined at the spot.conf file.
+`save(b):` - This event is triggered by the 'Save' button, and executes javascript functions to refresh the data on all the panels in Suspicious Connects. This function calls the *score* mutation which updates the score for the selected values in the database.

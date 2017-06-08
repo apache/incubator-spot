@@ -19,56 +19,37 @@ The following python modules will be imported for the notebook to work correctly
 
 
 ###Pre-requisites
-- Execution of the spot-oa process for Proxy
+- Execute hdfs_setup.sh script to create OA tables and setup permissions
 - Correct setup the spot.conf file [Read more](/wiki/Edit%20Solution%20Configuration)
-- Have a public key created between the current UI node and the ML node. [Read more](/wiki/Configure%20User%20Accounts#configure-user-accounts)
+- Execution of the spot-oa process for Proxy
+- Correct installation of the UI [Read more](/ui/INSTALL.md)
 
 
-###Data
-The whole process in this notebook depends entirely on the existence of `proxy_scores.tsv` file, which is generated at the OA process.  
-The data is directly manipulated on the .tsv files, so a `proxy_scores_bu.tsv` is created as a backup to allow the user to restore the original data at any point, 
-and this can be performed executing the last cell on the notebook with the following command.
+###Data source 
+The whole process in this notebook depends entirely on the existence of `proxy_scores` table in the database, which is generated at the OA process.  
+The data is manipulated through the graphql api also included in the repository.
 
-        !cp $sconnectbu $sconnect
+**Input**  
+The data to be processed should be stored in the following tables:
 
+        proxy_scores
+        proxy
 
-**Input files**
-All these paths should be relative to the main OA path.    
-Schema for these files can be found [here](/spot-oa/oa/proxy)
-
-        data/proxy/<date>/proxy_scores.tsv  
-        data/proxy/<date>/proxy_scores_bu.tsv
-
-**Temporary Files**
-
-        data/proxy/<date>/proxy_scores_tmp.tsv
-
-**Output files**
-
-        data/proxy/<date>/proxy_scores.tsv (Updated with severity values)
-        data/proxy/<date>/proxy_scores_fb.csv (File with scored connections that will be used for ML feedback)
+**Output**
+The following tables will be populated after the scoring process:
+        proxy_threat_investigation
 
 
 ###Functions
 **Widget configuration**
 This is not a function, but more like global code to set up styles and widgets to format the output of the notebook. 
 
-`data_loader():` - This function loads the source file into a csv dictionary reader to create a list with all disctinct full_uri values. 
+`data_loader():` - - This function calls the graphql api query *suspicious* to list all suspicious unscored connections.
   
 `fill_list(list_control,source):` - This function loads the given dictionary into a listbox and appends an empty item at the top with the value '--Select--' (Just for design sake)
    
 ` assign_score(b):` - This event is executed when the user clicks the 'Score' button. 
-If the 'Quick scoring' textbox is not empty, the notebook will read that value and ignore any selection made in the listbox, otherwise the sought value will be obtained from the listbox.
-A linear search will be performed in the `proxy_scores.tsv` file to find all `full_uri` values matching the sought .
-In every matching row found, the `uri_sev` value will be updated according to the 'Rating' value selected in the radio button list. 
-All of the rows will then be appended to the `proxy_scores_tmp.tsv` file. At the end of this process, this file will replace the original `proxy_scores.tsv`.  
+If the 'Quick scoring' textbox is not empty, the notebook will read that value and ignore any selection made in the listbox, otherwise the sought value will be obtained from the listbox and will append each value to a temporary list. 
 
-Only the scored rows will also be appended to the `proxy_scores_fb.csv` file, which will later be used for the ML feedback.
-
-`save(b):` -This event is triggered by the 'Save' button, first it will remove the widget area and call the `load_data()` function to start the loading process again, this will 
-refresh the listbox removing all scored URIs.
-A javascript function is also executed to refresh the other panels in the suspicious connects page removing the need of a manual refresh.
-Afterwards the `ml_feedback()` function will be invoqued. 
-
-`ml_feedback():` - A shell script is executed, transferring thru secure copy the _proxy_scores_fb.csv_ file into ML Master node, where the destination path is defined at the spot.conf file.
-   
+`save(b):` -This event is triggered by the 'Save' button, first it will remove the widget area and call the `load_data()` function to start the loading process again, this will refresh the listbox removing all scored URIs.
+This function calls the *score* mutation which updates the score for the selected values in the database.

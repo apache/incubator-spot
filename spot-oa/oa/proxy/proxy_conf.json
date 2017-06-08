@@ -42,14 +42,12 @@
         , "serverip":15
         , "scbytes":16
         , "csbytes":17
-        , "fulluri":18
+        , "fulluri":18 
         , "word":19
-        , "score":20
+        , "ml_score":20
         , "uri_rep":21
-        , "uri_sev":22
-        , "respcode_name":23
-        , "network_context":24
-        , "hash":25
+        , "respcode_name":22
+        , "network_context":23 
     },
     "add_reputation":{
         "fulluri":18   

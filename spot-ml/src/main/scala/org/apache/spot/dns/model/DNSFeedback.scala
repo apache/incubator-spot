@@ -21,8 +21,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel.{ModelSchema, modelColumns}
-
-import scala.io.Source
+import org.apache.spot.utilities.data.InputOutputDataHandler.getFeedbackRDD
 
 /**
   * Routines for ingesting the feedback file provided by the operational analytics layer.
@@ -32,10 +31,10 @@ object DNSFeedback {
 
   /**
     * Load the feedback file for DNS data.
- *
-    * @param sc Spark context.
-    * @param sqlContext Spark SQL context.
-    * @param feedbackFile Local machine path to the DNS feedback file.
+    *
+    * @param sc                Spark context.
+    * @param sqlContext        Spark SQL context.
+    * @param feedbackFile      Local machine path to the DNS feedback file.
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.
     */
@@ -45,14 +44,9 @@ object DNSFeedback {
                      duplicationFactor: Int): DataFrame = {
 
 
-    if (new java.io.File(feedbackFile).exists) {
+    val feedback: RDD[String] = getFeedbackRDD(sc, feedbackFile)
 
-      /*
-      feedback file is a tab-separated file with a single header line.
-      */
-
-      val lines = Source.fromFile(feedbackFile).getLines().toArray.drop(1)
-      val feedback: RDD[String] = sc.parallelize(lines)
+    if (!feedback.isEmpty()) {
 
       /*
       The columns and their entries are as follows:
@@ -96,7 +90,7 @@ object DNSFeedback {
           row(DnsQryTypeIndex).toInt,
           row(DnsQryRcodeIndex).toInt)))
         .flatMap(row => List.fill(duplicationFactor)(row)), ModelSchema)
-        .select(modelColumns:_*)
+        .select(modelColumns: _*)
     } else {
       sqlContext.createDataFrame(sc.emptyRDD[Row], ModelSchema)
     }

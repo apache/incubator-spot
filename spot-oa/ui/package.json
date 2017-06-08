@@ -36,7 +36,7 @@
   "scripts": {
     "test": "jest",
     "postinstall": "npm run build-all",
-    "watch-ingest-summary": "NODE_ENV=development watchify js/ingest-summary.js -o js/ingest-summary.bundle.min.js -v -d",
+    "watch-ingest-summary": "watchify js/ingest-summary.js -o js/ingest-summary.bundle.min.js -v",
     "build-all": "npm run build-flow && npm run build-dns && npm run build-proxy && npm run build-ingest-summary",
     "build-flow": "cd flow/ && npm run build-all && cd ../",
     "build-dns": "cd dns/ && npm run build-all && cd ../",

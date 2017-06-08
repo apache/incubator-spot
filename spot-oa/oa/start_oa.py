@@ -20,6 +20,7 @@
 import argparse
 import os
 import sys
+sys.path.append("../")
 import logging
 
 from utils import Util
@@ -39,43 +40,43 @@ def main():
     start_oa(args)
 
 def start_oa(args):
-    
-    # setup the main logger for all the OA process.    
+
+    # setup the main logger for all the OA process.
     logger = Util.get_logger('OA',create_file=False)
 
-    logger.info("-------------------- STARTING OA ---------------------")   
-    validate_parameters_values(args,logger)   
+    logger.info("-------------------- STARTING OA ---------------------")
+    validate_parameters_values(args,logger)
 
     # create data type instance.
     module = __import__("{0}.{0}_oa".format(args.type),fromlist=['OA'])
-   
-    # start OA.   
+
+    # start OA.
     oa_process = module.OA(args.date,args.limit,logger)
     oa_process.start()
-  
+
 def validate_parameters_values(args,logger):
-    
+
     logger.info("Validating input parameter values")
 
     #date.
-    is_date_ok = True if len(args.date) == 8 else False    
+    is_date_ok = True if len(args.date) == 8 else False
 
     # type
     dirs = os.walk(script_path).next()[1]
     is_type_ok = True if args.type in dirs else False
-   
-    #limit    
+
+    #limit
     try:
         int(args.limit)
         is_limit_ok = True
     except ValueError:
         is_limit_ok = False
-      
-    if not is_date_ok: logger.error("date parameter is not correct, please validate it") 
+
+    if not is_date_ok: logger.error("date parameter is not correct, please validate it")
     if not is_type_ok: logger.error("type parameter is not supported, please select a valid type")
     if not is_limit_ok: logger.error("limit parameter is not correct, please select a valid limit")
     if not is_date_ok or not is_type_ok or not is_limit_ok: sys.exit(1)
-   
+
 
 if __name__=='__main__':
     main()
