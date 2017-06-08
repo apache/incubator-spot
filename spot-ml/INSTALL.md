@@ -7,7 +7,7 @@ Machine learning routines for Apache Spot (incubating).
 Install and configure spot-ml as a part of the Spot project, per the instruction at
 [the Spot wiki].
 
-The spot-ml routines must be built into a jar stored at `target/scala-2.10/spot-ml-assembly-1.1.jar` on the master node. This requires Scala 2.10 or later to be installed on the system building the jar. To build the jar, from the top-level of the spot-ml repo, execute the command `sbt assembly`.
+The spot-ml routines must be built into a jar stored at `target/scala-2.10/spot-ml-assembly-1.1.jar` on the ML node. This requires Scala 2.10 or later to be installed on the system building the jar. To build the jar, from the top-level of the spot-ml repo, execute the command `sbt assembly`.
 
 Names and language that we will use from the configuration variables for Spot (that are set in the file [spot.conf])
 
