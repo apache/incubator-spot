@@ -78,14 +78,14 @@ SuspiciousType = GraphQLObjectType(
             resolver=lambda root, *_: root.get('rank') or 0
         ),
         'srcIp_isInternal': GraphQLField(
-            type=GraphQLBoolean,
+            type=GraphQLInt,
             description='Internal source IP address context flag',
-            resolver=lambda root, *_: root.get('srcip_internal') == '1'
+            resolver=lambda root, *_: root.get('srcip_internal')
         ),
         'dstIp_isInternal': GraphQLField(
-            type=GraphQLBoolean,
+            type=GraphQLInt,
             description='Internal destionation IP address context flag',
-            resolver=lambda root, *_: root.get('dstip_internal') == '1'
+            resolver=lambda root, *_: root.get('dstip_internal')
         ),
         'srcIp_geoloc': GraphQLField(
             type=GraphQLString,
