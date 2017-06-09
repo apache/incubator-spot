@@ -13,6 +13,11 @@ These routines are contained in a jar file   and there is a shell script ml_ops.
 * [jar documentation here](SPOT-ML-JAR.md)
 * [ml_ops.sh documentation here](ML_OPS.md) 
 
+## Configure the /etc/spot.conf file
+
+If using spot-ml as part of the integrated spot solution (or if you simply wish to use the ml_ops.sh script to invoke the suspicious connects analysis), 
+the /etc/spot.conf file must be correctly configured.
+
 ## Prepare data for input 
 
 Whether suspicious connects is called by ml_ops.sh or through the ml-ops jar, data must be in the [schema used by the suspicious connects analyses](SUSPICIOUS_CONNECTS_SCHEMA.md).  Ingesting data via the Spot ingest tools will store data in an appropriate schema.

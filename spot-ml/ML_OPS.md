@@ -45,8 +45,7 @@ As the maximum probability of an event is 1, a threshold of 1 can be used to sel
 ```
 ## ml_ops.sh output
 
-Final results are stored in the following file on HDFS.
-
+Final results are stored in the following file on HDFS
 Depending on which data source is analyzed, 
 spot-ml output will be found under the ``HPATH`` at one of
 
@@ -56,4 +55,14 @@ spot-ml output will be found under the ``HPATH`` at one of
 
 
 It is a csv file in which network events annotated with estimated probabilities and sorted in ascending order.
+
+## Parameters taken from the /etc/spot.conf file
+
+The ml_ops.sh script takes its values for the following parameters from the /etc/spot.conf file:
+
+* **All spark settings** Among them driver memory, number of executors, spark.driever.MaxResultSize, etc.
+* **Paths to storage locations for Spot ingested data**
+* **USER_DOMAIN** The domain name for the network being analyzed. Used to denote "internal" URLs during proxy and dns analyses.
+* **TOPIC_COUNT** Number of topics used for the topic modelling at the heart of the Suspicious Connects anomaly detection. Roughly, the analysis attempts to generate TOPIC_COUNT many profiles of common traffic in the cluster.
+* **DUPFACTOR** Used to downgrade the threat level of records similar to those marked as non-threatening by the feedback function of Spot UI. DUPFACTOR inflate the frequency of such records to make them appear less anomalous. A DUPFACTOR of 1 has no effect, and a DUPFACTOR of 1000 increases the frequency of the connection's pattern by a factor of 1000, increasing its estimated probability accordingly.
 
