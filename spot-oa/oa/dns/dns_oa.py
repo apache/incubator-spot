@@ -229,8 +229,10 @@ class OA(object):
                 rep_results = {}            
                 for result in rep_services_results:            
                     rep_results = {k: "{0}::{1}".format(rep_results.get(k, ""), result.get(k, "")).strip('::') for k in set(rep_results) | set(result)}
-
-                self._dns_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._dns_scores  ]
+                
+                if rep_results:
+                    self._dns_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._dns_scores  ]
+                
         else:
             self._dns_scores = [ conn + [""]   for conn in self._dns_scores  ]
 
