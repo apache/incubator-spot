@@ -18,13 +18,14 @@
 package org.apache.spot
 
 import org.apache.log4j.{Level, LogManager, Logger}
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSuspiciousConnectsAnalysis
 import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis
 import org.apache.spot.proxy.ProxySuspiciousConnectsAnalysis
 import org.apache.spot.utilities.data.InputOutputDataHandler
+import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
 
 /**
@@ -68,14 +69,30 @@ object SuspiciousConnects {
           System.exit(0)
         }
 
-        analysis match {
-          case "flow" => FlowSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
-          case "dns" => DNSSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
-          case "proxy" => ProxySuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
-          case _ => logger.error("Unsupported (or misspelled) analysis: " + analysis)
+        val results: Option[SuspiciousConnectsAnalysisResults] = analysis match {
+          case "flow" => Some(FlowSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger,
+            inputDataFrame))
+          case "dns" => Some(DNSSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger,
+            inputDataFrame))
+          case "proxy" => Some(ProxySuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger,
+            inputDataFrame))
+          case _ => None
         }
 
-        InputOutputDataHandler.mergeResultsFiles(sparkContext, config.hdfsScoredConnect, analysis, logger)
+        results match {
+          case Some(SuspiciousConnectsAnalysisResults(resultRecords, invalidRecords)) => {
+
+            logger.info(s"$analysis suspicious connects analysis completed.")
+            logger.info("Saving results to : " + config.hdfsScoredConnect)
+            resultRecords.map(_.mkString(config.outputDelimiter)).saveAsTextFile(config.hdfsScoredConnect)
+
+            InputOutputDataHandler.mergeResultsFiles(sparkContext, config.hdfsScoredConnect, analysis, logger)
+
+            InvalidDataHandler.showAndSaveInvalidRecords(invalidRecords, config.hdfsScoredConnect, logger)
+          }
+
+          case None => logger.error("Unsupported (or misspelled) analysis: " + analysis)
+        }
 
         sparkContext.stop()
 
@@ -84,6 +101,13 @@ object SuspiciousConnects {
 
     System.exit(0)
   }
+
+  /**
+    *
+    * @param suspiciousConnects
+    * @param invalidRecords
+    */
+  case class SuspiciousConnectsAnalysisResults(val suspiciousConnects: DataFrame, val invalidRecords: DataFrame)
 
 
 }
