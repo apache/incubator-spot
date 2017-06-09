@@ -65,4 +65,5 @@ The ml_ops.sh script takes its values for the following parameters from the /etc
 * **USER_DOMAIN** The domain name for the network being analyzed. Used to denote "internal" URLs during proxy and dns analyses.
 * **TOPIC_COUNT** Number of topics used for the topic modelling at the heart of the Suspicious Connects anomaly detection. Roughly, the analysis attempts to generate TOPIC_COUNT many profiles of common traffic in the cluster.
 * **DUPFACTOR** Used to downgrade the threat level of records similar to those marked as non-threatening by the feedback function of Spot UI. DUPFACTOR inflate the frequency of such records to make them appear less anomalous. A DUPFACTOR of 1 has no effect, and a DUPFACTOR of 1000 increases the frequency of the connection's pattern by a factor of 1000, increasing its estimated probability accordingly.
+* **TOL** The default value for the _suspicion threshold_ described above. In particular: If no third argument is provided to ml_ops.sh, the suspicion threshold is filled in with the TOL value from /etc/spot.conf. If a third argument is provided to ml_ops.sh, that is the supicion threshold used.
 
