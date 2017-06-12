@@ -22,6 +22,7 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
+import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis.InSchema
 import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
@@ -58,17 +59,10 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
 
-
-    val flows : DataFrame = FlowSuspiciousConnectsAnalysis.filterAndSelectCleanFlowRecords(data)
-
-
-    logger.info("Fitting probabilistic model to data")
     val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, flows)
+      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, data)
 
-    logger.info("Identifying outliers")
-    val scoredData = model.score(sparkContext, sqlContext, flows)
-
+    val scoredData = model.score(sparkContext, sqlContext, data)
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -87,10 +81,6 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
 
   }
-
-
-
-
 
   "netflow suspicious connects" should "correctly identify time-of-day anomalies with testing config" in {
 
@@ -119,8 +109,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
 
-
-    val flows : DataFrame = FlowSuspiciousConnectsAnalysis.filterAndSelectCleanFlowRecords(data)
+    val flows: DataFrame = FlowSuspiciousConnectsAnalysis.filterRecords(data).select(InSchema: _*)
 
 
     logger.info("Fitting probabilistic model to data")
@@ -145,37 +134,34 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     Math.abs(typicalScores(7) - 0.9d) should be < 0.01
     Math.abs(typicalScores(8) - 0.9d) should be < 0.01
 
-
   }
 
+  "filterRecords" should "return data set without garbage" in {
 
+    val cleanedFlowRecords = FlowSuspiciousConnectsAnalysis
+      .filterRecords(testFlowRecords.inputFlowRecordsDF)
 
-  "filterAndSelectInvalidFlowRecords" should "return invalid records" in {
+    cleanedFlowRecords.count should be(5)
+    cleanedFlowRecords.schema.size should be(17)
+  }
+
+  "filterInvalidRecords" should "return invalid records" in {
 
     val invalidFlowRecords = FlowSuspiciousConnectsAnalysis
-      .filterAndSelectInvalidFlowRecords(testFlowRecords.inputFlowRecordsDF)
+      .filterInvalidRecords(testFlowRecords.inputFlowRecordsDF)
 
     invalidFlowRecords.count should be(7)
     invalidFlowRecords.schema.size should be(17)
   }
 
-  "filterScoredFlowRecords" should "return records with score less or equal to threshold" in {
+  "filterScoredRecords" should "return records with score less or equal to threshold" in {
 
     val threshold = 10e-5
 
     val scoredFlowRecords = FlowSuspiciousConnectsAnalysis
-      .filterScoredFlowRecords(testFlowRecords.scoredFlowRecordsDF, threshold)
+      .filterScoredRecords(testFlowRecords.scoredFlowRecordsDF, threshold)
 
     scoredFlowRecords.count should be(2)
-  }
-
-  "filterAndSelectCorruptFlowRecords" should "return records where Score is equal to -1" in {
-
-    val corruptFlowRecords = FlowSuspiciousConnectsAnalysis
-      .filterAndSelectCorruptFlowRecords(testFlowRecords.scoredFlowRecordsDF)
-
-    corruptFlowRecords.count should be(1)
-    corruptFlowRecords.schema.size should be(18)
   }
 
   def testFlowRecords = new {

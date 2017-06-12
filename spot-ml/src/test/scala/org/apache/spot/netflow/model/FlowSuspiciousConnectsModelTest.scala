@@ -4,7 +4,6 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
-import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
 import org.scalatest.Matchers
 
@@ -23,14 +22,6 @@ class FlowSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with M
     ldaMaxiterations = 20,
     ldaAlpha = 1.02,
     ldaBeta = 1.001)
-
-  "filterAndSelectCleanFlowRecords" should "return data set without garbage" in {
-
-    val cleanedFlowRecords = FlowSuspiciousConnectsAnalysis.filterAndSelectCleanFlowRecords(testFlowRecords.inputFlowRecordsDF)
-
-    cleanedFlowRecords.count should be(7)
-    cleanedFlowRecords.schema.size should be(17)
-  }
 
   def testFlowRecords = new {
     val sqlContext = new SQLContext(sparkContext)
