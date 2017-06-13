@@ -89,8 +89,8 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     * @return Dataframe with a column named [[org.apache.spot.dns.DNSSchema.Score]] that contains the
     *         probability estimated for the network event at that row
     */
-  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String
-            , precisionUtility: FloatPointPrecisionUtility): DataFrame = {
+  def score(sc: SparkContext, sqlContext: SQLContext, inDF: DataFrame, userDomain: String,
+            precisionUtility: FloatPointPrecisionUtility): DataFrame = {
 
     val topDomainsBC = sc.broadcast(TopDomains.TopDomains)
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)

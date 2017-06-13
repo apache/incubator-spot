@@ -79,7 +79,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
     val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, data)
-    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain)
+    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain, testConfig.precisionUtility)
     val anomalyScore = scoredData.filter(scoredData(FrameLength) === 1).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(FrameLength) === 168).collect().map(_.getAs[Double](Score))
 
@@ -115,7 +115,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
     val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, data)
-    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain)
+    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain, testConfig.precisionUtility)
     val anomalyScore = scoredData.
       filter(scoredData(QueryName) === "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com").
       first().
@@ -139,7 +139,10 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     val anomalousRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 1, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
-    val scoredData = DNSSuspiciousConnectsAnalysis.scoreDNSRecords(data, testConfigFloatConversion, sparkContext, sqlContext, logger)
+    val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfigFloatConversion, data)
+    val scoredData = model.score(sparkContext, sqlContext, data, testConfigFloatConversion.userDomain,
+      testConfigFloatConversion.precisionUtility)
+
     val anomalyScore = scoredData.filter(scoredData(FrameLength) === 1).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(FrameLength) === 168).collect().map(_.getAs[Double](Score))
 
@@ -175,7 +178,11 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       1,
       0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
-    val scoredData = DNSSuspiciousConnectsAnalysis.scoreDNSRecords(data, testConfigFloatConversion, sparkContext, sqlContext, logger)
+
+    val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfigFloatConversion, data)
+    val scoredData = model.score(sparkContext, sqlContext, data, testConfigFloatConversion.userDomain,
+      testConfigFloatConversion.precisionUtility)
+
     val anomalyScore = scoredData.
       filter(scoredData(QueryName) === "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com").
       first().

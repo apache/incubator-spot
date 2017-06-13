@@ -86,7 +86,7 @@ object FlowSuspiciousConnectsAnalysis {
       FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, flowRecords)
 
     logger.info("Identifying outliers")
-    val scoredFlowRecords = model.score(sparkContext, sqlContext, flowRecords)
+    val scoredFlowRecords = model.score(sparkContext, sqlContext, flowRecords, config.precisionUtility)
 
     val filteredScored = filterScoredRecords(scoredFlowRecords, config.threshold)
 

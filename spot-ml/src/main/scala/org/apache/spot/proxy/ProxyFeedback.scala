@@ -20,10 +20,10 @@ package org.apache.spot.proxy
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql._
-import org.apache.spark.sql.types.{StructType, StructField, StringType}
-import scala.io.Source
-
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spot.proxy.ProxySchema._
+
+import scala.io.Source
 
 
 object ProxyFeedback {

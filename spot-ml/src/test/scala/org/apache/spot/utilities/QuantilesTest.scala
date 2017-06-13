@@ -19,7 +19,6 @@ package org.apache.spot.utilities
 
 import org.apache.spark.rdd.RDD
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.apache.spot.utilities.Quantiles
 import org.scalatest.Matchers
 
 

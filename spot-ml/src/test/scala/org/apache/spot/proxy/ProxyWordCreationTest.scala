@@ -129,7 +129,7 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
 
     val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfigProxy, data)
 
-    val scoredData = model.score(sparkContext, data)
+    val scoredData = model.score(sparkContext, data, testConfigProxy.precisionUtility)
 
     val words = scoredData.collect().map(_.getAs[String](Word))
 

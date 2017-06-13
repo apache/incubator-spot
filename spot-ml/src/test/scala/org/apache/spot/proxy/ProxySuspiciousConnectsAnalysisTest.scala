@@ -91,7 +91,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfigProxy, data)
 
-    val scoredData = model.score(sparkContext, data)
+    val scoredData = model.score(sparkContext, data, testConfigProxy.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Host) ===  "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -121,11 +121,10 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val scoredData = ProxySuspiciousConnectsAnalysis.detectProxyAnomalies(data, testConfigProxyFloatConversion,
-      sparkContext,
-      sqlContext,
-      logger)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger,
+      testConfigProxyFloatConversion, data)
 
+    val scoredData = model.score(sparkContext, data, testConfigProxyFloatConversion.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Host) === "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -171,6 +170,24 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     scoredProxyRecords.count should be(2)
 
+  }
+
+  def anomalousAndTypicalRecords(): (ProxyInput, ProxyInput) = {
+    val anomalousRecord = ProxyInput("2016-10-03", "04:57:36", "127.0.0.1", "intel.com", "PUT",
+      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+      "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
+      "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
+      "-", "127.0.0.1", 338, 647,
+      "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle")
+
+    val typicalRecord = ProxyInput("2016-10-03", "04:57:36", "127.0.0.1", "maw.bronto.com", "PUT",
+      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+      "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
+      "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
+      "-", "127.0.0.1", 338, 647,
+      "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle")
+
+    (anomalousRecord, typicalRecord)
   }
 
   def testProxyRecords = new {

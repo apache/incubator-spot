@@ -67,18 +67,19 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
     logger.setLevel(Level.OFF)
 
-    val anomalousRecord = FlowRecord("2016-05-05 00:11:01", 2016, 5, 5, 0, 0, 1, 0.972f, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39, 12522, 0, 0)
-    val typicalRecord = FlowRecord("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972f, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39, 12522, 0, 0)
+    val anomalousRecord = FlowRecord("2016-05-05 00:11:01", 2016, 5, 5, 0, 0, 1, 0.972f, "172.16.0.129", "10.0.2" +
+      ".202", 1024, 80, "TCP", 39L, 12522L, 0, 0)
+    val typicalRecord = FlowRecord("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972f, "172.16.0.129", "10.0.2" +
+      ".202", 1024, 80, "TCP", 39L, 12522L, 0, 0)
 
 
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-
     val model =
       FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, data)
 
-    val scoredData = model.score(sparkContext, sqlContext, data)
+    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -133,7 +134,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
       FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig2, flows)
 
     logger.info("Identifying outliers")
-    val scoredData = model.score(sparkContext, sqlContext, flows)
+    val scoredData = model.score(sparkContext, sqlContext, flows, testConfig2.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -166,11 +167,12 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
 
-    val scoredData: DataFrame = FlowSuspiciousConnectsAnalysis.detectFlowAnomalies(data,
-      testingConfigFloatConversion,
-      sparkContext,
-      sqlContext,
-      logger)
+    logger.info("Fitting probabilistic model to data")
+    val model =
+      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testingConfigFloatConversion, data)
+
+    logger.info("Identifying outliers")
+    val scoredData = model.score(sparkContext, sqlContext, data, testingConfigFloatConversion.precisionUtility)
 
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
@@ -187,7 +189,6 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     Math.abs(typicalScores(6) - 0.9d) should be < 0.01
     Math.abs(typicalScores(7) - 0.9d) should be < 0.01
     Math.abs(typicalScores(8) - 0.9d) should be < 0.01
-
 
   }
 

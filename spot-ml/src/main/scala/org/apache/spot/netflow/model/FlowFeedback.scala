@@ -21,6 +21,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel._
+
 import scala.io.Source
 
 /**

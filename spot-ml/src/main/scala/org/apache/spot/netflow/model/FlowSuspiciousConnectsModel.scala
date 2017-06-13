@@ -29,10 +29,8 @@ import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
 import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
+import org.apache.spot.utilities.FloatPointPrecisionUtility
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-import org.apache.spot.utilities.{FloatPointPrecisionUtility, Quantiles}
-
-import scala.util.{Failure, Success, Try}
 
 /**
   * A probabilistic model of the netflow traffic observed in a network.
@@ -97,8 +95,6 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
                           srcIpTopicMix: Seq[precisionUtility.TargetType],
                           dstIpTopicMix: Seq[precisionUtility.TargetType]) =>
       scoreFunction.score(precisionUtility)(hour,
-        minute,
-        second,
         srcIP,
         dstIP,
         srcPort,

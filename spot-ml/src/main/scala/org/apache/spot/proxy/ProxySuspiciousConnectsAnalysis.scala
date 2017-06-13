@@ -99,7 +99,7 @@ object ProxySuspiciousConnectsAnalysis {
     val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, proxyRecords)
 
     logger.info("Identifying outliers")
-    val scoredProxyRecords = model.score(sparkContext, proxyRecords)
+    val scoredProxyRecords = model.score(sparkContext, proxyRecords, config.precisionUtility)
 
     // take the maxResults least probable events of probability below the threshold and sort
 

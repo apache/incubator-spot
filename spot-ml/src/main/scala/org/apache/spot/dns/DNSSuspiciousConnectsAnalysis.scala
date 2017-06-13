@@ -26,7 +26,6 @@ import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel
-import org.apache.spot.dns.model.DNSSuspiciousConnectsModel.ModelSchema
 import org.apache.spot.proxy.ProxySchema.Score
 import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataValidation}
 
@@ -81,7 +80,7 @@ object DNSSuspiciousConnectsAnalysis {
       DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, dnsRecords)
 
     logger.info("Identifying outliers")
-    val scoredDNSRecords = model.score(sparkContext, sqlContext, dnsRecords, config.userDomain)
+    val scoredDNSRecords = model.score(sparkContext, sqlContext, dnsRecords, config.userDomain, config.precisionUtility)
 
     val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold)
 
