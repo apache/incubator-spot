@@ -1,6 +1,6 @@
-#PROXY Edge Investigation Notebook
+# PROXY Edge Investigation Notebook
 
-###Dependencies
+### Dependencies
 - [iPython == 3.2.1](https://ipython.org/ipython-doc/3/index.html)
 - [Python 2.7.6](https://www.python.org/download/releases/2.7.6/)
 - [ipywidgets 5.1.1](https://ipywidgets.readthedocs.io/en/latest/user_install.html#with-pip)
@@ -18,13 +18,13 @@ The following python modules will be imported for the notebook to work correctly
         from IPython.display import display, HTML, clear_output, Javascript
 
 
-###Pre-requisites
+### Pre-requisites
 - Execution of the spot-oa process for Proxy
 - Correct setup the spot.conf file [Read more](/wiki/Edit%20Solution%20Configuration)
 - Have a public key created between the current UI node and the ML node. [Read more](/wiki/Configure%20User%20Accounts#configure-user-accounts)
 
 
-###Data
+### Data
 The whole process in this notebook depends entirely on the existence of `proxy_scores.tsv` file, which is generated at the OA process.  
 The data is directly manipulated on the .tsv files, so a `proxy_scores_bu.tsv` is created as a backup to allow the user to restore the original data at any point, 
 and this can be performed executing the last cell on the notebook with the following command.
@@ -49,7 +49,7 @@ Schema for these files can be found [here](/spot-oa/oa/proxy)
         data/proxy/<date>/proxy_scores_fb.csv (File with scored connections that will be used for ML feedback)
 
 
-###Functions
+### Functions
 **Widget configuration**
 This is not a function, but more like global code to set up styles and widgets to format the output of the notebook. 
 
