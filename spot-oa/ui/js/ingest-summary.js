@@ -5,6 +5,7 @@ const ReactDOM = require('react-dom');
 
 const SpotActions = require('./actions/SpotActions');
 const InSumActions = require('./actions/InSumActions');
+const EdInActions = require('./actions/EdInActions');
 const IngestSummaryStore = require('./stores/IngestSummaryStore');
 const SpotConstants = require('./constants/SpotConstants');
 const SpotUtils = require('./utils/SpotUtils');
@@ -13,6 +14,7 @@ const DateUtils = require('./utils/DateUtils');
 // Build and Render Toolbar
 const DateInput = require('./components/DateInput.react');
 const OptionPicker = require('./components/OptionPicker.react');
+const MainMenu = require('./menu/components/MainMenu.react');
 
 // Find out period
 var startDate, endDate, today;
@@ -52,6 +54,13 @@ const loadPipeline = function loadPipeline(pipeline) {
     SpotActions.setPipeline(pipeline);
     InSumActions.reloadSummary();
 }
+
+ReactDOM.render(
+  <MainMenu />,
+  document.getElementById('main-menu')
+);
+EdInActions.getWidgets('menu', '');
+SpotActions.setDate(SpotUtils.getCurrentDate());
 
 ReactDOM.render(
     <form className="form-inline">
