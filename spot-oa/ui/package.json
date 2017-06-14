@@ -19,6 +19,7 @@
     "object-assign": "^1.0.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "sweetalert2": "^6.6.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

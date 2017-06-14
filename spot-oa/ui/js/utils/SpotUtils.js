@@ -114,6 +114,41 @@ var SpotUtils = {
   },
   decodeId(id) {
       return Base64.decode(id.replace(ID_REPLACEMENT_REGEX, ID_REPLACE));
+  },
+  filterTextOnSelect(selectionEl, str, isCaseSensitive) {
+    if (isCaseSensitive)
+    str = str.toLowerCase();
+    // cache the jQuery object of the <select> element
+    var $el = $(selectionEl);
+    if (!$el.data("options")) {
+      // cache all the options inside the <select> element for easy recover
+      $el.data("options", $el.find("option").clone());
+    }
+    var newOptions = $el.data("options").filter(function () {
+      var text = $(this).text();
+      if (isCaseSensitive)
+      text = text.toLowerCase();
+      //select the first element of all results
+      if ($el.children().length > 0)
+      $el.children().get(0).selected = true;
+      return text.match(str);
+    });
+    $el.empty().append(newOptions);
+  },
+  switchDivs(elOne, elTwo) {
+    let elOneVal = $(`#${elOne}`).attr('style').split(';')[0].split(' ')[1] || '';
+    let elTwoVal = $(`#${elTwo}`).attr('style').split(';')[0].split(' ')[1] || '';
+
+    if (elOneVal === elTwoVal) {
+      $(`#${elOne}`).css({'order': '1'});
+      $(`#${elTwo}`).css({'order': '2'});
+    } else if(elOneVal === '1') {
+      $(`#${elOne}`).css({'order': '2'});
+      $(`#${elTwo}`).css({'order': '1'});
+    } else {
+      $(`#${elOne}`).css({'order': '1'});
+      $(`#${elTwo}`).css({'order': '2'});
+    }
   }
 };
 

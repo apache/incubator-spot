@@ -18,6 +18,10 @@ function resetFilterAndReload()
   EdInActions.reloadSuspicious();
 };
 
+function switchComponents () {
+  SpotUtils.switchDivs(SpotConstants.DETAILS_PANEL, SpotConstants.SCORING_PANEL);
+};
+
 ReactDOM.render(
   (
     <form className="form-inline">
@@ -54,10 +58,8 @@ const Panel = require('../../js/components/Panel.react');
 
 const SuspiciousPanel = require('./components/SuspiciousPanel.react');
 const NetworkViewPanel = require('./components/NetworkViewPanel.react');
-const IPythonNotebookPanel = require('../../js/components/IPythonNotebookPanel.react');
+const ScoreNotebook = require('./components/ScoreNotebook.react');
 const DetailsPanel = require('./components/DetailsPanel.react');
-
-const ipynbClosure = IPythonNotebookPanel.createIPythonNotebookClosure(SpotConstants.NOTEBOOK_PANEL);
 
 ReactDOM.render(
   <div id="spot-content">
@@ -69,14 +71,18 @@ ReactDOM.render(
         <NetworkViewPanel />
       </Panel>
     </PanelRow>
-    <PanelRow>
-      <Panel title={ipynbClosure.getTitle()} container extraButtons={ipynbClosure.getButtons}>
-        <IPythonNotebookPanel title={ipynbClosure.getTitle()} date={SpotUtils.getCurrentDate()} ipynb="dns/${date}/Edge_Investigation.ipynb" />
-      </Panel>
-      <Panel title={SpotConstants.DETAILS_PANEL} container expandable>
-        <DetailsPanel title={SpotConstants.DETAILS_PANEL} />
-      </Panel>
-    </PanelRow>
+    <div className="sortable">
+      <PanelRow title={SpotConstants.SCORING_PANEL}>
+        <Panel title={SpotConstants.SCORING_PANEL} reloadable switchable onReload={EdInActions.reloadSuspicious} onSwitch={switchComponents} className="col-md-12">
+          <ScoreNotebook />
+        </Panel>
+      </PanelRow>
+      <PanelRow title={SpotConstants.DETAILS_PANEL}>
+        <Panel title={SpotConstants.DETAILS_PANEL} container switchable expandable onSwitch={switchComponents} className="col-md-12">
+          <DetailsPanel title={SpotConstants.DETAILS_PANEL} />
+        </Panel>
+      </PanelRow>
+    </div>
   </div>,
   document.getElementById('spot-content-wrapper')
 );
