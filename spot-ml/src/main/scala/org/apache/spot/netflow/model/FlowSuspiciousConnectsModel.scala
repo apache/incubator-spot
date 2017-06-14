@@ -189,7 +189,7 @@ object FlowSuspiciousConnectsModel {
       config.ldaMaxiterations,
       config.precisionUtility)
 
-    new FlowSuspiciousConnectsModel(topicCount,
+    new FlowSuspiciousConnectsModel(config.topicCount,
       ipToTopicMix,
       wordToPerTopicProb)
   }
