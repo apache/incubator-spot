@@ -35,10 +35,10 @@ object InputOutputDataHandler {
     * @param logger    Application logger.
     * @return raw data frame.
     */
-  def getInputDataFrame(spark: SparkSession, inputPath: String, logger: Logger): Option[DataFrame] = {
+  def getInputDataFrame(sparkSession: SparkSession, inputPath: String, logger: Logger): Option[DataFrame] = {
     try {
       logger.info("Loading data from: " + inputPath)
-      Some(spark.read.parquet(inputPath))
+      Some(sparkSession.read.parquet(inputPath))
     } catch {
       case _: Throwable => None
     }
@@ -51,8 +51,8 @@ object InputOutputDataHandler {
     * @param analysis          Data type to analyze.
     * @param logger            Application Logger.
     */
-  def mergeResultsFiles(spark: SparkSession, hdfsScoredConnect: String, analysis: String, logger: Logger) {
-    val hadoopConfiguration = spark.sparkContext.hadoopConfiguration
+  def mergeResultsFiles(sparkSession: SparkSession, hdfsScoredConnect: String, analysis: String, logger: Logger) {
+    val hadoopConfiguration = sparkSession.sparkContext.hadoopConfiguration
     val fileSystem = org.apache.hadoop.fs.FileSystem.get(hadoopConfiguration)
 
     val exists = fileSystem.exists(new org.apache.hadoop.fs.Path(hdfsScoredConnect))

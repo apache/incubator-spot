@@ -24,10 +24,10 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 trait TestingSparkContextFunSuite extends FunSuite with BeforeAndAfterAll {
 
-  var spark: SparkSession = null
+  var sparkSession: SparkSession = null
 
   override def beforeAll() = {
-    spark = SparkSession.builder().appName("spot-ml-testing")
+    sparkSession = SparkSession.builder().appName("spot-ml-testing")
       .master("local")
       .config("", "")
       .getOrCreate()
@@ -37,6 +37,6 @@ trait TestingSparkContextFunSuite extends FunSuite with BeforeAndAfterAll {
     * Clean up after the test is done
     */
   override def afterAll() = {
-    spark.stop()
+    sparkSession.stop()
   }
 }

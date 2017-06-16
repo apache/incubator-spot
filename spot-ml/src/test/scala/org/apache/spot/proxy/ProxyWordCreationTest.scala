@@ -116,7 +116,7 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
       "-", "127.0.0.1", 338, 647, "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts" +
         "/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle")
 
-    val data = spark.createDataFrame(Seq(noAlexaPutLoEntroTextRareAgentShortUri202,
+    val data = sparkSession.createDataFrame(Seq(noAlexaPutLoEntroTextRareAgentShortUri202,
       AlexaPutMidEntroImagePopularAgentShortUri202,
       AlexaPutMidEntroImagePopularAgentShortUri304,
       AlexaPutMidEntroBinaryPopularAgentShortUri304,
@@ -127,9 +127,9 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
       AlexaGetMidEntroTextPopularAgentMidUri302,
       AlexaGetHiEntroTextPopularAgentLargeUri302))
 
-    val model = ProxySuspiciousConnectsModel.trainModel(spark, logger, testConfigProxy, data)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger, testConfigProxy, data)
 
-    val scoredData = model.score(spark, data, testConfigProxy.precisionUtility)
+    val scoredData = model.score(sparkSession, data, testConfigProxy.precisionUtility)
 
     val words = scoredData.collect().map(_.getAs[String](Word))
 

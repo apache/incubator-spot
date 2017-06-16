@@ -38,7 +38,7 @@ object FlowFeedback {
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.
     */
-  def loadFeedbackDF(spark: SparkSession,
+  def loadFeedbackDF(sparkSession: SparkSession,
                      feedbackFile: String,
                      duplicationFactor: Int): DataFrame = {
 
@@ -50,7 +50,7 @@ object FlowFeedback {
       */
 
       val lines = Source.fromFile(feedbackFile).getLines().toArray.drop(1)
-      val feedback: RDD[String] = spark.sparkContext.parallelize(lines)
+      val feedback: RDD[String] = sparkSession.sparkContext.parallelize(lines)
 
       /*
          flow_scores.csv - feedback file structure
@@ -79,7 +79,7 @@ object FlowFeedback {
       val MinuteIndex = 21
       val SecondIndex = 22
 
-      spark.createDataFrame(feedback.map(_.split("\t"))
+      sparkSession.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(ScoreIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(Seq(
           row(TimeStartIndex).split(" ")(1).split(":")(0).trim.toInt, // hour
@@ -95,7 +95,7 @@ object FlowFeedback {
         .select(ModelColumns: _*)
 
     } else {
-      spark.createDataFrame(spark.sparkContext.emptyRDD[Row], ModelSchema)
+      sparkSession.createDataFrame(sparkSession.sparkContext.emptyRDD[Row], ModelSchema)
     }
   }
 }

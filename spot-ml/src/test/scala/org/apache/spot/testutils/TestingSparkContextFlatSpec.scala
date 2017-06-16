@@ -23,19 +23,19 @@ import org.scalatest.{BeforeAndAfter, FlatSpec}
 
 trait TestingSparkContextFlatSpec extends FlatSpec with BeforeAndAfter {
 
-  var spark: SparkSession = TestingSparkContext.getSparkSession
+  var sparkSession: SparkSession = TestingSparkContext.getSparkSession
 
   object testImplicits extends SQLImplicits {
-    protected override def _sqlContext: SQLContext = spark.sqlContext
+    protected override def _sqlContext: SQLContext = sparkSession.sqlContext
   }
 
   before {
-    spark = TestingSparkContext.getSparkSession
+    sparkSession = TestingSparkContext.getSparkSession
   }
 
   after {
     TestingSparkContext.cleanUp()
-    spark = null
+    sparkSession = null
   }
 
 }

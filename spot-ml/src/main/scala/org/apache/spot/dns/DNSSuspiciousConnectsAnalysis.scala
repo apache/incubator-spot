@@ -18,9 +18,9 @@
 package org.apache.spot.dns
 
 import org.apache.log4j.Logger
-import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
@@ -61,7 +61,7 @@ object DNSSuspiciousConnectsAnalysis {
     * @param spark
     * @param logger
     */
-  def run(config: SuspiciousConnectsConfig, spark: SparkSession, logger: Logger,
+  def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
           inputDNSRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
 
@@ -75,10 +75,10 @@ object DNSSuspiciousConnectsAnalysis {
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      DNSSuspiciousConnectsModel.trainModel(spark, logger, config, dnsRecords)
+      DNSSuspiciousConnectsModel.trainModel(sparkSession, logger, config, dnsRecords)
 
     logger.info("Identifying outliers")
-    val scoredDNSRecords = model.score(spark, dnsRecords, config.userDomain, config.precisionUtility)
+    val scoredDNSRecords = model.score(sparkSession, dnsRecords, config.userDomain, config.precisionUtility)
 
     val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold)
 

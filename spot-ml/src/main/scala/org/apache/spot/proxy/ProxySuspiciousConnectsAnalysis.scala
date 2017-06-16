@@ -83,7 +83,7 @@ object ProxySuspiciousConnectsAnalysis {
     * @param spark  Spark Session
     * @param logger Logs execution progress, information and errors for user.
     */
-  def run(config: SuspiciousConnectsConfig, spark: SparkSession, logger: Logger,
+  def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
           inputProxyRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
     logger.info("Starting proxy suspicious connects analysis.")
@@ -94,10 +94,10 @@ object ProxySuspiciousConnectsAnalysis {
       .na.fill(DefaultResponseContentType, Seq(ResponseContentType))
 
     logger.info("Fitting probabilistic model to data")
-    val model = ProxySuspiciousConnectsModel.trainModel(spark, logger, config, proxyRecords)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger, config, proxyRecords)
 
     logger.info("Identifying outliers")
-    val scoredProxyRecords = model.score(spark, proxyRecords, config.precisionUtility)
+    val scoredProxyRecords = model.score(sparkSession, proxyRecords, config.precisionUtility)
 
     // take the maxResults least probable events of probability below the threshold and sort
 

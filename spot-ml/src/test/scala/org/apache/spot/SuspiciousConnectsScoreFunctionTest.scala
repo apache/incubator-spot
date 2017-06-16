@@ -30,7 +30,7 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
   "score" should "return score of type Double with document probabilities of type Double" in {
 
     val wordToPerTopicProb: Map[String, Array[Double]] = Map(("word_1" -> Array.fill(4)(0.05)))
-    val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
+    val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkSession.sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
     val precisionUtility = FloatPointPrecisionUtility64
@@ -47,7 +47,7 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
   it should "return score of type Double with document probabilities of type Float" in {
 
     val wordToPerTopicProb: Map[String, Array[Double]] = Map(("word_1" -> Array.fill(4)(0.05)))
-    val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
+    val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkSession.sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
     val precisionUtility = FloatPointPrecisionUtility32
@@ -63,7 +63,7 @@ class SuspiciousConnectsScoreFunctionTest extends TestingSparkContextFlatSpec wi
 
   it should "return score -1 when word doesn't exists" in {
     val wordToPerTopicProb: Map[String, Array[Double]] = Map(("word_1" -> Array.fill(4)(0.05)))
-    val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkContext.broadcast(wordToPerTopicProb)
+    val wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]] = sparkSession.sparkContext.broadcast(wordToPerTopicProb)
     val topicCount = 4
 
     val precisionUtility = FloatPointPrecisionUtility32

@@ -32,6 +32,7 @@ import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.utilities.DomainProcessor.DomainInfo
 import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
+
 import scala.util.{Failure, Success, Try}
 
 
@@ -65,16 +66,16 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     * Use a suspicious connects model to assign estimated probabilities to a dataframe of
     * DNS log events.
     *
-    * @param spark      Spark Session
-    * @param inDF       Dataframe of DNS log events, containing at least the columns of [[DNSSuspiciousConnectsModel.ModelSchema]]
-    * @param userDomain Domain associated to network data (ex: 'intel')
+    * @param sparkSession Spark Session
+    * @param inDF         Dataframe of DNS log events, containing at least the columns of [[DNSSuspiciousConnectsModel.ModelSchema]]
+    * @param userDomain   Domain associated to network data (ex: 'intel')
     * @return Dataframe with a column named [[org.apache.spot.dns.DNSSchema.Score]] that contains the
     *         probability estimated for the network event at that row
     */
-  def score(spark: SparkSession, inDF: DataFrame, userDomain: String, precisionUtility: FloatPointPrecisionUtility): DataFrame = {
+  def score(sparkSession: SparkSession, inDF: DataFrame, userDomain: String, precisionUtility: FloatPointPrecisionUtility): DataFrame = {
 
-    val topDomainsBC = spark.sparkContext.broadcast(TopDomains.TopDomains)
-    val wordToPerTopicProbBC = spark.sparkContext.broadcast(wordToPerTopicProb)
+    val topDomainsBC = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
+    val wordToPerTopicProbBC = sparkSession.sparkContext.broadcast(wordToPerTopicProb)
 
     val scoreFunction =
       new DNSScoreFunction(topicCount,
@@ -134,14 +135,14 @@ object DNSSuspiciousConnectsModel {
   /**
     * Create a new DNS Suspicious Connects model by training it on a data frame and a feedback file.
     *
-    * @param spark        Spark Session
+    * @param sparkSession Spark Session
     * @param logger
     * @param config       Analysis configuration object containing CLI parameters.
     *                     Contains the path to the feedback file in config.scoresFile
     * @param inputRecords Data used to train the model.
     * @return A new [[DNSSuspiciousConnectsModel]] instance trained on the dataframe and feedback file.
     */
-  def trainModel(spark: SparkSession,
+  def trainModel(sparkSession: SparkSession,
                  logger: Logger,
                  config: SuspiciousConnectsConfig,
                  inputRecords: DataFrame): DNSSuspiciousConnectsModel = {
@@ -150,15 +151,15 @@ object DNSSuspiciousConnectsModel {
 
     val selectedRecords = inputRecords.select(modelColumns: _*)
 
-    val totalRecords = selectedRecords.union(DNSFeedback.loadFeedbackDF(spark,
+    val totalRecords = selectedRecords.union(DNSFeedback.loadFeedbackDF(sparkSession,
       config.feedbackFile,
       config.duplicationFactor))
 
-    val countryCodesBC = spark.sparkContext.broadcast(CountryCodes.CountryCodes)
-    val topDomainsBC = spark.sparkContext.broadcast(TopDomains.TopDomains)
+    val countryCodesBC = sparkSession.sparkContext.broadcast(CountryCodes.CountryCodes)
+    val topDomainsBC = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = config.userDomain
 
-    val domainStatsRecords = createDomainStatsDF(sparkContext, sqlContext, countryCodesBC, topDomainsBC, userDomain, totalRecords)
+    val domainStatsRecords = createDomainStatsDF(sparkSession, countryCodesBC, topDomainsBC, userDomain, totalRecords)
 
     // simplify DNS log entries into "words"
 
@@ -166,7 +167,7 @@ object DNSSuspiciousConnectsModel {
 
     val dataWithWord = totalRecords.withColumn(Word, dnsWordCreator.wordCreationUDF(modelColumns: _*))
 
-    import spark.implicits._
+    import sparkSession.implicits._
 
     // aggregate per-word counts at each IP
     val ipDstWordCounts =
@@ -179,7 +180,7 @@ object DNSSuspiciousConnectsModel {
         .map({ case ((ipDst, word), count) => SpotLDAInput(ipDst, word, count) })
 
 
-    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(spark,
+    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkSession,
       ipDstWordCounts,
       config.topicCount,
       logger,
@@ -197,7 +198,7 @@ object DNSSuspiciousConnectsModel {
   /**
     * Add  domain statistics fields to a data frame.
     *
-    * @param spark          Spark Session
+    * @param sparkSession   Spark Session
     * @param countryCodesBC Broadcast of the country codes set.
     * @param topDomainsBC   Broadcast of the most-popular domains set.
     * @param userDomain     Domain associated to network data (ex: 'intel')
@@ -205,7 +206,7 @@ object DNSSuspiciousConnectsModel {
     * @return A new dataframe with the new columns added. The new columns have the schema [[DomainStatsSchema]]
     */
 
-  def createDomainStatsDF(spark: SparkSession,
+  def createDomainStatsDF(sparkSession: SparkSession,
                           countryCodesBC: Broadcast[Set[String]],
                           topDomainsBC: Broadcast[Set[String]],
                           userDomain: String,
@@ -216,7 +217,7 @@ object DNSSuspiciousConnectsModel {
     val domainStatsRDD: RDD[Row] = inDF.rdd.map(row =>
       Row.fromTuple(createTempFields(countryCodesBC, topDomainsBC, userDomain, row.getString(queryNameIndex))))
 
-    spark.createDataFrame(domainStatsRDD, DomainStatsSchema)
+    sparkSession.createDataFrame(domainStatsRDD, DomainStatsSchema)
   }
 
   /**

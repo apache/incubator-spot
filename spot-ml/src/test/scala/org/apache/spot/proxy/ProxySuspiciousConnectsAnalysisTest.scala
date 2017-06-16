@@ -103,7 +103,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val (anomalousRecord, typicalRecord) = anomalousAndTypicalRecords()
 
-    val data = spark.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
     val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger, emTestConfigProxy, data)
@@ -182,7 +182,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val model = ProxySuspiciousConnectsModel.trainModel(sparkSessiont, logger,
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger,
       testConfigProxyFloatConversion, data)
 
     val scoredData = model.score(sparkSession, data, testConfigProxyFloatConversion.precisionUtility)
@@ -254,7 +254,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
   def testProxyRecords = new {
 
 
-    val inputProxyRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
+    val inputProxyRecordsRDD = sparkSession.sparkContext.parallelize(wrapRefArray(Array(
       Seq(null, "00:09:13", "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
         "-", "-", "404", "80", "/ubuntu/dists/tru...", "-", "10.239.4.160", 2864, 218, "cn.archive.ubuntu..."),
       Seq("2016-10-03", null, "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
@@ -290,9 +290,9 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
         CSBytesField,
         FullURIField))
 
-    val inputProxyRecordsDF = spark.createDataFrame(inputProxyRecordsRDD, inputProxyRecordsSchema)
+    val inputProxyRecordsDF = sparkSession.createDataFrame(inputProxyRecordsRDD, inputProxyRecordsSchema)
 
-    val scoredProxyRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
+    val scoredProxyRecordsRDD = sparkSession.sparkContext.parallelize(wrapRefArray(Array(
       Seq("2016-10-03", "00:09:13", "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
         "-", "-", "404", "80", "/ubuntu/dists/tru...", "-", "10.239.4.160", 2864, 218, "cn.archive.ubuntu...", "a word", -1d),
       Seq("2016-10-03", "00:09:13", "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
@@ -328,7 +328,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
         WordField,
         ScoreField))
 
-    val scoredProxyRecordsDF = spark.createDataFrame(scoredProxyRecordsRDD, scoredProxyRecordsSchema)
+    val scoredProxyRecordsDF = sparkSession.createDataFrame(scoredProxyRecordsRDD, scoredProxyRecordsSchema)
 
   }
 

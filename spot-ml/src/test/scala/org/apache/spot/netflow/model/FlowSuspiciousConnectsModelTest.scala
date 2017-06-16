@@ -25,7 +25,7 @@ class FlowSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with M
 
   def testFlowRecords = new {
 
-    val inputFlowRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
+    val inputFlowRecordsRDD = sparkSession.sparkContext.parallelize(wrapRefArray(Array(
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 24, 54, 58, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
         12522l, 0l, 0l),
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 59, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
@@ -76,9 +76,9 @@ class FlowSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with M
         OpktField,
         ObytField))
 
-    val inputFlowRecordsDF = spark.createDataFrame(inputFlowRecordsRDD, inputFlowRecordsSchema)
+    val inputFlowRecordsDF = sparkSession.createDataFrame(inputFlowRecordsRDD, inputFlowRecordsSchema)
 
-    val scoredFlowRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
+    val scoredFlowRecordsRDD = sparkSession.sparkContext.parallelize(wrapRefArray(Array(
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
         12522l, 0l, 0l, -1d),
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
@@ -111,6 +111,6 @@ class FlowSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with M
         ObytField,
         ScoreField))
 
-    val scoredFlowRecordsDF = spark.createDataFrame(scoredFlowRecordsRDD, scoredFlowRecordsSchema)
+    val scoredFlowRecordsDF = sparkSession.createDataFrame(scoredFlowRecordsRDD, scoredFlowRecordsSchema)
   }
 }

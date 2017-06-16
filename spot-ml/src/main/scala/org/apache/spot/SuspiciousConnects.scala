@@ -57,13 +57,13 @@ object SuspiciousConnects {
 
         val analysis = config.analysis
 
-        val spark = SparkSession.builder
+        val sparkSession = SparkSession.builder
           .appName("Spot ML:  " + analysis + " suspicious connects analysis")
           .master("yarn")
           .getOrCreate()
 
-        val inputDataFrame = InputOutputDataHandler.getInputDataFrame(spark, config.inputPath, logger)
-          .getOrElse(spark.emptyDataFrame)
+        val inputDataFrame = InputOutputDataHandler.getInputDataFrame(sparkSession, config.inputPath, logger)
+          .getOrElse(sparkSession.emptyDataFrame)
         if(inputDataFrame.rdd.isEmpty()) {
           logger.error("Couldn't read data from location " + config.inputPath +", please verify it's a valid location and that " +
             s"contains parquet files with a given schema and try again.")
@@ -71,11 +71,11 @@ object SuspiciousConnects {
         }
 
         val results: Option[SuspiciousConnectsAnalysisResults] = analysis match {
-          case "flow" => Some(FlowSuspiciousConnectsAnalysis.run(config, spark, logger,
+          case "flow" => Some(FlowSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
             inputDataFrame))
-          case "dns" => Some(DNSSuspiciousConnectsAnalysis.run(config, spark, logger,
+          case "dns" => Some(DNSSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
             inputDataFrame))
-          case "proxy" => Some(ProxySuspiciousConnectsAnalysis.run(config, spark, logger,
+          case "proxy" => Some(ProxySuspiciousConnectsAnalysis.run(config, sparkSession, logger,
             inputDataFrame))
           case _ => None
         }
@@ -86,10 +86,10 @@ object SuspiciousConnects {
             logger.info(s"$analysis suspicious connects analysis completed.")
             logger.info("Saving results to : " + config.hdfsScoredConnect)
 
-            import spark.implicits._
+            import sparkSession.implicits._
             resultRecords.map(_.mkString(config.outputDelimiter)).rdd.saveAsTextFile(config.hdfsScoredConnect)
 
-            InputOutputDataHandler.mergeResultsFiles(spark, config.hdfsScoredConnect, analysis, logger)
+            InputOutputDataHandler.mergeResultsFiles(sparkSession, config.hdfsScoredConnect, analysis, logger)
 
             InvalidDataHandler.showAndSaveInvalidRecords(invalidRecords, config.hdfsScoredConnect, logger)
           }
@@ -97,7 +97,7 @@ object SuspiciousConnects {
           case None => logger.error("Unsupported (or misspelled) analysis: " + analysis)
         }
 
-        spark.stop()
+        sparkSession.stop()
 
       case None => logger.error("Error parsing arguments.")
     }

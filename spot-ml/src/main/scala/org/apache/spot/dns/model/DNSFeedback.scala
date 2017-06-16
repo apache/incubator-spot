@@ -37,7 +37,7 @@ object DNSFeedback {
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.
     */
-  def loadFeedbackDF(spark: SparkSession,
+  def loadFeedbackDF(sparkSession: SparkSession,
                      feedbackFile: String,
                      duplicationFactor: Int): DataFrame = {
 
@@ -49,7 +49,7 @@ object DNSFeedback {
       */
 
       val lines = Source.fromFile(feedbackFile).getLines().toArray.drop(1)
-      val feedback: RDD[String] = spark.sparkContext.parallelize(lines)
+      val feedback: RDD[String] = sparkSession.sparkContext.parallelize(lines)
 
       /*
       The columns and their entries are as follows:
@@ -82,7 +82,7 @@ object DNSFeedback {
       val DnsQryRcodeIndex = 6
       val DnsSevIndex = 12
 
-      spark.createDataFrame(feedback.map(_.split("\t"))
+      sparkSession.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(DnsSevIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(Seq(row(FrameTimeIndex),
           row(UnixTimeStampIndex).toLong,
@@ -95,7 +95,7 @@ object DNSFeedback {
         .flatMap(row => List.fill(duplicationFactor)(row)), ModelSchema)
         .select(modelColumns:_*)
     } else {
-      spark.createDataFrame(spark.sparkContext.emptyRDD[Row], ModelSchema)
+      sparkSession.createDataFrame(sparkSession.sparkContext.emptyRDD[Row], ModelSchema)
     }
   }
 }

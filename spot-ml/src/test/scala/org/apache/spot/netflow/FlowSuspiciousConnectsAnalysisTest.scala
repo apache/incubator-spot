@@ -172,7 +172,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
       ".202", 1024, 80, "TCP", 39l, 12522l, 0l, 0l)
 
 
-    val data = spark.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
@@ -182,10 +182,10 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      FlowSuspiciousConnectsModel.trainModel(spark, logger, testConfig2, flows)
+      FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, testConfig2, flows)
 
     logger.info("Identifying outliers")
-    val scoredData = model.score(spark, flows, testConfig2.precisionUtility)
+    val scoredData = model.score(sparkSession, flows, testConfig2.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -214,17 +214,16 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     val typicalRecord = FlowRecord("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972f, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39, 12522, 0, 0)
 
 
-    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testingConfigFloatConversion, data)
+      FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, testingConfigFloatConversion, data)
 
     logger.info("Identifying outliers")
     val scoredData = model.score(sparkSession, data, testingConfigFloatConversion.precisionUtility)
-
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -273,7 +272,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
   def testFlowRecords = new {
 
-    val inputFlowRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
+    val inputFlowRecordsRDD = sparkSession.sparkContext.parallelize(wrapRefArray(Array(
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 24, 54, 58, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
         12522l, 0l, 0l),
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 60, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
@@ -324,9 +323,9 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
         OpktField,
         ObytField))
 
-    val inputFlowRecordsDF = spark.createDataFrame(inputFlowRecordsRDD, inputFlowRecordsSchema)
+    val inputFlowRecordsDF = sparkSession.createDataFrame(inputFlowRecordsRDD, inputFlowRecordsSchema)
 
-    val scoredFlowRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
+    val scoredFlowRecordsRDD = sparkSession.sparkContext.parallelize(wrapRefArray(Array(
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
         12522l, 0l, 0l, -1d),
       Seq("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972d, "172.16.0.129", "10.0.2.202", 1024, 80, "TCP", 39l,
@@ -359,7 +358,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
         ObytField,
         ScoreField))
 
-    val scoredFlowRecordsDF = spark.createDataFrame(scoredFlowRecordsRDD, scoredFlowRecordsSchema)
+    val scoredFlowRecordsDF = sparkSession.createDataFrame(scoredFlowRecordsRDD, scoredFlowRecordsSchema)
   }
 
 }

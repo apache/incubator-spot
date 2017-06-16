@@ -35,7 +35,7 @@ object ProxyFeedback {
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.
     */
-  def loadFeedbackDF(spark: SparkSession,
+  def loadFeedbackDF(sparkSession: SparkSession,
                      feedbackFile: String,
                      duplicationFactor: Int): DataFrame = {
 
@@ -66,9 +66,9 @@ object ProxyFeedback {
       val fullURISeverityIndex = 22
 
       val lines = Source.fromFile(feedbackFile).getLines().toArray.drop(1)
-      val feedback: RDD[String] = spark.sparkContext.parallelize(lines)
+      val feedback: RDD[String] = sparkSession.sparkContext.parallelize(lines)
 
-      spark.createDataFrame(feedback.map(_.split("\t"))
+      sparkSession.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(fullURISeverityIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(List(row(dateIndex),
           row(timeIndex),
@@ -82,7 +82,7 @@ object ProxyFeedback {
         .flatMap(row => List.fill(duplicationFactor)(row)), feedbackSchema)
         .select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
     } else {
-      spark.createDataFrame(spark.sparkContext.emptyRDD[Row], feedbackSchema)
+      sparkSession.createDataFrame(sparkSession.sparkContext.emptyRDD[Row], feedbackSchema)
     }
   }
 }

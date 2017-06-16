@@ -73,7 +73,7 @@ object FlowSuspiciousConnectsAnalysis {
       ObytField,
       ScoreField)).fieldNames.map(col)
 
-  def run(config: SuspiciousConnectsConfig, spark: SparkSession, logger: Logger,
+  def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
           inputFlowRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
     logger.info("Starting flow suspicious connects analysis.")
@@ -82,10 +82,10 @@ object FlowSuspiciousConnectsAnalysis {
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      FlowSuspiciousConnectsModel.trainModel(spark, logger, config, flowRecords)
+      FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, config, flowRecords)
 
     logger.info("Identifying outliers")
-    val scoredFlowRecords = model.score(spark, flowRecords, config.precisionUtility)
+    val scoredFlowRecords = model.score(sparkSession, flowRecords, config.precisionUtility)
 
     val filteredScored = filterScoredRecords(scoredFlowRecords, config.threshold)
 

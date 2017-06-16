@@ -32,7 +32,7 @@ class FloatingPointUtility64 extends TestingSparkContextFlatSpec with Matchers {
 
   "castColumn" should "return the exact same data frame" in {
 
-    val testDataFrame = sqlContext.createDataFrame(Seq(("doc1", Array(1d, 2d)), ("doc2", Array(2d, 3d))))
+    val testDataFrame = sparkSession.createDataFrame(Seq(("doc1", Array(1d, 2d)), ("doc2", Array(2d, 3d))))
       .withColumnRenamed("_1", DocumentName).withColumnRenamed("_2", TopicProbabilityMix)
 
     val result = FloatPointPrecisionUtility64.castColumn(testDataFrame, TopicProbabilityMix)

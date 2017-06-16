@@ -22,9 +22,9 @@ import org.apache.spark.mllib.clustering._
 import org.apache.spark.mllib.linalg.{Matrix, Vector, Vectors}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.utilities.FloatPointPrecisionUtility
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 import scala.collection.immutable.Map
 
@@ -39,7 +39,7 @@ import scala.collection.immutable.Map
 
 object SpotLDAWrapper {
 
-  def runLDA(spark: SparkSession,
+  def runLDA(sparkSession: SparkSession,
              docWordCount: RDD[SpotLDAInput],
              topicCount: Int,
              logger: Logger,
@@ -50,7 +50,7 @@ object SpotLDAWrapper {
              maxIterations: Int,
              precisionUtility: FloatPointPrecisionUtility): SpotLDAOutput = {
 
-    import spark.implicits._
+    import sparkSession.implicits._
 
     val docWordCountCache = docWordCount.cache()
 
@@ -78,7 +78,7 @@ object SpotLDAWrapper {
       formatSparkLDAInput(docWordCountCache,
         documentDictionary,
         wordDictionary,
-        spark)
+        sparkSession)
 
     docWordCountCache.unpersist()
 
@@ -151,7 +151,7 @@ object SpotLDAWrapper {
 
     // Create doc results from vector: convert docID back to string, convert vector of probabilities to array
     val docToTopicMixDF =
-      formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, spark, precisionUtility)
+      formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sparkSession, precisionUtility)
 
     documentDictionary.unpersist()
 
@@ -168,9 +168,9 @@ object SpotLDAWrapper {
   def formatSparkLDAInput(docWordCount: RDD[SpotLDAInput],
                           documentDictionary: DataFrame,
                           wordDictionary: Map[String, Int],
-                          spark: SparkSession): RDD[(Long, Vector)] = {
+                          sparkSession: SparkSession): RDD[(Long, Vector)] = {
 
-    import spark.implicits._
+    import sparkSession.implicits._
 
     val getWordId = {
       udf((word: String) => (wordDictionary(word)))
@@ -216,10 +216,10 @@ object SpotLDAWrapper {
     wordProbs.zipWithIndex.map({ case (topicProbs, wordInd) => (wordMap(wordInd), topicProbs) }).toMap
   }
 
-  def formatSparkLDADocTopicOutput(docTopDist: RDD[(Long, Vector)], documentDictionary: DataFrame, spark: SparkSession,
-  precisionUtility: FloatPointPrecisionUtility):
+  def formatSparkLDADocTopicOutput(docTopDist: RDD[(Long, Vector)], documentDictionary: DataFrame, sparkSession: SparkSession,
+                                   precisionUtility: FloatPointPrecisionUtility):
   DataFrame = {
-    import spark.implicits._
+    import sparkSession.implicits._
 
     val topicDistributionToArray = udf((topicDistribution: Vector) => topicDistribution.toArray)
     val documentToTopicDistributionDF = docTopDist.toDF(DocumentNumber, TopicProbabilityMix)

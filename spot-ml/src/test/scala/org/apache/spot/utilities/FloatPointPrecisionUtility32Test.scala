@@ -33,7 +33,7 @@ class FloatPointPrecisionUtility32Test extends TestingSparkContextFlatSpec with 
 
   "castColumn" should "return a data frame with a schema modified, Seq[Float] instead of Seq[Double]" in {
 
-    val testDataFrame = sqlContext.createDataFrame(Seq(("doc1", Array(1d, 2d)), ("doc2", Array(2d, 3d))))
+    val testDataFrame = sparkSession.createDataFrame(Seq(("doc1", Array(1d, 2d)), ("doc2", Array(2d, 3d))))
       .withColumnRenamed("_1", DocumentName).withColumnRenamed("_2", TopicProbabilityMix)
 
     val result = FloatPointPrecisionUtility32.castColumn(testDataFrame, TopicProbabilityMix)

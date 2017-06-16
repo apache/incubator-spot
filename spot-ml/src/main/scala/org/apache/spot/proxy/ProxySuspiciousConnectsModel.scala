@@ -50,14 +50,14 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
     *                  (as defined in ProxySchema object).
     * @return Dataframe with Score column added.
     */
-  def score(spark: SparkSession, dataFrame: DataFrame, precisionUtility: FloatPointPrecisionUtility)): DataFrame = {
+  def score(sparkSession: SparkSession, dataFrame: DataFrame, precisionUtility: FloatPointPrecisionUtility): DataFrame = {
 
-    val topDomains: Broadcast[Set[String]] = spark.sparkContext.broadcast(TopDomains.TopDomains)
+    val topDomains: Broadcast[Set[String]] = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
 
     val agentToCount: Map[String, Long] =
       dataFrame.select(UserAgent).rdd.map({ case Row(ua: String) => (ua, 1L) }).reduceByKey(_ + _).collect().toMap
 
-    val agentToCountBC = spark.sparkContext.broadcast(agentToCount)
+    val agentToCountBC = sparkSession.sparkContext.broadcast(agentToCount)
 
     val udfWordCreation =
       ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC)
@@ -71,7 +71,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
         dataFrame(UserAgent),
         dataFrame(RespCode)))
 
-    val wordToPerTopicProbBC = spark.sparkContext.broadcast(wordToPerTopicProb)
+    val wordToPerTopicProbBC = sparkSession.sparkContext.broadcast(wordToPerTopicProb)
 
     val scoreFunction = new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
@@ -112,7 +112,7 @@ object ProxySuspiciousConnectsModel {
     *                     UserAgent, RespCode (as defined in ProxySchema object).
     * @return ProxySuspiciousConnectsModel
     */
-  def trainModel(spark: SparkSession,
+  def trainModel(sparkSession: SparkSession,
                  logger: Logger,
                  config: SuspiciousConnectsConfig,
                  inputRecords: DataFrame): ProxySuspiciousConnectsModel = {
@@ -122,7 +122,7 @@ object ProxySuspiciousConnectsModel {
 
     val selectedRecords =
       inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
-        .unionAll(ProxyFeedback.loadFeedbackDF(spark, config.feedbackFile, config.duplicationFactor))
+        .unionAll(ProxyFeedback.loadFeedbackDF(sparkSession, config.feedbackFile, config.duplicationFactor))
 
 
 
@@ -133,15 +133,13 @@ object ProxySuspiciousConnectsModel {
         .reduceByKey(_ + _).collect()
         .toMap
 
-    val agentToCountBC = spark.sparkContext.broadcast(agentToCount)
-
-
+    val agentToCountBC = sparkSession.sparkContext.broadcast(agentToCount)
 
     val docWordCount: RDD[SpotLDAInput] =
-      getIPWordCounts(spark, logger, selectedRecords, config.feedbackFile, config.duplicationFactor,
+      getIPWordCounts(sparkSession, logger, selectedRecords, config.feedbackFile, config.duplicationFactor,
         agentToCount)
 
-    val SpotLDAOutput(ipToTopicMixDF, wordResults) = SpotLDAWrapper.runLDA(spark,
+    val SpotLDAOutput(ipToTopicMixDF, wordResults) = SpotLDAWrapper.runLDA(sparkSession,
       docWordCount,
       config.topicCount,
       logger,
@@ -152,7 +150,7 @@ object ProxySuspiciousConnectsModel {
       config.ldaMaxiterations,
       config.precisionUtility)
 
-    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordResults)
+    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMixDF, wordResults)
 
   }
 
@@ -162,7 +160,7 @@ object ProxySuspiciousConnectsModel {
     *
     * @return RDD of [[SpotLDAInput]] objects containing the aggregated IP-word counts.
     */
-  def getIPWordCounts(spark: SparkSession,
+  def getIPWordCounts(sparkSession: SparkSession,
                       logger: Logger,
                       inputRecords: DataFrame,
                       feedbackFile: String,
@@ -173,19 +171,19 @@ object ProxySuspiciousConnectsModel {
     logger.info("Read source data")
     val selectedRecords = inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
 
-    val wc = ipWordCountFromDF(spark, selectedRecords, agentToCount)
+    val wc = ipWordCountFromDF(sparkSession, selectedRecords, agentToCount)
     logger.info("proxy pre LDA completed")
 
     wc
   }
 
-  def ipWordCountFromDF(spark: SparkSession,
+  def ipWordCountFromDF(sparkSession: SparkSession,
                         dataFrame: DataFrame,
                         agentToCount: Map[String, Long]): RDD[SpotLDAInput] = {
 
-    val topDomains: Broadcast[Set[String]] = spark.sparkContext.broadcast(TopDomains.TopDomains)
+    val topDomains: Broadcast[Set[String]] = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
 
-    val agentToCountBC = spark.sparkContext.broadcast(agentToCount)
+    val agentToCountBC = sparkSession.sparkContext.broadcast(agentToCount)
     val udfWordCreation = ProxyWordCreation.udfWordCreation(topDomains, agentToCountBC)
 
     val ipWord = dataFrame.withColumn(Word,

@@ -21,12 +21,6 @@ import java.util.concurrent.locks.ReentrantLock
 
 import org.apache.spark.sql.SparkSession
 
-
-/**
-  * THIS CODE WAS COPIED DIRECTLY FROM THE OPEN SOURCE PROJECT TAP (Trusted Analytics Platform)
-  * which has an Apache V2.0
-  */
-
 /**
   * Don't use this class directly!!  Use the FlatSpec or WordSpec version for your tests
   *
@@ -43,7 +37,7 @@ private[testutils] object TestingSparkContext {
   private val lock = new ReentrantLock()
 
   /** global SparkSession that can be re-used between tests */
-  private lazy val spark: SparkSession = createLocalSparkSession()
+  private lazy val sparkSession: SparkSession = createLocalSparkSession()
 
   /** System property can be used to turn off globalSparkContext easily */
   private val useGlobalSparkContext: Boolean = System.getProperty("useGlobalSparkContext", "true").toBoolean
@@ -54,7 +48,7 @@ private[testutils] object TestingSparkContext {
   def getSparkSession: SparkSession = {
     if (useGlobalSparkContext) {
       // reuse the global SparkContext
-      spark
+      sparkSession
     }
     else {
       // create a new SparkSession each time
@@ -87,8 +81,8 @@ private[testutils] object TestingSparkContext {
     */
   private def cleanupSpark(): Unit = {
     try {
-      if (spark != null) {
-        spark.stop()
+      if (sparkSession != null) {
+        sparkSession.stop()
       }
     }
     finally {
