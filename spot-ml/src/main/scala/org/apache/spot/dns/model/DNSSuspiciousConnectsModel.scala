@@ -121,8 +121,8 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
   */
 object DNSSuspiciousConnectsModel {
 
-  val ModelSchema = StructType(List(TimestampField,
-    UnixTimestampField,
+  val ModelSchema = StructType(List(TimeStampField,
+    UnixTimeStampField,
     FrameLengthField,
     ClientIPField,
     QueryNameField,

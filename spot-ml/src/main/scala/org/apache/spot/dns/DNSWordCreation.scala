@@ -39,7 +39,7 @@ class DNSWordCreation(topDomainsBC: Broadcast[Set[String]], userDomain: String) 
     * Create a new UDF for adding a word column to a dataframe.
     * The dataframe must provide the following columns:
     *
-    * A string timestamp, a long unixtimestamp, an integer framelength,
+    * A string timeStamp, a long unixtimeStamp, an integer framelength,
     * a string client IP, a string query name, a string query class, an integer query type
     * and an integer query response code.
     *
@@ -48,15 +48,15 @@ class DNSWordCreation(topDomainsBC: Broadcast[Set[String]], userDomain: String) 
     *         queryName: String, queryClass: String, dnsQueryType: Int, dnsQueryRCode :Int) =>  Word: String
     */
   def wordCreationUDF =
-    udf((timestamp: String,
-         unixTimestamp: Long,
+    udf((timeStamp: String,
+         unixTimeStamp: Long,
          frameLength: Int,
          clientIP: String,
          queryName: String,
          queryClass: String,
          dnsQueryType: Int,
-         dnsQueryRcode: Int) => dnsWord(timestamp,
-      unixTimestamp,
+         dnsQueryRcode: Int) => dnsWord(timeStamp,
+      unixTimeStamp,
       frameLength,
       clientIP,
       queryName,
@@ -68,8 +68,8 @@ class DNSWordCreation(topDomainsBC: Broadcast[Set[String]], userDomain: String) 
   /**
     * Simplify a DNS log entry into a word.
     *
-    * @param timestamp     Timestamp as a string.
-    * @param unixTimestamp Unix timestamp as a 64 bit integer
+    * @param timeStamp     Time stamp as a string.
+    * @param unixTimeStamp Unix time stamp as a 64 bit integer
     * @param frameLength   Framelength as an integer.
     * @param clientIP      IP of client making DNS query as string.
     * @param queryName     URL being queried.
@@ -79,8 +79,8 @@ class DNSWordCreation(topDomainsBC: Broadcast[Set[String]], userDomain: String) 
     * @return The word representation of the DNS entry.
     */
 
-  def dnsWord(timestamp: String,
-              unixTimestamp: Long,
+  def dnsWord(timeStamp: String,
+              unixTimeStamp: Long,
               frameLength: Int,
               clientIP: String,
               queryName: String,
@@ -94,7 +94,7 @@ class DNSWordCreation(topDomainsBC: Broadcast[Set[String]], userDomain: String) 
 
       Seq(topDomain,
         MathUtils.logBaseXInt(frameLength.toDouble, 2),
-        TimeUtilities.getTimeAsHour(timestamp.split(" +")(3)).toString,
+        TimeUtilities.getTimeAsHour(timeStamp.split(" +")(3)).toString,
         MathUtils.logBaseXInt(subdomainLength.toDouble, 2),
         MathUtils.bin(subdomainEntropy, EntropyCuts),
         MathUtils.logBaseXInt(numPeriods.toDouble, 2),

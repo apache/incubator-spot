@@ -40,12 +40,12 @@ object DNSSuspiciousConnectsAnalysis {
   val DefaultQueryClass = "unknown"
   val DefaultQueryType = -1
   val DefaultQueryResponseCode = -1
-  val InStructType = StructType(List(TimestampField, UnixTimestampField, FrameLengthField, ClientIPField,
+  val InStructType = StructType(List(TimeStampField, UnixTimeStampField, FrameLengthField, ClientIPField,
     QueryNameField, QueryClassField, QueryTypeField, QueryResponseCodeField))
   val InSchema = InStructType.fieldNames.map(col)
   val OutSchema = StructType(
-    List(TimestampField,
-      UnixTimestampField,
+    List(TimeStampField,
+      UnixTimeStampField,
       FrameLengthField,
       ClientIPField,
       QueryNameField,
@@ -106,10 +106,10 @@ object DNSSuspiciousConnectsAnalysis {
     */
   def filterRecords(inputDNSRecords: DataFrame): DataFrame = {
 
-    val cleanDNSRecordsFilter = inputDNSRecords(Timestamp).isNotNull &&
-      inputDNSRecords(Timestamp).notEqual("") &&
-      inputDNSRecords(Timestamp).notEqual("-") &&
-      inputDNSRecords(UnixTimestamp).geq(0) &&
+    val cleanDNSRecordsFilter = inputDNSRecords(TimeStamp).isNotNull &&
+      inputDNSRecords(TimeStamp).notEqual("") &&
+      inputDNSRecords(TimeStamp).notEqual("-") &&
+      inputDNSRecords(UnixTimeStamp).geq(0) &&
       inputDNSRecords(FrameLength).geq(0) &&
       inputDNSRecords(QueryName).isNotNull &&
       inputDNSRecords(QueryName).notEqual("") &&
@@ -135,10 +135,10 @@ object DNSSuspiciousConnectsAnalysis {
     */
   def filterInvalidRecords(inputDNSRecords: DataFrame): DataFrame = {
 
-    val invalidDNSRecordsFilter = inputDNSRecords(Timestamp).isNull ||
-      inputDNSRecords(Timestamp).equalTo("") ||
-      inputDNSRecords(Timestamp).equalTo("-") ||
-      inputDNSRecords(UnixTimestamp).isNull ||
+    val invalidDNSRecordsFilter = inputDNSRecords(TimeStamp).isNull ||
+      inputDNSRecords(TimeStamp).equalTo("") ||
+      inputDNSRecords(TimeStamp).equalTo("-") ||
+      inputDNSRecords(UnixTimeStamp).isNull ||
       inputDNSRecords(FrameLength).isNull ||
       inputDNSRecords(QueryName).isNull ||
       inputDNSRecords(QueryName).equalTo("") ||

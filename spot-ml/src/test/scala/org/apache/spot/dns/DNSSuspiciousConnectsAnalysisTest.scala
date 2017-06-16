@@ -253,8 +253,8 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       .map(row => Row.fromSeq(row))))
 
     val inputDNSRecordsSchema = StructType(
-      Array(TimestampField,
-        UnixTimestampField,
+      Array(TimeStampField,
+        UnixTimeStampField,
         FrameLengthField,
         ClientIPField,
         QueryNameField,
@@ -273,8 +273,8 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       .map(row => Row.fromSeq(row))))
 
     val scoredDNSRecordsSchema = StructType(
-      Array(TimestampField,
-        UnixTimestampField,
+      Array(TimeStampField,
+        UnixTimeStampField,
         FrameLengthField,
         ClientIPField,
         QueryNameField,
