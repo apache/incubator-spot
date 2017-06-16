@@ -18,10 +18,9 @@
 package org.apache.spot.dns
 
 import org.apache.log4j.Logger
-import org.apache.spark.SparkContext
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
@@ -59,11 +58,10 @@ object DNSSuspiciousConnectsAnalysis {
     * Saves the most suspicious connections to a CSV file on HDFS.
     *
     * @param config Object encapsulating runtime parameters and CLI options.
-    * @param sparkContext
-    * @param sqlContext
+    * @param spark
     * @param logger
     */
-  def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
+  def run(config: SuspiciousConnectsConfig, spark: SparkSession, logger: Logger,
           inputDNSRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
 
@@ -77,10 +75,10 @@ object DNSSuspiciousConnectsAnalysis {
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, dnsRecords)
+      DNSSuspiciousConnectsModel.trainModel(spark, logger, config, dnsRecords)
 
     logger.info("Identifying outliers")
-    val scoredDNSRecords = model.score(sparkContext, sqlContext, dnsRecords, config.userDomain, config.precisionUtility)
+    val scoredDNSRecords = model.score(spark, dnsRecords, config.userDomain, config.precisionUtility)
 
     val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold)
 

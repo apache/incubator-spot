@@ -19,8 +19,7 @@ package org.apache.spot.utilities.data
 
 import org.apache.hadoop.fs.{LocatedFileStatus, Path, RemoteIterator, FileUtil => fileUtil}
 import org.apache.log4j.Logger
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 
 /**
@@ -31,15 +30,15 @@ object InputOutputDataHandler {
 
   /**
     *
-    * @param sqlContext Application SqlContext.
-    * @param inputPath  HDFS input folder for every execution; flow, dns or proxy.
-    * @param logger     Application logger.
+    * @param spark     Spark Session.
+    * @param inputPath HDFS input folder for every execution; flow, dns or proxy.
+    * @param logger    Application logger.
     * @return raw data frame.
     */
-  def getInputDataFrame(sqlContext: SQLContext, inputPath: String, logger: Logger): Option[DataFrame] = {
+  def getInputDataFrame(spark: SparkSession, inputPath: String, logger: Logger): Option[DataFrame] = {
     try {
       logger.info("Loading data from: " + inputPath)
-      Some(sqlContext.read.parquet(inputPath))
+      Some(spark.read.parquet(inputPath))
     } catch {
       case _: Throwable => None
     }
@@ -47,13 +46,13 @@ object InputOutputDataHandler {
 
   /**
     *
-    * @param sparkContext      Application SparkContext.
+    * @param spark             Spark Session.
     * @param hdfsScoredConnect HDFS output folder. The location where results were saved; flow, dns or proxy.
     * @param analysis          Data type to analyze.
     * @param logger            Application Logger.
     */
-  def mergeResultsFiles(sparkContext: SparkContext, hdfsScoredConnect: String, analysis: String, logger: Logger) {
-    val hadoopConfiguration = sparkContext.hadoopConfiguration
+  def mergeResultsFiles(spark: SparkSession, hdfsScoredConnect: String, analysis: String, logger: Logger) {
+    val hadoopConfiguration = spark.sparkContext.hadoopConfiguration
     val fileSystem = org.apache.hadoop.fs.FileSystem.get(hadoopConfiguration)
 
     val exists = fileSystem.exists(new org.apache.hadoop.fs.Path(hdfsScoredConnect))

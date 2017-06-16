@@ -18,10 +18,9 @@
 package org.apache.spot.proxy
 
 import org.apache.log4j.Logger
-import org.apache.spark.SparkContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.proxy.ProxySchema._
@@ -80,12 +79,11 @@ object ProxySuspiciousConnectsAnalysis {
   /**
     * Run suspicious connections analysis on proxy data.
     *
-    * @param config       SuspicionConnectsConfig object, contains runtime parameters from CLI.
-    * @param sparkContext Apache Spark context.
-    * @param sqlContext   Spark SQL context.
-    * @param logger       Logs execution progress, information and errors for user.
+    * @param config SuspicionConnectsConfig object, contains runtime parameters from CLI.
+    * @param spark  Spark Session
+    * @param logger Logs execution progress, information and errors for user.
     */
-  def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
+  def run(config: SuspiciousConnectsConfig, spark: SparkSession, logger: Logger,
           inputProxyRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
     logger.info("Starting proxy suspicious connects analysis.")
@@ -96,10 +94,10 @@ object ProxySuspiciousConnectsAnalysis {
       .na.fill(DefaultResponseContentType, Seq(ResponseContentType))
 
     logger.info("Fitting probabilistic model to data")
-    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, proxyRecords)
+    val model = ProxySuspiciousConnectsModel.trainModel(spark, logger, config, proxyRecords)
 
     logger.info("Identifying outliers")
-    val scoredProxyRecords = model.score(sparkContext, proxyRecords, config.precisionUtility)
+    val scoredProxyRecords = model.score(spark, proxyRecords, config.precisionUtility)
 
     // take the maxResults least probable events of probability below the threshold and sort
 

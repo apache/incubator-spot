@@ -49,7 +49,7 @@ object FlowSchema {
   val SecondField = StructField(Second, IntegerType, nullable = true)
 
   val Duration = "tdur"
-  val DurationField = StructField(Duration, FloatType, nullable = true)
+  val DurationField = StructField(Duration, DoubleType, nullable = true)
 
   val SourceIP = "sip"
   val SourceIPField = StructField(SourceIP, StringType, nullable = true)

@@ -17,11 +17,9 @@
 
 package org.apache.spot.testutils
 
-import java.util.Date
+import java.util.concurrent.locks.ReentrantLock
 
-import org.apache.spark.{SparkConf, SparkContext}
-
-import scala.concurrent.Lock
+import org.apache.spark.sql.SparkSession
 
 
 /**
@@ -42,10 +40,10 @@ import scala.concurrent.Lock
 private[testutils] object TestingSparkContext {
 
   /** lock allows non-Spark tests to still run concurrently */
-  private val lock = new Lock()
+  private val lock = new ReentrantLock()
 
-  /** global SparkContext that can be re-used between tests */
-  private lazy val sc: SparkContext = createLocalSparkContext()
+  /** global SparkSession that can be re-used between tests */
+  private lazy val spark: SparkSession = createLocalSparkSession()
 
   /** System property can be used to turn off globalSparkContext easily */
   private val useGlobalSparkContext: Boolean = System.getProperty("useGlobalSparkContext", "true").toBoolean
@@ -53,15 +51,15 @@ private[testutils] object TestingSparkContext {
   /**
     * Should be called from before()
     */
-  def sparkContext: SparkContext = {
+  def getSparkSession: SparkSession = {
     if (useGlobalSparkContext) {
       // reuse the global SparkContext
-      sc
+      spark
     }
     else {
-      // create a new SparkContext each time
-      lock.acquire()
-      createLocalSparkContext()
+      // create a new SparkSession each time
+      lock.lock()
+      createLocalSparkSession()
     }
   }
 
@@ -71,23 +69,17 @@ private[testutils] object TestingSparkContext {
   def cleanUp(): Unit = {
     if (!useGlobalSparkContext) {
       cleanupSpark()
-      lock.release()
     }
   }
 
-  private def createLocalSparkContext(
-                                       serializer: String = "org.apache.spark.serializer.KryoSerializer",
-                                       registrator: String = "org.trustedanalytics.atk.graphbuilder.GraphBuilderKryoRegistrator"): SparkContext = {
-    // LogUtils.silenceSpark()
-    System.setProperty("spark.driver.allowMultipleContexts", "true")
-    val conf = new SparkConf()
-      .setMaster("local")
-      .setAppName(this.getClass.getSimpleName + " " + new Date())
-    //conf.set("spark.serializer", serializer)
-    //conf.set("spark.kryo.registrator", registrator)
-    conf.set("spark.sql.shuffle.partitions", "2")
-
-    new SparkContext(conf)
+  private def createLocalSparkSession(serializer: String = "org.apache.spark.serializer.KryoSerializer",
+                                      registrator: String = "org.trustedanalytics.atk.graphbuilder" +
+                                        ".GraphBuilderKryoRegistrator"): SparkSession = {
+    SparkSession.builder
+      .appName("spot-ml-testing")
+      .master("local")
+      .config("spark.sql.shuffle.partitions", "2")
+      .getOrCreate()
   }
 
   /**
@@ -95,13 +87,14 @@ private[testutils] object TestingSparkContext {
     */
   private def cleanupSpark(): Unit = {
     try {
-      if (sc != null) {
-        sc.stop()
+      if (spark != null) {
+        spark.stop()
       }
     }
     finally {
       // To avoid Akka rebinding to the same port, since it doesn't unbind immediately on shutdown
       System.clearProperty("spark.driver.port")
+      lock.unlock()
     }
   }
 

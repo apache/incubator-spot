@@ -53,13 +53,13 @@ rm -f ${LPATH}/*.{dat,beta,gamma,other,pkl} # protect the flow_scores.csv file
 hdfs dfs -rm -R -f ${HDFS_SCORED_CONNECTS}
 
 time spark-submit --class "org.apache.spot.SuspiciousConnects" \
-  --master yarn-client \
+  --master yarn \
   --driver-memory ${SPK_DRIVER_MEM} \
   --conf spark.driver.maxResultSize=${SPK_DRIVER_MAX_RESULTS} \
   --conf spark.driver.maxPermSize=512m \
   --conf spark.driver.cores=1 \
   --conf spark.dynamicAllocation.enabled=true \
-  --conf spark.dynamicAllocation.minExecutors=1 \
+  --conf spark.dynamicAllocation.minExecutors=0 \
   --conf spark.dynamicAllocation.maxExecutors=${SPK_EXEC} \
   --conf spark.executor.cores=${SPK_EXEC_CORES} \
   --conf spark.executor.memory=${SPK_EXEC_MEM} \
@@ -70,7 +70,7 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --conf spark.shuffle.service.enabled=true \
   --conf spark.yarn.am.waitTime=1000000 \
   --conf spark.yarn.driver.memoryOverhead=${SPK_DRIVER_MEM_OVERHEAD} \
-  --conf spark.yarn.executor.memoryOverhead=${SPK_EXEC_MEM_OVERHEAD} target/scala-2.10/spot-ml-assembly-1.1.jar \
+  --conf spark.yarn.executor.memoryOverhead=${SPK_EXEC_MEM_OVERHEAD} target/scala-2.11/spot-ml-assembly-1.1.jar \
   --analysis ${DSOURCE} \
   --input ${RAWDATA_PATH}  \
   --dupfactor ${DUPFACTOR} \

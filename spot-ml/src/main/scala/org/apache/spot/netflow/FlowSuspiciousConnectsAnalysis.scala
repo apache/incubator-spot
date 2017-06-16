@@ -18,10 +18,9 @@
 package org.apache.spot.netflow
 
 import org.apache.log4j.Logger
-import org.apache.spark.SparkContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
@@ -74,7 +73,7 @@ object FlowSuspiciousConnectsAnalysis {
       ObytField,
       ScoreField)).fieldNames.map(col)
 
-  def run(config: SuspiciousConnectsConfig, sparkContext: SparkContext, sqlContext: SQLContext, logger: Logger,
+  def run(config: SuspiciousConnectsConfig, spark: SparkSession, logger: Logger,
           inputFlowRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
     logger.info("Starting flow suspicious connects analysis.")
@@ -83,10 +82,10 @@ object FlowSuspiciousConnectsAnalysis {
 
     logger.info("Fitting probabilistic model to data")
     val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, config, flowRecords)
+      FlowSuspiciousConnectsModel.trainModel(spark, logger, config, flowRecords)
 
     logger.info("Identifying outliers")
-    val scoredFlowRecords = model.score(sparkContext, sqlContext, flowRecords, config.precisionUtility)
+    val scoredFlowRecords = model.score(spark, flowRecords, config.precisionUtility)
 
     val filteredScored = filterScoredRecords(scoredFlowRecords, config.threshold)
 

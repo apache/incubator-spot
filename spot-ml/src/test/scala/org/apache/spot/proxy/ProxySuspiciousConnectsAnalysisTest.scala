@@ -18,8 +18,8 @@
 package org.apache.spot.proxy
 
 import org.apache.log4j.{Level, LogManager}
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.proxy.ProxySchema._
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
@@ -103,12 +103,12 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val (anomalousRecord, typicalRecord) = anomalousAndTypicalRecords()
 
-    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+    val data = spark.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, emTestConfigProxy, data)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger, emTestConfigProxy, data)
 
-    val scoredData = model.score(sparkContext, data, emTestConfigProxy.precisionUtility)
+    val scoredData = model.score(sparkSession, data, emTestConfigProxy.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Host) === "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -147,12 +147,12 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
       "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle")
 
 
-    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, onlineTestConfigProxy, data)
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, sqlContext, logger, onlineTestConfigProxy, data)
 
-    val scoredData = model.score(sparkContext, data, onlineTestConfigProxy.precisionUtility)
+    val scoredData = model.score(sparkSession, data, onlineTestConfigProxy.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Host) ===  "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -179,13 +179,13 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val (anomalousRecord, typicalRecord) = anomalousAndTypicalRecords()
 
 
-    val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger,
+    val model = ProxySuspiciousConnectsModel.trainModel(sparkSessiont, logger,
       testConfigProxyFloatConversion, data)
 
-    val scoredData = model.score(sparkContext, data, testConfigProxyFloatConversion.precisionUtility)
+    val scoredData = model.score(sparkSession, data, testConfigProxyFloatConversion.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Host) === "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -253,9 +253,8 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
   def testProxyRecords = new {
 
-    val sqlContext = new SQLContext(sparkContext)
 
-    val inputProxyRecordsRDD = sparkContext.parallelize(wrapRefArray(Array(
+    val inputProxyRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
       Seq(null, "00:09:13", "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
         "-", "-", "404", "80", "/ubuntu/dists/tru...", "-", "10.239.4.160", 2864, 218, "cn.archive.ubuntu..."),
       Seq("2016-10-03", null, "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
@@ -291,9 +290,9 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
         CSBytesField,
         FullURIField))
 
-    val inputProxyRecordsDF = sqlContext.createDataFrame(inputProxyRecordsRDD, inputProxyRecordsSchema)
+    val inputProxyRecordsDF = spark.createDataFrame(inputProxyRecordsRDD, inputProxyRecordsSchema)
 
-    val scoredProxyRecordsRDD = sparkContext.parallelize(wrapRefArray(Array(
+    val scoredProxyRecordsRDD = spark.sparkContext.parallelize(wrapRefArray(Array(
       Seq("2016-10-03", "00:09:13", "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
         "-", "-", "404", "80", "/ubuntu/dists/tru...", "-", "10.239.4.160", 2864, 218, "cn.archive.ubuntu...", "a word", -1d),
       Seq("2016-10-03", "00:09:13", "10.239.160.152", "cn.archive.ubuntu...", "GET", "Debian APT-HTTP/...", "text/html", 448, "-",
@@ -329,7 +328,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
         WordField,
         ScoreField))
 
-    val scoredProxyRecordsDF = sqlContext.createDataFrame(scoredProxyRecordsRDD, scoredProxyRecordsSchema)
+    val scoredProxyRecordsDF = spark.createDataFrame(scoredProxyRecordsRDD, scoredProxyRecordsSchema)
 
   }
 

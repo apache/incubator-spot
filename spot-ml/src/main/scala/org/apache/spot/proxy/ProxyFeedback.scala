@@ -17,7 +17,6 @@
 
 package org.apache.spot.proxy
 
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql._
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
@@ -31,14 +30,12 @@ object ProxyFeedback {
   /**
     * Load the feedback file for proxy data.
  *
-    * @param sc Spark context.
-    * @param sqlContext Spark SQL context.
-    * @param feedbackFile Local machine path to the proxy feedback file.
+    * @param spark             Spark Session
+    * @param feedbackFile      Local machine path to the proxy feedback file.
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.
     */
-  def loadFeedbackDF(sc: SparkContext,
-                     sqlContext: SQLContext,
+  def loadFeedbackDF(spark: SparkSession,
                      feedbackFile: String,
                      duplicationFactor: Int): DataFrame = {
 
@@ -69,9 +66,9 @@ object ProxyFeedback {
       val fullURISeverityIndex = 22
 
       val lines = Source.fromFile(feedbackFile).getLines().toArray.drop(1)
-      val feedback: RDD[String] = sc.parallelize(lines)
+      val feedback: RDD[String] = spark.sparkContext.parallelize(lines)
 
-      sqlContext.createDataFrame(feedback.map(_.split("\t"))
+      spark.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(fullURISeverityIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(List(row(dateIndex),
           row(timeIndex),
@@ -85,7 +82,7 @@ object ProxyFeedback {
         .flatMap(row => List.fill(duplicationFactor)(row)), feedbackSchema)
         .select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
     } else {
-      sqlContext.createDataFrame(sc.emptyRDD[Row], feedbackSchema)
+      spark.createDataFrame(spark.sparkContext.emptyRDD[Row], feedbackSchema)
     }
   }
 }

@@ -16,8 +16,8 @@
  */
 
 package org.apache.spark.sql
-
 import org.apache.spark.sql.catalyst.ScalaReflection
+import org.apache.spark.sql.expressions.UserDefinedFunction
 
 import scala.language.implicitConversions
 import scala.reflect.runtime.universe.{TypeTag, typeTag}
@@ -39,7 +39,7 @@ object WideUDFs {
       :: ScalaReflection.schemaFor(typeTag[A9]).dataType
       :: ScalaReflection.schemaFor(typeTag[A10]).dataType
       :: Nil).getOrElse(Nil)
-    UserDefinedFunction(f, ScalaReflection.schemaFor(typeTag[RT]).dataType, inputTypes)
+    UserDefinedFunction(f, ScalaReflection.schemaFor(typeTag[RT]).dataType, Option(inputTypes))
   }
 
 
@@ -64,7 +64,7 @@ object WideUDFs {
       :: ScalaReflection.schemaFor(typeTag[A10]).dataType
       :: ScalaReflection.schemaFor(typeTag[A11]).dataType
       :: Nil).getOrElse(Nil)
-    UserDefinedFunction(f, ScalaReflection.schemaFor(typeTag[RT]).dataType, inputTypes)
+    UserDefinedFunction(f, ScalaReflection.schemaFor(typeTag[RT]).dataType, Option(inputTypes))
   }
   def udf[RT: TypeTag, A1: TypeTag, A2: TypeTag, A3: TypeTag, A4: TypeTag, A5: TypeTag, A6: TypeTag,
   A7: TypeTag, A8: TypeTag, A9: TypeTag, A10: TypeTag, A11: TypeTag, A12: TypeTag](f: Function12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, RT]):
@@ -82,6 +82,6 @@ object WideUDFs {
       :: ScalaReflection.schemaFor(typeTag[A11]).dataType
       :: ScalaReflection.schemaFor(typeTag[A12]).dataType
       :: Nil).getOrElse(Nil)
-    UserDefinedFunction(f, ScalaReflection.schemaFor(typeTag[RT]).dataType, inputTypes)
+    UserDefinedFunction(f, ScalaReflection.schemaFor(typeTag[RT]).dataType, Option(inputTypes))
   }
 }
