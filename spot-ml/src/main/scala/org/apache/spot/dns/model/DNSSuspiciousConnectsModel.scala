@@ -33,7 +33,6 @@ import org.apache.spot.lda.SpotLDAWrapperSchema._
 import org.apache.spot.utilities.DomainProcessor.DomainInfo
 import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-
 import scala.util.{Failure, Success, Try}
 
 
@@ -54,29 +53,14 @@ import scala.util.{Failure, Success, Try}
   * @param inTopicCount          Number of topics to use in the topic model.
   * @param inIpToTopicMix        Per-IP topic mix.
   * @param inWordToPerTopicProb  Per-word,  an array of probability of word given topic per topic.
-  * @param inTimeCuts            Quantile cut-offs for discretizing the time of day in word construction.
-  * @param inFrameLengthCuts     Quantile cut-offs for discretizing the frame length in word construction.
-  * @param inSubdomainLengthCuts Quantile cut-offs for discretizing subdomain length in word construction.
-  * @param inNumberPeriodsCuts   Quantile cut-offs for discretizing domain number-of-periods count in word construction.
-  * @param inEntropyCuts         Quantile cut-offs for discretizing the subdomain entropy in word construction.
   */
 class DNSSuspiciousConnectsModel(inTopicCount: Int,
                                  inIpToTopicMix: DataFrame,
-                                 inWordToPerTopicProb: Map[String, Array[Double]],
-                                 inTimeCuts: Array[Double],
-                                 inFrameLengthCuts: Array[Double],
-                                 inSubdomainLengthCuts: Array[Double],
-                                 inNumberPeriodsCuts: Array[Double],
-                                 inEntropyCuts: Array[Double]) {
+                                 inWordToPerTopicProb: Map[String, Array[Double]]) {
 
   val topicCount = inTopicCount
   val ipToTopicMix = inIpToTopicMix
   val wordToPerTopicProb = inWordToPerTopicProb
-  val timeCuts = inTimeCuts
-  val frameLengthCuts = inFrameLengthCuts
-  val subdomainLengthCuts = inSubdomainLengthCuts
-  val numberPeriodsCuts = inNumberPeriodsCuts
-  val entropyCuts = inEntropyCuts
 
   /**
     * Use a suspicious connects model to assign estimated probabilities to a dataframe of
@@ -96,12 +80,7 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
     val wordToPerTopicProbBC = sc.broadcast(wordToPerTopicProb)
 
     val scoreFunction =
-      new DNSScoreFunction(frameLengthCuts,
-        timeCuts,
-        subdomainLengthCuts,
-        entropyCuts,
-        numberPeriodsCuts,
-        topicCount,
+      new DNSScoreFunction(topicCount,
         wordToPerTopicProbBC,
         topDomainsBC,
         userDomain)
@@ -185,87 +164,11 @@ object DNSSuspiciousConnectsModel {
     val topDomainsBC = sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = config.userDomain
 
-    // create quantile cut-offs
-
-    val timeCuts =
-      Quantiles.computeDeciles(totalRecords
-        .select(UnixTimestamp)
-        .rdd
-        .flatMap({ case Row(unixTimeStamp: Long) =>
-          Try {
-            unixTimeStamp.toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(timestamp) => Seq(timestamp)
-          }
-        }))
-
-    val frameLengthCuts =
-      Quantiles.computeDeciles(totalRecords
-        .select(FrameLength)
-        .rdd
-        .flatMap({ case Row(frameLen: Int) =>
-          Try {
-            frameLen.toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(frameLength) => Seq(frameLength)
-          }
-        }))
-
     val domainStatsRecords = createDomainStatsDF(sparkContext, sqlContext, countryCodesBC, topDomainsBC, userDomain, totalRecords)
-
-    val subdomainLengthCuts =
-      Quantiles.computeQuintiles(domainStatsRecords
-        .filter(domainStatsRecords(SubdomainLength).gt(0))
-        .select(SubdomainLength)
-        .rdd
-        .flatMap({ case Row(subdomainLength: Int) =>
-          Try {
-            subdomainLength.toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(subdomainLength) => Seq(subdomainLength)
-          }
-        }))
-
-    val entropyCuts =
-      Quantiles.computeQuintiles(domainStatsRecords
-        .filter(domainStatsRecords(SubdomainEntropy).gt(0))
-        .select(SubdomainEntropy)
-        .rdd
-        .flatMap({ case Row(subdomainEntropy: Double) =>
-          Try {
-            subdomainEntropy.toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(subdomainEntropy) => Seq(subdomainEntropy)
-          }
-        }))
-
-    val numberPeriodsCuts =
-      Quantiles.computeQuintiles(domainStatsRecords
-        .filter(domainStatsRecords(NumPeriods).gt(0))
-        .select(NumPeriods)
-        .rdd
-        .flatMap({ case Row(numberPeriods: Int) =>
-          Try {
-            numberPeriods.toDouble
-          } match {
-            case Failure(_) => Seq()
-            case Success(numberPeriods) => Seq(numberPeriods)
-          }
-        }))
 
     // simplify DNS log entries into "words"
 
-    val dnsWordCreator = new DNSWordCreation(frameLengthCuts,
-      timeCuts,
-      subdomainLengthCuts,
-      entropyCuts,
-      numberPeriodsCuts,
-      topDomainsBC,
-      userDomain)
+    val dnsWordCreator = new DNSWordCreation(topDomainsBC, userDomain)
 
     val dataWithWord = totalRecords.withColumn(Word, dnsWordCreator.wordCreationUDF(modelColumns: _*))
 
@@ -290,14 +193,7 @@ object DNSSuspiciousConnectsModel {
       config.ldaMaxiterations,
       config.precisionUtility)
 
-    new DNSSuspiciousConnectsModel(config.topicCount,
-      ipToTopicMix,
-      wordToPerTopicProb,
-      timeCuts,
-      frameLengthCuts,
-      subdomainLengthCuts,
-      numberPeriodsCuts,
-      entropyCuts)
+    new DNSSuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordToPerTopicProb)
 
   }
 

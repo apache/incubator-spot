@@ -26,22 +26,12 @@ import org.apache.spot.utilities.FloatPointPrecisionUtility
 /**
   * Estimate the probabilities of network events using a [[DNSSuspiciousConnectsModel]]
   *
-  * @param frameLengthCuts      Delimeters used to define binning for frame length field
-  * @param timeCuts             Delimeters used to define binning for time field
-  * @param subdomainLengthCuts  Delimeters used to define binning for subdomain length field
-  * @param entropyCuts          Delimeters used to define binning for entropy field
-  * @param numberPeriodsCuts    Delimeters used to define binning for number of periods of subdomain field
   * @param topicCount           Number of topics used for the LDA model
   * @param wordToPerTopicProbBC Word mixes for each of the topics learned by the LDA model
   * @param topDomainsBC         Alexa top one million list of domains.
   * @param userDomain           Domain associated to network data (example: 'intel')
   */
-class DNSScoreFunction(frameLengthCuts: Array[Double],
-                       timeCuts: Array[Double],
-                       subdomainLengthCuts: Array[Double],
-                       entropyCuts: Array[Double],
-                       numberPeriodsCuts: Array[Double],
-                       topicCount: Int,
+class DNSScoreFunction(topicCount: Int,
                        wordToPerTopicProbBC: Broadcast[Map[String, Array[Double]]],
                        topDomainsBC: Broadcast[Set[String]],
                        userDomain: String) extends Serializable {
@@ -50,13 +40,7 @@ class DNSScoreFunction(frameLengthCuts: Array[Double],
   val suspiciousConnectsScoreFunction =
     new SuspiciousConnectsScoreFunction(topicCount, wordToPerTopicProbBC)
 
-  val dnsWordCreator = new DNSWordCreation(frameLengthCuts,
-    timeCuts,
-    subdomainLengthCuts,
-    entropyCuts,
-    numberPeriodsCuts,
-    topDomainsBC,
-    userDomain)
+  val dnsWordCreator = new DNSWordCreation(topDomainsBC, userDomain)
 
   def score[P <: FloatPointPrecisionUtility](precisionUtility: P)(timeStamp: String,
                                                                   unixTimeStamp: Long,

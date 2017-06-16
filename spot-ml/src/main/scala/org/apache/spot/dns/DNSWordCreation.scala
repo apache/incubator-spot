@@ -20,30 +20,19 @@ package org.apache.spot.dns
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.functions._
 import org.apache.spot.utilities.DomainProcessor.{DomainInfo, extractDomainInfo}
-import org.apache.spot.utilities.Quantiles
+import org.apache.spot.utilities.{MathUtils, TimeUtilities}
+import org.apache.spot.proxy.ProxySuspiciousConnectsModel.EntropyCuts
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-
 import scala.util.{Success, Try}
 
 
 /**
   * Convert DNS log entries into "words" for topic modelling analyses.
   *
-  * @param frameLengthCuts Quantile cut-offs for discretizing frame length in word construction.
-  * @param timeCuts Quantile cut-offs for discretizing the time of day in word construction.
-  * @param subdomainLengthCuts Quantile cut-offs for discretizing subdomain length in word construction.
-  * @param entropyCuts Quantile cut-offs for discretizing entropy in word construction.
-  * @param numberPeriodsCuts Quantile cut-offs for discretizing the number of periods in word construction.
   * @param topDomainsBC List of most popular top level domain names.
   * @param userDomain User's domain for internal network.
   */
-class DNSWordCreation(frameLengthCuts: Array[Double],
-                      timeCuts: Array[Double],
-                      subdomainLengthCuts: Array[Double],
-                      entropyCuts: Array[Double],
-                      numberPeriodsCuts: Array[Double],
-                      topDomainsBC: Broadcast[Set[String]],
-                      userDomain: String) extends Serializable {
+class DNSWordCreation(topDomainsBC: Broadcast[Set[String]], userDomain: String) extends Serializable {
 
 
   /**
@@ -59,15 +48,15 @@ class DNSWordCreation(frameLengthCuts: Array[Double],
     *         queryName: String, queryClass: String, dnsQueryType: Int, dnsQueryRCode :Int) =>  Word: String
     */
   def wordCreationUDF =
-    udf((timeStamp: String,
-         unixTimeStamp: Long,
+    udf((timestamp: String,
+         unixTimestamp: Long,
          frameLength: Int,
          clientIP: String,
          queryName: String,
          queryClass: String,
          dnsQueryType: Int,
-         dnsQueryRcode: Int) => dnsWord(timeStamp,
-      unixTimeStamp,
+         dnsQueryRcode: Int) => dnsWord(timestamp,
+      unixTimestamp,
       frameLength,
       clientIP,
       queryName,
@@ -79,8 +68,8 @@ class DNSWordCreation(frameLengthCuts: Array[Double],
   /**
     * Simplify a DNS log entry into a word.
     *
-    * @param timeStamp     Timestamp as a string.
-    * @param unixTimeStamp Unix timestamp as a 64 bit integer
+    * @param timestamp     Timestamp as a string.
+    * @param unixTimestamp Unix timestamp as a 64 bit integer
     * @param frameLength   Framelength as an integer.
     * @param clientIP      IP of client making DNS query as string.
     * @param queryName     URL being queried.
@@ -90,8 +79,8 @@ class DNSWordCreation(frameLengthCuts: Array[Double],
     * @return The word representation of the DNS entry.
     */
 
-  def dnsWord(timeStamp: String,
-              unixTimeStamp: Long,
+  def dnsWord(timestamp: String,
+              unixTimestamp: Long,
               frameLength: Int,
               clientIP: String,
               queryName: String,
@@ -104,11 +93,11 @@ class DNSWordCreation(frameLengthCuts: Array[Double],
         extractDomainInfo(queryName, topDomainsBC, userDomain)
 
       Seq(topDomain,
-        Quantiles.bin(frameLength.toDouble, frameLengthCuts),
-        Quantiles.bin(unixTimeStamp.toDouble, timeCuts),
-        Quantiles.bin(subdomainLength.toDouble, subdomainLengthCuts),
-        Quantiles.bin(subdomainEntropy, entropyCuts),
-        Quantiles.bin(numPeriods.toDouble, numberPeriodsCuts),
+        MathUtils.logBaseXInt(frameLength.toDouble, 2),
+        TimeUtilities.getTimeAsHour(timestamp.split(" +")(3)).toString,
+        MathUtils.logBaseXInt(subdomainLength.toDouble, 2),
+        MathUtils.bin(subdomainEntropy, EntropyCuts),
+        MathUtils.logBaseXInt(numPeriods.toDouble, 2),
         dnsQueryType,
         dnsQueryRcode).mkString("_")
     } match {

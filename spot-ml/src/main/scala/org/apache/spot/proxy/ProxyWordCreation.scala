@@ -57,7 +57,7 @@ object ProxyWordCreation {
         TimeUtilities.getTimeAsHour(time).toString,
         reqMethod,
         // Fixed cutoffs
-        Quantiles.bin(Entropy.stringEntropy(uri), EntropyCuts),
+        MathUtils.bin(Entropy.stringEntropy(uri), EntropyCuts),
         // Just the top level content type for now
         if (contentType.split('/').length > 0) contentType.split('/')(0) else "unknown_content_type",
         // Exponential cutoffs base 2

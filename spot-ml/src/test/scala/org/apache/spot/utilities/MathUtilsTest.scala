@@ -37,4 +37,21 @@ class MathUtilsTest extends TestingSparkContextFlatSpec with Matchers {
 
 
   }
+
+  "bin" should "return the correct bin number" in {
+
+    val cuts = Array(0d, 1d, 2d, 3d, Double.PositiveInfinity)
+
+    val result1 = MathUtils.bin(-1d, cuts)
+    val result2 = MathUtils.bin(0d, cuts)
+    val result3 = MathUtils.bin(1.5d, cuts)
+    val result4 = MathUtils.bin(50d, cuts)
+
+    result1 shouldBe 0
+    result2 shouldBe 0
+    result3 shouldBe 2
+    result4 shouldBe 4
+
+
+  }
 }

@@ -36,4 +36,15 @@ object MathUtils {
     * @return Integer ceiling of logarithm base-2 of x.
     */
   def ceilLog2(x: Double) : Int = Math.ceil(log10(x) / log10(2d)).toInt
+
+  /**
+    *
+    * @param value A number that we want to find an appropriate bin number for.
+    * @param cuts The array that determines the right hand ends of the bins. If the last cut is not
+    *             Double.PositiveInfinity any value greater than the last cut will return a bin number of -1.
+    * @return An integer bin number into which the value falls.
+    */
+  def bin(value: Double, cuts: Array[Double]) : Int = {
+    cuts.indexWhere(cut => value <= cut)
+  }
 }
