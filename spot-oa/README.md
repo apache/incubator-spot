@@ -10,13 +10,16 @@ Some of the technologies used are:
  - [Bootstrap](http://getbootstrap.com/)
  - [ReactJS](https://facebook.github.io/react/)  
 
-** For more specific requirements, please refer to each specific pipeline readme file before running OA.*
+** For more specific requirements, please refer to each specific pipeline readme file before running OA. **
 ----------
 
 ## **Installation**
 
-1. Install python dependencies `pip install -r requirements.txt`
-2. Install UI requirements and build UI following the steps from [here](ui/INSTALL.md)
+run `sudo ./install.sh`
+
+* If your environment requires proxies we recommend using `sudo -E ./install.sh`
+* Installs [NPM](https://docs.npmjs.com/cli/install), [Python PIP](https://pip.pypa.io/en/stable/)
+
 
 ## **Folder Structure**
 

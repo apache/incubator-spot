@@ -18,8 +18,13 @@ Ingest data is captured or transferred into the Hadoop cluster, where they are t
 * Ingest user with sudo privileges (i.e. spot). This user will execute all the processes in the Ingest Framework also this user needs to have access to hdfs solution path (i.e. /user/spot/).
 
 ### Install
-1. Install Python dependencies `pip install -r requirements.txt` 
 
+run `sudo ./install.sh`
+
+* If your environment requires proxies we recommend using `sudo -E ./install.sh`
+* dependencies installed in /opt/spot/bin/
+* Installs [tshark](https://www.wireshark.org/docs/man-pages/tshark.html), [spot-nfdump](https://github.com/Open-Network-Insight/spot-nfdump), [Python PIP](https://pip.pypa.io/en/stable/) 
+ 
 ### Configure Kafka
 **Adding Kafka Service:**
 
