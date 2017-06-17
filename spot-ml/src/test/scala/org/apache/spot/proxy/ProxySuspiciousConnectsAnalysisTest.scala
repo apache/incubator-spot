@@ -108,7 +108,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, emTestConfigProxy, data)
 
-    val scoredData = model.score(sparkContext, data)
+    val scoredData = model.score(sparkContext, data, emTestConfigProxy.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Host) === "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -152,7 +152,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val model = ProxySuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, onlineTestConfigProxy, data)
 
-    val scoredData = model.score(sparkContext, data, testConfigProxy.precisionUtility)
+    val scoredData = model.score(sparkContext, data, onlineTestConfigProxy.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Host) ===  "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))

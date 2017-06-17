@@ -48,7 +48,7 @@ object SpotLDAWrapper {
              ldaSeed: Option[Long],
              ldaAlpha: Double,
              ldaBeta: Double,
-             ldaOptimizer: String,
+             ldaOptimizerOption: String,
              maxIterations: Int,
              precisionUtility: FloatPointPrecisionUtility): SpotLDAOutput = {
 
@@ -82,14 +82,13 @@ object SpotLDAWrapper {
         wordDictionary,
         sqlContext)
 
-    val corpusSize = ldaCorpus.count()
-
     docWordCountCache.unpersist()
 
     // Instantiate optimizer based on input
     val ldaOptimizer = ldaOptimizerOption match {
       case "em" => new EMLDAOptimizer
       case "online" => new OnlineLDAOptimizer().setOptimizeDocConcentration(true).setMiniBatchFraction({
+        val corpusSize = ldaCorpus.count()
         if (corpusSize < 2) 0.75
         else (0.05 + 1) / corpusSize
       })

@@ -88,7 +88,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     precisionUtility = FloatPointPrecisionUtility32)
 
 
-  "dns supicious connects analysis" should "estimate correct probabilities in toy data with framelength anomaly using" +
+  "dns suspicious connects analysis" should "estimate correct probabilities in toy data with framelength anomaly using" +
     " EMLDAOptimizer" in {
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
@@ -120,7 +120,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
     val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, onlineTestConfig, data)
-    val scoredData = model.score(sparkContext, sqlContext, data, onlineTestConfig.userDomain)
+    val scoredData = model.score(sparkContext, sqlContext, data, onlineTestConfig.userDomain, onlineTestConfig.precisionUtility)
     val anomalyScore = scoredData.filter(scoredData(FrameLength) === 1).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(FrameLength) === 168).collect().map(_.getAs[Double](Score))
 
@@ -132,7 +132,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     Math.abs(typicalScores(3) - 0.8d) should be <= 0.01d
   }
 
-  "dns supicious connects analysis" should "estimate correct probabilities in toy data with subdomain length anomaly " +
+  it should "estimate correct probabilities in toy data with subdomain length anomaly " +
     "using EMLDAOptimizer" in {
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
@@ -156,7 +156,7 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       0)
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
     val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, emTestConfig, data)
-    val scoredData = model.score(sparkContext, sqlContext, data, emTestConfig.userDomain)
+    val scoredData = model.score(sparkContext, sqlContext, data, emTestConfig.userDomain, emTestConfig.precisionUtility)
     val anomalyScore = scoredData.
       filter(scoredData(QueryName) === "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com").
       first().
@@ -171,10 +171,8 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     Math.abs(typicalScores(3) - 0.8d) should be <= 0.01d
   }
 
-  "dns supicious connects analysis" should "estimate correct probabilities in toy data with subdomain length anomaly " +
+  it should "estimate correct probabilities in toy data with subdomain length anomaly " +
     "using OnlineLDAOptimizer" in {
-  "dns suspicious connects analysis" should "estimate correct probabilities in toy data with subdomain length anomaly" in {
-  it should "estimate correct probabilities in toy data with subdomain length anomaly" in {
 
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
     logger.setLevel(Level.WARN)
@@ -195,11 +193,11 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
       "0x00000001",
       1,
       0)
+
     val data = sqlContext.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
     val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, onlineTestConfig, data)
-    val scoredData = model.score(sparkContext, sqlContext, data, onlineTestConfig.userDomain)
-    val model = DNSSuspiciousConnectsModel.trainModel(sparkContext, sqlContext, logger, testConfig, data)
-    val scoredData = model.score(sparkContext, sqlContext, data, testConfig.userDomain, testConfig.precisionUtility)
+    val scoredData = model.score(sparkContext, sqlContext, data, onlineTestConfig.userDomain, onlineTestConfig.precisionUtility)
+
     val anomalyScore = scoredData.
       filter(scoredData(QueryName) === "1111111111111111111111111111111111111111111111111111111111111.tinker.turner.com").
       first().
