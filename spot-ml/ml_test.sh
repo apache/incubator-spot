@@ -80,5 +80,8 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
   --ldamaxiterations 20 \
+  --ldaalpha ${LDA_ALPHA} \
+  --ldabeta ${LDA_BETA} \
+  --ldaoptimizer ${LDA_OPTIMIZER} \
   --precision ${PRECISION} \
   $USER_DOMAIN_CMD

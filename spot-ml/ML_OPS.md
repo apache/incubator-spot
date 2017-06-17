@@ -66,4 +66,8 @@ The ml_ops.sh script takes its values for the following parameters from the /etc
 * **TOPIC_COUNT** Number of topics used for the topic modelling at the heart of the Suspicious Connects anomaly detection. Roughly, the analysis attempts to generate TOPIC_COUNT many profiles of common traffic in the cluster.
 * **DUPFACTOR** Used to downgrade the threat level of records similar to those marked as non-threatening by the feedback function of Spot UI. DUPFACTOR inflate the frequency of such records to make them appear less anomalous. A DUPFACTOR of 1 has no effect, and a DUPFACTOR of 1000 increases the frequency of the connection's pattern by a factor of 1000, increasing its estimated probability accordingly.
 * **TOL** The default value for the _suspicion threshold_ described above. In particular: If no third argument is provided to ml_ops.sh, the suspicion threshold is filled in with the TOL value from /etc/spot.conf. If a third argument is provided to ml_ops.sh, that is the supicion threshold used.
+* **LDA_OPTIMIZER** The LDA implementation to use. Set equal to "em" to execute LDA using EMLDAOptimizer or "online" to
+ use OnlineLDAOptimizer. See [LDA Spark documentation for more information.](https://spark.apache.org/docs/2.1.0/mllib-clustering.html#latent-dirichlet-allocation-lda)
+* **LDA_ALPHA** Document concentration. See [LDA Spark documentation for more information.](https://spark.apache.org/docs/2.1.0/mllib-clustering.html#latent-dirichlet-allocation-lda)
+* **LDA_BETA** Topic concentration. See [LDA Spark documentation for more information.](https://spark.apache.org/docs/2.1.0/mllib-clustering.html#latent-dirichlet-allocation-lda)
 

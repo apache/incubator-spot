@@ -19,7 +19,7 @@ package org.apache.spot.lda
 
 import org.apache.log4j.Logger
 import org.apache.spark.SparkContext
-import org.apache.spark.mllib.clustering.{DistributedLDAModel, EMLDAOptimizer, LDA}
+import org.apache.spark.mllib.clustering._
 import org.apache.spark.mllib.linalg.{Matrix, Vector, Vectors}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
@@ -48,6 +48,7 @@ object SpotLDAWrapper {
              ldaSeed: Option[Long],
              ldaAlpha: Double,
              ldaBeta: Double,
+             ldaOptimizerOption: String,
              maxIterations: Int,
              precisionUtility: FloatPointPrecisionUtility): SpotLDAOutput = {
 
@@ -74,7 +75,7 @@ object SpotLDAWrapper {
       .toDF(DocumentName, DocumentNumber)
       .cache
 
-    //Structure corpus so that the index is the docID, values are the vectors of word occurrences in that doc
+    // Structure corpus so that the index is the docID, values are the vectors of word occurrences in that doc
     val ldaCorpus: RDD[(Long, Vector)] =
       formatSparkLDAInput(docWordCountCache,
         documentDictionary,
@@ -83,20 +84,29 @@ object SpotLDAWrapper {
 
     docWordCountCache.unpersist()
 
-    //Instantiate optimizer based on input
-    val optimizer = new EMLDAOptimizer
+    // Instantiate optimizer based on input
+    val ldaOptimizer = ldaOptimizerOption match {
+      case "em" => new EMLDAOptimizer
+      case "online" => new OnlineLDAOptimizer().setOptimizeDocConcentration(true).setMiniBatchFraction({
+        val corpusSize = ldaCorpus.count()
+        if (corpusSize < 2) 0.75
+        else (0.05 + 1) / corpusSize
+      })
+      case _ => throw new IllegalArgumentException(
+        s"Invalid LDA optimizer $ldaOptimizerOption")
+    }
 
     logger.info(s"Running Spark LDA with params alpha = $ldaAlpha beta = $ldaBeta " +
-      s"Max iterations = $maxIterations Optimizer = em")
-    //Set LDA params from input args
+      s"Max iterations = $maxIterations Optimizer = $ldaOptimizerOption")
 
+    // Set LDA params from input args
     val lda =
       new LDA()
         .setK(topicCount)
         .setMaxIterations(maxIterations)
         .setAlpha(ldaAlpha)
         .setBeta(ldaBeta)
-        .setOptimizer(optimizer)
+        .setOptimizer(ldaOptimizer)
 
     // If caller does not provide seed to lda, ie. ldaSeed is empty, lda is seeded automatically set to hash value of class name
 
@@ -104,31 +114,56 @@ object SpotLDAWrapper {
       lda.setSeed(ldaSeed.get)
     }
 
+    val (wordTopicMat, docTopicDist) = ldaOptimizer match {
+      case _: EMLDAOptimizer => {
+        val ldaModel = lda.run(ldaCorpus).asInstanceOf[DistributedLDAModel]
 
-    //Create LDA model
-    val ldaModel = lda.run(ldaCorpus)
+        // Get word topic mix, from Spark documentation:
+        // Inferred topics, where each topic is represented by a distribution over terms.
+        // This is a matrix of size vocabSize x k, where each column is a topic.
+        // No guarantees are given about the ordering of the topics.
+        val wordTopicMat: Matrix = ldaModel.topicsMatrix
 
-    //Convert to DistributedLDAModel to expose info about topic distribution
-    val distLDAModel = ldaModel.asInstanceOf[DistributedLDAModel]
+        // Topic distribution: for each document, return distribution (vector) over topics for that docs where entry
+        // i is the fraction of the document which belongs to topic i
+        val docTopicDist: RDD[(Long, Vector)] = ldaModel.topicDistributions
 
-    //Get word topic mix: columns = topic (in no guaranteed order), rows = words (# rows = vocab size)
-    val wordTopicMat: Matrix = distLDAModel.topicsMatrix
+        (wordTopicMat, docTopicDist)
 
-    //Topic distribution: for each document, return distribution (vector) over topics for that docs
-    val docTopicDist: RDD[(Long, Vector)] = distLDAModel.topicDistributions
+      }
 
-    //Create doc results from vector: convert docID back to string, convert vector of probabilities to array
+      case _: OnlineLDAOptimizer => {
+        val ldaModel = lda.run(ldaCorpus).asInstanceOf[LocalLDAModel]
+
+        // Get word topic mix, from Spark documentation:
+        // Inferred topics, where each topic is represented by a distribution over terms.
+        // This is a matrix of size vocabSize x k, where each column is a topic.
+        // No guarantees are given about the ordering of the topics.
+        val wordTopicMat: Matrix = ldaModel.topicsMatrix
+
+        // Topic distribution: for each document, return distribution (vector) over topics for that docs where entry
+        // i is the fraction of the document which belongs to topic i
+        val docTopicDist: RDD[(Long, Vector)] = ldaModel.topicDistributions(ldaCorpus)
+
+        (wordTopicMat, docTopicDist)
+
+      }
+
+    }
+
+    // Create doc results from vector: convert docID back to string, convert vector of probabilities to array
     val docToTopicMixDF =
       formatSparkLDADocTopicOutput(docTopicDist, documentDictionary, sqlContext, precisionUtility)
 
     documentDictionary.unpersist()
 
-    //Create word results from matrix: convert matrix to sequence, wordIDs back to strings, sequence of probabilities to array
+    // Create word results from matrix: convert matrix to sequence, wordIDs back to strings, sequence of
+    // probabilities to array
     val revWordMap: Map[Int, String] = wordDictionary.map(_.swap)
 
     val wordResults = formatSparkLDAWordOutput(wordTopicMat, revWordMap)
 
-    //Create output object
+    // Create output object
     SpotLDAOutput(docToTopicMixDF, wordResults)
   }
 
@@ -147,8 +182,8 @@ object SpotLDAWrapper {
       .map({ case SpotLDAInput(doc, word, count) => (doc, word, count) })
       .toDF(DocumentName, WordName, WordNameWordCount)
 
-    //Convert SpotSparkLDAInput into desired format for Spark LDA: (doc, word, count) -> word count per doc, where RDD
-    //is indexed by DocID
+    // Convert SpotSparkLDAInput into desired format for Spark LDA: (doc, word, count) -> word count per doc, where RDD
+    // is indexed by DocID
     val wordCountsPerDocDF = docWordCountDF
       .join(documentDictionary, docWordCountDF(DocumentName) === documentDictionary(DocumentName))
       .drop(documentDictionary(DocumentName))
@@ -161,7 +196,7 @@ object SpotLDAWrapper {
       .map({ case Row(documentId: Long, wordId: Int, wordCount: Int) => (documentId.toLong, (wordId, wordCount.toDouble)) })
       .groupByKey
 
-    //Sum of distinct words in each doc (words will be repeated between different docs), used for sparse vec size
+    // Sum of distinct words in each doc (words will be repeated between different docs), used for sparse vec size
     val numUniqueWords = wordDictionary.size
     val ldaInput: RDD[(Long, Vector)] = wordCountsPerDoc
       .mapValues({ case vs => Vectors.sparse(numUniqueWords, vs.toSeq) })

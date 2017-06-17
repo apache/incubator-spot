@@ -78,7 +78,6 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(ldaMaxiterations = x)).
       text("maximum number of iterations used in LDA")
 
-
     opt[Double]("ldaalpha").optional().valueName("float64").
       action((x, c) => c.copy(ldaAlpha = x)).
       text("document concentration for lda, default 1.02")
@@ -93,6 +92,10 @@ object SuspiciousConnectsArgumentParser {
         case 64 => FloatPointPrecisionUtility64
         case _ => FloatPointPrecisionUtility64
       }))
+
+    opt[String]("ldaoptimizer").optional().valueName("lda optimizer").
+      action((x, c) => c.copy(ldaOptimizer = x)).
+      text("LDA Optimizer: em for EM Optimizer or online Online Optimizer")
   }
 
   case class SuspiciousConnectsConfig(analysis: String = "",
@@ -109,5 +112,6 @@ object SuspiciousConnectsArgumentParser {
                                       ldaMaxiterations: Int = 20,
                                       ldaAlpha: Double = 1.02,
                                       ldaBeta: Double = 1.001,
+                                      ldaOptimizer: String = "em",
                                       precisionUtility: FloatPointPrecisionUtility = FloatPointPrecisionUtility64)
 }
