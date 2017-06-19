@@ -74,8 +74,8 @@ tdate STRING,
 total BIGINT 
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
-LOCATION '${var:hpath}/flow/summary';
-
+LOCATION '${var:hpath}/flow/summary'
+TBLPROPERTIES ('skip.header.line.count'='1');
 
 DROP TABLE IF EXISTS ${var:dbname}.flow_storyboard_tmp;
 

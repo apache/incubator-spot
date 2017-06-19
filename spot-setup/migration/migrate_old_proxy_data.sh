@@ -1,4 +1,22 @@
 #!/bin/bash
+
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 OLD_DATA_PATH=$1
 STAGING_DB=$2
 HDFS_STAGING_PATH=$3
@@ -14,7 +32,6 @@ IMPALA_DEM=$5
 # DEST_DB='migrated'
 # IMPALA_DEM='node01'
 
-
 hadoop fs -mkdir $HDFS_STAGING_PATH
 hadoop fs -mkdir $HDFS_STAGING_PATH/proxy/
 hadoop fs -mkdir $HDFS_STAGING_PATH/proxy/scores/
@@ -26,6 +43,19 @@ hdfs dfs -setfacl -R -m user:impala:rwx $HDFS_STAGING_PATH
 
 #Creating Staging tables in Impala
 impala-shell -i ${IMPALA_DEM} --var=hpath=${HDFS_STAGING_PATH} --var=dbname=${STAGING_DB} -c -f create_proxy_migration_tables.hql
+
+
+## proxy Ingest Summary
+echo "Processing proxy Ingest Summary"
+
+ing_sum_path=$OLD_DATA_PATH/proxy/ingest_summary/is_??????.csv
+
+for file in $ing_sum_path
+do 
+  echo $file
+  ./import_ingest_summary.py "${file}" "${STAGING_DB}" 'proxy_ingest_summary_tmp' "${DEST_DB}" 'proxy_ingest_summary'
+done
+
 
 DAYS=$OLD_DATA_PATH/proxy/*
 
