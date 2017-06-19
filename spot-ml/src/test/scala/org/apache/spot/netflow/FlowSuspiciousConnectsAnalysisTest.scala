@@ -128,7 +128,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     val model =
       FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, onlineTestConfig, data)
 
-    val scoredData = model.score(sparkSession data, onlineTestConfig.precisionUtility)
+    val scoredData = model.score(sparkSession, data, onlineTestConfig.precisionUtility)
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))

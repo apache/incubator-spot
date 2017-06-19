@@ -33,7 +33,7 @@ class DNSWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
 
   "dnsWord" should "return correct word with a single example input" in {
 
-    val topDomainsBC = sparkContext.broadcast(Set("google", "youtube"))
+    val topDomainsBC = sparkSession.sparkContext.broadcast(Set("google", "youtube"))
     val userDomain = "apache"
 
     val timeStamp = "May  12 2015 11:32:45.543421000 UTC"

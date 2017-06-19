@@ -45,7 +45,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
     val catFancy = SpotLDAInput("pets", "cat", 1)
     val dogWorld = SpotLDAInput("pets", "dog", 999)
 
-    val data = sparkSession.parallelize(Seq(catFancy, dogWorld))
+    val data = sparkSession.sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkSession, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
       optimizer ,ldaMaxIterations, FloatPointPrecisionUtility64)
 
@@ -74,8 +74,8 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
     val catFancy = SpotLDAInput("cat fancy", "cat", 1)
     val dogWorld = SpotLDAInput("dog world", "dog", 1)
 
-    val data = sparkContext.parallelize(Seq(catFancy, dogWorld))
-    val out = SpotLDAWrapper.runLDA(sparkContext, sqlContext, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
+    val data = sparkSession.sparkContext.parallelize(Seq(catFancy, dogWorld))
+    val out = SpotLDAWrapper.runLDA(sparkSession, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
       optimizer ,ldaMaxIterations, FloatPointPrecisionUtility64)
 
     val topicMixDF = out.docToTopicMix
@@ -107,7 +107,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
     val catFancy = SpotLDAInput("pets", "cat", 1)
     val dogWorld = SpotLDAInput("pets", "dog", 999)
 
-    val data = sparkSession.parallelize(Seq(catFancy, dogWorld))
+    val data = sparkSession.sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkSession, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
       optimizer, ldaMaxIterations, FloatPointPrecisionUtility64)
 
@@ -135,7 +135,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
     val catFancy = SpotLDAInput("cat fancy", "cat", 1)
     val dogWorld = SpotLDAInput("dog world", "dog", 1)
 
-    val data = sparkSession.parallelize(Seq(catFancy, dogWorld))
+    val data = sparkSession.sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkSession, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
       optimizer, ldaMaxIterations, FloatPointPrecisionUtility64)
 
@@ -168,8 +168,8 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
     val catFancy = SpotLDAInput("pets", "cat", 1)
     val dogWorld = SpotLDAInput("pets", "dog", 999)
 
-    val data = sparkContext.parallelize(Seq(catFancy, dogWorld))
-    val out = SpotLDAWrapper.runLDA(sparkContext, sqlContext, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
+    val data = sparkSession.sparkContext.parallelize(Seq(catFancy, dogWorld))
+    val out = SpotLDAWrapper.runLDA(sparkSession, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
       optimizer, ldaMaxIterations, FloatPointPrecisionUtility32)
 
     val topicMixDF = out.docToTopicMix
@@ -197,7 +197,7 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
     val catFancy = SpotLDAInput("cat fancy", "cat", 1)
     val dogWorld = SpotLDAInput("dog world", "dog", 1)
 
-    val data = sparkSession.parallelize(Seq(catFancy, dogWorld))
+    val data = sparkSession.sparkContext.parallelize(Seq(catFancy, dogWorld))
     val out = SpotLDAWrapper.runLDA(sparkSession, data, 2, logger, Some(0xdeadbeef), ldaAlpha, ldaBeta,
       optimizer, ldaMaxIterations, FloatPointPrecisionUtility32)
 

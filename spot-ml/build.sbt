@@ -47,9 +47,9 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
   case "about.html" => MergeStrategy.rename
   case PathList("META-INF", xs@_*) => MergeStrategy.discard
   case "about.html" => MergeStrategy.rename
-  case x => MergeStrategy.first
   case meta(_) => MergeStrategy.discard
-  case x => old(x)
+  case x => MergeStrategy.first
+  //case x => old(x)
 }
 }
 
