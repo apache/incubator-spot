@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
+/**
+  * THIS CODE WAS ORIGINALLY COPIED DIRECTLY FROM THE OPEN SOURCE PROJECT TAP (Trusted Analytics Platform)
+  * which has an Apache V2.0. IT WAS LATER UPDATED TO SUPPORT SPARK 2.1 SparkSession
+  */
 
 package org.apache.spot.testutils
 
