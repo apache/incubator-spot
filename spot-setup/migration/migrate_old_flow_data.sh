@@ -1,4 +1,22 @@
 #!/bin/bash
+
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 OLD_DATA_PATH=$1
 STAGING_DB=$2
 HDFS_STAGING_PATH=$3
@@ -14,7 +32,6 @@ IMPALA_DEM=$5
 # DEST_DB='migrated'
 # IMPALA_DEM='node01'
 
-
 hadoop fs -mkdir $HDFS_STAGING_PATH
 hadoop fs -mkdir $HDFS_STAGING_PATH/flow/
 hadoop fs -mkdir $HDFS_STAGING_PATH/flow/scores/
@@ -29,14 +46,24 @@ hdfs dfs -setfacl -R -m user:impala:rwx $HDFS_STAGING_PATH
 #Creating Staging tables in Impala
 impala-shell -i ${IMPALA_DEM} --var=hpath=${HDFS_STAGING_PATH} --var=dbname=${STAGING_DB} -c -f create_flow_migration_tables.hql
 
+
+## Flow Ingest Summary
+echo "Processing Flow Ingest Summary"
+
+ing_sum_path=$OLD_DATA_PATH/flow/ingest_summary/is_??????.csv
+
+for file in $ing_sum_path
+do 
+  echo $file
+  ./import_ingest_summary.py "${file}" "${STAGING_DB}" 'flow_ingest_summary_tmp' "${DEST_DB}" 'flow_ingest_summary'
+done
+
+
 DAYS=$OLD_DATA_PATH/flow/*
 
 for dir in $DAYS
 do
-  #break
-  #echo $dir
   day="$(basename $dir)"
-  #echo $day
   echo "Processing day $day ..."
   y=${day:0:4}
   m=$(expr ${day:4:2} + 0)
@@ -45,7 +72,7 @@ do
   echo $dir
 
 
-  ## Flow Scores and flow_threat_investigation
+  ## Flow Scores and Flow Threat Investigation
   echo "Processing Flow Scores"
   if [ -f $dir/flow_scores.csv ]
   then
@@ -72,12 +99,11 @@ where sev > 0;"
   ## Flow Chords
   echo "Processing Flow Chords"
   chord_files=`ls $dir/chord*.tsv`
-  #echo $chord_files
+
   if [ ! -z "$chord_files" ]
   then
     for file in $chord_files
     do
-      #echo $file
       filename="$(basename $file)"
       ip="${filename%.tsv}"
       ip="${ip#chord-}"
@@ -99,7 +125,7 @@ where sev > 0;"
   ## Flow Edge
   echo "Processing Flow Edge"
   edge_files=`ls $dir/edge*.tsv`
-  #echo $edge_files
+
   if [ ! -z "$edge_files" ]
   then
 
@@ -135,12 +161,11 @@ select ip_threat, title, text from $STAGING_DB.flow_storyboard_tmp;"
   ##flow_timeline
   echo "Processing Flow Timeline"
   timeline_files=`ls $dir/sbdet*.tsv`
-  #echo $timeline_files
+
   if [ ! -z "$timeline_files" ]
   then
     for file in $timeline_files
     do
-      #echo $file
       filename="$(basename $file)"
       ip="${filename%.tsv}"
       ip="${ip#sbdet-}"
@@ -151,7 +176,7 @@ select ip_threat, title, text from $STAGING_DB.flow_storyboard_tmp;"
       hive -e "$command"
 
       command="INSERT INTO $DEST_DB.flow_timeline PARTITION (y=$y, m=$m, d=$d) 
-  select '$ip', tstart, tend, srcip, dstip, proto, sport, dport, ipkt, ibyt from $STAGING_DB.flow_timeline_tmp;"
+select '$ip', tstart, tend, srcip, dstip, proto, sport, dport, ipkt, ibyt from $STAGING_DB.flow_timeline_tmp;"
       echo $command
       hive -e "$command"
 
@@ -160,5 +185,4 @@ select ip_threat, title, text from $STAGING_DB.flow_storyboard_tmp;"
 done
 
 impala-shell -i ${IMPALA_DEM} -q "INVALIDATE METADATA;"
-
 

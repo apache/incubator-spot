@@ -1,4 +1,22 @@
 #!/bin/bash
+
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 OLD_DATA_PATH=$1
 STAGING_DB=$2
 HDFS_STAGING_PATH=$3
@@ -28,14 +46,24 @@ hdfs dfs -setfacl -R -m user:impala:rwx $HDFS_STAGING_PATH
 #Creating Staging tables in Impala
 impala-shell -i ${IMPALA_DEM} --var=hpath=${HDFS_STAGING_PATH} --var=dbname=${STAGING_DB} -c -f create_dns_migration_tables.hql
 
+
+## DNS Ingest Summary
+echo "Processing DNS Ingest Summary"
+
+ing_sum_path=$OLD_DATA_PATH/dns/ingest_summary/is_??????.csv
+
+for file in $ing_sum_path
+do 
+  echo $file
+  ./import_ingest_summary.py "${file}" "${STAGING_DB}" 'dns_ingest_summary_tmp' "${DEST_DB}" 'dns_ingest_summary'
+done
+
+
 DAYS=$OLD_DATA_PATH/dns/*
 
 for dir in $DAYS
 do
-  #break
-  #echo $dir
   day="$(basename $dir)"
-  #echo $day
   echo "Processing day $day ..."
   y=${day:0:4}
   m=$(expr ${day:4:2} + 0)
@@ -71,7 +99,7 @@ where ip_sev > 0 or dns_sev > 0;"
   ## dns Dendro
   echo "Processing dns Dendro"
   dendro_files=`ls $dir/dendro*.csv`
-  #echo $dendro_files
+
   if [ ! -z "$dendro_files" ]
   then
 
@@ -90,7 +118,7 @@ from $STAGING_DB.dns_dendro_tmp;"
   ## dns Edge
   echo "Processing dns Edge"
   edge_files=`ls $dir/edge*.csv`
-  #echo $edge_files
+
   if [ ! -z "$edge_files" ]
   then
 
@@ -105,8 +133,6 @@ from $STAGING_DB.dns_edge_tmp;"
     hive -e "$command"
 
   fi
-
-  ##dns_ingest_summary
 
   ##dns_storyboard
   echo "Processing dns Storyboard"
@@ -127,12 +153,11 @@ select ip_threat, dns_threat, title, text from $STAGING_DB.dns_storyboard_tmp;"
   ##dns_threat_dendro
   echo "Processing dns Threat Dendro"
   threat_dendro_files=`ls $dir/threat-dendro*.csv`
-  #echo $threat_dendro_files
+
   if [ ! -z "$threat_dendro_files" ]
   then
     for file in $threat_dendro_files
     do
-      #echo $file
       filename="$(basename $file)"
       ip="${filename%.tsv}"
       ip="${ip#threat-dendro-}"
