@@ -89,7 +89,15 @@ object SuspiciousConnects {
             import sparkSession.implicits._
             resultRecords.map(_.mkString(config.outputDelimiter)).rdd.saveAsTextFile(config.hdfsScoredConnect)
 
-            InputOutputDataHandler.mergeResultsFiles(sparkSession, config.hdfsScoredConnect, analysis, logger)
+            // SPOT-172: need to use FileSystem for proxy.
+            analysis match {
+              case "flow" => InputOutputDataHandler
+                .mergeResultsFileUtil(sparkSession, config.hdfsScoredConnect, analysis, logger)
+              case "dns" => InputOutputDataHandler
+                .mergeResultsFileUtil(sparkSession, config.hdfsScoredConnect, analysis, logger)
+              case "proxy" => InputOutputDataHandler
+                .mergeResultsFileSystem(sparkSession, config.hdfsScoredConnect, analysis, logger)
+            }
 
             InvalidDataHandler.showAndSaveInvalidRecords(invalidRecords, config.hdfsScoredConnect, logger)
           }
