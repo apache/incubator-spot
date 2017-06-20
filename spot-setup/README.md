@@ -24,7 +24,7 @@ The main script in the repository is **hdfs_setup.sh** which is responsible of l
 
 **spot.conf** is the file storing the variables needed during the installation process including node assignment, User interface, Machine Learning and Ingest gateway nodes.
 
-This file also contains sources desired to be installed as part of Apache Spot, general paths for HDFS folders, Kerberos information and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
+This file also contains sources desired to be installed as part of Apache Spot, general paths for HDFS folders, and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
 
 To read more about these variables, please review the [documentation] (http://spot.incubator.apache.org/doc/#configuration).
 
