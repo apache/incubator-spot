@@ -33,7 +33,7 @@ object FlowFeedback {
   /**
     * Load the feedback file for netflow data.
     *
-    * @param spark             Spark Session.
+    * @param sparkSession      Spark Session.
     * @param feedbackFile      Local machine path to the netflow feedback file.
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.

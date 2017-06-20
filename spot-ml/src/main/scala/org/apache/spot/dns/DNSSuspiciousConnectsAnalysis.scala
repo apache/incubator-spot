@@ -58,7 +58,7 @@ object DNSSuspiciousConnectsAnalysis {
     * Saves the most suspicious connections to a CSV file on HDFS.
     *
     * @param config Object encapsulating runtime parameters and CLI options.
-    * @param spark
+    * @param sparkSession
     * @param logger
     */
   def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,

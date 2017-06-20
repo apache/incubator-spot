@@ -79,9 +79,9 @@ object ProxySuspiciousConnectsAnalysis {
   /**
     * Run suspicious connections analysis on proxy data.
     *
-    * @param config SuspicionConnectsConfig object, contains runtime parameters from CLI.
-    * @param spark  Spark Session
-    * @param logger Logs execution progress, information and errors for user.
+    * @param config       SuspicionConnectsConfig object, contains runtime parameters from CLI.
+    * @param sparkSession Spark Session
+    * @param logger       Logs execution progress, information and errors for user.
     */
   def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
           inputProxyRecords: DataFrame): SuspiciousConnectsAnalysisResults = {

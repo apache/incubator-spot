@@ -45,9 +45,9 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
   /**
     * Calculate suspicious connection scores for an incoming dataframe using this proxy suspicious connects model.
     *
-    * @param spark     Spark Session.
-    * @param dataFrame Dataframe with columns Host, Time, ReqMethod, FullURI, ResponseContentType, UserAgent, RespCode
-    *                  (as defined in ProxySchema object).
+    * @param sparkSession Spark Session.
+    * @param dataFrame    Dataframe with columns Host, Time, ReqMethod, FullURI, ResponseContentType, UserAgent, RespCode
+    *                     (as defined in ProxySchema object).
     * @return Dataframe with Score column added.
     */
   def score(sparkSession: SparkSession, dataFrame: DataFrame, precisionUtility: FloatPointPrecisionUtility): DataFrame = {
@@ -105,7 +105,7 @@ object ProxySuspiciousConnectsModel {
     * Trains the model from the incoming DataFrame using the specified number of topics
     * for clustering in the topic model.
     *
-    * @param spark        Spark Session
+    * @param sparkSession Spark Session
     * @param logger       Logge object.
     * @param config       SuspiciousConnetsArgumnetParser.Config object containg CLI arguments.
     * @param inputRecords Dataframe for training data, with columns Host, Time, ReqMethod, FullURI, ResponseContentType,
