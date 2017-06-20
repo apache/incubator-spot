@@ -74,7 +74,7 @@ object InputOutputDataHandler {
       }
     }
     else logger.info(s"Couldn't find results in $hdfsScoredConnect." +
-      s"Please check previous logs to see if there were errors.")
+      s"Please check for SuspiciousConnects or Spark logs to see if there were errors.")
   }
 
   def mergeResultsFileSystem(sparkSession: SparkSession,
@@ -88,7 +88,8 @@ object InputOutputDataHandler {
     val exists = fileSystem.exists(new org.apache.hadoop.fs.Path(hdfsScoredConnect))
 
     if (exists) {
-      // SPOT-172. Seems like FilUtil.copyMerge is not behaving well with Proxy data. Besides, it's deprecated after
+      // SPOT-172 (https://issues.apache.org/jira/browse/SPOT-172)
+      // Seems like FilUtil.copyMerge is not behaving well with Proxy data. Besides, it's deprecated after
       // Hadoop 2.7.x
       // Using spark to merge result files
       val tmpFileStr = s"${hdfsScoredConnect}/tmp"
@@ -122,7 +123,7 @@ object InputOutputDataHandler {
       }
     }
     else logger.info(s"Couldn't find results in $hdfsScoredConnect." +
-      s"Please check previous logs to see if there were errors.")
+      s"Please check for SuspiciousConnects or Spark logs to see if there were errors.")
   }
 
 }

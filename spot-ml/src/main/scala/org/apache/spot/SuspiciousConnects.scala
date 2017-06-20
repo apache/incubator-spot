@@ -89,7 +89,8 @@ object SuspiciousConnects {
             import sparkSession.implicits._
             resultRecords.map(_.mkString(config.outputDelimiter)).rdd.saveAsTextFile(config.hdfsScoredConnect)
 
-            // SPOT-172: need to use FileSystem for proxy.
+            // SPOT-172 (https://issues.apache.org/jira/browse/SPOT-172)
+            // We need to use FileSystem for proxy.
             analysis match {
               case "flow" => InputOutputDataHandler
                 .mergeResultsFileUtil(sparkSession, config.hdfsScoredConnect, analysis, logger)
