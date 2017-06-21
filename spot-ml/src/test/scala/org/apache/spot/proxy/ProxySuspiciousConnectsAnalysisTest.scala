@@ -150,10 +150,6 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    //    val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger, onlineTestConfigProxy, data)
-    //
-    //    val scoredData = model.score(sparkSession, data, onlineTestConfigProxy.precisionUtility)
-
     val SuspiciousConnectsAnalysisResults(scoredData, _) =
       ProxySuspiciousConnectsAnalysis.run(onlineTestConfigProxy, sparkSession, logger, data)
 

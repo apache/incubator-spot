@@ -47,10 +47,10 @@ object SpotLDAWrapper {
     * @param topicCount         number of topics to find
     * @param logger             application logger
     * @param ldaSeed            LDA seed
-    * @param ldaAlpha           LDA alpha parameter
-    * @param ldaBeta            LDA beta parameter
+    * @param ldaAlpha           document concentration
+    * @param ldaBeta            topic concentration
     * @param ldaOptimizerOption LDA optimizer, em or online
-    * @param maxIterations      number of maximum iteration LDA will run
+    * @param maxIterations      maximum number of iterations for the optimizer
     * @param precisionUtility   FloatPointPrecisionUtility implementation based on user configuration (64 or 32 bit)
     * @return
     */

@@ -119,8 +119,8 @@ object ProxyWordCreation {
     * Defines if a domain is safe or not based on a known domain
     *
     * @param domain domain name
-    * @return
+    * @return returns true if the domains passed is equal to user domain.
     */
-  def domainBelongsToSafeList(domain: String) = domain == "intel" // TBD parameterize this!
+  def domainBelongsToSafeList(domain: String): Boolean = domain == "intel" // TBD parameterize this!
 
 }
