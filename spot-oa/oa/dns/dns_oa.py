@@ -232,7 +232,8 @@ class OA(object):
                 
                 if rep_results:
                     self._dns_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._dns_scores  ]
-                
+                else:
+                    self._dns_scores = [ conn + [""]   for conn in self._dns_scores  ]
         else:
             self._dns_scores = [ conn + [""]   for conn in self._dns_scores  ]
 
