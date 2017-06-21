@@ -220,6 +220,8 @@ class OA(object):
 
                 if rep_results:
                     self._proxy_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._proxy_scores  ]
+                else:
+                    self._proxy_scores = [ conn + [""] for conn in self._proxy_scores  ]
         else:
             self._proxy_scores = [ conn + [""] for conn in self._proxy_scores  ]
 
