@@ -4,7 +4,7 @@ DNS sub-module extracts and transforms DNS (Domain Name Service) data already ra
 
 ## DNS Components
 
-###dns_oa.py
+### dns_oa.py
 
 DNS spot-oa main script executes the following steps:
 
@@ -126,7 +126,7 @@ This table is populated with the number of connections ingested by minute during
         1. total:      bigint 
  
 
-###dns_conf.json
+### dns_conf.json
 This file is part of the initial configuration for the DNS pipeline. It will contain mapped all the columns included in the _dns\_edge_ and _dns\_dendro_ tables.
 
 This file contains three main arrays:

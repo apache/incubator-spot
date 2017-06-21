@@ -4,7 +4,7 @@ Proxy sub-module will extract and transform Proxy data already ranked by spot-ml
 
 ## Proxy Components
 
-###proxy_oa.py
+### proxy_oa.py
 
 Proxy spot-oa main script executes the following steps:
 
@@ -119,7 +119,7 @@ This table is populated with the number of connections ingested by minute during
         1. total:      bigint 
 
 
-###proxy_conf.json
+### proxy_conf.json
 This file is part of the initial configuration for the proxy pipeline It will contain mapped all the columns included in the proxy_results.csv and proxy tables.
 
 This file contains three main arrays:

@@ -1,6 +1,6 @@
 This folder must include the following files:
 
-###**ipranges.csv**
+### **ipranges.csv**
 This is a comma separated file, defines a range of IP that should be considered as part of your internal network.  
 This file will be requested by the following modules:
 
@@ -14,7 +14,7 @@ Schema with zero-indexed columns:
         1.limit_IP : string
         2.name : string
 
-###**iploc.csv**
+### **iploc.csv**
 This is a comma separated geolocation database file containing all (or most) known public IP ranges and the details of its location.
 This file is required by the following modules:
 
@@ -46,7 +46,7 @@ Example: 10.180.88.23
 
 Ip to integer = (10 * 16777216) + (180 * 65536) + (88 * 256) + (23) = 179591191.
 
-###**networkcontext_1.csv**
+### **networkcontext_1.csv**
 This is a comma separated file necessary to add more specific context about your network.
 This file will be requested by the following modules:
 
