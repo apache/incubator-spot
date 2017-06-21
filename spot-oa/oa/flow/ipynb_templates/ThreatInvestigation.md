@@ -1,6 +1,6 @@
-#Flow Threat Investigation Notebook
+# Flow Threat Investigation Notebook
 
-###Dependencies  
+### Dependencies  
 - [iPython == 3.2.1](https://ipython.org/ipython-doc/3/index.html)
 - [Python 2.7.6](https://www.python.org/download/releases/2.7.6/)
 - [ipywidgets 5.1.1](https://ipywidgets.readthedocs.io/en/latest/user_install.html#with-pip) 
@@ -21,7 +21,7 @@ The following python modules will have to be imported for the notebook to work c
         from IPython.display import display, Javascript, clear_output
 
 
-##Pre-requisites  
+## Pre-requisites  
 - Execution of the spot-oa process for Flow
 - Correct installation of the UI [Read more](/ui/INSTALL.md)
 - Score a set connections at the Edge Investigation Notebook 
@@ -30,12 +30,12 @@ The following python modules will have to be imported for the notebook to work c
 - Include a geolocation database file.  **Optional** [Schema](/spot-oa/oa/components/README.md#geoloc)   
 
 
-##Additional Configuration inside the notebook
+## Additional Configuration inside the notebook
 `top_results` - This value defines the number of rows that will be displayed onscreen after the expanded search. 
 This also affects the number of IPs that will appear in the Timeline chart.
 
 
-##Data source  
+## Data source  
 Data should exists in the following tables:
         *flow*
         *flow_threat_investigation*
@@ -64,7 +64,7 @@ The following files will be created and stored in HDFS.
         stats-\<ip>.json:
         threat-dendro-\<ip>.json
 
-##FUNCTIONS  
+## FUNCTIONS  
 
 **Widget configuration**
 

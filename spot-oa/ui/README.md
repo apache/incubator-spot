@@ -68,12 +68,15 @@ Provides tools for interactive visualization, noise filters, white listing, and 
           + [Suspicious](#suspicious-4)
           + [Storyboard](#storyboard-4)
           + [Ingest Summary](#ingest-summary-2)
+          + [Notebook](#notebook-1)
         * [DNS Stores](#dns-stores)
           + [Suspicious](#suspicious-5)
           + [Storyboard](#storyboard-5)
+          + [Notebook](#notebook-2)
         * [Proxy Stores](#proxy-stores)
           + [Suspicious](#suspicious-6)
           + [Storyboard](#storyboard-6)
+          + [Notebook](#notebook-3)
 
 ## Intended Audience
 
@@ -1035,6 +1038,13 @@ _SPOT/ui/js/flow/stores/_
 
     Extends [RestStore.js](#reststore.js)
 
+###### Notebook
+
+spot-oa/ui/flow/js/stores/NotebookStore.js
+
+spot-oa/ui/flow/js/components/ScoreNotebook.react.js
+
+
 ##### DNS Stores
 
 _SPOT/ui/js/dns/stores/_
@@ -1096,6 +1106,12 @@ _SPOT/ui/js/dns/stores/_
     > - SELECT_COMMENT
     > - RELOAD_COMMENTS
 
+###### Notebook
+
+spot-oa/ui/dns/js/stores/NotebookStore.js
+
+spot-oa/ui/dns/js/components/ScoreNotebook.react.js
+
 ##### Proxy Stores
 
 _SPOT/ui/js/proxy/_
@@ -1154,3 +1170,9 @@ _SPOT/ui/js/proxy/_
     > - UPDATE_DATE
     > - SELECT_COMMENT
     > - RELOAD_COMMENTS
+
+###### Notebook
+
+spot-oa/ui/proxy/js/stores/NotebookStore.js
+
+spot-oa/ui/proxy/js/components/ScoreNotebook.react.js

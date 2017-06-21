@@ -1,4 +1,4 @@
-##Spark Configuration
+## Spark Configuration
 
 oni-ml main component uses Spark and Spark SQL to analyze network events and produce a list of least probable events
 or most suspicious. 
@@ -48,7 +48,7 @@ Besides the variables in duxbay.conf, users can modify the rest of the propertie
  After _Yarn_ cluster has been tuned the next step is to set Spark properties assigning the right values to duxbay.conf _Spark_
  variables. 
   
-#####Number of Executors, Executor Memory, Executor Cores and Executor Memory Overhead
+##### Number of Executors, Executor Memory, Executor Cores and Executor Memory Overhead
  
 The first thing users need to know is how to set the number of executors and the memory per executor as well as the number of cores.
 To get that number, users should know the available total memory per node after _Yarn_ tuning, this total memory is determined by _yarn.nodemanager.resource.memory-mb_ 
@@ -94,7 +94,7 @@ Following the example, the values for the _Spark_ variables in duxbay.conf would
             SPK_EXEC_CORES='6'
             SPAK_EXEC_MEM_OVERHEAD='3047'
  
-#####Driver Memory, Driver Maximum Results and Driver Memory Overhead
+##### Driver Memory, Driver Maximum Results and Driver Memory Overhead
  
  oni-ml application executes actions such as _.collect_, _.orderBy_, _.saveAsTextFile_ so we recommend to assign a 
  considerable amount of memory for the driver. 
@@ -128,9 +128,9 @@ and 50 GB. Driver maximum results should be something equal or bigger than 8 GB.
  
  For more information about Spark properties click [here](http://spark.apache.org/docs/latest/configuration.html).
  
-###Known Spark error messages running oni-ml
+### Known Spark error messages running oni-ml
  
-####Out Of Memory Error
+#### Out Of Memory Error
  
 This issue includes _java.lang.OutOfMemoryError: Java heap space_ and _java.lang.OutOfMemoryError : GC overhead limit exceeded_.
 When users get OOME can be for many different issues but we have identified a couple of reasons for this
@@ -141,13 +141,13 @@ Since ML algorithm results are broadcast, each executor needs more memory.
 
 Another possible reason for this error is driver is running out of memory, try increasing driver memory.
 
-####Container killed by Yarn for exceeding memory limits. _X.Y_ GB of _X_ GB physical memory used. Consider boosting spark.yarn.executor memoryOverhead
+#### Container killed by Yarn for exceeding memory limits. _X.Y_ GB of _X_ GB physical memory used. Consider boosting spark.yarn.executor memoryOverhead
 
 This issue is caused by certain operations, mainly during the join of _document probabilities per topic_ with the rest of 
 the data - scoring stage. If users receive this error they should try with increasing memory overhead up to 10% of executor memory
 or increase executors memory.
 
-####org.apache.spark.serializer.KryoSerializer 
+#### org.apache.spark.serializer.KryoSerializer 
 
 KryoSerializer can cause issues if property _spark.kryoserializer.buffer.max_ is not enough for the data being serialized.
 Try increasing memory up to 2 GB but keeping in mind the total of the available memory.
