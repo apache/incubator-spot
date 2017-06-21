@@ -19,6 +19,9 @@ package org.apache.spot.lda
 
 import org.apache.spark.sql.types.{LongType, StringType, StructField}
 
+/**
+  * Schemas and column names used in SpotLDAWrapper and *SuspiciousConnectsModel.
+  */
 object SpotLDAWrapperSchema {
 
   // modelDF columns

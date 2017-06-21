@@ -73,6 +73,15 @@ object FlowSuspiciousConnectsAnalysis {
       ObytField,
       ScoreField)).fieldNames.map(col)
 
+  /**
+    * Runs suspicious connects analysis for Flow records
+    *
+    * @param config           spot-ml configuration
+    * @param sparkSession     the SparkSession
+    * @param logger           application logger
+    * @param inputFlowRecords input Flow records for analysis
+    * @return
+    */
   def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
           inputFlowRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
 
@@ -103,6 +112,8 @@ object FlowSuspiciousConnectsAnalysis {
   }
 
   /**
+    * Apply a filter to raw data (Flow records) and returns only those that are good for word creation and that can be
+    * passed to LDA
     *
     * @param inputFlowRecords raw flow records
     * @return
@@ -125,6 +136,7 @@ object FlowSuspiciousConnectsAnalysis {
   }
 
   /**
+    * Gets invalid records based on required fields validations
     *
     * @param inputFlowRecords raw flow records.
     * @return
@@ -151,6 +163,7 @@ object FlowSuspiciousConnectsAnalysis {
   }
 
   /**
+    * Gets the records with a score equal or below the threshold
     *
     * @param scoredFlowRecords scored flow records.
     * @param threshold         score tolerance.

@@ -25,10 +25,19 @@ import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
 import scala.util.{Success, Try}
 
-
+/**
+  * Convert Proxy log entries into "words" for topic modelling analyses.
+  */
 object ProxyWordCreation {
 
-  def udfWordCreation(topDomains : Broadcast[Set[String]],
+  /**
+    * UDF for word creation
+    *
+    * @param topDomains  List of most popular top level domain names (provided)
+    * @param agentCounts List of user agent values in the data set and its count
+    * @return
+    */
+  def udfWordCreation(topDomains: Broadcast[Set[String]],
                       agentCounts: Broadcast[Map[String, Long]]) =
     udf((host: String, time: String, reqMethod: String, uri: String, contentType: String, userAgent: String, responseCode: String) =>
       ProxyWordCreation.proxyWord(host,
@@ -41,7 +50,20 @@ object ProxyWordCreation {
         topDomains,
         agentCounts))
 
-
+  /**
+    * Creates a word based on values of Proxy record
+    *
+    * @param proxyHost    Host name
+    * @param time         Proxy connection time
+    * @param reqMethod    request method
+    * @param uri          URI
+    * @param contentType  content type
+    * @param userAgent    user agent
+    * @param responseCode response code
+    * @param topDomains   top domains
+    * @param agentCounts  agent counts
+    * @return
+    */
   def proxyWord(proxyHost: String,
                 time: String,
                 reqMethod: String,
@@ -51,7 +73,7 @@ object ProxyWordCreation {
                 responseCode: String,
                 topDomains: Broadcast[Set[String]],
                 agentCounts: Broadcast[Map[String, Long]]): String = {
-    Try{
+    Try {
       List(topDomain(proxyHost, topDomains.value).toString,
         // Time binned by hours
         TimeUtilities.getTimeAsHour(time).toString,
@@ -73,6 +95,13 @@ object ProxyWordCreation {
   }
 
 
+  /**
+    * Classifies proxy host domain based on popular domains
+    *
+    * @param proxyHost  host name
+    * @param topDomains list of top domains
+    * @return
+    */
   def topDomain(proxyHost: String, topDomains: Set[String]): Int = {
 
     val domain = DomainProcessor.extractDomain(proxyHost)
@@ -86,6 +115,12 @@ object ProxyWordCreation {
     }
   }
 
+  /**
+    * Defines if a domain is safe or not based on a known domain
+    *
+    * @param domain domain name
+    * @return
+    */
   def domainBelongsToSafeList(domain: String) = domain == "intel" // TBD parameterize this!
 
 }

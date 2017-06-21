@@ -39,6 +39,21 @@ import scala.collection.immutable.Map
 
 object SpotLDAWrapper {
 
+  /**
+    * Runs Spark LDA and returns a new model.
+    *
+    * @param sparkSession       the SparkSession
+    * @param docWordCount       RDD with document list and the word count for each document (corpus)
+    * @param topicCount         number of topics to find
+    * @param logger             application logger
+    * @param ldaSeed            LDA seed
+    * @param ldaAlpha           LDA alpha parameter
+    * @param ldaBeta            LDA beta parameter
+    * @param ldaOptimizerOption LDA optimizer, em or online
+    * @param maxIterations      number of maximum iteration LDA will run
+    * @param precisionUtility   FloatPointPrecisionUtility implementation based on user configuration (64 or 32 bit)
+    * @return
+    */
   def runLDA(sparkSession: SparkSession,
              docWordCount: RDD[SpotLDAInput],
              topicCount: Int,
@@ -165,6 +180,15 @@ object SpotLDAWrapper {
     SpotLDAOutput(docToTopicMixDF, wordResults)
   }
 
+  /**
+    * Formats input data for LDA algorithm
+    *
+    * @param docWordCount       RDD with document list and the word count for each document (corpus)
+    * @param documentDictionary DataFrame with a distinct list of documents and its id
+    * @param wordDictionary     immutable Map with distinct list of word and its id
+    * @param sparkSession       the SparkSession
+    * @return
+    */
   def formatSparkLDAInput(docWordCount: RDD[SpotLDAInput],
                           documentDictionary: DataFrame,
                           wordDictionary: Map[String, Int],
@@ -203,6 +227,13 @@ object SpotLDAWrapper {
     ldaInput
   }
 
+  /**
+    * Format LDA output topicMatrix for spot-ml scoring
+    *
+    * @param wordTopMat LDA model topicMatrix
+    * @param wordMap    immutable Map with distinct list of word and its id
+    * @return
+    */
   def formatSparkLDAWordOutput(wordTopMat: Matrix, wordMap: Map[Int, String]): scala.Predef.Map[String, Array[Double]] = {
 
     // incoming word top matrix is in column-major order and the columns are unnormalized
@@ -216,6 +247,15 @@ object SpotLDAWrapper {
     wordProbs.zipWithIndex.map({ case (topicProbs, wordInd) => (wordMap(wordInd), topicProbs) }).toMap
   }
 
+  /**
+    * Format LDA output topicDistribution for spot-ml scoring
+    *
+    * @param docTopDist         LDA model topicDistribution
+    * @param documentDictionary DataFrame with a distinct list of documents and its id
+    * @param sparkSession       the SparkSession
+    * @param precisionUtility   FloatPointPrecisionUtility implementation based on user configuration (64 or 32 bit)
+    * @return
+    */
   def formatSparkLDADocTopicOutput(docTopDist: RDD[(Long, Vector)], documentDictionary: DataFrame, sparkSession: SparkSession,
                                    precisionUtility: FloatPointPrecisionUtility):
   DataFrame = {

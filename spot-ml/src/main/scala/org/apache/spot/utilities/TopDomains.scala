@@ -19,7 +19,9 @@ package org.apache.spot.utilities
 
 import scala.io.Source
 
-
+/**
+  * List of top domains used for DNS and Proxy analysis.
+  */
 object TopDomains {
   val alexaTop1MPath = "top-1m.csv"
 

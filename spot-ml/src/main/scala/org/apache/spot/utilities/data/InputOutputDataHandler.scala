@@ -77,6 +77,13 @@ object InputOutputDataHandler {
       s"Please check for SuspiciousConnects or Spark logs to see if there were errors.")
   }
 
+  /**
+    *
+    * @param sparkSession      the Spark Session
+    * @param hdfsScoredConnect HDFS output folder. The location where results were saved; flow, dns or proxy.
+    * @param analysis          Data type to analyze
+    * @param logger            application logger
+    */
   def mergeResultsFileSystem(sparkSession: SparkSession,
                              hdfsScoredConnect: String,
                              analysis: String,

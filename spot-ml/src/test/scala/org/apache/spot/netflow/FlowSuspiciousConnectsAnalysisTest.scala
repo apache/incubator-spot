@@ -20,6 +20,7 @@ package org.apache.spot.netflow
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis.InSchema
@@ -40,7 +41,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     topicCount = 20,
     hdfsScoredConnect = "",
     threshold = 1.0d,
-    maxResults = 1000,
+    maxResults = -1,
     outputDelimiter = "\t",
     ldaPRGSeed = None,
     ldaMaxiterations = 20,
@@ -91,10 +92,8 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, emTestConfig, data)
-
-    val scoredData = model.score(sparkSession, data, emTestConfig.precisionUtility)
+    val SuspiciousConnectsAnalysisResults(scoredData, _) = FlowSuspiciousConnectsAnalysis.run(emTestConfig,
+      sparkSession, logger, data)
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -125,10 +124,8 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, onlineTestConfig, data)
-
-    val scoredData = model.score(sparkSession, data, onlineTestConfig.precisionUtility)
+    val SuspiciousConnectsAnalysisResults(scoredData, _) = FlowSuspiciousConnectsAnalysis.run(onlineTestConfig,
+      sparkSession, logger, data)
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
