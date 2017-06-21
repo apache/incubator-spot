@@ -19,42 +19,45 @@
 
 import os
 import sys
-import re
 import subprocess
 import pandas as pd
-import datetime
 
-filepath = sys.argv[1]
+timeline_path = sys.argv[1]
 staging_db_name = sys.argv[2]
 staging_table_name = sys.argv[3]
 dest_db_name = sys.argv[4]
 dest_table_name = sys.argv[5]
+dt = sys.argv[6]
 
-df = pd.read_csv(filepath)
+dt_year, dt_month, dt_day = dt.split('-')
 
-s = df.iloc[:,0]
-l_dates = list(s.unique())
-l_dates = map(lambda x: x[0:10].strip(), l_dates)
-l_dates = filter(lambda x: re.match('\d{4}[-/]\d{2}[-/]\d{1}', x), l_dates)
-s_dates = set(l_dates)
+print dt_year, dt_month, dt_day
 
-for date_str in s_dates:
-    date_dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
-    print 'Processing day: ', date_str, date_dt.year, date_dt.month, date_dt.day
+filename = os.path.splitext(os.path.basename(timeline_path))[0]
+hash_code = filename.split('-')[1]
+folder = os.path.dirname(timeline_path)
+extsearch_path = "{0}/es-{1}.csv".format(folder, hash_code)
 
-    records = df[df['date'].str.contains(date_str)]
-    filename = "ingest_summary_{0}{1}{2}.csv".format(date_dt.year, date_dt.month, date_dt.day)
-    records.to_csv(filename, index=False)
+print filename, hash_code, folder, extsearch_path
 
-    insert_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(filename, staging_db_name, staging_table_name)
+if os.path.isfile(extsearch_path):
+
+    # Get FullURI from extended search file
+    es_df = pd.read_csv(extsearch_path, sep='\t')
+    fulluri = es_df.iloc[0]['fulluri']
+    print fulluri
+
+    # Load timeline to staging table
+    insert_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(timeline_path, staging_db_name, staging_table_name)
     load_to_table_cmd = "hive -e \"{0}\"".format(insert_cmd)
     print load_to_table_cmd
     subprocess.call(load_to_table_cmd, shell=True)
 
-    insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT tdate, total FROM {5}.{6}".format(dest_db_name, dest_table_name, date_dt.year, date_dt.month, date_dt.day, staging_db_name, staging_table_name)
+    # Insert into new table from staging table and adding FullURI value
+    insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT '{5}', tstart, tend, duration, clientip, respcode, '' FROM {6}.{7} where cast(tstart as timestamp) is not null;".format(dest_db_name, dest_table_name, dt_year, dt_month, dt_day, fulluri, staging_db_name, staging_table_name)
     load_to_table_cmd = "hive -e \"{0}\"".format(insert_cmd)
     print load_to_table_cmd
     subprocess.call(load_to_table_cmd, shell=True)
 
-    os.remove(filename)
-
+else:
+    print "Extended search file {0} doesn't exist. Timeline on file {1} can't be processed".format(extsearch_path, timeline_path)

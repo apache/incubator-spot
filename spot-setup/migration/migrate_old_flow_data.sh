@@ -26,12 +26,6 @@ IMPALA_DEM=$5
 # Execution example:
 #./migrate_old_flow_data.sh '/home/spot/spot-csv-data' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
 
-# OLD_DATA_PATH='/home/spot/spot-csv-data'
-# STAGING_DB='spot_migration'
-# HDFS_STAGING_PATH='/user/spot/spot_migration/'
-# DEST_DB='migrated'
-# IMPALA_DEM='node01'
-
 hadoop fs -mkdir $HDFS_STAGING_PATH
 hadoop fs -mkdir $HDFS_STAGING_PATH/flow/
 hadoop fs -mkdir $HDFS_STAGING_PATH/flow/scores/
@@ -42,6 +36,7 @@ hadoop fs -mkdir $HDFS_STAGING_PATH/flow/storyboard/
 hadoop fs -mkdir $HDFS_STAGING_PATH/flow/threat_investigation/
 hadoop fs -mkdir $HDFS_STAGING_PATH/flow/timeline/
 hdfs dfs -setfacl -R -m user:impala:rwx $HDFS_STAGING_PATH
+
 
 #Creating Staging tables in Impala
 impala-shell -i ${IMPALA_DEM} --var=hpath=${HDFS_STAGING_PATH} --var=dbname=${STAGING_DB} -c -f create_flow_migration_tables.hql
@@ -59,7 +54,7 @@ do
 done
 
 
-DAYS=$OLD_DATA_PATH/flow/*
+DAYS=$OLD_DATA_PATH/flow/2*
 
 for dir in $DAYS
 do
@@ -184,5 +179,17 @@ select '$ip', tstart, tend, srcip, dstip, proto, sport, dport, ipkt, ibyt from $
   fi
 done
 
+
+# Dropping staging tables
+impala-shell -i ${IMPALA_DEM} --var=dbname=${STAGING_DB} -c -f drop_flow_migration_tables.hql
+
+# Removing staging tables' path in HDFS
+hadoop fs -rm -r $HDFS_STAGING_PATH/flow/
+
+# Moving CSV data to backup folder
+mkdir $OLD_DATA_PATH/backup/
+mv $OLD_DATA_PATH/flow/ $OLD_DATA_PATH/backup/
+
+# Invalidating metadata in Impala to refresh tables content
 impala-shell -i ${IMPALA_DEM} -q "INVALIDATE METADATA;"
 
