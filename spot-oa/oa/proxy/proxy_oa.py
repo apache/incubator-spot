@@ -129,8 +129,8 @@ class OA(object):
 
         if os.path.isdir(self._ipynb_path):
 
-            self._logger.info("Adding edge investigation IPython Notebook")
-            shutil.copy("{0}/ipynb_templates/Edge_Investigation_master.ipynb".format(self._scrtip_path),"{0}/Edge_Investigation.ipynb".format(self._ipynb_path))
+            self._logger.info("Adding advanced mode IPython Notebook")
+            shutil.copy("{0}/ipynb_templates/Advanced_Mode_master.ipynb".format(self._scrtip_path),"{0}/Advanced_Mode.ipynb".format(self._ipynb_path))
 
             self._logger.info("Adding threat investigation IPython Notebook")
             shutil.copy("{0}/ipynb_templates/Threat_Investigation_master.ipynb".format(self._scrtip_path),"{0}/Threat_Investigation.ipynb".format(self._ipynb_path))
