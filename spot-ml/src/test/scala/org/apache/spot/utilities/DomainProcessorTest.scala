@@ -18,12 +18,13 @@
 package org.apache.spot.utilities
 
 import org.apache.spot.testutils.TestingSparkContextFlatSpec
-import org.scalatest.{FunSuite, Matchers}
+import org.apache.spot.utilities
 import org.apache.spot.utilities.DomainProcessor._
+import org.scalatest.Matchers
 
 
 class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
-  val countryCodesSet = CountryCodes.CountryCodes
+  val countryCodesSet = utilities.CountryCodes.CountryCodes
 
 
   "extractDomain" should "return domain when provided a url with top-level domain and country code" in {
@@ -72,7 +73,7 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
 
     val url = "123.103.104.10.in-addr.arpa"
 
-    val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
 
     val userDomain = "intel"
 
@@ -86,7 +87,7 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
 
     val url = "services.amazon.com.mx"
 
-    val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
 
     val userDomain = "intel"
 
@@ -99,8 +100,8 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
   it should "handle an Alexa top 1M domain with a top-level domain name and country code but no subdomain" in {
 
     val url = "amazon.com.mx"
-    val countryCodes = sparkContext.broadcast(countryCodesSet)
-    val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val countryCodes = sparkSession.sparkContext.broadcast(countryCodesSet)
+    val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = "intel"
 
     val result = extractDomainInfo(url, topDomains, userDomain)
@@ -111,8 +112,8 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
   it should "handle an Alexa top 1M domain with a subdomain and top-level domain name but no country code" in {
 
     val url = "services.amazon.com"
-    val countryCodes = sparkContext.broadcast(countryCodesSet)
-    val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val countryCodes = sparkSession.sparkContext.broadcast(countryCodesSet)
+    val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = "intel"
 
     val result = extractDomainInfo(url, topDomains, userDomain)
@@ -124,8 +125,8 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
   it should "handle an Alexa top 1M domain with no subdomain or country code" in {
 
     val url = "amazon.com"
-    val countryCodes = sparkContext.broadcast(countryCodesSet)
-    val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val countryCodes = sparkSession.sparkContext.broadcast(countryCodesSet)
+    val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = "intel"
 
     val result = extractDomainInfo(url, topDomains, userDomain)
@@ -134,8 +135,8 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
   }
   it should "not identify the domain as the users domain when both are empty strings" in {
     val url = "ab..com"
-    val countryCodes = sparkContext.broadcast(countryCodesSet)
-    val topDomains = sparkContext.broadcast(TopDomains.TopDomains)
+    val countryCodes = sparkSession.sparkContext.broadcast(countryCodesSet)
+    val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = ""
 
     val result = extractDomainInfo(url, topDomains, userDomain)

@@ -18,13 +18,13 @@
 package org.apache.spot
 
 import org.apache.log4j.{Level, LogManager, Logger}
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSuspiciousConnectsAnalysis
 import org.apache.spot.netflow.FlowSuspiciousConnectsAnalysis
 import org.apache.spot.proxy.ProxySuspiciousConnectsAnalysis
 import org.apache.spot.utilities.data.InputOutputDataHandler
+import org.apache.spot.utilities.data.validation.InvalidDataHandler
 
 
 /**
@@ -56,34 +56,70 @@ object SuspiciousConnects {
         Logger.getLogger("akka").setLevel(Level.OFF)
 
         val analysis = config.analysis
-        val sparkConfig = new SparkConf().setAppName("Spot ML:  " + analysis + " suspicious connects analysis")
-        val sparkContext = new SparkContext(sparkConfig)
-        val sqlContext = new SQLContext(sparkContext)
 
-        val inputDataFrame = InputOutputDataHandler.getInputDataFrame(sqlContext, config.inputPath, logger)
-          .getOrElse(sqlContext.emptyDataFrame)
+        val sparkSession = SparkSession.builder
+          .appName("Spot ML:  " + analysis + " suspicious connects analysis")
+          .master("yarn")
+          .getOrCreate()
+
+        val inputDataFrame = InputOutputDataHandler.getInputDataFrame(sparkSession, config.inputPath, logger)
+          .getOrElse(sparkSession.emptyDataFrame)
         if(inputDataFrame.rdd.isEmpty()) {
           logger.error("Couldn't read data from location " + config.inputPath +", please verify it's a valid location and that " +
             s"contains parquet files with a given schema and try again.")
           System.exit(0)
         }
 
-        analysis match {
-          case "flow" => FlowSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
-          case "dns" => DNSSuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
-          case "proxy" => ProxySuspiciousConnectsAnalysis.run(config, sparkContext, sqlContext, logger, inputDataFrame)
-          case _ => logger.error("Unsupported (or misspelled) analysis: " + analysis)
+        val results: Option[SuspiciousConnectsAnalysisResults] = analysis match {
+          case "flow" => Some(FlowSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame))
+          case "dns" => Some(DNSSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame))
+          case "proxy" => Some(ProxySuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame))
+          case _ => None
         }
 
-        InputOutputDataHandler.mergeResultsFiles(sparkContext, config.hdfsScoredConnect, analysis, logger)
+        results match {
+          case Some(SuspiciousConnectsAnalysisResults(resultRecords, invalidRecords)) => {
 
-        sparkContext.stop()
+            logger.info(s"$analysis suspicious connects analysis completed.")
+            logger.info("Saving results to : " + config.hdfsScoredConnect)
+
+            import sparkSession.implicits._
+            resultRecords.map(_.mkString(config.outputDelimiter)).rdd.saveAsTextFile(config.hdfsScoredConnect)
+
+            // SPOT-172 (https://issues.apache.org/jira/browse/SPOT-172)
+            // We need to use FileSystem for proxy.
+            analysis match {
+              case "flow" => InputOutputDataHandler
+                .mergeResultsFileUtil(sparkSession, config.hdfsScoredConnect, analysis, logger)
+              case "dns" => InputOutputDataHandler
+                .mergeResultsFileUtil(sparkSession, config.hdfsScoredConnect, analysis, logger)
+              case "proxy" => InputOutputDataHandler
+                .mergeResultsFileSystem(sparkSession, config.hdfsScoredConnect, analysis, logger)
+            }
+
+            InvalidDataHandler.showAndSaveInvalidRecords(invalidRecords, config.hdfsScoredConnect, logger)
+          }
+
+          case None => logger.error("Unsupported (or misspelled) analysis: " + analysis)
+        }
+
+        sparkSession.stop()
 
       case None => logger.error("Error parsing arguments.")
     }
 
     System.exit(0)
   }
+
+  /**
+    *
+    * @param suspiciousConnects
+    * @param invalidRecords
+    */
+  case class SuspiciousConnectsAnalysisResults(val suspiciousConnects: DataFrame, val invalidRecords: DataFrame)
 
 
 }

@@ -26,11 +26,11 @@ object DNSSchema {
 
   // input fields
 
-  val Timestamp = "frame_time"
-  val TimestampField = StructField(Timestamp, StringType, nullable= true)
+  val TimeStamp = "frame_time"
+  val TimeStampField = StructField(TimeStamp, StringType, nullable= true)
 
-  val UnixTimestamp = "unix_tstamp"
-  val UnixTimestampField = StructField(UnixTimestamp, LongType, nullable= true)
+  val UnixTimeStamp = "unix_tstamp"
+  val UnixTimeStampField = StructField(UnixTimeStamp, LongType, nullable= true)
 
   val FrameLength = "frame_len"
   val FrameLengthField = StructField(FrameLength, IntegerType, nullable= true)

@@ -16,31 +16,30 @@
  */
 
 /**
-  * THIS CODE WAS COPIED DIRECTLY FROM THE OPEN SOURCE PROJECT TAP (Trusted Analytics Platform)
-  * which has an Apache V2.0
+  * THIS CODE WAS ORIGINALLY COPIED DIRECTLY FROM THE OPEN SOURCE PROJECT TAP (Trusted Analytics Platform)
+  * which has an Apache V2.0. IT WAS LATER UPDATED TO SUPPORT SPARK 2.1 SparkSession
   */
+
 package org.apache.spot.testutils
 
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{SQLContext, SQLImplicits, SparkSession}
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 
 trait TestingSparkContextFlatSpec extends FlatSpec with BeforeAndAfter {
 
-  var sparkContext: SparkContext = null
-  var sqlContext : SQLContext = null
+  var sparkSession: SparkSession = TestingSparkContext.getSparkSession
 
-  before {
-    sparkContext = TestingSparkContext.sparkContext
-    sqlContext = new SQLContext(sparkContext)
+  object testImplicits extends SQLImplicits {
+    protected override def _sqlContext: SQLContext = sparkSession.sqlContext
   }
 
-  /**
-    * Clean up after the test is done
-    */
+  before {
+    sparkSession = TestingSparkContext.getSparkSession
+  }
+
   after {
     TestingSparkContext.cleanUp()
-    sparkContext = null
+    sparkSession = null
   }
 
 }

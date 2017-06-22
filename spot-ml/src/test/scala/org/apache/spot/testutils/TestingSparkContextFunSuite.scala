@@ -16,32 +16,30 @@
  */
 
 /**
-  * THIS CODE WAS COPIED DIRECTLY FROM THE OPEN SOURCE PROJECT TAP (Trusted Analytics Platform)
-  * which has an Apache V2.0
+  * THIS CODE WAS ORIGINALLY COPIED DIRECTLY FROM THE OPEN SOURCE PROJECT TAP (Trusted Analytics Platform)
+  * which has an Apache V2.0. IT WAS LATER UPDATED TO SUPPORT SPARK 2.1 SparkSession
   */
 
 package org.apache.spot.testutils
 
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.SparkSession
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 trait TestingSparkContextFunSuite extends FunSuite with BeforeAndAfterAll {
 
-  var sparkContext: SparkContext = null
-  var sqlContext : SQLContext = null
+  var sparkSession: SparkSession = null
 
   override def beforeAll() = {
-    sparkContext = TestingSparkContext.sparkContext
-    sqlContext = new SQLContext(sparkContext)
+    sparkSession = SparkSession.builder().appName("spot-ml-testing")
+      .master("local")
+      .config("", "")
+      .getOrCreate()
   }
 
   /**
-   * Clean up after the test is done
-   */
+    * Clean up after the test is done
+    */
   override def afterAll() = {
-    TestingSparkContext.cleanUp()
-    sparkContext = null
+    sparkSession.stop()
   }
-
 }

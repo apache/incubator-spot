@@ -30,4 +30,33 @@ class DNSWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
 
     result shouldBe 2.807354922057604
   }
+
+  "dnsWord" should "return correct word with a single example input" in {
+
+    val topDomainsBC = sparkSession.sparkContext.broadcast(Set("google", "youtube"))
+    val userDomain = "apache"
+
+    val timeStamp = "May  12 2015 11:32:45.543421000 UTC"
+    val unixTimeStamp = 1494326461L
+    val frameLength = 213
+    val clientIP = "122.52.206.191"
+    val queryName = "abcdefg.apache.com"
+    val queryClass = "0x00000001"
+    val dnsQueryType = 1
+    val dnsQueryRcode = 0
+
+    val DWC = new DNSWordCreation(topDomainsBC, userDomain)
+
+    val result = DWC.dnsWord(timeStamp,
+      unixTimeStamp,
+      frameLength,
+      clientIP,
+      queryName,
+      queryClass,
+      dnsQueryType,
+      dnsQueryRcode)
+
+    result shouldBe "2_7_11_2_10_1_1_0"
+
+  }
 }

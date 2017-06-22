@@ -17,9 +17,8 @@
 
 package org.apache.spot.dns.model
 
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Row, SQLContext}
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel.{ModelSchema, modelColumns}
 import org.apache.spot.utilities.data.InputOutputDataHandler.getFeedbackRDD
 
@@ -31,20 +30,18 @@ object DNSFeedback {
 
   /**
     * Load the feedback file for DNS data.
-    *
-    * @param sc                Spark context.
-    * @param sqlContext        Spark SQL context.
+ *
+    * @param sparkSession      Spark Session
     * @param feedbackFile      Local machine path to the DNS feedback file.
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.
     */
-  def loadFeedbackDF(sc: SparkContext,
-                     sqlContext: SQLContext,
+  def loadFeedbackDF(sparkSession: SparkSession,
                      feedbackFile: String,
                      duplicationFactor: Int): DataFrame = {
 
 
-    val feedback: RDD[String] = getFeedbackRDD(sc, feedbackFile)
+    val feedback: RDD[String] = getFeedbackRDD(sparkSession, feedbackFile)
 
     if (!feedback.isEmpty()) {
 
@@ -79,7 +76,7 @@ object DNSFeedback {
       val DnsQryRcodeIndex = 6
       val DnsSevIndex = 12
 
-      sqlContext.createDataFrame(feedback.map(_.split("\t"))
+      sparkSession.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(DnsSevIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(Seq(row(FrameTimeIndex),
           row(UnixTimeStampIndex).toLong,
@@ -92,7 +89,7 @@ object DNSFeedback {
         .flatMap(row => List.fill(duplicationFactor)(row)), ModelSchema)
         .select(modelColumns: _*)
     } else {
-      sqlContext.createDataFrame(sc.emptyRDD[Row], ModelSchema)
+      sparkSession.createDataFrame(sparkSession.sparkContext.emptyRDD[Row], ModelSchema)
     }
   }
 }

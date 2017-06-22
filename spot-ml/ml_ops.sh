@@ -29,13 +29,13 @@ DY=${FDATE:6:2}
 if [[ "${#FDATE}" != "8" || -z "${DSOURCE}" ]]; then
     echo "ml_ops.sh syntax error"
     echo "Please run ml_ops.sh again with the correct syntax:"
-    echo "./ml_ops.sh YYYYMMDD TYPE [TOL]"
+    echo "./ml_ops.sh YYYYMMDD TYPE [MAX RESULTS] [TOL]"
     echo "for example:"
-    echo "./ml_ops.sh 20160122 dns 1e-6"
+    echo "./ml_ops.sh 20160122 dns 1000 1e-6"
     echo "./ml_ops.sh 20160122 flow"
+    echo "./ml_ops.sh 20160122 proxy 100"
     exit
 fi
-
 
 # read in variables (except for date) from etc/.conf file
 # note: FDATE and DSOURCE *must* be defined prior sourcing this conf file
@@ -77,19 +77,20 @@ HDFS_SCORED_CONNECTS=${HPATH}/scores
 hdfs dfs -rm -R -f ${HDFS_SCORED_CONNECTS}
 
 time spark-submit --class "org.apache.spot.SuspiciousConnects" \
-  --master yarn-client \
+  --master yarn \
   --driver-memory ${SPK_DRIVER_MEM} \
-  --num-executors ${SPK_EXEC} \
   --conf spark.driver.maxResultSize=${SPK_DRIVER_MAX_RESULTS} \
   --conf spark.driver.maxPermSize=512m \
   --conf spark.dynamicAllocation.enabled=true \
+  --conf spark.dynamicAllocation.maxExecutors=${SPK_EXEC} \
   --conf spark.executor.cores=${SPK_EXEC_CORES} \
   --conf spark.executor.memory=${SPK_EXEC_MEM} \
+  --conf spark.sql.autoBroadcastJoinThreshold=${SPK_AUTO_BRDCST_JOIN_THR} \
   --conf "spark.executor.extraJavaOptions=-XX:MaxPermSize=512M -XX:PermSize=512M" \
   --conf spark.kryoserializer.buffer.max=512m \
   --conf spark.yarn.am.waitTime=100s \
   --conf spark.yarn.am.memoryOverhead=${SPK_DRIVER_MEM_OVERHEAD} \
-  --conf spark.yarn.executor.memoryOverhead=${SPK_EXEC_MEM_OVERHEAD} target/scala-2.10/spot-ml-assembly-1.1.jar \
+  --conf spark.yarn.executor.memoryOverhead=${SPK_EXEC_MEM_OVERHEAD} target/scala-2.11/spot-ml-assembly-1.1.jar \
   --analysis ${DSOURCE} \
   --input ${RAWDATA_PATH}  \
   --dupfactor ${DUPFACTOR} \
@@ -99,5 +100,9 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --threshold ${TOL} \
   --maxresults ${MAXRESULTS} \
   --ldamaxiterations 20 \
+  --ldaalpha ${LDA_ALPHA} \
+  --ldabeta ${LDA_BETA} \
+  --ldaoptimizer ${LDA_OPTIMIZER} \
+  --precision ${PRECISION} \
   $USER_DOMAIN_CMD
 

@@ -49,10 +49,10 @@ While inspecting specific, unique flows of data that may be important for indivi
 *Running Demo on Docker*
 
 1. [Install Docker](https://docs.docker.com/engine/installation/) for your platform 
-2. Run the container: `docker run -it -p 8889:8889 opennetworkinsight/oni-demo`
+2. Run the container: `docker run -it -p 8889:8889 apachespot/spot-demo`
 3. visit [http://localhost:8889/files/ui/flow/suspicious.html#date=2016-07-08](http://localhost:8889/files/ui/proxy/suspicious.html#date=2016-07-08) in your browser to get started
 
-For the full instructions visit the [spot](https://hub.docker.com/r/opennetworkinsight/oni-demo/) on Docker hub
+For the full instructions visit the [spot](https://hub.docker.com/r/apachespot/spot-demo/) on Docker hub
 
 ## **Getting Started**
 
@@ -96,15 +96,15 @@ and join our community.
 
 ### **Merge approval**
 
-ONI maintainers use LGTM (Looks Good to Me) in a comments on the code review to indicate acceptance, 
-at least 3 "LGTM" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
+Apache Spot maintainers use +1 in a comment on the code review to indicate acceptance, 
+at least 3 "+1" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
 
 
 ## **Licensing**
 
 Apache Spot is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
 
-* oni-nfdump [License](https://github.com/Open-Network-Insight/oni-nfdump/blob/master/BSD-license.txt)
+* spot-nfdump [License](https://github.com/Open-Network-Insight/spot-nfdump/blob/master/BSD-license.txt)
 
 ## **Maintainers**
 

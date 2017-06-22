@@ -17,7 +17,6 @@
 
 package org.apache.spot.utilities
 
-
 object CountryCodes {
 
   val CountryCodes = Set("ac", "ad", "ae", "af", "ag", "ai", "al", "am", "an", "ao", "aq", "ar", "as", "at", "au",

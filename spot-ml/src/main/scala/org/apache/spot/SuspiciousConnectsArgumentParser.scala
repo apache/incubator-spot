@@ -17,26 +17,13 @@
 
 package org.apache.spot
 
+import org.apache.spot.utilities.{FloatPointPrecisionUtility, FloatPointPrecisionUtility32, FloatPointPrecisionUtility64}
+
 
 /**
   * Parses arguments for the suspicious connections analysis.
   */
 object SuspiciousConnectsArgumentParser {
-
-  case class SuspiciousConnectsConfig(analysis: String = "",
-                                      inputPath: String = "",
-                                      feedbackFile: String = "",
-                                      duplicationFactor: Int = 1,
-                                      topicCount: Int = 20,
-                                      userDomain: String = "",
-                                      hdfsScoredConnect: String = "",
-                                      threshold: Double = 1.0d,
-                                      maxResults: Int = -1,
-                                      outputDelimiter: String = "\t",
-                                      ldaPRGSeed: Option[Long] = None,
-                                      ldaMaxiterations: Int = 20,
-                                      ldaAlpha: Double = 1.02,
-                                      ldaBeta: Double = 1.001)
 
   val parser: scopt.OptionParser[SuspiciousConnectsConfig] = new scopt.OptionParser[SuspiciousConnectsConfig]("LDA") {
 
@@ -91,7 +78,6 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(ldaMaxiterations = x)).
       text("maximum number of iterations used in LDA")
 
-
     opt[Double]("ldaalpha").optional().valueName("float64").
       action((x, c) => c.copy(ldaAlpha = x)).
       text("document concentration for lda, default 1.02")
@@ -99,5 +85,33 @@ object SuspiciousConnectsArgumentParser {
     opt[Double]("ldabeta").optional().valueName("float64").
       action((x, c) => c.copy(ldaBeta = x)).
       text("topic concentration for lda, default 1.001")
+
+    opt[Int]("precision").optional().valueName("int").
+      action((x, c) => c.copy(precisionUtility = x match {
+        case 32 => FloatPointPrecisionUtility32
+        case 64 => FloatPointPrecisionUtility64
+        case _ => FloatPointPrecisionUtility64
+      }))
+
+    opt[String]("ldaoptimizer").optional().valueName("lda optimizer").
+      action((x, c) => c.copy(ldaOptimizer = x)).
+      text("LDA Optimizer: em for EM Optimizer or online Online Optimizer")
   }
+
+  case class SuspiciousConnectsConfig(analysis: String = "",
+                                      inputPath: String = "",
+                                      feedbackFile: String = "",
+                                      duplicationFactor: Int = 1,
+                                      topicCount: Int = 20,
+                                      userDomain: String = "",
+                                      hdfsScoredConnect: String = "",
+                                      threshold: Double = 1.0d,
+                                      maxResults: Int = -1,
+                                      outputDelimiter: String = "\t",
+                                      ldaPRGSeed: Option[Long] = None,
+                                      ldaMaxiterations: Int = 20,
+                                      ldaAlpha: Double = 1.02,
+                                      ldaBeta: Double = 1.001,
+                                      ldaOptimizer: String = "em",
+                                      precisionUtility: FloatPointPrecisionUtility = FloatPointPrecisionUtility64)
 }

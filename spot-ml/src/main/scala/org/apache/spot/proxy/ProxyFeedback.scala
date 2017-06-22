@@ -17,7 +17,6 @@
 
 package org.apache.spot.proxy
 
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql._
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
@@ -29,15 +28,13 @@ object ProxyFeedback {
 
   /**
     * Load the feedback file for proxy data.
-    *
-    * @param sc                Spark context.
-    * @param sqlContext        Spark SQL context.
+ *
+    * @param sparkSession      Spark Session
     * @param feedbackFile      Local machine path to the proxy feedback file.
     * @param duplicationFactor Number of words to create per flagged feedback entry.
     * @return DataFrame of the feedback events.
     */
-  def loadFeedbackDF(sc: SparkContext,
-                     sqlContext: SQLContext,
+  def loadFeedbackDF(sparkSession: SparkSession,
                      feedbackFile: String,
                      duplicationFactor: Int): DataFrame = {
 
@@ -53,7 +50,7 @@ object ProxyFeedback {
         StructField(RespCode, StringType, nullable = true),
         StructField(FullURI, StringType, nullable = true)))
 
-    val feedback: RDD[String] = getFeedbackRDD(sc, feedbackFile)
+    val feedback: RDD[String] = getFeedbackRDD(sparkSession, feedbackFile)
 
     if (!feedback.isEmpty()) {
 
@@ -69,7 +66,7 @@ object ProxyFeedback {
 
       val fullURISeverityIndex = 22
 
-      sqlContext.createDataFrame(feedback.map(_.split("\t"))
+      sparkSession.createDataFrame(feedback.map(_.split("\t"))
         .filter(row => row(fullURISeverityIndex).trim.toInt == 3)
         .map(row => Row.fromSeq(List(row(dateIndex),
           row(timeIndex),
@@ -83,7 +80,7 @@ object ProxyFeedback {
         .flatMap(row => List.fill(duplicationFactor)(row)), feedbackSchema)
         .select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
     } else {
-      sqlContext.createDataFrame(sc.emptyRDD[Row], feedbackSchema)
+      sparkSession.createDataFrame(sparkSession.sparkContext.emptyRDD[Row], feedbackSchema)
     }
   }
 }
