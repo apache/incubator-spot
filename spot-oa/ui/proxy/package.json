@@ -6,10 +6,12 @@
     "watch-suspicious": "watchify js/suspicious.js -o js/suspicious.bundle.min.js -v -d",
     "watch-threat-investigation": "watchify js/threat-investigation.js -o js/threat-investigation.bundle.min.js -v -d",
     "watch-storyboard": "watchify js/storyboard.js -o js/storyboard.bundle.min.js -v -d",
-    "build-all": "npm run build-suspicious && npm run build-threat-investigation && npm run build-storyboard",
+    "watch-notebooks": "watchify js/notebooks.js -o js/notebooks.bundle.min.js -v -d",
+    "build-all": "npm run build-suspicious && npm run build-threat-investigation && npm run build-storyboard && npm run build-notebooks",
     "build-suspicious": "browserify js/suspicious.js | uglifyjs -cm > js/suspicious.bundle.min.js",
     "build-threat-investigation": "browserify js/threat-investigation.js | uglifyjs -cm > js/threat-investigation.bundle.min.js",
-    "build-storyboard": "browserify js/storyboard.js | uglifyjs -cm > js/storyboard.bundle.min.js"
+    "build-storyboard": "browserify js/storyboard.js | uglifyjs -cm > js/storyboard.bundle.min.js",
+    "build-notebooks": "browserify js/notebooks.js | uglifyjs -cm > js/notebooks.bundle.min.js"
   },
   "browserify": {
     "transform": [
