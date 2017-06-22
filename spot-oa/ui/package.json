@@ -2,7 +2,7 @@
   "name": "spot_ui",
   "version": "1.1.0",
   "description": "Apache Spot :: UI",
-  "repository": "https://github.com/Open-Network-Insight/open-network-insight",
+  "repository": "https://github.com/apache/incubator-spot",
   "license": "Apache License, Version 2.0",
   "dependencies": {
     "bootstrap": "3.3.5",
