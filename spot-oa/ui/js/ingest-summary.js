@@ -59,7 +59,7 @@ ReactDOM.render(
   <MainMenu />,
   document.getElementById('main-menu')
 );
-EdInActions.getWidgets('menu', '');
+
 SpotActions.setDate(SpotUtils.getCurrentDate());
 
 ReactDOM.render(
