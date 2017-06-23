@@ -76,7 +76,7 @@ do
     hive -e "$command"
 
     command="INSERT INTO $DEST_DB.flow_scores PARTITION (y=$y, m=$m, d=$d) 
-select tstart,srcip,dstip,sport,dport,proto,ipkt,ibyt,0,0,lda_score,rank,srcIpInternal,destIpInternal,srcGeo,dstGeo,srcDomain,dstDomain,srcIP_rep,dstIP_rep 
+select tstart,srcip,dstip,sport,dport,proto,ipkt,ibyt,opkt,obyt,score,rank,srcIpInternal,destIpInternal,srcGeo,dstGeo,srcDomain,dstDomain,srcIP_rep,dstIP_rep 
 from $STAGING_DB.flow_scores_tmp;"
     echo $command
     hive -e "$command"
