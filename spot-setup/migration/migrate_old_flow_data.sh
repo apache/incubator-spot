@@ -17,14 +17,15 @@
 # limitations under the License.
 #
 
-OLD_DATA_PATH=$1
-STAGING_DB=$2
-HDFS_STAGING_PATH=$3
-DEST_DB=$4
-IMPALA_DEM=$5
+OLD_OA_PATH=$1
+NEW_OA_PATH=$2
+STAGING_DB=$3
+HDFS_STAGING_PATH=$4
+DEST_DB=$5
+IMPALA_DEM=$6
 
 # Execution example:
-#./migrate_old_flow_data.sh '/home/spot/spot-csv-data' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
+#./migrate_old_flow_data.sh '/home/spotuser/incubator-spot_old/spot-oa' '/home/spotuser/incubator-spot_new/spot-oa/' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
 
 hadoop fs -mkdir $HDFS_STAGING_PATH
 hadoop fs -mkdir $HDFS_STAGING_PATH/flow/
@@ -45,7 +46,7 @@ impala-shell -i ${IMPALA_DEM} --var=hpath=${HDFS_STAGING_PATH} --var=dbname=${ST
 ## Flow Ingest Summary
 echo "Processing Flow Ingest Summary"
 
-ing_sum_path=$OLD_DATA_PATH/flow/ingest_summary/is_??????.csv
+ing_sum_path=$OLD_OA_PATH/data/flow/ingest_summary/is_??????.csv
 
 for file in $ing_sum_path
 do 
@@ -54,7 +55,7 @@ do
 done
 
 
-DAYS=$OLD_DATA_PATH/flow/2*
+DAYS=$OLD_OA_PATH/data/flow/2*
 
 for dir in $DAYS
 do
@@ -180,6 +181,12 @@ select '$ip', tstart, tend, srcip, dstip, proto, sport, dport, ipkt, ibyt from $
 done
 
 
+## Copying advanced mode notebooks to new paths in Spot 1.0
+for new_dir in $NEW_OA_PATH/ipynb/flow/*
+do 
+  cp $OLD_OA_PATH/oa/flow/ipynb_templates/Advanced_Mode_master.ipynb $new_dir/Advanced_Mode.ipynb
+done
+
 # Dropping staging tables
 impala-shell -i ${IMPALA_DEM} --var=dbname=${STAGING_DB} -c -f drop_flow_migration_tables.hql
 
@@ -187,8 +194,8 @@ impala-shell -i ${IMPALA_DEM} --var=dbname=${STAGING_DB} -c -f drop_flow_migrati
 hadoop fs -rm -r $HDFS_STAGING_PATH/flow/
 
 # Moving CSV data to backup folder
-mkdir $OLD_DATA_PATH/backup/
-mv $OLD_DATA_PATH/flow/ $OLD_DATA_PATH/backup/
+mkdir $OLD_OA_PATH/data/backup/
+mv $OLD_OA_PATH/data/flow/ $OLD_OA_PATH/data/backup/
 
 # Invalidating metadata in Impala to refresh tables content
 impala-shell -i ${IMPALA_DEM} -q "INVALIDATE METADATA;"
