@@ -32,7 +32,7 @@ More information about oa/proxy in [README.md](/spot-oa/oa/proxy)
 
 More information about oa/components in [README.md](/spot-oa/oa/components)
 
-##Operational Analytics prerequisites
+## Operational Analytics prerequisites
 
 In order to execute this process there are a few prerequisites:
 
@@ -52,8 +52,8 @@ In order to execute this process there are a few prerequisites:
         file for Open Network Insights project.
  
 
-##Operational Analytics installation and usage
-####Installation
+## Operational Analytics installation and usage
+#### Installation
  
  OA installation consists of the configuration of extra modules or components and creation of a set of files.
  Depending on the data type that is going to be processed some components are required and other components are not.
@@ -97,7 +97,7 @@ In order to execute this process there are a few prerequisites:
     configure all of them in case new data types are analyzed in the future.
     For more details about how to configure each component go to [spot-oa/oa/components/README.md](/spot-oa/oa/components/README.md).
     
- ####Usage
+ #### Usage
  
  OA process is triggered with the execution of start_oa.py. This Python script will execute the OA process
   for only one data type (Flow, DNS or Proxy) at a time. If users need to process multiple data types at the same time, multiple
