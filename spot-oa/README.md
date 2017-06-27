@@ -44,7 +44,7 @@ spot-oa is the root folder, below are more details about child folders:
  * [EdgeNotebook](/spot-oa/oa/proxy/ipynb_templates/EdgeNotebook.md)
  * [ThreatInvestigation](/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md)
 
-##**Views**
+## **Views**
 
 ### Analyst View (suspicious.html)
 The Analyst view provides a dashboard showing the top 250 suspicious connects.
