@@ -375,7 +375,7 @@ var NetworkViewPanel = React.createClass({
                     0
                 );
             } else {
-                node.size = node.hits.length;
+                node.size = node.hits === undefined ? 0 : node.hits.length;
             }
 
             nodes.push(node);
