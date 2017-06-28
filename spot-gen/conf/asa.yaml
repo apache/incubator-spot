@@ -1,0 +1,33 @@
+---
+timeformat: "%b %d %Y %H:%M:%S"
+linebreak: "\n"
+templates:
+  - { type: 'file', samples: 'asa/asa.sample', period: 60, min: 1, max: 5 }
+replaces:
+  - [ '%FLAGS%', ['ACK', 'RST ACK', 'SYN ACK', 'RST'] ]
+  - [ '%INTERF%', ['Inside-Trunk', 'Outside', 'Outside_VPN'] ]
+  - [ '%USERNAME%', 'common/users.txt' ]
+  - [ '%RUSERNAME%', 'common/users.txt' ]
+  - [ '%PROTO%', ['TCP', 'UDP']]
+  - [ '%proto%', ['tcp', 'udp']]
+  -
+    - '%SEC%'
+    - !!python/name:random.randint
+    - [0, 59]
+  -
+    - '%INT%'
+    - !!python/name:random.randint
+    - [2, 5000]
+  -
+    - '%CONN_NUM%'
+    - !!python/name:random.randint
+    - [200000000, 500000000]
+  -
+    - '%_IP%'
+    - !!python/name:common.utils.get_random_ip
+    - ['10.0.0.0/8']
+  -
+    - '%_PORT%'
+    - !!python/name:random.randint
+    - [1, 65534]
+...

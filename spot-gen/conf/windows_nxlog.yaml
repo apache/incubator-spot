@@ -1,0 +1,42 @@
+---
+timeformat: "%Y-%m-%d %H:%M:%S"
+linebreak: "\n"
+templates:
+  - { type: 'file', samples: 'windows_nxlog/windows_nxlog.sample', period: 60, min: 1, max: 5 }
+replaces:
+  - [ '%SUBJECT_ACCOUNT%', 'common/users.txt' ]
+  - [ '%SUBJECT_DOMAIN%', 'common/hosts.txt' ]
+  - [ '%TARGET_ACCOUNT%', 'common/users.txt' ]
+  - [ '%OLD_TARGET_ACCOUNT%', 'common/users.txt' ]
+  - [ '%NEW_TARGET_ACCOUNT%', 'common/users.txt' ]
+  - [ '%TARGET_DOMAIN%', 'common/hosts.txt' ]
+  - [ '%WORKSTATION%', 'common/hosts.txt' ]
+  - [ '%LOGON_TYPE%', ['1', '2', '3', '4'] ]
+  - [ '%OBJECT_SERVER%', ['test1', 'test2']]
+  - [ '%OBJECT_NAME%', ['test1', 'test2']]
+  - [ '%PROCESS_NAME%', 'common/files.txt' ]
+  -
+    - '%SUBJECT_LOGONID%'
+    - !!python/name:random.randint
+    - [1000, 10000]
+  -
+    - '%TARGET_LOGONID%'
+    - !!python/name:random.randint
+    - [1000, 10000]
+  -
+    - '%HANDLEID%'
+    - !!python/name:random.randint
+    - [2, 5000]
+  -
+    - '%PROCESS_ID%'
+    - !!python/name:random.randint
+    - [2, 5000]
+  -
+    - '%IP%'
+    - !!python/name:common.utils.get_random_ip
+    - ['10.0.0.0/8']
+  -
+    - '%PORT%'
+    - !!python/name:random.randint
+    - [1, 65534]
+...
