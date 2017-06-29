@@ -49,7 +49,7 @@ In order to execute this process there are a few prerequisites:
          If users want to implement their own machine learning piece to detect suspicious connections they need to refer
          to each data type module to know more about input format and schema.
  4. spot-setup project installed. Spot-setup project contains scripts to install hive database and the main configuration
-        file for Open Network Insights project.
+        file.
  
 
 ## Operational Analytics installation and usage
