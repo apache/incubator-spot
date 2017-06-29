@@ -74,7 +74,7 @@ To get to parquet format we need a staging table to store CSV data temporarily f
 
 ## Migrating OA Data from Spot 0.9 to 1.0
 
-Please review migration documentation [here](migrating/README.md).
+Please review migration documentation [here](migration/README.md).
 
 ## Licensing
 
