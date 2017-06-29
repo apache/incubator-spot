@@ -31,7 +31,7 @@ impala_daemon = sys.argv[6]
 
 
 # Execution example:
-#./migrate_old_proxy_data.py '/home/spotuser/incubator-spot_old/spot-oa' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
+#./migrate_old_data.py 'flow,dns,proxy' '/home/spotuser/incubator-spot_old/spot-oa' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
 
 def main():
   log = util.get_logger('SPOT.MIGRATE')

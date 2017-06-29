@@ -1,4 +1,4 @@
-## Data Migration from Spot 0.9 to Spot 1.0
+## OA Data Migration from Spot 0.9 to Spot 1.0
 
 This document is intended for any developer or sysadmin who wants to migrate their existing OA data from Spot 0.9 to Spot 1.0. In Spot 0.9, OA data was stored in CSV files in a given location in the server used for OA (specified in spot.conf during original installation). In Spot 1.0, OA data is stored in Impala tables. The purposes of these scripts are to migrate independently each use case (flow, proxy and dns) from those CSV files into the new Impala tables.
 
@@ -8,6 +8,7 @@ This migration process is optional and only for those users who want to keep usa
 
 - You must run first new Spot setup installation to have the new tables created in Impala. 
 - You must log in to the OA server and run these scripts from there.
+- You must run these scripts from the spot-setup/migration folder in the new Spot 1.0 location
 
 ### CSV to Impala Tables Mapping
 
@@ -48,23 +49,23 @@ timeline-*.csv | proxy_timeline
 
 ### Data Flow
 
-These scripts will read each of the CSV from the existing location and import data to Impala tables accordingly, creating first a staging database and tables to load the records in the CSV and then insert that data into the new Spot 1.0 tables. You must execute this migration process from the server where Spot 0.9 CSV files are located. You may run one or all script for each use case (flow, dns and proxy) according to your needs and your existing data. At the end of each script, the specific pipeline folder will be moved from the original location to a backup folder. Staging tables and their respective HDFS paths will be removed.
+There is a launch and single script that will migrate all specified pipelines. This process will read each of the CSV from the existing location and import data to Impala tables accordingly, creating first a staging database and tables to load the records in the CSV and then insert that data into the new Spot 1.0 tables. You must execute this migration process from the server where Spot 0.9 CSV files are located. You may provide one pipeline or all (flow, dns and proxy) according to your needs and your existing data. At the end of each script, the old data pipeline folder will be moved from the original location to a backup folder. Staging tables and their respective HDFS paths will be removed.
 
 ### Execution
 
-```shell
-./migrate_old_dns_data.sh OLD_OA_PATH NEW_OA_PATH STAGING_DB_NAME STAGING_DB_HDFS_PATH NEW_SPOT_IMPALA_DB IMPALA_DAEMON
+```python
+./migrate_old_data.py PIPELINES OLD_OA_PATH STAGING_DB_NAME STAGING_DB_HDFS_PATH NEW_SPOT_IMPALA_DB IMPALA_DAEMON
 ```
 
 where variables mean:
+- **PIPELINES** - Comma-separated list of the pipelines to be migrated 
 - **OLD_OA_PATH** - Path to the old Spot-OA (0.9 release) directory in the local filesystem 
-- **NEW_OA_PATH** - Path to the new Spot-OA (1.0 release) directory in the local filesystem 
 - **STAGING_DB_NAME** - Name of the staging database to be created to temporarily store these records
 - **STAGING_DB_HDFS_PATH** - HDFS path of the staging database to be created to temporarily store these records
 - **NEW_SPOT_IMPALA_DB** - Database name of the Spot 1.0 Impala tables. Use the same as in the spot.conf when the new Spot release was installed 
 - **IMPALA_DAEMON** - Choose an Impala daemon to be used to run scripts' queries.
 
 Example:
-```shell
-./migrate_old_flow_data.sh '/home/spotuser/incubator-spot_old/spot-oa' '/home/spotuser/incubator-spot_new/spot-oa/' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
+```python
+./migrate_old_data.py 'flow,dns,proxy' '/home/spotuser/incubator-spot_old/spot-oa' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
 ```
