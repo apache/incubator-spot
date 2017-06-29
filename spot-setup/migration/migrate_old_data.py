@@ -58,11 +58,11 @@ def main():
 
   log.info("Install browserify and uglifyjs using npm")
   os.chdir('{0}/ui'.format(new_oa_path))
-  # util.execute_cmd('sudo -H -E npm install -g browserify uglifyjs',log)
+  util.execute_cmd('sudo -H -E npm install -g browserify uglifyjs',log)
 
   log.info("Install requirements using pip")
   os.chdir('{0}'.format(new_oa_path))
-  # util.execute_cmd('sudo pip install -r requirements.txt',log)
+  util.execute_cmd('sudo pip install -r requirements.txt',log)
 
 
 
