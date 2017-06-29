@@ -21,6 +21,7 @@ import org.apache.log4j.Logger
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.SuspiciousConnectsScoreFunction
@@ -100,6 +101,18 @@ object ProxySuspiciousConnectsModel {
     3.0, 3.3, 3.6, 3.9, 4.2,
     4.5, 4.8, 5.1, 5.4, Double.PositiveInfinity)
 
+  val ModelSchema = StructType(List(DateField,
+    TimeField,
+    ClientIPField,
+    HostField,
+    ReqMethodField,
+    UserAgentField,
+    ResponseContentTypeField,
+    RespCodeField,
+    FullURIField))
+
+  val ModelColumns = ModelSchema.fieldNames.toList.map(col)
+
   /**
     * Factory for ProxySuspiciousConnectsModel.
     * Trains the model from the incoming DataFrame using the specified number of topics
@@ -121,9 +134,8 @@ object ProxySuspiciousConnectsModel {
 
 
     val selectedRecords =
-      inputRecords.select(Date, Time, ClientIP, Host, ReqMethod, UserAgent, ResponseContentType, RespCode, FullURI)
-        .unionAll(ProxyFeedback.loadFeedbackDF(sparkSession, config.feedbackFile, config.duplicationFactor))
-
+      inputRecords.select(ModelColumns: _*)
+        .union(ProxyFeedback.loadFeedbackDF(sparkSession, config.feedbackFile, config.duplicationFactor))
 
 
     val agentToCount: Map[String, Long] =

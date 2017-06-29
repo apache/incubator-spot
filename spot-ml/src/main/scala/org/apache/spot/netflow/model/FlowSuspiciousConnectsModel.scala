@@ -141,7 +141,7 @@ object FlowSuspiciousConnectsModel {
     val selectedRecords = inputRecords.select(ModelColumns: _*)
 
 
-    val totalRecords = selectedRecords.unionAll(FlowFeedback.loadFeedbackDF(sparkSession,
+    val totalRecords = selectedRecords.union(FlowFeedback.loadFeedbackDF(sparkSession,
       config.feedbackFile,
       config.duplicationFactor))
 
