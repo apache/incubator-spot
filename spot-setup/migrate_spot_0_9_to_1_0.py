@@ -20,7 +20,7 @@
 import os
 import sys
 import subprocess
-from utilities import util
+from migration.utilities import util
 
 pipelines=sys.argv[1]
 old_oa_path=sys.argv[2]
@@ -37,12 +37,18 @@ def main():
   log = util.get_logger('SPOT.MIGRATE')
 
   cur_path = os.path.dirname(os.path.realpath(__file__))
-  new_spot_path = os.path.split(os.path.split(cur_path)[0])[0]
+  new_spot_path = os.path.split(cur_path)[0]
   new_oa_path = '{0}/spot-oa'.format(new_spot_path)
   log.info('New Spot OA path: {0}'.format(new_oa_path))
   old_spot_path = os.path.split(old_oa_path)[0]
 
 
+  log.info("Executing hdfs_setup.sh for initial setup") 
+  util.execute_cmd('./hdfs_setup.sh',log)
+
+  log.info("Updating /etc/spot.conf with new changes in Spot 1.0") 
+  util.execute_cmd("migration/spot_conf_migration.py '/etc/spot.conf' '{0}/spot.conf'".format(cur_path),log)
+  
   log.info("Copy ingest_conf.json file from old folder code to new Spot location") 
   util.execute_cmd('cp {0}/spot-ingest/ingest_conf.json {1}/spot-ingest/ingest_conf.json'.format(old_spot_path, new_spot_path),log)
 
@@ -65,18 +71,19 @@ def main():
   util.execute_cmd('sudo pip install -r requirements.txt',log)
 
 
-
+  log.info("Migrate data from pipelines")
   l_pipelines = pipelines.split(',')
   valid_pipelines = ('flow', 'dns', 'proxy')
   if len(l_pipelines) > 0:
     for pipe in l_pipelines:
       if pipe in valid_pipelines:
+        log.info("Migrating {0} old data to new spot release".format(pipe))
         os.chdir('{0}/spot-setup/migration'.format(new_spot_path))
         util.execute_cmd("python migrate_old_{0}_data.py '{1}' '{2}' '{3}' '{4}' '{5}' ".format(pipe, old_oa_path, staging_db, hdfs_staging_path, dest_db, impala_daemon),log)
       else:
         log.error("Pipeline {0} is not valid. Valid pipelines are flow, dns or proxy".format(pipe))
   else:
-    log.error("Pipelines argument must be separated by commas")
+    log.error("Pipeline arguments must be separated by commas")
 
 
 if __name__=='__main__':

@@ -216,15 +216,16 @@ def main():
   util.execute_cmd('impala-shell -i {0} -q "INVALIDATE METADATA;"'.format(impala_daemon),log)
 
 
-
-  log.info("Copying advanced mode notebooks to each existing day in new Spot location")
-  for folder in os.listdir('{0}/ipynb/flow/'.format(new_oa_path)):
-    util.execute_cmd('cp {0}/oa/flow/ipynb_templates/Advanced_Mode_master.ipynb {1}/ipynb/flow/{2}/Advanced_Mode.ipynb'.format(old_oa_path, new_oa_path, folder),log)
-
-  log.info("Copying threat investigation ipynb template to each existing day in new Spot location")
-  for folder in os.listdir('{0}/ipynb/flow/'.format(new_oa_path)):
-    util.execute_cmd('cp {0}/oa/flow/ipynb_templates/Threat_Investigation_master.ipynb {1}/ipynb/flow/{2}/Threat_Investigation.ipynb'.format(old_oa_path, new_oa_path, folder),log)
-
+  log.info("Creating ipynb template structure and copying advanced mode and threat investigation ipynb templates for each pre-existing day in the new Spot location")
+  ipynb_pipeline_path = '{0}/ipynb/flow/'.format(old_oa_path)
+  if os.path.exists(ipynb_pipeline_path):
+    for folder in os.listdir(ipynb_pipeline_path):
+      log.info("Creating ipynb flow folders in new Spot locaiton: {0}".format(folder))
+      util.execute_cmd('mkdir -p {0}/ipynb/flow/{1}/'.format(new_oa_path, folder),log)
+      log.info("Copying advanced mode ipynb template")
+      util.execute_cmd('cp {0}/oa/flow/ipynb_templates/Advanced_Mode_master.ipynb {0}/ipynb/flow/{1}/Advanced_Mode.ipynb'.format(new_oa_path, folder),log)
+      log.info("Copying threat investigation ipynb template")
+      util.execute_cmd('cp {0}/oa/flow/ipynb_templates/Threat_Investigation_master.ipynb {0}/ipynb/flow/{1}/Threat_Investigation.ipynb'.format(new_oa_path, folder),log)
 
 
 
