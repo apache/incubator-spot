@@ -54,7 +54,7 @@ Before running Flow OA users need to configure components for the first time. It
 
 - Flow suspicious connections. _flow\_scores_ table.  
 
-Main results for Flow OA. The data stored in this table is limited by the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage). [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
+Main results for Flow OA. The data stored in this table is limited by the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
        
         Table schema:
         0.   tstart:         string
