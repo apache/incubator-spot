@@ -54,7 +54,7 @@ There is a launch and single script that will migrate all specified pipelines. T
 ### Execution
 
 ```python
-./migrate_old_data.py PIPELINES OLD_OA_PATH STAGING_DB_NAME STAGING_DB_HDFS_PATH NEW_SPOT_IMPALA_DB IMPALA_DAEMON
+./migrate_spot_0_9_to_1_0.py PIPELINES OLD_OA_PATH STAGING_DB_NAME STAGING_DB_HDFS_PATH NEW_SPOT_IMPALA_DB IMPALA_DAEMON
 ```
 
 where variables mean:
@@ -67,5 +67,5 @@ where variables mean:
 
 Example:
 ```python
-./migrate_old_data.py 'flow,dns,proxy' '/home/spotuser/incubator-spot_old/spot-oa' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
+./migrate_spot_0_9_to_1_0.py 'flow,dns,proxy' '/home/spotuser/incubator-spot_old/spot-oa' 'spot_migration' '/user/spotuser/spot_migration/' 'migrated' 'node01'
 ```

@@ -15,6 +15,7 @@ Spot-setup contains the scripts to setup HDFS for Apache Spot solution. It will 
 To collaborate and run spot-setup, it is required the following prerequisites:
 - A running Hadoop cluster
 - Linux user account created in all nodes with sudo privileges
+- Enabling HDFS Access Control Lists
 
 ## General Description
 
@@ -26,7 +27,7 @@ The main script in the repository is **hdfs_setup.sh** which is responsible of l
 
 This file also contains sources desired to be installed as part of Apache Spot, general paths for HDFS folders, and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
 
-To read more about these variables, please review the [documentation] (http://spot.incubator.apache.org/doc/#configuration).
+To read more about these variables, please review the [documentation](http://spot.incubator.apache.org/doc/#configuration).
 
 ## Database Query Scripts
 
@@ -71,6 +72,10 @@ To get to parquet format we need a staging table to store CSV data temporarily f
 - proxy_timeline
 
 
+## Migrating OA Data from Spot 0.9 to 1.0
+
+Please review migration documentation [here](migrating/README.md).
+
 ## Licensing
 
 spot-setup is licensed under Apache Version 2.0
@@ -81,11 +86,11 @@ Create a pull request and contact the maintainers.
 
 ## Issues
 
-- Create an [issue] (https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT).
-- Go to our Slack [channel] (https://apachespot.slack.com/messages/general).
+- Create an [issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT).
+- Go to our Slack [channel](https://apachespot.slack.com/messages/general).
 
 ## Maintainers
 
-- [Moises Valdovinos] (https://github.com/moy8011)
-- [Everardo Lopez Sandoval] (https://github.com/EverLoSa)
+- [Moises Valdovinos](https://github.com/moy8011)
+- [Everardo Lopez Sandoval](https://github.com/EverLoSa)
 
