@@ -67,7 +67,7 @@ Before running DNS OA users need to configure components for the first time. It 
 
 - DNS suspicious connections. _dns\_scores_ table.
 
-Main results for Flow OA. Main results file for DNS OA. The data stored in this table is limited by the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage). (/spot-oa/oa/INSTALL.md#usage).
+Main results for Flow OA. Main results file for DNS OA. The data stored in this table is limited by the number of rows the user selected when running [oa/start_oa.py](/spot-oa/oa/INSTALL.md#usage).
   
 		0.frame_time: string		
 		1.unix_tstamp: bigint		
