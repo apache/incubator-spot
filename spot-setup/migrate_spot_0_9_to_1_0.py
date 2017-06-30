@@ -67,9 +67,12 @@ def main():
   util.execute_cmd('sudo -H -E npm install -g browserify uglifyjs',log)
   util.execute_cmd('npm install',log)
 
+  log.info("Install python-devel using yum")
+  util.execute_cmd('sudo yum install python-devel -y',log)
+
   log.info("Install requirements using pip")
   os.chdir('{0}'.format(new_oa_path))
-  util.execute_cmd('sudo pip install -r requirements.txt',log)
+  util.execute_cmd('sudo -H -E pip install -r requirements.txt',log)
 
 
   log.info("Migrate data from pipelines")
