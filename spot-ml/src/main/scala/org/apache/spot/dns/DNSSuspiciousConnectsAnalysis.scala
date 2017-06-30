@@ -26,6 +26,7 @@ import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel
 import org.apache.spot.proxy.ProxySchema.Score
+import org.apache.spot.utilities.data.validation.InputSchema.InputSchemaValidationResponse
 import org.apache.spot.utilities.data.validation.{InputSchema, InvalidDataHandler => dataValidation}
 
 /**
@@ -68,10 +69,10 @@ object DNSSuspiciousConnectsAnalysis {
     logger.info("Starting DNS suspicious connects analysis.")
 
     logger.info("Validating schema...")
-    val schemaValidationResults = validateSchema(inputDNSRecords)
+    val InputSchemaValidationResponse(isValid, errorMessages) = validateSchema(inputDNSRecords)
 
-    if (schemaValidationResults.length > InputSchema.ResponseDefaultSize) {
-      schemaValidationResults.foreach(logger.error(_))
+    if (!isValid) {
+      errorMessages.foreach(logger.error(_))
       None
     } else {
       val dnsRecords = filterRecords(inputDNSRecords)
@@ -183,7 +184,7 @@ object DNSSuspiciousConnectsAnalysis {
     * @param inputDNSRecords incoming data frame
     * @return
     */
-  def validateSchema(inputDNSRecords: DataFrame): Seq[String] = {
+  def validateSchema(inputDNSRecords: DataFrame): InputSchemaValidationResponse = {
 
     InputSchema.validate(inputDNSRecords.schema, DNSSuspiciousConnectsModel.ModelSchema)
 

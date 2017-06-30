@@ -25,6 +25,7 @@ import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel
+import org.apache.spot.utilities.data.validation.InputSchema.InputSchemaValidationResponse
 import org.apache.spot.utilities.data.validation.{InputSchema, InvalidDataHandler => dataValidation}
 
 
@@ -88,10 +89,10 @@ object FlowSuspiciousConnectsAnalysis {
     logger.info("Starting flow suspicious connects analysis.")
 
     logger.info("Validating schema...")
-    val schemaValidationResults = validateSchema(inputFlowRecords)
+    val InputSchemaValidationResponse(isValid, errorMessages) = validateSchema(inputFlowRecords)
 
-    if (schemaValidationResults.length > InputSchema.ResponseDefaultSize) {
-      schemaValidationResults.foreach(logger.error(_))
+    if (!isValid) {
+      errorMessages.foreach(logger.error(_))
       None
 
     } else {
@@ -191,7 +192,7 @@ object FlowSuspiciousConnectsAnalysis {
     * @param inputFlowRecords incoming data frame
     * @return
     */
-  def validateSchema(inputFlowRecords: DataFrame): Seq[String] = {
+  def validateSchema(inputFlowRecords: DataFrame): InputSchemaValidationResponse = {
 
     InputSchema.validate(inputFlowRecords.schema, FlowSuspiciousConnectsModel.ModelSchema)
 

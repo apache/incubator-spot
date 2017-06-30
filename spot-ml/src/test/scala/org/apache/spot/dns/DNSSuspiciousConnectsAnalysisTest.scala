@@ -342,23 +342,23 @@ class DNSSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with
     scoredDNSRecords.count should be(2)
   }
 
-  "validateSchema" should "return a Seq[String] of size > 1 when passing an invalid schema" in {
+  "validateSchema" should "return false when passing an invalid schema" in {
     val anomalousRecord = DNSInvalidSchema("May 20 2016 02:10:25.970987000 PDT", 1463735425d, 1, "172.16.9.132",
       "122.2o7.turner.com", "0x00000001", "null", "null")
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, anomalousRecord, anomalousRecord, anomalousRecord, anomalousRecord))
 
     val results = DNSSuspiciousConnectsAnalysis.validateSchema(data)
 
-    results.length should be > 1
+    results.isValid shouldBe false
   }
 
-  it should "return a Seq[String] of size 1 when passing a valid schema" in {
+  it should "return true when passing a valid schema" in {
     val typicalRecord = DNSInput("May 20 2016 02:10:25.970987000 PDT", 1463735425L, 168, "172.16.9.132", "122.2o7.turner.com", "0x00000001", 1, 0)
     val data = sparkSession.createDataFrame(Seq(typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
     val results = DNSSuspiciousConnectsAnalysis.validateSchema(data)
 
-    results.length shouldBe 1
+    results.isValid shouldBe true
   }
 
   def testDNSRecords = new {

@@ -10,9 +10,6 @@ import scala.collection.mutable.ListBuffer
   */
 object InputSchema {
 
-  // Response from validate will contains always at least 1 element. 1 message means no errors.
-  val ResponseDefaultSize = 1
-
   /**
     * Validate the incoming data schema matches the schema required for model creation and scoring.
     *
@@ -20,7 +17,7 @@ object InputSchema {
     * @param expectedSchema schema expected by model training and scoring methods
     * @return
     */
-  def validate(inSchema: StructType, expectedSchema: StructType): Seq[String] = {
+  def validate(inSchema: StructType, expectedSchema: StructType): InputSchemaValidationResponse = {
     val response: ListBuffer[String] = ListBuffer("Schema not compatible:")
 
     // reduce schema from struct field to only field name and type
@@ -43,6 +40,12 @@ object InputSchema {
       }
       })
 
-    response
+    response.length match {
+      case 1 => InputSchemaValidationResponse(isValid = true, Seq())
+      case _ => InputSchemaValidationResponse(isValid = false, response)
+    }
   }
+
+  case class InputSchemaValidationResponse(final val isValid: Boolean, final val errorMessages: Seq[String])
+
 }

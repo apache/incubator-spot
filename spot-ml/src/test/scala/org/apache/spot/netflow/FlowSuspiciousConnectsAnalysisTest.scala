@@ -292,7 +292,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     scoredFlowRecords.count should be(2)
   }
 
-  "validateSchema" should "return a Seq[String] of size > 1 when passing an invalid schema" in {
+  "validateSchema" should "return false when passing an invalid schema" in {
     val anomalousRecord = FlowInvalidRecord("2016-05-05 00:11:01", 2016, 5, 5, 0, 0, 1, 972, "172.16.0.129", "10.0" +
       ".2.202", 1024, 80, "TCP", "39l", "12522l", "0l", "0l")
 
@@ -300,10 +300,10 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
     val results = FlowSuspiciousConnectsAnalysis.validateSchema(data)
 
-    results.length should be > 1
+    results.isValid shouldBe false
   }
 
-  it should "return a Seq[String] of size 1 when passing a valid schema" in {
+  it should "return true when passing a valid schema" in {
     val typicalRecord = FlowRecord("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972f, "172.16.0.129", "10.0.2" +
       ".202", 1024, 80, "TCP", 39, 12522, 0, 0)
 
@@ -312,7 +312,7 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
     val results = FlowSuspiciousConnectsAnalysis.validateSchema(data)
 
-
+    results.isValid shouldBe true
   }
 
   def testFlowRecords = new {

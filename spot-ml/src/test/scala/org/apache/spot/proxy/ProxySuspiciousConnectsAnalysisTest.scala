@@ -282,7 +282,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
   }
 
-  "validateSchema" should "return a Seq[String] of size > 1 when passing an invalid schema" in {
+  "validateSchema" should "return false when passing an invalid schema" in {
     val anomalousRecord = ProxyInvalidInput("2016-10-03", "04:57:36", "127.0.0.1", 0.0d, "PUT",
       "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
       1, 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
@@ -295,11 +295,11 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val results = ProxySuspiciousConnectsAnalysis.validateSchema(data)
 
-    results.length should be > 1
+    results.isValid shouldBe false
 
   }
 
-  it should "return a Seq[String] of size 1 when passing a valid schema" in {
+  it should "return true when passing a valid schema" in {
     val typicalRecord = ProxyInput("2016-10-03", "04:57:36", "127.0.0.1", "maw.bronto.com", "PUT",
       "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
       "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
@@ -311,7 +311,7 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val results = ProxySuspiciousConnectsAnalysis.validateSchema(data)
 
-    results.length shouldBe 1
+    results.isValid shouldBe true
 
   }
 

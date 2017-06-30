@@ -5,7 +5,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class InputSchemaTest extends FlatSpec with Matchers {
 
-  "validate" should "return a Seq[String] of size 1 when incoming schema is valid" in {
+  "validate" should "return true when incoming schema is valid" in {
 
     val incomingSchema = StructType(List(StructField("ip", StringType),
       StructField("ibyt", LongType),
@@ -18,10 +18,10 @@ class InputSchemaTest extends FlatSpec with Matchers {
 
     val results = InputSchema.validate(incomingSchema, modelSchema)
 
-    results.length shouldBe 1
+    results.isValid shouldBe true
   }
 
-  it should "return a Seq[String] of size > 1 when incoming schema is not valid due to type mismatch" in {
+  it should "return false when incoming schema is not valid due to type mismatch" in {
     val incomingSchema = StructType(List(StructField("ip", StringType),
       StructField("ibyt", StringType),
       StructField("host", IntegerType),
@@ -33,10 +33,10 @@ class InputSchemaTest extends FlatSpec with Matchers {
 
     val results = InputSchema.validate(incomingSchema, modelSchema)
 
-    results.length shouldBe 3
+    results.isValid shouldBe false
   }
 
-  it should "return a Seq[String] of size > 1 when incoming schema is not valid due to required field is missing" in {
+  it should "return false when incoming schema is not valid due to required field is missing" in {
 
     val incomingSchema = StructType(List(StructField("ip", StringType),
       StructField("ibyt", LongType),
@@ -48,6 +48,6 @@ class InputSchemaTest extends FlatSpec with Matchers {
 
     val results = InputSchema.validate(incomingSchema, modelSchema)
 
-    results.length shouldBe 2
+    results.isValid shouldBe false
   }
 }

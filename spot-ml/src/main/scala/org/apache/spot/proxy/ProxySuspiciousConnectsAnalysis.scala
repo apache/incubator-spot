@@ -24,6 +24,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.proxy.ProxySchema._
+import org.apache.spot.utilities.data.validation.InputSchema.InputSchemaValidationResponse
 import org.apache.spot.utilities.data.validation.{InputSchema, InvalidDataHandler => dataValidation}
 
 /**
@@ -89,10 +90,10 @@ object ProxySuspiciousConnectsAnalysis {
     logger.info("Starting proxy suspicious connects analysis.")
 
     logger.info("Validating schema...")
-    val schemaValidationResults = validateSchema(inputProxyRecords)
+    val InputSchemaValidationResponse(isValid, errorMessages) = validateSchema(inputProxyRecords)
 
-    if (schemaValidationResults.length > InputSchema.ResponseDefaultSize) {
-      schemaValidationResults.foreach(logger.error(_))
+    if (!isValid) {
+      errorMessages.foreach(logger.error(_))
 
       None
     } else {
@@ -180,7 +181,7 @@ object ProxySuspiciousConnectsAnalysis {
     * @param inputProxyRecords incoming data frame
     * @return
     */
-  def validateSchema(inputProxyRecords: DataFrame): Seq[String] = {
+  def validateSchema(inputProxyRecords: DataFrame): InputSchemaValidationResponse = {
 
     InputSchema.validate(inputProxyRecords.schema, ProxySuspiciousConnectsModel.ModelSchema)
 
