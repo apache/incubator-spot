@@ -16,7 +16,7 @@ def suspicious_requests(date,uri=None,ip=None,limit=250):
 
     db = Configuration.db()
     proxy_query = ("""
-	SELECT
+	SELECT STRAIGHT_JOIN
 	    ps.tdate,ps.time,ps.clientip,ps.host,ps.reqmethod,ps.useragent,
         ps.resconttype,ps.duration,ps.username,ps.webcat,ps.referer,
         ps.respcode,ps.uriport,ps.uripath,ps.uriquery,ps.serverip,ps.scbytes,

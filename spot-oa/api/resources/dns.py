@@ -12,7 +12,7 @@ def suspicious_queries(date, ip=None, query=None,limit=250):
 
     db = Configuration.db()
     sq_query = ("""
-            SELECT
+            SELECT STRAIGHT_JOIN
                 ds.unix_tstamp,frame_len,ds.ip_dst,ds.dns_qry_name,
                 dns_qry_class,dns_qry_type,dns_qry_rcode,ml_score,tld,
                 query_rep,hh,dns_qry_class_name,dns_qry_type_name,
