@@ -138,7 +138,10 @@ Templates for iPython notebooks.
 After OA process completes, a copy of each iPython notebook is going to be copied to the ipynb/\<pipeline>/\<date> path. 
 With these iPython notebooks user will be able to perform further analysis and score connections. User can also
 experiment adding or modifying the code. 
-If a new functionality is required for the ipython notebook, the templates need to be modified to include the functionality for new executions.
-For further reference on how to work with these notebooks, you can read:  
-- [Edge Notebook](/spot-oa/oa/flow/ipynb_templates/EdgeNotebook.md)
+If a new functionality is required for the ipython notebook, the templates need to be modified to include the functionality for posterior executions.
+For further reference on how to work with this notebook, you can read:  
 - [Threat Investigation Notebook](/spot-oa/oa/flow/ipynb_templates/ThreatInvestigation.md)
+
+
+### Reset scored connections
+To reset all scored connections for a day, a specific cell with a preloaded function is included in the Advanced Mode Notebook. The cell is commented to avoid accidental executions, but is properly labeled.

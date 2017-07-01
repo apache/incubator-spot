@@ -142,6 +142,9 @@ After OA process completes, a copy of each iPython notebook is going to be copie
 With these iPython notebooks user will be able to perform further analysis and score connections. User can also
 experiment adding or modifying the code. 
 If a new functionality is required for the ipython notebook, the templates need to be modified to include the functionality for new executions.
-For further reference on how to work with these notebooks, you can read:  
-[Edge Notebook.ipynb](/spot-oa/oa/dns/ipynb_templates/EdgeNotebook.md)  
+For further reference on how to work with these notebooks, you can read:   
 [Threat_Investigation.ipynb](/spot-oa/oa/dns/ipynb_templates/ThreatInvestigation.md)
+
+
+### Reset scored connections
+To reset all scored connections for a day, a specific cell with a preloaded function is included in the Advanced Mode Notebook. The cell is commented to avoid accidental executions, but is properly labeled.
