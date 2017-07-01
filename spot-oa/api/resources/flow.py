@@ -16,7 +16,7 @@ def suspicious_connections(date,ip=None,limit=250):
 
     db = Configuration.db()
     sc_query = ("""
-                SELECT
+                SELECT STRAIGHT_JOIN
                     fs.tstart,fs.srcip,fs.dstip,fs.sport,fs.dport,proto,
                     ipkt,ibyt,opkt,obyt,ml_score,rank,srcip_internal,
                     dstip_internal,src_geoloc,dst_geoloc,src_domain,
