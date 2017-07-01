@@ -157,14 +157,20 @@ def main():
       dest_table_name = 'flow_edge'
       pattern = 'edge*.tsv'
       edge_files = fnmatch.filter(os.listdir(full_day_path), pattern)
-      filename = '{0}/{1}'.format(full_day_path, pattern)
 
-      if len(edge_files) > 0:
+      for file in edge_files:
+
+        parts = (re.findall("edge-(\S+).tsv", file)[0]).split('-')
+        hh = int(parts[2])
+        mn = int(parts[3])
+
+        log.info("Processing File: {0} with HH: {1} and MN: {2}".format(file, hh, mn))
+        filename = '{0}/{1}'.format(full_day_path, file)
 
         load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(filename, staging_db, staging_table_name)
         util.execute_hive_cmd(load_cmd, log)
 
-        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT tstart, srcip, dstip, sport, dport, proto, flags, tos, ibyt, ipkt, input, output, rip, obyt, opkt, 0, 0 FROM {5}.{6} WHERE srcip is not NULL;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, staging_db, staging_table_name)
+        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT tstart, srcip, dstip, sport, dport, proto, flags, tos, ibyt, ipkt, input, output, rip, obyt, opkt, {5}, {6} FROM {7}.{8} WHERE srcip is not NULL;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, hh, mn, staging_db, staging_table_name)
         util.execute_hive_cmd(insert_cmd, log)
 
 
