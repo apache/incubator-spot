@@ -170,7 +170,7 @@ var ScoreNotebook = React.createClass({
       dataScored.push([dstIp, query, rating]);
     }
 
-    this.removeSelected([dstIp, quickIpScoring]);
+	this.removeSelected([dstIp, quickIpScoring,query]);
     this.setState({scoredEmelents: dataScored});
   },
   removeSelected: function(data) {
