@@ -10,9 +10,8 @@ def create_connection():
 
 def execute_query(query,fetch=False):
 
-    impala_cursor = create_connection() 
+    impala_cursor = create_connection()
     impala_cursor.execute(query)
-
 
     return impala_cursor if not fetch else impala_cursor.fetchall()
 

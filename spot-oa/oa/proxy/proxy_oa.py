@@ -21,8 +21,7 @@ import json
 import shutil
 import sys
 import datetime
-import csv, math
-import urllib
+import csv, math 
 from collections import OrderedDict
 from utils import Util
 from components.data.data import Data
@@ -276,7 +275,6 @@ class OA(object):
                 day=date[2].zfill(2)
                 hh=(conn[self._conf["proxy_score_fields"]["p_time"]].split(":"))[0]
                 self._get_proxy_details(fulluri,clientip,year,month,day,hh,proxy_iana)
-
 
 
     def _get_proxy_details(self,fulluri,clientip,year,month,day,hh,proxy_iana):
