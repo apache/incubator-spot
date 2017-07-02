@@ -22,6 +22,7 @@ import shutil
 import sys
 import datetime
 import csv, math
+import urllib
 from collections import OrderedDict
 from utils import Util
 from components.data.data import Data
@@ -287,7 +288,7 @@ class OA(object):
             referer, uriport, serverip, scbytes, csbytes, fulluri, {5} as hh
             FROM {0}.{1} WHERE y='{2}' AND m='{3}' AND d='{4}' AND
             h='{5}' AND fulluri='{6}' AND clientip='{7}' LIMIT {8};
-        """).format(self._db,self._table_name, year,month,day,hh,fulluri,clientip,limit)
+        """).format(self._db,self._table_name, year,month,day,hh,fulluri.replace("'","\\'"),clientip,limit)
 
         detail_results = impala.execute_query(query_to_load)
  
