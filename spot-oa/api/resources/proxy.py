@@ -48,7 +48,7 @@ Return list(dict) of all the connectios details for one request.
 def details(date,uri,ip):
 
     if not uri and not ip:
-	return None
+        return None
 
     db = Configuration.db()
     p_details = ("""
@@ -59,8 +59,9 @@ def details(date,uri,ip):
 		FROM
 		    {0}.proxy_edge
 		WHERE
-		    y={1} AND m={2} AND d={3}
-		""").format(db,date.year,date.month,date.day)
+		    y={1} AND m={2} AND d={3} AND 
+            (fulluri='{4}' AND clientIp='{5}')
+		""").format(db,date.year,date.month,date.day,uri.replace("'","//'"),ip)
     return ImpalaEngine.execute_query_as_list(p_details)
 
 """
