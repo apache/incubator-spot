@@ -19,3 +19,5 @@ var ScoreMessage = React.createClass({
         this.setState({ showMe : value}) ;
     }
 });
+
+module.exports = ScoreMessage;
