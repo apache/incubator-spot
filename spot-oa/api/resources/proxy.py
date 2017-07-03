@@ -179,33 +179,28 @@ Migrated from IPython Notebooks
 """
 def create_storyboard(uri,date,title,text,expanded_search,top_results):
 
-
     clientips  = defaultdict(int)
     reqmethods = defaultdict(int)
     rescontype = defaultdict(int)
     referers   = defaultdict(int)
     refered    = defaultdict(int)
-    requests   = defaultdict(int)
+    requests   = []
+
 
     for row in expanded_search:
         clientips[row['clientIp']]+=1
         reqmethods[row['requestMethod']]+=1
         rescontype[row['responseContentType']]+=1
-
-        if row['uri'] != uri:
+        if row['uri'] == uri:
            #Source URI's that refered the user to the threat
-           referers[row[10]]+=1
-           if({'clientip':row['clientIp'],'referer':row['referer'],\
-           'reqmethod':row['requestMethod'],\
-           'resconttype':row['responseContentType']}) not in requests:
-               requests.append({'clientip':row['clientIp'],\
-               'referer':row['referer'],'reqmethod':row['requestMethod'],\
-               'resconttype':row['responseContentType']})
+           referers[row['referer']]+=1
+           requests += [{'clientip':row['clientIp'], 'referer':row['referer'],'reqmethod':row['requestMethod'], 'resconttype':row['responseContentType']}]
+
         else:
             #Destination URI's refered by the threat
             refered[row['uri']]+=1
 
-    create_incident_progression(uri,requests,referers,date)
+    create_incident_progression(uri,requests,refered,date)
     create_timeline(uri,clientips,date,top_results)
     save_comments(uri,title,text,date)
 
@@ -217,23 +212,30 @@ Create timeline for storyboard
 --------------------------------------------------------------------------
 """
 def create_timeline(anchor,clientips,date,top_results):
-
     response = ""
     susp_ips = []
 
-
     if clientips:
-	srtlist = sorted(list(clientips.items()), key=lambda x: x[1], reverse=True)
+	    srtlist = sorted(list(clientips.items()), key=lambda x: x[1], reverse=True)
         for val in srtlist[:top_results]:
             susp_ips.append(val[0])
 
     if anchor != "":
         db = Configuration.db()
+        time_line_query = ("""
+                SELECT p_threat,tstart,tend,duration,clientip,respcode,respcodename
+                FROM {0}.proxy_timeline
+                WHERE
+                    y={1} AND m={2} AND d={3} AND p_threat != '{4}'
+                """).format(db,date.year,date.month,date.day,anchor.replace("'","//'"))
+        print time_line_query
+        tmp_timeline_data = ImpalaEngine.execute_query_as_list(time_line_query)
+
         imp_query = ("""
                         INSERT INTO TABLE {0}.proxy_timeline
                         PARTITION (y={2}, m={3},d={4})
                         SELECT
-                            '{7}' as p_threat,  concat(cast(p_date as string),
+                            '{7}' as p_threat, concat(cast(p_date as string),
                             ' ', cast(MIN(p_time) as string)) AS tstart,
                             concat(cast(p_date as string), ' ',
                             cast(MAX(p_time) as string)) AS tend,
@@ -255,6 +257,18 @@ def create_timeline(anchor,clientips,date,top_results):
 
         HDFSClient.delete_folder(old_file,"impala")
         ImpalaEngine.execute_query("invalidate metadata")
+
+        #Insert temporary values
+        for item in tmp_timeline_data:
+            insert_query = ("""
+                        INSERT INTO {0}.proxy_timeline PARTITION(y={1} , m={2} ,d={3})
+                        VALUES ('{4}', '{5}', '{6}',{7},'{8}','{9}','{10}')
+                        """)\
+                        .format(db,date.year,date.month,date.day,\ 
+                        item["p_threat"],item["tstart"],item["tend"],item["duration"],item["clientip"],item["respcode"],item["respcodename"])
+
+            ImpalaEngine.execute_query(insert_query)
+
         ImpalaEngine.execute_query(imp_query)
         response = "Timeline successfully saved"
     else:
@@ -317,14 +331,14 @@ def save_comments(uri,title,text,date):
     ImpalaEngine.execute_query("invalidate metadata")
 
     for item in sb_data:
-	insert_query = ("""
-                INSERT INTO {0}.proxy_storyboard PARTITION(y={1} , m={2} ,d={3})
-                VALUES ( '{4}', '{5}', '{6}')
-                """)\
-                .format(db,date.year,date.month,date.day,\
-                item["p_threat"],item["title"],item["text"])
+        insert_query = ("""
+                    INSERT INTO {0}.proxy_storyboard PARTITION(y={1} , m={2} ,d={3})
+                    VALUES ( '{4}', '{5}', '{6}')
+                    """)\
+                    .format(db,date.year,date.month,date.day,\
+                    item["p_threat"],item["title"],item["text"])
 
-	ImpalaEngine.execute_query(insert_query)
+        ImpalaEngine.execute_query(insert_query)
 
 """
 --------------------------------------------------------------------------
