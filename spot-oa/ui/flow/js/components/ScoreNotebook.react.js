@@ -8,6 +8,7 @@ var EdInActions = require('../../../js/actions/EdInActions');
 var SelectInput = require('../../../js/components/scoring/SelectInput.react');
 var FilterSelectInput = require('../../../js/components/scoring/FilterSelectInput.react');
 var ButtonsScoring = require('../../../js/components/scoring/ButtonsScoring.react');
+var ScoreMessage = require('../../../js/components/scoring/ScoreMessage.react');
 var RatingInput = require('../../../js/components/scoring/RatingInput.react');
 var SearchGlobalInput = require('../../../js/components/scoring/SearchGlobalInput.react');
 
