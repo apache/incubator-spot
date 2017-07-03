@@ -61,6 +61,7 @@ def main():
   log.info("Copy Spot OA context files to new Spot location") 
   util.execute_cmd('cp {0}/spot-oa/context/iploc.csv {1}/spot-oa/context/iploc.csv'.format(old_spot_path, new_spot_path),log)
   util.execute_cmd('cp {0}/spot-oa/context/ipranges.csv {1}/spot-oa/context/ipranges.csv'.format(old_spot_path, new_spot_path),log)
+  util.execute_cmd('cp {0}/spot-oa/context/networkcontext_1.csv {1}/spot-oa/context/networkcontext_1.csv'.format(old_spot_path, new_spot_path),log)
 
   log.info("Install browserify and uglifyjs using npm")
   os.chdir('{0}/ui'.format(new_oa_path))
