@@ -264,7 +264,7 @@ def create_timeline(anchor,clientips,date,top_results):
                         INSERT INTO {0}.proxy_timeline PARTITION(y={1} , m={2} ,d={3})
                         VALUES ('{4}', '{5}', '{6}',{7},'{8}','{9}','{10}')
                         """)\
-                        .format(db,date.year,date.month,date.day,\ 
+                        .format(db,date.year,date.month,date.day,\
                         item["p_threat"],item["tstart"],item["tend"],item["duration"],item["clientip"],item["respcode"],item["respcodename"])
 
             ImpalaEngine.execute_query(insert_query)
