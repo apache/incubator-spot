@@ -13,7 +13,7 @@ var FilterSelectInput = React.createClass({
       <div className={`col-md-${this.props.col} col-xs-12 col-sm-6 col-lg-${this.props.col}`}>
         <div className="inner-addon right-addon">
           <i className="glyphicon glyphicon-search"></i>
-          <input className="form-control filter-select" type="text" maxLength="15" placeholder={this.props.nameBox} id={this.props.idInput} autoFocus={true} onChange={this._onChange} value={this.state.filterBox} />
+          <input className="form-control filter-select" type="text" maxLength="15" placeholder={this.props.nameBox} id={this.props.idInput} autoFocus={false} onChange={this._onChange} value={this.state.filterBox} />
         </div>
       </div>
     )
