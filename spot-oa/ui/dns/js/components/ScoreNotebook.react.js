@@ -10,6 +10,7 @@ var FilterSelectInput = require('../../../js/components/scoring/FilterSelectInpu
 var ButtonsScoring = require('../../../js/components/scoring/ButtonsScoring.react');
 var RatingInput = require('../../../js/components/scoring/RatingInput.react');
 var SearchGlobalInput = require('../../../js/components/scoring/SearchGlobalInput.react');
+var ScoreMessage = require('../../../js/components/scoring/ScoreMessage.react');
 
 var SpotUtils = require('../../../js/utils/SpotUtils');
 
