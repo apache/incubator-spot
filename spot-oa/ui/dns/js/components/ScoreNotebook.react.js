@@ -174,7 +174,7 @@ var ScoreNotebook = React.createClass({
       dataScored.push([dstIp, query, rating]);
     }
 
-	this.removeSelected([dstIp, quickIpScoring,query]);
+    this.removeSelected([dstIp, quickIpScoring,query]);
     $('#scoreMsg').removeClass("hidden");
     this.setState({scoredEmelents: dataScored});
   },
