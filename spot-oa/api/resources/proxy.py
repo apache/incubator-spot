@@ -216,7 +216,7 @@ def create_timeline(anchor,clientips,date,top_results):
     susp_ips = []
 
     if clientips:
-	    srtlist = sorted(list(clientips.items()), key=lambda x: x[1], reverse=True)
+        srtlist = sorted(list(clientips.items()), key=lambda x: x[1], reverse=True)
         for val in srtlist[:top_results]:
             susp_ips.append(val[0])
 
@@ -228,7 +228,7 @@ def create_timeline(anchor,clientips,date,top_results):
                 WHERE
                     y={1} AND m={2} AND d={3} AND p_threat != '{4}'
                 """).format(db,date.year,date.month,date.day,anchor.replace("'","//'"))
-        print time_line_query
+        
         tmp_timeline_data = ImpalaEngine.execute_query_as_list(time_line_query)
 
         imp_query = ("""
