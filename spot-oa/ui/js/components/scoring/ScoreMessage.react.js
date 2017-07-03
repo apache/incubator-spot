@@ -10,7 +10,7 @@ var ScoreMessage = React.createClass({
     render: function() {
             return(
                 <div className="text-center hidden" id={this.props.who}>
-                    <label className="text-danger">"Please remember to click save button to save the scorring."</label>
+                    <label className="text-danger">"Click the 'Save' button when you’re finished scoring"</label>
                 </div>
             );
      },
