@@ -97,6 +97,9 @@ var ScoreNotebook = React.createClass({
               <SelectInput title="Client IP" who="dstIp" options={dstIpArr} col="3"/>
               <SelectInput title="Query" who="query" options={dnsNameArr} col="9"/>
             </div>
+            <div className="margin-up-down">
+              <ScoreMessage who="scoreMsg"/>
+            </div>
           </div>
         );
     }
@@ -152,6 +155,7 @@ var ScoreNotebook = React.createClass({
       });
 
       EdInActions.saveScoring(variables);
+      $('#scoreMsg').addClass("hidden");
       this.setState({scoredEmelents: [], loading: true});
     }
   },
@@ -171,6 +175,7 @@ var ScoreNotebook = React.createClass({
     }
 
 	this.removeSelected([dstIp, quickIpScoring,query]);
+    $('#scoreMsg').removeClass("hidden");
     this.setState({scoredEmelents: dataScored});
   },
   removeSelected: function(data) {
