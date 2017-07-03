@@ -107,6 +107,9 @@ var ScoreNotebook = React.createClass({
               <SelectInput title="Src Port" who="srcPort" options={srcPortArr} col="3"/>
               <SelectInput title="Dst Port" who="dstPort" options={dstPortArr} col="3"/>
             </div>
+            <div className="margin-up-down">
+              <ScoreMessage who="scoreMsg"/>
+            </div>
           </div>
         );
     }
@@ -164,6 +167,7 @@ var ScoreNotebook = React.createClass({
       });
 
       EdInActions.saveScoring(variables);
+      $('#scoreMsg').addClass("hidden");
       this.setState({scoredEmelents: [], loading: true});
     }
   },
@@ -185,6 +189,7 @@ var ScoreNotebook = React.createClass({
       dataScored.push([srcIp, dstIp, srcPort, dstPort, rating]);
     }
 
+    $('#scoreMsg').removeClass("hidden");
     this.removeSelected([quickIpScoring, srcIp, dstIp, srcPort, dstPort]);
     this.setState({scoredEmelents: dataScored});
   },
