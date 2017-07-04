@@ -216,7 +216,8 @@ def main():
 
   log.info("Moving CSV data to backup folder")
   util.execute_cmd('mkdir {0}/data/backup/'.format(old_oa_path),log)
-  util.execute_cmd('mv {0}/data/flow/ {0}/data/backup/'.format(old_oa_path),log)
+  util.execute_cmd('cp -r {0}/data/flow/ {0}/data/backup/'.format(old_oa_path),log)
+  util.execute_cmd('rm -r {0}/data/flow/'.format(old_oa_path),log)
 
   log.info("Invalidating metadata in Impala to refresh tables content")
   util.execute_cmd('impala-shell -i {0} -q "INVALIDATE METADATA;"'.format(impala_daemon),log)

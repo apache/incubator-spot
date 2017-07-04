@@ -77,7 +77,7 @@ dns_threat STRING,
 title STRING,
 text STRING
 )
-ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
 LOCATION '${var:hpath}/dns/storyboard'
 TBLPROPERTIES ('skip.header.line.count'='1');
 
