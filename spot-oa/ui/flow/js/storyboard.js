@@ -11,12 +11,18 @@ const SpotUtils = require('../../js/utils/SpotUtils');
 
 // Build and Render Toolbar
 const DateInput = require('../../js/components/DateInput.react');
+const MainMenu = require('../../js/menu/components/MainMenu.react');
 
 function resetFilterAndReload()
 {
   EdInActions.setFilter('');
   StoryboardActions.reloadComments();
 };
+
+ReactDOM.render(
+  <MainMenu />,
+  document.getElementById('main-menu')
+);
 
 ReactDOM.render(
   (

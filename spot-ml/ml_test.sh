@@ -31,7 +31,6 @@ source /etc/spot.conf
 TOL=1.1
 MAXRESULTS=20
 
-LPATH=${LUSER}/ml/${DSOURCE}/test
 HPATH=${HUSER}/${DSOURCE}/test/scored_results
 # prepare parameters pipeline stages
 
@@ -43,12 +42,9 @@ else
     USER_DOMAIN_CMD=''
 fi
 
-FEEDBACK_PATH=${LPATH}/${DSOURCE}_scores.csv
+FEEDBACK_PATH=${HPATH}/feedback/ml_feedback.csv
 
 HDFS_SCORED_CONNECTS=${HPATH}/scores
-
-mkdir -p ${LPATH}
-rm -f ${LPATH}/*.{dat,beta,gamma,other,pkl} # protect the flow_scores.csv file
 
 hdfs dfs -rm -R -f ${HDFS_SCORED_CONNECTS}
 

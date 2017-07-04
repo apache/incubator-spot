@@ -5,6 +5,7 @@ const ReactDOM = require('react-dom');
 
 const SpotActions = require('./actions/SpotActions');
 const InSumActions = require('./actions/InSumActions');
+const EdInActions = require('./actions/EdInActions');
 const IngestSummaryStore = require('./stores/IngestSummaryStore');
 const SpotConstants = require('./constants/SpotConstants');
 const SpotUtils = require('./utils/SpotUtils');
@@ -13,6 +14,7 @@ const DateUtils = require('./utils/DateUtils');
 // Build and Render Toolbar
 const DateInput = require('./components/DateInput.react');
 const OptionPicker = require('./components/OptionPicker.react');
+const MainMenu = require('./menu/components/MainMenu.react');
 
 // Find out period
 var startDate, endDate, today;
@@ -44,14 +46,21 @@ if (endDate < startDate)
   startDate = endDate;
   endDate = today;
 }
-
 const PIPELINES = IngestSummaryStore.PIPELINES;
-const DEFAULT_PIPELINE = Object.keys(PIPELINES)[0];
+//check if pipeline is on URL, if not the first element of PIPELINES is taken
+const DEFAULT_PIPELINE =  SpotUtils.getUrlParam('pipeline') || Object.keys(PIPELINES)[0];
 
 const loadPipeline = function loadPipeline(pipeline) {
-    IngestSummaryStore.setPipeline(pipeline);
+    SpotActions.setPipeline(pipeline);
     InSumActions.reloadSummary();
 }
+
+ReactDOM.render(
+  <MainMenu />,
+  document.getElementById('main-menu')
+);
+
+SpotActions.setDate(SpotUtils.getCurrentDate());
 
 ReactDOM.render(
     <form className="form-inline">
@@ -106,9 +115,12 @@ ReactDOM.render(
   document.getElementById('spot-content-wrapper')
 );
 
+
+
 // Set period
 SpotActions.setDate(startDate, SpotConstants.START_DATE);
 SpotActions.setDate(endDate, SpotConstants.END_DATE);
+SpotActions.setPipeline(DEFAULT_PIPELINE);
 
 // Load data
 loadPipeline(DEFAULT_PIPELINE);

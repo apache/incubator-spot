@@ -11,27 +11,25 @@
         , "score" : 8  
     },
     "dns_score_fields": 
-    {
+    { 
         "frame_time" : 0
-        , "frame_len" : 1 
-        , "ip_dst": 2
-        , "dns_qry_name" : 3
-        , "dns_qry_class" : 4
-        , "dns_qry_type" : 5
-        , "dns_qry_rcode" : 6
-        , "score" : 7
-        , "tld" : 8
-        , "query_rep" : 9 
-        , "hh": 10
-        , "ip_sev" : 11
-        , "dns_sev" : 12
-        , "dns_qry_class_name" : 13
-        , "dns_qry_type_name" : 14
-        , "dns_qry_rcode_name" : 15
-        , "network_context" : 16
-        , "unix_tstamp": 17
+        ,"unix_tstamp" : 1
+        , "frame_len" : 2
+        , "ip_dst": 3
+        , "dns_qry_name" : 4
+        , "dns_qry_class" : 5
+        , "dns_qry_type" : 6
+        , "dns_qry_rcode" : 7
+        , "score" : 8
+        , "tld" : 9
+        , "query_rep" : 10
+        , "hh": 11
+        , "dns_qry_class_name" : 12
+        , "dns_qry_type_name" : 13
+        , "dns_qry_rcode_name" : 14
+        , "network_context" : 15
     },
     "add_reputation":{
         "query_rep":4   
     }
-}
+} 

@@ -17,10 +17,11 @@
 
 package org.apache.spot.utilities.data
 
-import org.apache.hadoop.fs.{LocatedFileStatus, Path, RemoteIterator, FileUtil => fileUtil}
+import org.apache.hadoop.fs.{FileSystem, LocatedFileStatus, Path, RemoteIterator, FileUtil => fileUtil}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.{DataFrame, SparkSession}
-
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 /**
   * Handles input and output data for every data set or pipep line implementation.
@@ -47,6 +48,34 @@ object InputOutputDataHandler {
   /**
     *
     * @param sparkSession      Spark Session.
+    * @param feedbackFile Feedback file location.
+    * @return new RDD[String] with feedback or empty if file does not exists.
+    */
+  def getFeedbackRDD(sparkSession: SparkSession, feedbackFile: String): RDD[String] = {
+
+    val hadoopConfiguration = sparkSession.sparkContext.hadoopConfiguration
+    val fs = FileSystem.get(hadoopConfiguration)
+
+    // We need to pass a default value "file" if fileName is "" to avoid error
+    // java.lang.IllegalArgumentException: Can not create a Path from an empty string
+    // when trying to create a new Path object with empty string.
+    val fileExists = fs.exists(new Path(if (feedbackFile == "") "file" else feedbackFile))
+
+    if (fileExists) {
+
+      // feedback file is a tab-separated file with a single header line. We need to remove the header
+      val lines = sparkSession.sparkContext.textFile(feedbackFile)
+      val header = lines.first()
+      lines.filter(line => line != header)
+
+    } else {
+      sparkSession.sparkContext.emptyRDD[String]
+    }
+  }
+
+  /**
+    *
+    * @param sparkSession      Spark Session
     * @param hdfsScoredConnect HDFS output folder. The location where results were saved; flow, dns or proxy.
     * @param analysis          Data type to analyze.
     * @param logger            Application Logger.

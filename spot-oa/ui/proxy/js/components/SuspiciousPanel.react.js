@@ -61,9 +61,6 @@ var SuspiciousPanel = React.createClass({
             </span>
         );
     },
-    _render_p_date_cell: function (date, item) {
-        return date + ' ' + item['p_time'];
-    },
     _render_host_cell: function (host, item, idx) {
         var reps, highestRep;
 

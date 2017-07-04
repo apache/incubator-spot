@@ -8,6 +8,12 @@ const SpotConstants = require('../../js/constants/SpotConstants');
 const SpotUtils = require('../../js/utils/SpotUtils');
 const DateInput = require('../../js/components/DateInput.react');
 const StoryboardActions = require('../../js/actions/StoryboardActions');
+const MainMenu = require('../../js/menu/components/MainMenu.react');
+
+ReactDOM.render(
+  <MainMenu />,
+  document.getElementById('main-menu')
+);
 
 ReactDOM.render(
   (

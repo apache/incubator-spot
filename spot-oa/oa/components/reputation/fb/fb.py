@@ -92,7 +92,7 @@ class Reputation(object):
             str_response = urllib2.urlopen(request).read()
             response = json.loads(str_response)
         except urllib2.HTTPError as e:
-            self._logger.error("Error calling ThreatExchange in module fb: " + e.message)
+            self._logger.info("Error calling ThreatExchange in module fb: " + e.message)
             reputation_dict[name] = self._get_reputation_label('UNKNOWN')
             return reputation_dict
 

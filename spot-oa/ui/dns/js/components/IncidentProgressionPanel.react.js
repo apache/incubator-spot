@@ -8,8 +8,8 @@ const DendrogramMixin = require('../../../js/components/DendrogramMixin.react');
 const IncidentProgressionStore = require('../stores/IncidentProgressionStore');
 
 const fieldMapper = {
-    ip_dst: 'dns_qry_name',
-    dns_qry_name: 'ip_dst'
+    clientIp: 'dnsQuery',
+    dnsQuery: 'clientIp'
 };
 
 const IncidentProgressionPanel = React.createClass({

@@ -19,7 +19,7 @@ const PolloNetworkViewMixin = {
 
         // Node related scales
         const hitsDomain = [1, this.state.data.maxNodes];
-        const ipDomain = [false, true];
+        const ipDomain = [0,1];
         this.nodeSizeScale = d3.scale.linear().domain(hitsDomain);
         this.chargeScale = d3.scale.linear().domain(hitsDomain);
         this.typeScale = d3.scale.ordinal().domain(ipDomain).range(["circle", "diamond"]);
