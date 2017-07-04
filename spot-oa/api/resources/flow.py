@@ -243,15 +243,17 @@ def score_connection(score,date,src_ip=None,dst_ip=None,src_port=None,dst_port=N
 
     fb_data =  []
     first = True
+    num_rows = 0
     for row in connections:
         # insert into flow_threat_investigation.
         threat_data = (row[0],row[1],row[2],row[3],row[4],score)
         fb_data.append([score,row[0],row[1],row[2],row[3],row[4],row[5],row[6]])
         insert_command += "{0}{1}".format("," if not first else "", threat_data)
         first = False
+        num_rows += 1
 
     insert_command += ")"
-    ImpalaEngine.execute_query(insert_command)
+    if num_rows > 0: ImpalaEngine.execute_query(insert_command)
 
     # create feedback file.
     app_path = Configuration.spot()
