@@ -88,7 +88,7 @@ var ScoreNotebook = React.createClass({
               <ButtonsScoring name="Reset Scoring" action="reset" onChange={this.reset.bind(this)} col="3"/>
             </div>
             <div className="margin-up-down">
-              <FilterSelectInput nameBox="Dst Port" idSelect="#fullUri" idInput="fullUriIn" col="9"/>
+              <FilterSelectInput nameBox="URI..." idSelect="#fullUri" idInput="fullUriIn" col="9"/>
             </div>
             <div className="margin-up-down">
               <SelectInput title="Source IP" who="fullUri" options={uriArr} col="9"/>
