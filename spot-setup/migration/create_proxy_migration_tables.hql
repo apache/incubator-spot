@@ -97,3 +97,14 @@ LOCATION '${var:hpath}/proxy/timeline'
 TBLPROPERTIES ('skip.header.line.count'='1');
 
 
+DROP TABLE IF EXISTS ${var:dbname}.proxy_iana_rcode_tmp;
+
+CREATE EXTERNAL TABLE ${var:dbname}.proxy_iana_rcode_tmp ( 
+respcode STRING, 
+respcode_name STRING
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LOCATION '${var:hpath}/proxy/iana_rcode'
+TBLPROPERTIES ('skip.header.line.count'='1');
+
+
