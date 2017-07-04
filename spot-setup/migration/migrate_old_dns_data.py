@@ -162,13 +162,20 @@ def main():
         mn = int(parts[-1])
 
         log.info("Processing File: {0} with HH: {1} and MN: {2}".format(file, hh, mn))
-        filename = '{0}/{1}'.format(full_day_path, file)
+
+        log.info("Removing double quotes File: {0}".format(file))
+        fixed_file = '{0}.fixed'.format(file)
+        sed_cmd = "sed 's/\"//g' {0}/{1} > {0}/{2}".format(full_day_path, file, fixed_file)
+        util.execute_cmd(sed_cmd, log)
+        filename = '{0}/{1}'.format(full_day_path, fixed_file)
 
         load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(filename, staging_db, staging_table_name)
         util.execute_hive_cmd(load_cmd, log)
 
-        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT unix_timestamp(regexp_replace(frame_time, '\"', ''), 'MMMMM dd yyyy H:mm:ss.SSS z'), frame_len, ip_dst, ip_src, dns_qry_name, '', '0', '0', dns_a, {5}, dns_qry_class, dns_qry_type, dns_qry_rcode, '0' FROM {6}.{7};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, hh, staging_db, staging_table_name)
+        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT unix_timestamp(frame_time, 'MMMMM dd yyyy H:mm:ss.SSS z'), frame_len, ip_dst, ip_src, dns_qry_name, '', '0', '0', dns_a, {5}, dns_qry_class, dns_qry_type, dns_qry_rcode, '0' FROM {6}.{7};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, hh, staging_db, staging_table_name)
         util.execute_hive_cmd(insert_cmd, log)
+
+        os.remove(filename)
 
 
       ##dns_storyboard
