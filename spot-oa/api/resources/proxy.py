@@ -98,6 +98,7 @@ def score_request(date,score,uri):
 
     fb_data =  []
     first = True
+    num_rows = 0
     for row in connections:
         cip_index = row[2]
         uri_index = row[18]
@@ -112,9 +113,10 @@ def score_request(date,score,uri):
 			row[23],hash_field])
         insert_command += "{0}{1}".format("," if not first else "", threat_data)
         first = False
+        num_rows += 1
 
     insert_command += ")"
-    ImpalaEngine.execute_query(insert_command)
+    if num_rows > 0: ImpalaEngine.execute_query(insert_command)
 
     # create feedback file.
     app_path = Configuration.spot()
