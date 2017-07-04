@@ -51,11 +51,11 @@ do
 		echo "creating $d/$f"
 		hdfs dfs -mkdir ${HUSER}/$d/$f
 	done
-done
 
-# Modifying permission on HDFS folders to allow Impala to read/write
-hdfs dfs -chmod -R 775 ${HUSER}
-hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}
+	# Modifying permission on HDFS folders to allow Impala to read/write
+	hdfs dfs -chmod -R 775 ${HUSER}/$d
+	hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
+done
 
 # Creating Spot Database
 impala-shell -i ${IMPALA_DEM} -q "CREATE DATABASE IF NOT EXISTS ${DBNAME};"

@@ -52,6 +52,7 @@ def main():
   util.create_hdfs_folder('{0}/proxy/summary'.format(hdfs_staging_path),log)
   util.create_hdfs_folder('{0}/proxy/storyboard'.format(hdfs_staging_path),log)
   util.create_hdfs_folder('{0}/proxy/timeline'.format(hdfs_staging_path),log)
+  util.create_hdfs_folder('{0}/proxy/iana_rcode'.format(hdfs_staging_path),log)
   util.execute_cmd('hdfs dfs -setfacl -R -m user:impala:rwx {0}'.format(hdfs_staging_path),log)
 
 
@@ -143,7 +144,7 @@ def main():
         load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(filename, staging_db, staging_table_name)
         util.execute_hive_cmd(load_cmd, log)
 
-        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT tdate, time, clientip, host, webcat, respcode, reqmethod, useragent, resconttype, referer, uriport, serverip, scbytes, csbytes, fulluri, 0, '' FROM {5}.{6};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, staging_db, staging_table_name)
+        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT tdate, time, clientip, host, webcat, '0', reqmethod, useragent, resconttype, referer, uriport, serverip, scbytes, csbytes, fulluri, hour(time), respcode FROM {5}.{6};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, staging_db, staging_table_name)
         util.execute_hive_cmd(insert_cmd, log)
 
 
@@ -164,15 +165,23 @@ def main():
 
       ##proxy Timeline
       log.info("Processing Proxy Timeline")
+
+      log.info("Uploading Proxy IANA resp codes")
+      iana_table_name = 'proxy_iana_rcode_tmp'
+      iana_code_csv = '{0}/oa/components/iana/http-rcode.csv'.format(old_oa_path)
+      load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(iana_code_csv, staging_db, iana_table_name)
+      util.execute_hive_cmd(load_cmd, log)
+
       staging_table_name = 'proxy_timeline_tmp'
       dest_table_name = 'proxy_timeline'
+      pattern = 'timeline*.tsv'
 
-      for filename in fnmatch.filter(os.listdir(full_day_path), 'timeline*.tsv'):
-        print filename
+      for file in fnmatch.filter(os.listdir(full_day_path), pattern):
 
-        hash_code = re.findall("timeline-(\S+).tsv", filename)[0]
+        filename = '{0}/{1}'.format(full_day_path, file)
+        hash_code = re.findall("timeline-(\S+).tsv", file)[0]
         extsearch_path = "{0}/es-{1}.csv".format(full_day_path, hash_code)
-        log.info('File: {0}  Hash: {1}  Extended Search file: {2}'.format(filename, hash_code, extsearch_path))
+        log.info('File: {0}  Hash: {1}  Extended Search file: {2}'.format(file, hash_code, extsearch_path))
 
         if os.path.isfile('{0}'.format(extsearch_path)):
 
@@ -186,7 +195,7 @@ def main():
           util.execute_hive_cmd(load_cmd, log)
 
           # Insert into new table from staging table and adding FullURI value
-          insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT '{5}', tstart, tend, duration, clientip, respcode, '' FROM {6}.{7} where cast(tstart as timestamp) is not null;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, fulluri, staging_db, staging_table_name)
+          insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT '{5}', t.tstart, t.tend, t.duration, t.clientip, t.respcode, i.respcode_name FROM {6}.{7} t left join {6}.{8} i on t.respcode = i.respcode where cast(tstart as timestamp) is not null;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, fulluri, staging_db, staging_table_name, iana_table_name)
           util.execute_hive_cmd(insert_cmd, log)
 
         else:

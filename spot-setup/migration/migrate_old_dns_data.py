@@ -154,14 +154,20 @@ def main():
       dest_table_name = 'dns_edge'
       pattern = 'edge*.csv'
       edge_files = fnmatch.filter(os.listdir(full_day_path), pattern)
-      filename = '{0}/{1}'.format(full_day_path, pattern)
 
-      if len(edge_files) > 0:
+      for file in edge_files:
+
+        parts = (re.findall("edge-(\S+).csv", file)[0]).split('_')
+        hh = int(parts[-2])
+        mn = int(parts[-1])
+
+        log.info("Processing File: {0} with HH: {1} and MN: {2}".format(file, hh, mn))
+        filename = '{0}/{1}'.format(full_day_path, file)
 
         load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(filename, staging_db, staging_table_name)
         util.execute_hive_cmd(load_cmd, log)
 
-        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT unix_timestamp(regexp_replace(frame_time, '\"', ''), 'MMMMM dd yyyy H:mm:ss.SSS z'), frame_len, ip_dst, ip_src, dns_qry_name, dns_qry_class, dns_qry_type, dns_qry_rcode, dns_a, 0, '', '', '', '' FROM {5}.{6};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, staging_db, staging_table_name)
+        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT unix_timestamp(regexp_replace(frame_time, '\"', ''), 'MMMMM dd yyyy H:mm:ss.SSS z'), frame_len, ip_dst, ip_src, dns_qry_name, '', '0', '0', dns_a, {5}, dns_qry_class, dns_qry_type, dns_qry_rcode, '0' FROM {6}.{7};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, hh, staging_db, staging_table_name)
         util.execute_hive_cmd(insert_cmd, log)
 
 
