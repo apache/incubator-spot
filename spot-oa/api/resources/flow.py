@@ -1,10 +1,12 @@
 import api.resources.impala_engine as ImpalaEngine
 import api.resources.hdfs_client as HDFSClient
 import api.resources.configurator as Configuration
-import os
+import os,csv
+import linecache,bisect
 import struct, socket
 from hdfs.util import HdfsError
 import json
+import numpy as np
 
 """
 --------------------------------------------------------------------------
@@ -370,7 +372,7 @@ def create_storyboard(expanded_search,date,ip,title,text,top_results=20):
 
 
     cpath = "{0}/context/" \
-    .format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    .format(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
     iploc = "{0}/{1}".format(cpath,'iploc.csv')
     nwloc = "{0}/{1}".format(cpath,'networkcontext_1.csv')
@@ -541,6 +543,7 @@ Migrated from IPython NoteBooks.
 def create_map_view(ip, inbound, outbound, twoway,date,iploc):
 
     iplist = ''
+    globe_fpath = 'globe-' + ip.replace('.','_') + ".json"
     if os.path.isfile(iploc):
         iplist = np.loadtxt(iploc,dtype=np.uint32,delimiter=',',usecols={0},\
         converters={0: lambda s: np.uint32(s.replace('"',''))})
@@ -549,7 +552,7 @@ def create_map_view(ip, inbound, outbound, twoway,date,iploc):
 
     response = ""
     if iplist != '':
-        globe_fpath = 'globe-' + ip.replace('.','_') + ".json"
+        
         globe_json = {}
         globe_json['type'] = "FeatureCollection"
         globe_json['sourceips'] = []
@@ -636,7 +639,7 @@ def create_map_view(ip, inbound, outbound, twoway,date,iploc):
         hdfs_path = "{0}/flow/oa/storyboard/{1}/{2}/{3}/{4}" \
         .format(app_path,date.year,date.month,date.day,ip.replace(".","_"))
 
-        if HDFSClient.put_file_json(globe_json,hdfs_path,stats_fpath,overwrite_file=True) :
+        if HDFSClient.put_file_json(globe_json,hdfs_path,globe_fpath,overwrite_file=True) :
             response = "Geolocation map successfully created \n"
         else:
             response = "The map can't be created without an iploc file \n"
