@@ -131,6 +131,14 @@ def main():
         util.execute_hive_cmd(insert_cmd, log)
 
 
+      ## proxy IANA resp codes
+      log.info("Uploading Proxy IANA resp codes")
+      iana_table_name = 'proxy_iana_rcode_tmp'
+      iana_code_csv = '{0}/oa/components/iana/http-rcode.csv'.format(old_oa_path)
+      load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(iana_code_csv, staging_db, iana_table_name)
+      util.execute_hive_cmd(load_cmd, log)
+
+
       ## proxy Edge
       log.info("Processing Proxy Edge")
       staging_table_name = 'proxy_edge_tmp'
@@ -144,7 +152,7 @@ def main():
         load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(filename, staging_db, staging_table_name)
         util.execute_hive_cmd(load_cmd, log)
 
-        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT tdate, time, clientip, host, webcat, '0', reqmethod, useragent, resconttype, referer, uriport, serverip, scbytes, csbytes, fulluri, hour(time), respcode FROM {5}.{6};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, staging_db, staging_table_name)
+        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT e.tdate, e.time, e.clientip, e.host, e.webcat, COALESCE(i.respcode,'0'), e.reqmethod, e.useragent, e.resconttype, e.referer, e.uriport, e.serverip, e.scbytes, e.csbytes, e.fulluri, hour(e.time), e.respcode FROM {5}.{6} e left join {5}.{7} i on e.respcode = i.respcode_name ;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, staging_db, staging_table_name, iana_table_name)
         util.execute_hive_cmd(insert_cmd, log)
 
 
@@ -165,13 +173,6 @@ def main():
 
       ##proxy Timeline
       log.info("Processing Proxy Timeline")
-
-      log.info("Uploading Proxy IANA resp codes")
-      iana_table_name = 'proxy_iana_rcode_tmp'
-      iana_code_csv = '{0}/oa/components/iana/http-rcode.csv'.format(old_oa_path)
-      load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(iana_code_csv, staging_db, iana_table_name)
-      util.execute_hive_cmd(load_cmd, log)
-
       staging_table_name = 'proxy_timeline_tmp'
       dest_table_name = 'proxy_timeline'
       pattern = 'timeline*.tsv'
@@ -195,7 +196,7 @@ def main():
           util.execute_hive_cmd(load_cmd, log)
 
           # Insert into new table from staging table and adding FullURI value
-          insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT '{5}', t.tstart, t.tend, t.duration, t.clientip, t.respcode, i.respcode_name FROM {6}.{7} t left join {6}.{8} i on t.respcode = i.respcode where cast(tstart as timestamp) is not null;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, fulluri, staging_db, staging_table_name, iana_table_name)
+          insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT '{5}', t.tstart, t.tend, t.duration, t.clientip, t.respcode, COALESCE(i.respcode_name,'') FROM {6}.{7} t left join {6}.{8} i on t.respcode = i.respcode where cast(tstart as timestamp) is not null;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, fulluri, staging_db, staging_table_name, iana_table_name)
           util.execute_hive_cmd(insert_cmd, log)
 
         else:
