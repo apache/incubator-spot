@@ -162,6 +162,7 @@ def  score_connection(date,ip="", dns="", ip_sev=0, dns_sev=0):
 
     fb_data =  []
     first = True
+    num_rows = 0
     for row in connections:
         # insert into dns_threat_investigation.
         threat_data = (row[1],row[3],row[4],ip_sev if ip == row[3] else 0,\
@@ -173,9 +174,10 @@ def  score_connection(date,ip="", dns="", ip_sev=0, dns_sev=0):
 
         insert_command += "{0}{1}".format("," if not first else "", threat_data)
         first = False
+        num_rows += 1
 
     insert_command += ")"
-    ImpalaEngine.execute_query(insert_command)
+    if num_rows > 0: ImpalaEngine.execute_query(insert_command)
 
     # create feedback file.
     app_path = Configuration.spot()
