@@ -210,7 +210,7 @@ def main():
         load_cmd = "LOAD DATA LOCAL INPATH '{0}' OVERWRITE INTO TABLE {1}.{2};".format(filename, staging_db, staging_table_name)
         util.execute_hive_cmd(load_cmd, log)
 
-        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT '{5}', total, dns_qry_name, ip_dst FROM {6}.{7};".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, ip, staging_db, staging_table_name)
+        insert_cmd = "INSERT INTO {0}.{1} PARTITION (y={2}, m={3}, d={4}) SELECT '{5}', total, dns_qry_name, ip_dst FROM {6}.{7} WHERE dns_qry_name is not null;".format(dest_db, dest_table_name, dt.year, dt.month, dt.day, ip, staging_db, staging_table_name)
         util.execute_hive_cmd(insert_cmd, log)
 
 

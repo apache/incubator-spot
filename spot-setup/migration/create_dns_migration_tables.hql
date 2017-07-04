@@ -85,10 +85,10 @@ TBLPROPERTIES ('skip.header.line.count'='1');
 DROP TABLE IF EXISTS ${var:dbname}.dns_threat_dendro_tmp;
 
 CREATE EXTERNAL TABLE ${var:dbname}.dns_threat_dendro_tmp (
-anchor STRING, 
 total BIGINT,
 dns_qry_name STRING, 
-ip_dst STRING
+ip_dst STRING,
+sev int
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 LOCATION '${var:hpath}/dns/threat_dendro'
