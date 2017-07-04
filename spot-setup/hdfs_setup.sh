@@ -54,7 +54,8 @@ do
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
 	hdfs dfs -chmod -R 775 ${HUSER}/$d
-	hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
+	sudo -u hdfs hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
+	sudo -u hdfs hdfs dfs -setfacl -R -m user:spotqa:rwx ${HUSER}/$d
 done
 
 # Creating Spot Database
