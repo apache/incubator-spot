@@ -1,6 +1,6 @@
 # DNS
 
-DNS sub-module extracts and transforms DNS (Domain Name Service) data already ranked by spot-ml and will load it into into impala tables for the presentation layer.
+DNS sub-module extracts and transforms DNS (Domain Name Service) data already ranked by spot-ml and will load it into impala tables for the presentation layer.
 
 ## DNS Components
 

@@ -50,7 +50,7 @@ For example:
 ./ml_ops.sh 19731231 flow 1e-20 200
 ```
 
-You should have a list of the 200 most suspiciouc flow events from 
+You should have a list of the 200 most suspicious flow events from 
 
      $HPATH/flow/scored_results/YYYYMMDD/scores/flow_results.csv
 

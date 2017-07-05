@@ -94,7 +94,7 @@ Here you will find useful information to get you started on how to contribute to
 
 ## Technical Documentation
 
-Our UI is build on top of Flux application architecture principles, having an understanding of this pattern is highly recommended, for more information about Flux, please go to [Flux web page](https://facebook.github.io/flux/docs/overview.html).
+Our UI is built on top of Flux application architecture principles, having an understanding of this pattern is highly recommended, for more information about Flux, please go to [Flux web page](https://facebook.github.io/flux/docs/overview.html).
 
 ### ReactJS + Flux
 
@@ -107,7 +107,7 @@ For more information about ReactJS and Flux, please go to:
 
 From now on we assume you are familiar with ReactJS+Flux applications.
 
-For every path found on this document, "SPOT" refers to the path where Spot UI is intalled and "PIPELINE" the pipeline subfolder you want to work on.
+For every path found on this document, "SPOT" refers to the path where Spot UI is installed and "PIPELINE" the pipeline subfolder you want to work on.
 
 #### Development/Debugging process
 

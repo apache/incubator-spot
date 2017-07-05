@@ -26,7 +26,7 @@ This document will explain the necessary steps to configure the spot-oa componen
                                             | geoloc   -> Module to assign geolocation to every IP
 
 
-###Data
+### Data
 _Data source module._
 
 This module needs to be configured correctly to avoid errors during the spot-oa execution. Here you need to select the correct database engine to obtain the correct results while creating additional details files.
@@ -61,7 +61,7 @@ Example:
     }
 
 
-###Reputation
+### Reputation
 _Reputation check module._
 
 This module is called during spot-oa execution to check the reputation for any given IP, DNS name or URI (depending on the pipeline). The reputation module makes use of two third-party services, McAfee GTI and Facebook ThreatExchange. 
@@ -124,7 +124,7 @@ To add a different reputation service, you can read all about it [here](reputati
         - app_id: App id to connect to ThreatExchange service.
         - app_secret: App secret to connect to ThreatExchange service.
 
-###IANA
+### IANA
 _Internet Assigned Numbers Authority codes translation module._
 
 **Configuration**
@@ -146,7 +146,7 @@ default location, your configuration file should look like this:
 		 }
 
 
-###Network Context (nc)
+### Network Context (nc)
 _Network Context module._
 
 **Pre-requisites**
@@ -175,7 +175,7 @@ configuration file should look like this:
 		 }
 
          
-###Geoloc
+### Geoloc
 _Geolocation module._
 
 This is an optional functionality you can enable / disable depending on your preferences.

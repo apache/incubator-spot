@@ -40,7 +40,7 @@ The following tables will be populated after the threat investigation process:
 
 ## FUNCTIONS  
 
-**Widget configuration**
+### **Widget configuration**
 This is not a function, but more like global code to set up styles and widgets to format the output of the notebook. 
 
 `start_investigation():` - This function cleans the notebook from previous executions.
