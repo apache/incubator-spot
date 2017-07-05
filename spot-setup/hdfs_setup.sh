@@ -18,35 +18,52 @@
 #
 
 DSOURCES=('flow' 'dns' 'proxy')
-DFOLDERS=('binary' 'hive' 'stage')
+DFOLDERS=('binary' 
+'stage'
+'hive'
+'hive/oa'
+'hive/oa/chords'
+'hive/oa/edge'
+'hive/oa/summary'
+'hive/oa/suspicious'
+'hive/oa/storyboard'
+'hive/oa/threat_investigation'
+'hive/oa/timeline'
+'hive/oa/dendro'
+'hive/oa/threat_dendro'
+)
+
+# Sourcing spot configuration variables
 source /etc/spot.conf
 
-#
-# creating HDFS user's folder
-#
-hadoop fs -mkdir ${HUSER}
-hadoop fs -chown ${USER}:supergroup ${HUSER}
+# Creating HDFS user's folder
+sudo -u hdfs hdfs dfs -mkdir ${HUSER}
+sudo -u hdfs hdfs dfs -chown ${USER}:supergroup ${HUSER}
+sudo -u hdfs hdfs dfs -chmod 775 ${HUSER}
 
+# Creating HDFS paths for each use case
 for d in "${DSOURCES[@]}" 
 do 
 	echo "creating /$d"
-	hadoop fs -mkdir ${HUSER}/$d 
+	hdfs dfs -mkdir ${HUSER}/$d 
 	for f in "${DFOLDERS[@]}" 
 	do 
 		echo "creating $d/$f"
-		hadoop fs -mkdir ${HUSER}/$d/$f
+		hdfs dfs -mkdir ${HUSER}/$d/$f
 	done
+
+	# Modifying permission on HDFS folders to allow Impala to read/write
+	hdfs dfs -chmod -R 775 ${HUSER}/$d
+	sudo -u hdfs hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
+	sudo -u hdfs hdfs dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
 done
 
-#
-# create hive tables
-#
-#configure / create catalog
-hive -e "CREATE DATABASE ${DBNAME}"
+# Creating Spot Database
+impala-shell -i ${IMPALA_DEM} -q "CREATE DATABASE IF NOT EXISTS ${DBNAME};"
 
+# Creating Impala tables
 for d in "${DSOURCES[@]}" 
 do 
-	hive -hiveconf huser=${HUSER} -hiveconf dbname=${DBNAME} -f create_${d}_avro_parquet.hql
+	impala-shell -i ${IMPALA_DEM} --var=huser=${HUSER} --var=dbname=${DBNAME} -f create_${d}_parquet.hql
 done
-
 

@@ -102,7 +102,7 @@ var NetworkViewPanel = React.createClass({
         // Delete old links
         this.link.exit().remove();
 
-        // Update nodes
+        // Update nodesw
         this.node = this.canvas.selectAll('.node, .proxy_node')
             .data(nodes.filter((node) => node.visible), function(d) { return d.id; });
 
@@ -261,7 +261,7 @@ var NetworkViewPanel = React.createClass({
                 type: 'Root',
                 tooltip: 'Double click to toggle child nodes',
                 rep: -1,
-                visible: true,
+                visible: state.data.length > 0 ? true : false,
                 expanded: false,
                 root: true
             };
@@ -375,7 +375,7 @@ var NetworkViewPanel = React.createClass({
                     0
                 );
             } else {
-                node.size = node.hits.length;
+                node.size = node.hits === undefined ? 0 : node.hits.length;
             }
 
             nodes.push(node);

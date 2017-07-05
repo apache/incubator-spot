@@ -1,33 +1,49 @@
 // Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
 
-var assign = require('object-assign');
-var d3 = require('d3');
+const SpotConstants = require('../../../js/constants/SpotConstants');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
 
-var NetflowConstants = require('../constants/NetflowConstants');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var RestStore = require('../../../js/stores/RestStore');
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-var CommentsStore = assign(new RestStore(NetflowConstants.API_COMMENTS), {
-  _parser: d3.dsv('|', 'text/plain'),
-  errorMessages: {
-    404: 'Please choose a different date, no comments have been found'
-  },
-  setDate: function (date)
-  {
-    this.setEndpoint(NetflowConstants.API_COMMENTS.replace('${date}', date.replace(/-/g, '')));
-  }
-});
+const DATE_VAR = 'date';
+
+class CommentsStore extends ObservableGraphQLStore {
+    getQuery() {
+        return `
+            query($date:SpotDateType) {
+                flow {
+                    threats {
+                        comments(date: $date) {
+                            ip
+                            title
+                            summary: text
+                        }
+                    }
+                }
+            }
+        `;
+    }
+
+    unboxData(data) {
+        return data.flow.threats.comments;
+    }
+
+    setDate (date) {
+        this.setVariable(DATE_VAR, date);
+    }
+}
+
+const cs = new CommentsStore();
 
 SpotDispatcher.register(function (action) {
   switch (action.actionType) {
     case SpotConstants.UPDATE_DATE:
-      CommentsStore.setDate(action.date);
+      cs.setDate(action.date);
       break;
     case SpotConstants.RELOAD_COMMENTS:
-      CommentsStore.reload();
+      cs.sendQuery();
       break;
   }
 });
 
-module.exports = CommentsStore;
+module.exports = cs;

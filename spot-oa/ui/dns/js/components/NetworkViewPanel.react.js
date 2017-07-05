@@ -46,7 +46,7 @@ function getNodesFromData(data) {
                 nodes[id] = {
                     id: id,
                     label: item[field],
-                    internalIp: field==='tld',
+                    internalIp: field==='tld' ? 1 : 0,
                     hits: 1
                 };
             }

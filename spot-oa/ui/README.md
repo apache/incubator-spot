@@ -68,12 +68,15 @@ Provides tools for interactive visualization, noise filters, white listing, and 
           + [Suspicious](#suspicious-4)
           + [Storyboard](#storyboard-4)
           + [Ingest Summary](#ingest-summary-2)
+          + [Notebook](#notebook-1)
         * [DNS Stores](#dns-stores)
           + [Suspicious](#suspicious-5)
           + [Storyboard](#storyboard-5)
+          + [Notebook](#notebook-2)
         * [Proxy Stores](#proxy-stores)
           + [Suspicious](#suspicious-6)
           + [Storyboard](#storyboard-6)
+          + [Notebook](#notebook-3)
 
 ## Intended Audience
 
@@ -91,7 +94,7 @@ Here you will find useful information to get you started on how to contribute to
 
 ## Technical Documentation
 
-Our UI is build on top of Flux application architecture principles, having an understanding of this pattern is highly recommended, for more information about Flux, please go to [Flux web page](https://facebook.github.io/flux/docs/overview.html).
+Our UI is built on top of Flux application architecture principles, having an understanding of this pattern is highly recommended, for more information about Flux, please go to [Flux web page](https://facebook.github.io/flux/docs/overview.html).
 
 ### ReactJS + Flux
 
@@ -104,12 +107,13 @@ For more information about ReactJS and Flux, please go to:
 
 From now on we assume you are familiar with ReactJS+Flux applications.
 
-For every path found on this document, "SPOT" refers to the path where Spot UI is intalled and "PIPELINE" the pipeline subfolder you want to work on.
+For every path found on this document, "SPOT" refers to the path where Spot UI is installed and "PIPELINE" the pipeline subfolder you want to work on.
 
 #### Development/Debugging process
 
 1. Install Spot UI. Follow this [guide](INSTALL.md#install-spot-ui).
 2. Run Spot UI. Follow this [guide](INSTALL.md#how-to-run-spot-ui).
+    1. Set SPOT_DEV env var to 1 to enable GraphiQL UI and run ipython in debug mode.
 3. Start watching for code changes
     1. $ cd SPOT/ui/PIPELINE/
     2. Watch one of the following modules
@@ -1034,6 +1038,13 @@ _SPOT/ui/js/flow/stores/_
 
     Extends [RestStore.js](#reststore.js)
 
+###### Notebook
+
+spot-oa/ui/flow/js/stores/NotebookStore.js
+
+spot-oa/ui/flow/js/components/ScoreNotebook.react.js
+
+
 ##### DNS Stores
 
 _SPOT/ui/js/dns/stores/_
@@ -1095,6 +1106,12 @@ _SPOT/ui/js/dns/stores/_
     > - SELECT_COMMENT
     > - RELOAD_COMMENTS
 
+###### Notebook
+
+spot-oa/ui/dns/js/stores/NotebookStore.js
+
+spot-oa/ui/dns/js/components/ScoreNotebook.react.js
+
 ##### Proxy Stores
 
 _SPOT/ui/js/proxy/_
@@ -1153,3 +1170,9 @@ _SPOT/ui/js/proxy/_
     > - UPDATE_DATE
     > - SELECT_COMMENT
     > - RELOAD_COMMENTS
+
+###### Notebook
+
+spot-oa/ui/proxy/js/stores/NotebookStore.js
+
+spot-oa/ui/proxy/js/components/ScoreNotebook.react.js

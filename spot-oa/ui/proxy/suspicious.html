@@ -21,6 +21,7 @@
     <title>Proxy :: Suspicious</title>
 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <!--Bootstrap styles-->
     <link rel="stylesheet" type="text/css" href="../css/bootstrap-spot.min.css" />
@@ -30,6 +31,8 @@
     <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" />
     <!-- Spot styles -->
     <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <!-- Sweetalert2 -->
+    <link rel="stylesheet" type="text/css" href="../node_modules/sweetalert2/dist/sweetalert2.min.css">
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="57x57" href="../images/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="../images/favicon/apple-icon-60x60.png">
@@ -138,62 +141,7 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="main-menu">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            Flows
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="flowsMenu">
-                            <li>
-                                <a data-href="../flow/suspicious.html#date=${date}">Suspicious</a>
-                            </li>
-                            <li>
-                                <a data-href="../flow/threat-investigation.html#date=${date}">Threat Investigation</a>
-                            </li>
-                            <li>
-                                <a data-href="../flow/storyboard.html#date=${date}">Storyboard</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            DNS
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dnsMenu">
-                            <li>
-                                <a data-href="../dns/suspicious.html#date=${date}">Suspicious</a>
-                            </li>
-                            <li>
-                                <a data-href="../dns/threat-investigation.html#date=${date}">Threat Investigation</a>
-                            </li>
-                            <li>
-                                <a data-href="../dns/storyboard.html#date=${date}">Storyboard</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            Proxy
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="proxyMenu">
-                            <li>
-                                <a data-href="suspicious.html#date=${date}">Suspicious</a>
-                            </li>
-                            <li>
-                                <a data-href="threat-investigation.html#date=${date}">Threat Investigation</a>
-                            </li>
-                            <li>
-                                <a data-href="storyboard.html#date=${date}">Storyboard</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a data-href="../ingest-summary.html#end-date=${date}">Ingest Summary</a>
-                    </li>
-                </ul>
+              <!-- Main Menu -->
             </div>
             <div id="search-box" class="row text-right">
                 <!--Tools Buttons-->
@@ -217,6 +165,7 @@
     <script type="application/javascript" src="../node_modules/react-dom/dist/react-dom.min.js"></script>
     <script type="application/javascript" src="../node_modules/react-dom/dist/react-dom-server.min.js"></script>
     <script type="application/javascript" src="../js/tooltip.js"></script>
+    <script type="application/javascript" src="../node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
     <script type="application/javascript" src="js/suspicious.bundle.min.js"></script>
 </body>
 </html>

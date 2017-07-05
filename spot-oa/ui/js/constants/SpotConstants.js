@@ -4,6 +4,7 @@ const SpotConstants = {
   PIPELINE_NETFLOW: 'flow',
   PIPELINE_DNS: 'dns',
   PIPELINE_PROXY: 'proxy',
+  UPDATE_PIPELINE: 'UPDATE_PIPELINE',
   // Search Actions
   UPDATE_FILTER: 'UPDATE_FILTER',
   UPDATE_DATE: 'UPDATE_DATE',
@@ -17,6 +18,11 @@ const SpotConstants = {
   SUSPICIOUS_PANEL:'Suspicious',
   NETVIEW_PANEL: 'Network View',
   NOTEBOOK_PANEL: 'Notebook',
+  NO_IPYTHON_NOTEBOOK: 'NoIpythonNotebooks',
+  SCORING_PANEL: 'Scoring',
+  SAVE_SCORED_ELEMENTS: 'SAVE_SCORED_ELEMENTS',
+  RESET_SCORED_ELEMENTS: 'RESET_SCORED_ELEMENTS',
+  CHANGE_CSS_CLS: 'CHANGE_CSS_CLS',
   DETAILS_PANEL: 'Details',
   COMMENTS_PANEL:'Executive Threat Briefing',
   INCIDENT_PANEL:'Incident Progression',
@@ -42,7 +48,8 @@ const SpotConstants = {
   START_DATE: 'start-date',
   END_DATE: 'end-date',
   // Server Paths
-  NOTEBOOKS_PATH: '/notebooks/ipynb'
+  NOTEBOOKS_PATH: '/notebooks/ipynb',
+  GRAPHQL_ENDPOINT: '/graphql'
 };
 
 module.exports = SpotConstants;

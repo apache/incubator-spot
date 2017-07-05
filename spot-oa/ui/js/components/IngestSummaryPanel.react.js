@@ -3,12 +3,10 @@
 const $ = require('jquery');
 const d3 = require('d3');
 const React = require('react');
-const ReactDOM = require('react-dom');
 
 const ContentLoaderMixin = require('./ContentLoaderMixin.react');
 const ChartMixin = require('./ChartMixin.react');
 const DateUtils = require('../utils/DateUtils');
-const InSumActions = require('../actions/InSumActions');
 
 const IngestSummaryStore = require('../stores/IngestSummaryStore');
 

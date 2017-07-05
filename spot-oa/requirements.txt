@@ -5,7 +5,22 @@ Tld == 0.7.6
 
 # spot-ui dependencies
 jsonschema
-ipython == 3.2.0
 pyzmq
 jinja2
 tornado
+mistune
+pygments
+terminado
+ipython == 3.2.1
+
+# GraphQL API dependencies
+flask
+flask-graphql
+graphql-core
+urllib3
+
+# API Resources
+setuptools>=3.4.4
+thrift==0.9.3
+impyla
+hdfs

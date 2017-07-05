@@ -49,7 +49,7 @@ function getNodesFromData(data) {
                 nodes[id] = {
                     id: id,
                     label: item[field],
-                    internalIp: item[mapper[field]]==='1',
+                    internalIp: item[mapper[field]],
                     hits: 1
                 };
             }

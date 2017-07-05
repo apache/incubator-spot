@@ -5,6 +5,7 @@ var React = require('react');
 var SpotActions = require('../actions/SpotActions');
 var SpotConstants = require('../constants/SpotConstants');
 var SpotStore = require('../stores/SpotStore');
+var easyModeS = true;
 
 var IPythonNotebookPanel = React.createClass({
     propTypes: {
@@ -14,10 +15,11 @@ var IPythonNotebookPanel = React.createClass({
     },
     statics: {
         createIPythonNotebookClosure: function (title, easyMode) {
-            var closure;
-
+            var closure; 
+            
             easyMode = typeof easyMode=='undefined' ? true : typeof easyMode=='boolean' ? easyMode : !!easyMode;
 
+            easyModeS = easyMode; 
             closure = {
                 getTitle: function () {
                     return title;
@@ -57,7 +59,7 @@ var IPythonNotebookPanel = React.createClass({
         }
     },
     getInitialState: function () {
-        return {date: this.props.date.replace(/-/g, ''), easyMode: true};
+        return {date: this.props.date.replace(/-/g, ''), easyMode: easyModeS};
     },
     componentDidMount: function () {
         SpotStore.addChangeDateListener(this._onDateChange);
