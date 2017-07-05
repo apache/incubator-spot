@@ -402,7 +402,10 @@ class OA(object):
         df = pd.DataFrame(results)
 
         # Forms a new dataframe splitting the minutes from the time column
-        df_new = pd.DataFrame([["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy,val['frame_time'].split(" ")[3].split(":")[0].zfill(2),val['frame_time'].split(" ")[3].split(":")[1].zfill(2)), int(val['total']) if not math.isnan(val['total']) else 0 ] for key,val in df.iterrows()],columns = ingest_summary_cols)
+        df_new = pd.DataFrame([["{0}-{1}-{2} {3}:{4}".format(yr, mn, dy,\
+            re.sub('\s+',' ',val['frame_time']).strip().split(" ")[3].split(":")[0].zfill(2),\
+            re.sub('\s+',' ',val['frame_time']).strip().split(" ")[3].split(":")[1].zfill(2)),\
+            int(val['total']) if not math.isnan(val['total']) else 0 ] for key,val in df.iterrows()],columns = ingest_summary_cols)
 
         #Groups the data by minute 
         sf = df_new.groupby(by=['date'])['total'].sum()
