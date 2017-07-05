@@ -22,6 +22,7 @@ import shutil
 import sys
 import datetime
 import csv, math
+import re
 from tld import get_tld
 import api.resources.impala_engine as impala
 import api.resources.hdfs_client as HDFSClient
