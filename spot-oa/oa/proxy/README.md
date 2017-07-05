@@ -31,7 +31,7 @@ Proxy spot-oa main script executes the following steps:
 		 
 		10. Saves the data in the _proxy_\scores_ table. 
 		
-    	12. Collects information about aditional connections to display the details table in the UI.
+    	12. Collects information about additional connections to display the details table in the UI.
 
 
 **Dependencies**

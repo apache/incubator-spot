@@ -1,6 +1,6 @@
-#PROXY Threat Investigation Notebook
+# PROXY Threat Investigation Notebook
 
-###Dependencies
+### Dependencies
 - [iPython == 3.2.1](https://ipython.org/ipython-doc/3/index.html)
 - [Python 2.7.6](https://www.python.org/download/releases/2.7.6/)
 - [ipywidgets 5.1.1](https://ipywidgets.readthedocs.io/en/latest/user_install.html#with-pip)
@@ -20,14 +20,14 @@ The following python modules will have to be imported for the notebook to work c
         from IPython.display import display, Javascript, clear_output
 
 
-##Pre-requisites  
+## Pre-requisites  
 - Execution of the spot-oa process for Proxy
 - Correct installation of the UI [Read more](/ui/INSTALL.md)
 - Score a set connections at the Edge Investigation Notebook 
 - Correct setup of the spot.conf file. [Read more](/wiki/Edit%20Solution%20Configuration) 
 
 
-##Additional Configuration
+## Additional Configuration
 `top_results` - This value defines the number of rows that will be displayed onscreen after the expanded search. 
 This also affects the number of IPs that will appear in the Timeline chart.
 
@@ -46,14 +46,14 @@ The following files will be created and stored in HDFS.
 
         incident-progression-\<anchor hash>.json
 
-##Functions  
+## Functions  
 **Widget configuration**
 
 This is not a function, but more like global code to set up styles and widgets to format the output of the notebook. 
 
 `start_investigation():` - This function cleans the notebook from previous executions, then calls the data_loader() function to obtain the data and afterwards displays the corresponding widgets
 
-`data_loader():` - This function lcalls the *threats* query to get the source and destination IP's previously scored as high risk to create a list with all disctinct `full_uri` values.
+`data_loader():` - This function lcalls the *threats* query to get the source and destination IP's previously scored as high risk to create a list with all distinct `full_uri` values.
 
 `fill_list(list_control,source):` - This function populates a listbox widget with the given data list and appends an empty item at the top with the value '--Select--' (Just for visualization  sake)
 

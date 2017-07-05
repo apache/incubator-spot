@@ -13,12 +13,12 @@ it is by submitting this class to Spark that the Suspicious Connects analyses ar
 * **input** Path to data on HDFS. Data is expected to be stored in parquet with schema consistent with 
 [schema used by the suspicious connects analyses](SUSPICIOUS_CONNECTS_SCHEMA.md).
 * **feedback**  Local path of file containing feedback scores.
-* **dupfactor** Duplication factor controlling how to downrate non-threatening events from the feedback file.
+* **dupfactor** Duplication factor controlling how to down rate non-threatening events from the feedback file.
 * **ldatopiccount** Number of topics in the topic model.
 * **userdomain** The user domain of the network being analyzed.
 * **scored** The HDFS path where results will be stored.
 * **threshold** Threshold for determination of anomalies. Records with scores above the threshold will not be returned.
-* **maxresults** Maximum number of record to return. If -1, all records are returned. Results are filtered by the threshold and sorted and the most suspicous (lowest score) records are returned first.
+* **maxresults** Maximum number of record to return. If -1, all records are returned. Results are filtered by the threshold and sorted and the most suspicious (lowest score) records are returned first.
 * **delimiter** Separation character used for CSVs containing most suspicious results.
 * **prgseed** Seed for the pseudorandom generator used in topic modelling.
 * **ldamaxiteration** Maximum number of iterations to execute the LDA topic modelling procedure.
