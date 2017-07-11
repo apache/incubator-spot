@@ -8,6 +8,7 @@ The most important prerequisite for machine learning is the environment preparat
 - Download [CSV file](http://s3.amazonaws.com/alexa-static/top-1m.csv.zip)
 - Unzip
 - Move complete folder to incubator-spot/spot-ml/
+
 After that it should looks like incubator-spot/spot-ml/top-1m.csv
 
 ## Prerequisites, Installation and Configuration
