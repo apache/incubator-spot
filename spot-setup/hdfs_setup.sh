@@ -64,6 +64,6 @@ impala-shell -i ${IMPALA_DEM} -q "CREATE DATABASE IF NOT EXISTS ${DBNAME};"
 # Creating Impala tables
 for d in "${DSOURCES[@]}" 
 do 
-	impala-shell -i ${IMPALA_DEM} --var=huser=${HUSER} --var=dbname=${DBNAME} -f create_${d}_parquet.hql
+	impala-shell -i ${IMPALA_DEM} --var=huser=${HUSER} --var=dbname=${DBNAME} -c -f create_${d}_parquet.hql
 done
 
