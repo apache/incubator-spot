@@ -72,7 +72,7 @@ To get to parquet format we need a staging table to store CSV data temporarily f
 - proxy_timeline
 
 
-## Migrating OA Data from Spot 0.9 to 1.0
+## Migrating OA Data to Spot 1.0
 
 Please review migration documentation [here](migration/README.md).
 
