@@ -9,7 +9,7 @@ The most important prerequisite for machine learning is the environment preparat
 - Unzip
 - Move complete folder to incubator-spot/spot-ml/
 
-After that it should looks like incubator-spot/spot-ml/top-1m.csv
+After that it should look like incubator-spot/spot-ml/top-1m.csv
 
 ## Prerequisites, Installation and Configuration
 
