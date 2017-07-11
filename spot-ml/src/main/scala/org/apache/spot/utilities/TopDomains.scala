@@ -25,9 +25,14 @@ import scala.io.Source
 object TopDomains {
   val alexaTop1MPath = "top-1m.csv"
 
-  val TopDomains: Set[String] = Source.fromFile(alexaTop1MPath).getLines.map(line => {
-    val parts = line.split(",")
-    val l = parts.length
-    parts(1).split('.')(0)
-  }).toSet
+  val TopDomains: Set[String] = if (new java.io.File(alexaTop1MPath).exists) {
+    Source.fromFile(alexaTop1MPath).getLines.map(line => {
+      val parts = line.split(",")
+      parts(1).split('.')(0)
+    }).toSet
+  } else {
+    // Default domains for unit testing only.
+    Set("spot-ml-unit-test-1", "spot-ml-unit-test-2", "spot-ml-unit-test-3", "spot-ml-unit-test-4")
+  }
+
 }

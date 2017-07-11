@@ -70,47 +70,47 @@ class ProxyWordCreationTest extends TestingSparkContextFlatSpec with Matchers {
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "ab")
 
-    val AlexaPutMidEntroImagePopularAgentShortUri202 = ProxyInput("2016-10-03", "01:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaPutMidEntroImagePopularAgentShortUri202 = ProxyInput("2016-10-03", "01:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "PUT", "Safari/537.36", "image", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "abc")
 
-    val AlexaPutMidEntroImagePopularAgentShortUri304 = ProxyInput("2016-10-03", "02:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaPutMidEntroImagePopularAgentShortUri304 = ProxyInput("2016-10-03", "02:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "PUT", "Safari/537.36", "image", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "304", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "abcd")
 
-    val AlexaPutMidEntroBinaryPopularAgentShortUri304 = ProxyInput("2016-10-03", "03:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaPutMidEntroBinaryPopularAgentShortUri304 = ProxyInput("2016-10-03", "03:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "PUT", "Safari/537.36", "binary", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "304", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "abcde")
 
-    val AlexaPutMidEntroBinaryPopularAgentShortUri206 = ProxyInput("2016-10-03", "10:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaPutMidEntroBinaryPopularAgentShortUri206 = ProxyInput("2016-10-03", "10:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "PUT", "Safari/537.36", "binary", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "206", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "abcdef")
 
-    val AlexaGetHiEntroBinaryPopularAgentShortUri206 = ProxyInput("2016-10-03", "11:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaGetHiEntroBinaryPopularAgentShortUri206 = ProxyInput("2016-10-03", "11:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "GET", "Safari/537.36", "binary", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "206", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "abcdefghijklmnopqrstuvwxyz")
 
-    val AlexaGetZeroEntroTextPopularAgentShortUri200 = ProxyInput("2016-10-03", "13:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaGetZeroEntroTextPopularAgentShortUri200 = ProxyInput("2016-10-03", "13:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "200", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "aaa")
 
-    val AlexaGetLoEntroTextPopularAgentShortUri200 = ProxyInput("2016-10-03", "14:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaGetLoEntroTextPopularAgentShortUri200 = ProxyInput("2016-10-03", "14:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "200", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "aaabbb")
 
-    val AlexaGetMidEntroTextPopularAgentMidUri302 = ProxyInput("2016-10-03", "22:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaGetMidEntroTextPopularAgentMidUri302 = ProxyInput("2016-10-03", "22:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "302", 80,
       "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "aaaaaaaaaaabbbbbbbbbbbccccccccccc")
 
-    val AlexaGetHiEntroTextPopularAgentLargeUri302 = ProxyInput("2016-10-03", "23:57:36", "127.0.0.1", "maw.bronto.com",
+    val AlexaGetHiEntroTextPopularAgentLargeUri302 = ProxyInput("2016-10-03", "23:57:36", "127.0.0.1", "maw.spot-ml-unit-test-4.com",
       "GET", "Safari/537.36", "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "302",
       80, "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
       "-", "127.0.0.1", 338, 647, "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts" +
