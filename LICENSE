@@ -200,3 +200,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
+
+=======================================================================
+Apache Spot Subcomponents:
+
+The Apache Spot (incubating) project contains subcomponents with separate 
+copyright notices and license terms. Your use of the source code for these 
+subcomponents is subject to the terms and conditions of the following
+licenses.
+
+========================================================================
+For topojson (spot-oa/ui/flow/js/lib/topojson.min.js):
+========================================================================
+
+See LICENSE-topojson.txt
