@@ -44,7 +44,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.wgtraffic_view_partition 
 PARTITIONED BY (
 	year string,
 	month string,
-	day strin
+	day string
 )
 STORED AS PARQUET
 LOCATION '${hiveconf:huser}/wgtraffic_view_partition';

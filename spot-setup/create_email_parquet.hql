@@ -1,7 +1,7 @@
 SET hiveconf:huser;
 SET hiveconf:dbname;
 
-CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.email_login_view_partition (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.email_view_partition (
 	event_time string,
 	event_name string,
 	result_status string,
@@ -27,5 +27,5 @@ PARTITIONED BY (
 	day string
 )
 STORED AS PARQUET
-LOCATION '${hiveconf:huser}/email_login_view_parquet_partition';
+LOCATION '${hiveconf:huser}/email_view_parquet_partition';
 

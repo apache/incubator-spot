@@ -34,7 +34,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.windows_view_partition (
 	privilege_list string,
 	workstation_name string,
 	status string,
-	accesses string,
+	accesses string
 )
 PARTITIONED BY (
 	year string,
