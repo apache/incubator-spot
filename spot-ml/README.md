@@ -13,6 +13,10 @@ These routines are contained in a jar file   and there is a shell script ml_ops.
 * [jar documentation here](SPOT-ML-JAR.md)
 * [ml_ops.sh documentation here](ML_OPS.md) 
 
+## Essential
+
+Machine learning tools are oriented to provide a good functionality, and it will be possible only if we consider all components and prerequisites. The most important prerequisite for machine learning is the environment preparation with CSV file. Because of ml dependency with this CSV file, we have to follow the instructions specified in section of [Required top-1m.csv](INSTALL.md).      
+
 ## Configure the /etc/spot.conf file
 
 If using spot-ml as part of the integrated spot solution (or if you simply wish to use the ml_ops.sh script to invoke the suspicious connects analysis), 

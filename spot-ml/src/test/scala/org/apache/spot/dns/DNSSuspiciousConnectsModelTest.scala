@@ -10,8 +10,8 @@ class DNSSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with Ma
   "createTempFields" should "create DNS stats based on an URL" in {
     val countryCodesBC = sparkSession.sparkContext.broadcast(CountryCodes.CountryCodes)
     val topDomainsBC = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
-    val userDomain = "intel.com"
-    val url = "iot.intel.com.mx"
+    val userDomain = "spot-ml-unit-test-2.com"
+    val url = "iot.spot-ml-unit-test-2.com.mx"
 
 
     val result = DNSSuspiciousConnectsModel.createTempFields(countryCodesBC, topDomainsBC, userDomain, url)
@@ -27,7 +27,7 @@ class DNSSuspiciousConnectsModelTest extends TestingSparkContextFlatSpec with Ma
     val countryCodesBC = sparkSession.sparkContext.broadcast(CountryCodes.CountryCodes)
     val topDomainsBC = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = "anothercompany.com"
-    val url = "maps.company.com"
+    val url = "maps.spot-ml-unit-test-3.com"
 
     val result = DNSSuspiciousConnectsModel.createTempFields(countryCodesBC, topDomainsBC, userDomain, url)
 

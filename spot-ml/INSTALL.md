@@ -2,6 +2,15 @@
 
 Machine learning routines for Apache Spot (incubating).
 
+## Required top-1m.csv
+
+The most important prerequisite for machine learning is the environment preparation with CSV file. Because of ml dependency with this CSV file, we have to follow next instructions: 
+- Download [CSV file](http://s3.amazonaws.com/alexa-static/top-1m.csv.zip)
+- Unzip
+- Move complete folder to incubator-spot/spot-ml/
+
+After that it should look like incubator-spot/spot-ml/top-1m.csv
+
 ## Prerequisites, Installation and Configuration
 
 Install and configure spot-ml as a part of the Spot project, per the instruction at

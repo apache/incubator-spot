@@ -85,7 +85,7 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
 
   it should "handle an Alexa top 1M domain with a subdomain, top-level domain name and country code" in {
 
-    val url = "services.amazon.com.mx"
+    val url = "services.spot-ml-unit-test-1.com.mx"
 
     val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
 
@@ -93,45 +93,45 @@ class DomainProcessorTest extends TestingSparkContextFlatSpec with Matchers {
 
     val result = extractDomainInfo(url, topDomains, userDomain)
 
-    result shouldBe DomainInfo(domain = "amazon", topDomain = 1, subdomain = "services",
+    result shouldBe DomainInfo(domain = "spot-ml-unit-test-1", topDomain = 1, subdomain = "services",
       subdomainLength = 8, subdomainEntropy = 2.5, numPeriods = 4)
   }
 
   it should "handle an Alexa top 1M domain with a top-level domain name and country code but no subdomain" in {
 
-    val url = "amazon.com.mx"
+    val url = "spot-ml-unit-test-1.com.mx"
     val countryCodes = sparkSession.sparkContext.broadcast(countryCodesSet)
     val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = "intel"
 
     val result = extractDomainInfo(url, topDomains, userDomain)
 
-    result shouldBe DomainInfo(domain = "amazon", subdomain = "None", topDomain = 1, subdomainLength = 0, subdomainEntropy = 0, numPeriods = 3)
+    result shouldBe DomainInfo(domain = "spot-ml-unit-test-1", subdomain = "None", topDomain = 1, subdomainLength = 0, subdomainEntropy = 0, numPeriods = 3)
   }
 
   it should "handle an Alexa top 1M domain with a subdomain and top-level domain name but no country code" in {
 
-    val url = "services.amazon.com"
+    val url = "services.spot-ml-unit-test-1.com"
     val countryCodes = sparkSession.sparkContext.broadcast(countryCodesSet)
     val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = "intel"
 
     val result = extractDomainInfo(url, topDomains, userDomain)
 
-    result shouldBe DomainInfo(domain = "amazon", subdomain = "services", topDomain = 1, subdomainLength = 8, subdomainEntropy = 2.5, numPeriods = 3)
+    result shouldBe DomainInfo(domain = "spot-ml-unit-test-1", subdomain = "services", topDomain = 1, subdomainLength = 8, subdomainEntropy = 2.5, numPeriods = 3)
   }
 
 
   it should "handle an Alexa top 1M domain with no subdomain or country code" in {
 
-    val url = "amazon.com"
+    val url = "spot-ml-unit-test-1.com"
     val countryCodes = sparkSession.sparkContext.broadcast(countryCodesSet)
     val topDomains = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = "intel"
 
     val result = extractDomainInfo(url, topDomains, userDomain)
 
-    result shouldBe DomainInfo(domain = "amazon", subdomain = "None", topDomain = 1, subdomainLength = 0, subdomainEntropy = 0, numPeriods = 2)
+    result shouldBe DomainInfo(domain = "spot-ml-unit-test-1", subdomain = "None", topDomain = 1, subdomainLength = 0, subdomainEntropy = 0, numPeriods = 2)
   }
   it should "not identify the domain as the users domain when both are empty strings" in {
     val url = "ab..com"
