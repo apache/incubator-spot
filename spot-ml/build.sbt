@@ -54,3 +54,19 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
 
 // super important with multiple tests running spark Contexts
 parallelExecution in Test := false
+
+lazy val getTop1MFileFromAlexa = taskKey[Seq[File]]("Download Amazon/alexa-static top-1m.csv file for DNS and Proxy")
+
+getTop1MFileFromAlexa := {
+  if (!java.nio.file.Files.exists(new File("top-1m/top-1m.csv").toPath())) {
+    val location = url("http://s3.amazonaws.com/alexa-static/top-1m.csv.zip")
+    println("Getting top-1m.csv from Amazon/alexa-static")
+    IO.unzipURL(location, new File("top-1m")).toSeq
+  }
+  else {
+    println("File top-1m.csv already provided")
+    Seq.empty[File]
+  }
+}
+
+resourceGenerators in Compile <+= getTop1MFileFromAlexa

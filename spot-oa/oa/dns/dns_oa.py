@@ -22,7 +22,6 @@ import shutil
 import sys
 import datetime
 import csv, math
-import re
 from tld import get_tld
 import api.resources.impala_engine as impala
 import api.resources.hdfs_client as HDFSClient
@@ -55,20 +54,21 @@ class OA(object):
         self._data_path = None
         self._ipynb_path = None
         self._ingest_summary_path = None
-        self._dns_scores = [] 
+        self._dns_scores = []
+        self._dns_scores_headers = []
         self._results_delimiter = '\t'
         self._details_limit = 250
 
         # get app configuration.
         self._spot_conf = Util.get_spot_conf()
 
-        # # get scores fields conf
+        # get scores fields conf
         conf_file = "{0}/dns_conf.json".format(self._scrtip_path)
         self._conf = json.loads(open (conf_file).read(),object_pairs_hook=OrderedDict)
 
         # initialize data engine
         self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
-        
+
 
     def start(self):
 
@@ -96,11 +96,11 @@ class OA(object):
 
 
     def _clear_previous_executions(self):
-        
-        self._logger.info("Cleaning data from previous executions for the day")       
+
+        self._logger.info("Cleaning data from previous executions for the day")
         yr = self._date[:4]
         mn = self._date[4:6]
-        dy = self._date[6:]  
+        dy = self._date[6:]
         table_schema = []
         HUSER = self._spot_conf.get('conf', 'HUSER').replace("'", "").replace('"', '')
         table_schema=['suspicious', 'edge', 'dendro', 'threat_dendro', 'threat_investigation', 'storyboard', 'summary' ]
@@ -116,7 +116,7 @@ class OA(object):
 
 
     def _create_folder_structure(self):
-        
+
         # create date folder structure if it does not exist.
         self._logger.info("Creating folder structure for OA (data and ipynb)")       
         self._data_path,self._ingest_summary_path,self._ipynb_path = Util.create_oa_folders("dns",self._date)
@@ -148,9 +148,9 @@ class OA(object):
         # get results file from hdfs.
         get_command = Util.get_ml_results_form_hdfs(hdfs_path,self._data_path)
         self._logger.info("{0}".format(get_command))
- 
+
         if os.path.isfile(dns_results):
-    
+
             # read number of results based in the limit specified.
             self._logger.info("Reading {0} dns results file: {1}".format(self._date,dns_results))
             self._dns_results = Util.read_results(dns_results,self._limit,self._results_delimiter)[:]
@@ -158,13 +158,13 @@ class OA(object):
 
         else:
             self._logger.error("There was an error getting ML results from HDFS")
-            sys.exit(1) 
+            sys.exit(1)
 
         # add dns content.
-        self._dns_scores = [ conn[:]  for conn in self._dns_results][:]    
+        self._dns_scores = [ conn[:]  for conn in self._dns_results][:]
 
 
-    def _move_time_stamp(self,dns_data): 
+    def _move_time_stamp(self,dns_data):
         
         # return dns_data_ordered
         return dns_data        
@@ -175,25 +175,25 @@ class OA(object):
         # get date parameters.
         yr = self._date[:4]
         mn = self._date[4:6]
-        dy = self._date[6:] 
+        dy = self._date[6:]
         value_string = ""
 
         dns_scores_final = self._move_time_stamp(self._dns_scores)
         self._dns_scores = dns_scores_final
-    
+
         for row in dns_scores_final:
-            value_string += str(tuple(Util.cast_val(item) for item in row)) + ","              
-    
+            value_string += str(tuple(Util.cast_val(item) for item in row)) + ","
+
         load_into_impala = ("""
              INSERT INTO {0}.dns_scores partition(y={2}, m={3}, d={4}) VALUES {1}
-        """).format(self._db, value_string[:-1], yr, mn, dy) 
+        """).format(self._db, value_string[:-1], yr, mn, dy)
         impala.execute_query(load_into_impala)
 
 
     def _add_tld_column(self):
         qry_name_col = self._conf['dns_results_fields']['dns_qry_name'] 
         self._dns_scores = [conn + [ get_tld("http://" + str(conn[qry_name_col]), fail_silently=True) if "http://" not in str(conn[qry_name_col]) else get_tld(str(conn[qry_name_col]), fail_silently=True)] for conn in self._dns_scores ]
-        
+
 
     def _add_reputation(self):
 
@@ -201,7 +201,7 @@ class OA(object):
         reputation_conf_file = "{0}/components/reputation/reputation_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self._logger.info("Reading reputation configuration file: {0}".format(reputation_conf_file))
         rep_conf = json.loads(open(reputation_conf_file).read())
-                
+
         # initialize reputation services.
         self._rep_services = []
         self._logger.info("Initializing reputation services.")
@@ -230,7 +230,7 @@ class OA(object):
                 rep_results = {}            
                 for result in rep_services_results:            
                     rep_results = {k: "{0}::{1}".format(rep_results.get(k, ""), result.get(k, "")).strip('::') for k in set(rep_results) | set(result)}
-                
+
                 if rep_results:
                     self._dns_scores = [ conn + [ rep_results[conn[key]] ]   for conn in self._dns_scores  ]
                 else:
@@ -248,13 +248,13 @@ class OA(object):
 
     def _add_iana(self):
         iana_conf_file = "{0}/components/iana/iana_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        if os.path.isfile(iana_conf_file):            
+        if os.path.isfile(iana_conf_file):
             iana_config  = json.loads(open(iana_conf_file).read())
             dns_iana = IanaTransform(iana_config["IANA"])
 
             dns_qry_class_index = self._conf["dns_results_fields"]["dns_qry_class"]
             dns_qry_type_index = self._conf["dns_results_fields"]["dns_qry_type"]
-            dns_qry_rcode_index = self._conf["dns_results_fields"]["dns_qry_rcode"]            
+            dns_qry_rcode_index = self._conf["dns_results_fields"]["dns_qry_rcode"]
             self._dns_scores = [ conn + [ dns_iana.get_name(conn[dns_qry_class_index],"dns_qry_class")] + [dns_iana.get_name(conn[dns_qry_type_index],"dns_qry_type")] + [dns_iana.get_name(conn[dns_qry_rcode_index],"dns_qry_rcode")] for conn in self._dns_scores ]
             
         else:            
@@ -274,7 +274,7 @@ class OA(object):
 
     def _get_oa_details(self):
         
-        self._logger.info("Getting OA DNS suspicious details/dendro diagram")       
+        self._logger.info("Getting OA DNS suspicious details/dendro diagram")
         # start suspicious connects details process.
         p_sp = Process(target=self._get_suspicious_details)
         p_sp.start()
@@ -294,16 +294,16 @@ class OA(object):
             iana_config  = json.loads(open(iana_conf_file).read())
             dns_iana = IanaTransform(iana_config["IANA"])
         
-        for conn in self._dns_scores:       
-  
+        for conn in self._dns_scores:
+
             timestamp = conn[self._conf["dns_score_fields"]["unix_tstamp"]]
             full_date = datetime.datetime.utcfromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
-  
+
             date = full_date.split(" ")[0].split("-")
             # get date parameters.
             yr = date[0]
             mn = date[1]
-            dy = date[2] 
+            dy = date[2]
             time = full_date.split(" ")[1].split(":")
             hh = int(time[0])
 
@@ -317,51 +317,51 @@ class OA(object):
             SELECT unix_tstamp,frame_len,ip_dst,ip_src,dns_qry_name,dns_qry_class,dns_qry_type,dns_qry_rcode,dns_a,h as hh
             FROM {0}.{1} WHERE y={2} AND m={3} AND d={4} AND dns_qry_name LIKE '%{5}%' AND h={6} LIMIT {7};
         """).format(self._db,self._table_name,year,month,day,dns_qry_name,hh,self._details_limit)
-        
-        try: 
-             dns_details = impala.execute_query(query_to_load) 
+
+        try:
+             dns_details = impala.execute_query(query_to_load)
         except:
             self._logger.info("WARNING. Details couldn't be retreived for {0}, skipping this step".format(dns_qry_name))
         else:
-        # add IANA to results. 
+        # add IANA to results.
             update_rows = []
             if dns_iana:
-                self._logger.info("Adding IANA translation to details results") 
-                    
+                self._logger.info("Adding IANA translation to details results")
+
                 dns_details = [ conn + (dns_iana.get_name(str(conn[5]),"dns_qry_class"),dns_iana.get_name(str(conn[6]),"dns_qry_type"),dns_iana.get_name(str(conn[7]),"dns_qry_rcode")) for conn in dns_details ]
-            else: 
+            else:
                 self._logger.info("WARNING: NO IANA configured.")
                 dns_details = [ conn + ("","","") for conn in dns_details ]
 
             nc_conf_file = "{0}/components/nc/nc_config.json".format(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             if os.path.isfile(nc_conf_file):
                 nc_conf = json.loads(open(nc_conf_file).read())["NC"]
-                dns_nc = NetworkContext(nc_conf,self._logger) 
+                dns_nc = NetworkContext(nc_conf,self._logger)
                 dns_details = [ conn + (dns_nc.get_nc(conn[2]),) for conn in dns_details ]
             else:
                 dns_details = [ conn + (0,) for conn in dns_details ]
-                          
+
             for row in dns_details:
                 value_string += str(tuple(item for item in row)) + ","
 
-            if value_string != "": 
+            if value_string != "":
                 
                 query_to_insert=("""
                     INSERT INTO {0}.dns_edge PARTITION (y={1}, m={2}, d={3}) VALUES ({4});
                 """).format(self._db,year, month, day,  value_string[:-1])
 
-                impala.execute_query(query_to_insert) 
- 
+                impala.execute_query(query_to_insert)
 
-    def _get_dns_dendrogram(self): 
 
-        for conn in self._dns_scores:   
+    def _get_dns_dendrogram(self):
+
+        for conn in self._dns_scores:
             timestamp = conn[self._conf["dns_score_fields"]["unix_tstamp"]]
             full_date = datetime.datetime.utcfromtimestamp(int(timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 
             date = full_date.split(" ")[0].split("-")
             # get date parameters.
-            
+
             yr = date[0]
             mn = date[1]
             dy = date[2]
@@ -369,12 +369,12 @@ class OA(object):
 
             query_to_load = ("""
                 INSERT INTO TABLE {0}.dns_dendro PARTITION (y={2}, m={3},d={4})
-                SELECT unix_tstamp, dns_a, dns_qry_name, ip_dst 
+                SELECT unix_tstamp, dns_a, dns_qry_name, ip_dst
                 FROM (SELECT unix_tstamp, susp.ip_dst, susp.dns_qry_name, susp.dns_a
-                    FROM {0}.{1} as susp WHERE susp.y={2} AND susp.m={3} AND susp.d={4} AND susp.ip_dst='{5}' 
+                    FROM {0}.{1} as susp WHERE susp.y={2} AND susp.m={3} AND susp.d={4} AND susp.ip_dst='{5}'
                 LIMIT {6}) AS tmp GROUP BY dns_a, dns_qry_name, ip_dst, unix_tstamp
             """).format(self._db,self._table_name,yr,mn,dy,ip_dst,self._details_limit)
-           
+
             impala.execute_query(query_to_load)
 
         
@@ -392,10 +392,10 @@ class OA(object):
 
         query_to_load = ("""
             SELECT frame_time, COUNT(*) as total FROM {0}.{1}
-            WHERE y={2} AND m={3} AND d={4} AND unix_tstamp IS NOT NULL 
-            AND frame_time IS NOT NULL AND frame_len IS NOT NULL 
-            AND dns_qry_name IS NOT NULL AND ip_src IS NOT NULL 
-            AND (dns_qry_class IS NOT NULL AND dns_qry_type IS NOT NULL 
+            WHERE y={2} AND m={3} AND d={4} AND unix_tstamp IS NOT NULL
+            AND frame_time IS NOT NULL AND frame_len IS NOT NULL
+            AND dns_qry_name IS NOT NULL AND ip_src IS NOT NULL
+            AND (dns_qry_class IS NOT NULL AND dns_qry_type IS NOT NULL
             AND dns_qry_rcode IS NOT NULL ) GROUP BY frame_time;
         """).format(self._db,self._table_name, yr, mn, dy)
 
@@ -408,14 +408,14 @@ class OA(object):
             val['frame_time'].replace("  "," ").split(" ")[3].split(":")[1].zfill(2)),\
             int(val['total']) if not math.isnan(val['total']) else 0 ] for key,val in df.iterrows()],columns = ingest_summary_cols)
 
-        #Groups the data by minute 
+        #Groups the data by minute
         sf = df_new.groupby(by=['date'])['total'].sum()
         df_per_min = pd.DataFrame({'date':sf.index, 'total':sf.values})
 
-        df_final = df_filtered.append(df_per_min, ignore_index=True).to_records(False,False) 
+        df_final = df_filtered.append(df_per_min, ignore_index=True).to_records(False,False)
 
         if len(df_final) > 0:
             query_to_insert=("""
                 INSERT INTO {0}.dns_ingest_summary PARTITION (y={1}, m={2}, d={3}) VALUES {4};
-            """).format(self._db, yr, mn, dy, tuple(df_final))            
+            """).format(self._db, yr, mn, dy, tuple(df_final))
             impala.execute_query(query_to_insert)
