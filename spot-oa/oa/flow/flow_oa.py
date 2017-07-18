@@ -49,7 +49,7 @@ class OA(object):
         # initialize required parameters.
         self._scrtip_path = os.path.dirname(os.path.abspath(__file__))
         self._date = date
-        self._table_name = "flow"
+        #self._table_name = "flow"
         self._flow_results = []
         self._limit = limit
         self._data_path = None
@@ -67,6 +67,7 @@ class OA(object):
  
         # initialize data engine
         self._db = self._spot_conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
+        self._table_name = self._spot_conf.get('conf', 'FLOW_TABLE')
         self._engine = Data(self._db, self._table_name,self._logger)
                       
     def start(self):       

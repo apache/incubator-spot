@@ -37,6 +37,26 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(inputPath = x)).
       text("HDFS path to input")
 
+    opt[String]("database").required().valueName("<database name>").
+      action((x, c) => c.copy(database = x)).
+      text("Database name")
+
+    opt[String]("datatable").required().valueName("<source table name>").
+      action((x, c) => c.copy(dataTable = x)).
+      text("hive table name")
+
+    opt[String]("year").required().valueName("<input year>").
+      action((x, c) => c.copy(year = x)).
+      text("input year")
+
+    opt[String]("month").required().valueName("<input month>").
+      action((x, c) => c.copy(month = x)).
+      text("input month")
+
+    opt[String]("day").required().valueName("<input day>").
+      action((x, c) => c.copy(day = x)).
+      text("input day")
+
     opt[String]("feedback").valueName("<local file>").
       action((x, c) => c.copy(feedbackFile = x)).
       text("the local path of the file that contains the feedback scores")
@@ -100,6 +120,11 @@ object SuspiciousConnectsArgumentParser {
 
   case class SuspiciousConnectsConfig(analysis: String = "",
                                       inputPath: String = "",
+                                      database: String = "",
+                                      dataTable: String = "",
+                                      year: String = "",
+                                      month: String = "",
+                                      day: String = "",
                                       feedbackFile: String = "",
                                       duplicationFactor: Int = 1,
                                       topicCount: Int = 20,

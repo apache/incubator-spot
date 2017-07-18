@@ -38,7 +38,8 @@ object InputOutputDataHandler {
   def getInputDataFrame(sparkSession: SparkSession, inputPath: String, logger: Logger): Option[DataFrame] = {
     try {
       logger.info("Loading data from: " + inputPath)
-      Some(sparkSession.read.parquet(inputPath))
+      //Some(sparkSession.read.parquet(inputPath))
+      Some(SparkSession.sql(inputPath))
     } catch {
       case _: Throwable => None
     }
