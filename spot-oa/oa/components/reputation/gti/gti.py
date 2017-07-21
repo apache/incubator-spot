@@ -88,6 +88,7 @@ class Reputation(object):
             responses += self._call_gti(command, len(queries))
         
         ip_counter = 0
+        category_name_group = ""
         for query_resp in responses: 
             if self.AFLAG_KEY in query_resp or self.REP_KEY not in query_resp :
                 reputation_dict[values[ip_counter]] = self._get_reputation_label(self.DEFAULT_REP)
