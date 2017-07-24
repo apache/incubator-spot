@@ -11,15 +11,15 @@ This document is to centralize a place where users can read information about Pr
 | clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |    x	|    X	  |    X    |
 | host        	  | string |Hostname from the client's request URL	     |       cs-host	   |    text	|   required  |    x	|    X	  |    X    |
 | reqmethod	      | string |Request method used from client to appliance (HTTP Method - GET, POST, CONNECT) |	cs-method | 	text |	required |	x |	X	| X |
+| useragent	      | string |Browser Type	                             | cs(User-Agent)	   |quoted text	|required 	  |x	    |  X	  |    X    |
+| resconttype	  | string |Content-type (Ex. text/html, image/xml)	     |rs(Content-Type) 	   | text	    |required	  |x	    |X	      |X        |
+| duration	      |  int   |Duration of the connection	                 |time-taken	       |numerical	|required	  |x	    |X	      |X        |
+| username	      |string  |Client Username	                             |cs-username	       |text	    |required	  |x	    |X	      |X        |
+| authgroup   	  |string  |Client Authentication Group	                 |cs-auth-group 	   |text	    |required	  |		    |         |         |
+| exceptionid	  |string  |Identifier of the exception resolved (empty if the transaction has not been terminated) |	x-exception-id 	| text	| required | | | |	
+| filterresult    |string  |Content filtering result: Denied, Proxied or Observed | sc-filter-result | text | required | | | |			
+| webcat	      |string  |All content categories of the request URL	 |cs-categories        |quoted text	| required    |x        |X	      |X        |
 
-| useragent	string	Browser Type	cs(User-Agent)	quoted text	required	x	X	X
-| resconttype	string	Content-type (Ex. text/html, image/xml)	rs(Content-Type) 	text	required	x	X	X
-| duration	int	Duration of the connection	time-taken	numerical	required	x	X	X
-| username	string	Client Username	cs-username	text	required	x	X	X
-| authgroup	string	Client Authentication Group	cs-auth-group 	text	required			
-| exceptionid	string	Identifier of the exception resolved (empty if the transaction has not been terminated)	x-exception-id 	text	required			
-| filterresult	string	Content filtering result: Denied, Proxied or Observed	sc-filter-result	text	required			
-| webcat	string	All content categories of the request URL	cs-categories 	quoted text	required	x	X	X
 | referer	string	Request header: Referer %S s-sitename The service type used to	cs(Referer) 	url	required	x	X	X
 | respcode	string	rotocol status code from appliance to client (HTTP Response Codes)	sc-status 	numerical	required	x	X	X
 | action	string	What type of action did the Appliance take to process this request; possible values include ALLOWED, DENIED, FAILED, SERVER_ERROR	s-action 	text	required			
