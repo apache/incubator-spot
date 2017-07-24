@@ -4,6 +4,6 @@ This document is to centralize a place where users can read information about Pr
 
 ## Proxy
 
-| Raw Data |
-|-----------------|------|
-| Spot Field Name | Type |
+| Spot Field Name | Type  |
+|-----------------|-------|
+| p_date          | string|
