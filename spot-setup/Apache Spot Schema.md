@@ -10,8 +10,8 @@ This document is to centralize a place where users can read information about Pr
 | p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |    x    |    x    |    x    |
 | clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |    x	|    X	  |    X    |
 | host        	  | string |Hostname from the client's request URL	     |       cs-host	   |    text	|   required  |    x	|    X	  |    X    |
+| reqmethod	      | string |Request method used from client to appliance (HTTP Method - GET, POST, CONNECT) |	cs-method | 	text |	required |	x |	X	| X |
 
-| reqmethod	string	Request method used from client to appliance (HTTP Method - GET, POST, CONNECT)	cs-method	text	required	x	X	X
 | useragent	string	Browser Type	cs(User-Agent)	quoted text	required	x	X	X
 | resconttype	string	Content-type (Ex. text/html, image/xml)	rs(Content-Type) 	text	required	x	X	X
 | duration	int	Duration of the connection	time-taken	numerical	required	x	X	X
