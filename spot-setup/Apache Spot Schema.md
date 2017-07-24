@@ -18,11 +18,11 @@ This document is to centralize a place where users can read information about Pr
 | authgroup   	  |string  |Client Authentication Group	                 |cs-auth-group 	   |text	    |required	  |		    |         |         |
 | exceptionid	  |string  |Identifier of the exception resolved (empty if the transaction has not been terminated) |	x-exception-id 	| text	| required | | | |	
 | filterresult    |string  |Content filtering result: Denied, Proxied or Observed | sc-filter-result | text | required | | | |			
-| webcat	      |string  |All content categories of the request URL	 |cs-categories        |quoted text	| required    |x        |X	      |X        |
-
-| referer	string	Request header: Referer %S s-sitename The service type used to	cs(Referer) 	url	required	x	X	X
-| respcode	string	rotocol status code from appliance to client (HTTP Response Codes)	sc-status 	numerical	required	x	X	X
-| action	string	What type of action did the Appliance take to process this request; possible values include ALLOWED, DENIED, FAILED, SERVER_ERROR	s-action 	text	required			
+| webcat	      |string  |All content categories of the request URL	 |cs-categories        |quoted text	| required    |x        |x	      |X        |
+| referer	      |string  |Request header: Referer %S s-sitename The service type used to | cs(Referer) | url | required |x	    |x	      |x        |
+| respcode	      |string  |Protocol status code from appliance to client (HTTP Response Codes) | sc-status | numerical |required |x |x	      |x        |
+| action	      |string  |What type of action did the Appliance take to process this request; possible values include ALLOWED, DENIED, FAILED, SERVER_ERROR|s-action |text |required | | | | 	
+		
 | urischeme	string	Scheme of the original URL requested	cs-uri-scheme 	text	required			
 | uriport	string	Port from the original URL requested	cs-uri-port 	numerical	required	x	X	X
 | uripath	string	Path of the original URL requested without query.	cs-uri-path 	text	required	x	X	X
