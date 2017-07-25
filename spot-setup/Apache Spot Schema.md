@@ -2,11 +2,11 @@
 
 This document is to centralize a place where users can read information about Proxy, DNS and Netflow schema.
 
-# Proxy
+## Proxy
 
 |                 |        |                                             |                     |            |             |Required for|Required for|Required for|
-|------------|--------|--------------------------------------|---------------------|------------|-------------|---------|---------|---------|
-|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**|**Spot-ui**| 
+|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
+|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**       |**Spot-ui**       | 
 | p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |Can't be null|:white_check_mark:|:white_check_mark:|
 | p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |Can't be null|:white_check_mark:|:white_check_mark:|
 | clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |Can't be null|:white_check_mark:|:white_check_mark:|
@@ -17,7 +17,7 @@ This document is to centralize a place where users can read information about Pr
 | duration	      |  int   |Duration of the connection	                 |time-taken	       |numerical	|required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | username	      |string  |Client Username	                             |cs-username	       |text	    |required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | authgroup   	  |string  |Client Authentication Group	                 |cs-auth-group 	   |text	    |required	  |		    |         |         |
-| exceptionid	  |string  |Identifier of the exception resolved (empty if the transaction has not been terminated) |	x-exception-id 	| text	| required | | | |	
+| exceptionid	  |string  |Identifier of the exception resolved (empty if the transaction has not been terminated) |	x-exception-id 	| text	| required | |  |              |	
 | filterresult    |string  |Content filtering result: Denied, Proxied or Observed | sc-filter-result | text | required    |         |         |         |			
 | webcat	      |string  |All content categories of the request URL	 |cs-categories        |quoted text	| required    |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | referer	      |string  |Request header: Referer %S s-sitename The service type used to | cs(Referer) | url | required |:white_check_mark:|:white_check_mark:|:white_check_mark:|
@@ -41,4 +41,8 @@ This document is to centralize a place where users can read information about Pr
 | uri_rep	      |string  |Reputation value according to Threat intelligence services| 	   |			|             |         |*Produced by OA | Optional |
 | network_context |string  |User defined value					         |                     |            |             |         |*Produced by OA | Optional | 
 
-:white_check_mark:
+
+## DNS
+
+
+## Netflow
