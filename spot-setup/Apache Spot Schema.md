@@ -4,7 +4,7 @@ This document is to centralize a place where users can read information about Pr
 
 ## Proxy
 
-|                 |        |                                             |                                  |             | Required        |         |         |
+|                 |        |                                             |                     |            |             | Required        |         |         |
 |-----------------|--------|---------------------------------------------|---------------------|------------|-------------|---------|---------|---------|
 |**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**|**Spot-ui**| 
 | p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |    x    |    x    |    x    |
