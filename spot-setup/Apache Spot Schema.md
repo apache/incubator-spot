@@ -44,5 +44,14 @@ This document is to centralize a place where users can read information about Pr
 
 ## DNS
 
+|                 |        |                                             |                     |            |             |             |                  |                  |
+|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
+|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**       |**Spot-ui**       | 
+|                 |        |                                             |                     |            |             |             |                  |                  |
 
 ## Netflow
+
+|                 |        |                                             |                     |            |             |             |                  |                  |
+|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
+|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**       |**Spot-ui**       | 
+|                 |        |                                             |                     |            |             |             |                  |                  |
