@@ -15,28 +15,28 @@ This document is to centralize a place where users can read information about Pr
 | useragent	      | string |Browser Type	                             | cs(User-Agent)	   |quoted text	|required 	  |Can be null but null will be replaced with -|:white_check_mark:|:white_check_mark:|
 | resconttype	  | string |Content-type (Ex. text/html, image/xml)	     |rs(Content-Type) 	   | text	    |required	  |Can be null but null will be replaced with -|:white_check_mark:|:white_check_mark:|
 | duration	      |  int   |Duration of the connection	                 |time-taken	       |numerical	|required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| username	      |string  |Client Username	                             |cs-username	       |text	    |required	  |x	    |X	      |X        |
+| username	      |string  |Client Username	                             |cs-username	       |text	    |required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | authgroup   	  |string  |Client Authentication Group	                 |cs-auth-group 	   |text	    |required	  |		    |         |         |
 | exceptionid	  |string  |Identifier of the exception resolved (empty if the transaction has not been terminated) |	x-exception-id 	| text	| required | | | |	
 | filterresult    |string  |Content filtering result: Denied, Proxied or Observed | sc-filter-result | text | required    |         |         |         |			
-| webcat	      |string  |All content categories of the request URL	 |cs-categories        |quoted text	| required    |x        |x	      |X        |
-| referer	      |string  |Request header: Referer %S s-sitename The service type used to | cs(Referer) | url | required |x	    |x	      |x        |
-| respcode	      |string  |Protocol status code from appliance to client (HTTP Response Codes) | sc-status | numerical |required |x |x	      |x        |
+| webcat	      |string  |All content categories of the request URL	 |cs-categories        |quoted text	| required    |:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| referer	      |string  |Request header: Referer %S s-sitename The service type used to | cs(Referer) | url | required |:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| respcode	      |string  |Protocol status code from appliance to client (HTTP Response Codes) | sc-status | numerical |required |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | action	      |string  |What type of action did the Appliance take to process this request; possible values include ALLOWED, DENIED, FAILED, SERVER_ERROR|s-action |text |required | | | | 			
 | urischeme	      |string  |Scheme of the original URL requested	     |cs-uri-scheme 	   |text	    |required	  |         |         |         |		
-| uriport	      |string  |Port from the original URL requested	     |cs-uri-port 	       |numerical	|required	  |x	    |X	      |X        |
-| uripath	      |string  |Path of the original URL requested without query |cs-uri-path 	   |text	    |required	  |x	    |x	      |x        |
-| uriquery	      |string  |Query from the original URL requested	     |cs-uri-query	       |text	    |required	  |x	    |x	      |x        |
+| uriport	      |string  |Port from the original URL requested	     |cs-uri-port 	       |numerical	|required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| uripath	      |string  |Path of the original URL requested without query |cs-uri-path 	   |text	    |required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| uriquery	      |string  |Query from the original URL requested	     |cs-uri-query	       |text	    |required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | uriextension	  |string  |Document extension from the original URL requested |cs-uri-extension |text	    |required	  |         |         |         |		
-| serverip	      |string  |IP address of the appliance on which the client established its connection |s-ip  |ip address |required |x |X	  |X        |
-| scbytes	      |int	   |Number of bytes sent from appliance to client|sc-bytes             |numerical	|required	  |x	    |X	      |X        |
-| csbytes	      |int	   |Number of bytes sent from client to appliance|cs-bytes 	           |numerical	|required	  |x	    |X	      |X        |
+| serverip	      |string  |IP address of the appliance on which the client established its connection |s-ip  |ip address |required |:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| scbytes	      |int	   |Number of bytes sent from appliance to client|sc-bytes             |numerical	|required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| csbytes	      |int	   |Number of bytes sent from client to appliance|cs-bytes 	           |numerical	|required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | virusid	      |string  |x-virus-id 	                                 |x-virus-id 	       |text	    |required	  |         |         |         |		
 | bcappname	      |string  |x-bluecoat-application-name 	             |x-bluecoat-application-name |quoted text |required |     |         |         |			
 | bcappoper	      |string  |x-bluecoat-application-operation	         |x-bluecoat-application-operation |quoted text |required | |        |         |			
-|fulluri	      |string  |Full URI concatenated from cs-host, cs-uri-path, cs-uri-query fields |it does not exist, it is calculated during ingest |text |produced by ingest |Can't be null|x	|x |
-| word 	          |string  |                      					     |                     |            |             |         |X	      |         |
-| ml_score	      |float   |					                         |                     |            |             |         |X	      |         |
+|fulluri	      |string  |Full URI concatenated from cs-host, cs-uri-path, cs-uri-query fields |it does not exist, it is calculated during ingest |text |produced by ingest |Can't be null|:white_check_mark:|:white_check_mark:|
+| word 	          |string  |                      					     |                     |            |             |         |:white_check_mark:|         |
+| ml_score	      |float   |					                         |                     |            |             |         |:white_check_mark:|         |
 | respcode_name   |string  |IANA translation for the response code column|                     |            |             |         |*Produced by OA | Optional |
 | uri_rep	      |string  |Reputation value according to Threat intelligence services| 	   |			|             |         |*Produced by OA | Optional |
 | network_context |string  |User defined value					         |                     |            |             |         |*Produced by OA | Optional | 
