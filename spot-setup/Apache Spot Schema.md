@@ -42,8 +42,8 @@ This document is to centralize a place where users can read information about Pr
 | network_context |string  |User defined value					         |                     |            |             |         |*Produced by OA | Optional |
 
 
-|                 |        |                                             |                     |            |             |Required for|Required for|
-|------------|--------|--------------------------------------|---------------------|------------|-------------|---------|---------|---------|
+|                 |        |                                             |                     |            |             |Required for|            |
+|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|------------|------------|
 |**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Conditions**|
 | p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |    x    |Can't be null|
 | p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |    x    |Can't be null|
