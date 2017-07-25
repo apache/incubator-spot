@@ -6,8 +6,8 @@ This document is to centralize a place where users can read information about Pr
 
 *Raw data*
 
-|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
 |**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**       |**Spot-ui**       | 
+|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
 | p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |Can't be null|:white_check_mark:|:white_check_mark:|
 | p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |Can't be null|:white_check_mark:|:white_check_mark:|
 | clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |Can't be null|:white_check_mark:|:white_check_mark:|
