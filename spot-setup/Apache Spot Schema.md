@@ -4,9 +4,9 @@ This document is to centralize a place where users can read information about Pr
 
 ## Proxy
 
-
-| **Spot Field Name** | Type   | Description                                 | Original Field Name | Format     | Spot-ingest | Spot-ml | Spot-oa | Spot-ui | 
+|                 |        |                                             |                                  |             | Required        |         |         |
 |-----------------|--------|---------------------------------------------|---------------------|------------|-------------|---------|---------|---------|
+|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**|**Spot-ui**| 
 | p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |    x    |    x    |    x    |
 | p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |    x    |    x    |    x    |
 | clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |    x	|    X	  |    X    |
