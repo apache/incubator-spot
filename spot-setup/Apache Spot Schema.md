@@ -6,14 +6,14 @@ This document is to centralize a place where users can read information about Pr
 
 |                 |        |                                             |                     |            |             |Required for|Required for|Required for|
 |------------|--------|--------------------------------------|---------------------|------------|-------------|---------|---------|---------|
-|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml/conditions**|**Spot-oa**|**Spot-ui**| 
-| p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |    x    |    x    |    x    |
-| p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |    x    |    x    |    x    |
-| clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |    x	|    X	  |    X    |
-| host        	  | string |Hostname from the client's request URL	     |       cs-host	   |    text	|   required  |    x	|    X	  |    X    |
+|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**|**Spot-ui**| 
+| p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |Can't be null|    x    |    x    |
+| p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |Can't be null|    x    |    x    |
+| clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |Can't be null|    X	  |    X    |
+| host        	  | string |Hostname from the client's request URL	     |       cs-host	   |    text	|   required  |Can't be null|    X	  |    X    |
 | reqmethod	      | string |Request method used from client to appliance (HTTP Method - GET, POST, CONNECT) |	cs-method | 	text |	required |	x |	X	| X |
-| useragent	      | string |Browser Type	                             | cs(User-Agent)	   |quoted text	|required 	  |x	    |  X	  |    X    |
-| resconttype	  | string |Content-type (Ex. text/html, image/xml)	     |rs(Content-Type) 	   | text	    |required	  |x	    |X	      |X        |
+| useragent	      | string |Browser Type	                             | cs(User-Agent)	   |quoted text	|required 	  |Can be null but null will be replaced with -|  X	  |    X    |
+| resconttype	  | string |Content-type (Ex. text/html, image/xml)	     |rs(Content-Type) 	   | text	    |required	  |Can be null but null will be replaced with -|X	      |X        |
 | duration	      |  int   |Duration of the connection	                 |time-taken	       |numerical	|required	  |x	    |X	      |X        |
 | username	      |string  |Client Username	                             |cs-username	       |text	    |required	  |x	    |X	      |X        |
 | authgroup   	  |string  |Client Authentication Group	                 |cs-auth-group 	   |text	    |required	  |		    |         |         |
@@ -34,7 +34,7 @@ This document is to centralize a place where users can read information about Pr
 | virusid	      |string  |x-virus-id 	                                 |x-virus-id 	       |text	    |required	  |         |         |         |		
 | bcappname	      |string  |x-bluecoat-application-name 	             |x-bluecoat-application-name |quoted |text |required |     |         |         |			
 | bcappoper	      |string  |x-bluecoat-application-operation	         |x-bluecoat-application-operation |quoted |text |required | |        |         |			
-|fulluri	      |string  |Full URI concatenated from cs-host, cs-uri-path, cs-uri-query fields |it does not exist, it is calculated during ingest |text |produced by ingest |x |x	|x |
+|fulluri	      |string  |Full URI concatenated from cs-host, cs-uri-path, cs-uri-query fields |it does not exist, it is calculated during ingest |text |produced by ingest |Can't be null|x	|x |
 | word 	          |string  |                      					     |                     |            |             |         |X	      |         |
 | ml_score	      |float   |					                         |                     |            |             |         |X	      |         |
 | respcode_name   |string  |IANA translation for the response code column|                     |            |             |         |*Produced by OA | Optional |
