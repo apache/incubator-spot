@@ -7,14 +7,14 @@ This document is to centralize a place where users can read information about Pr
 |                 |        |                                             |                     |            |             |Required for|Required for|Required for|
 |------------|--------|--------------------------------------|---------------------|------------|-------------|---------|---------|---------|
 |**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**|**Spot-ui**| 
-| p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |Can't be null| :white_check_mark: |    x    |
-| p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |Can't be null|    x    |    x    |
-| clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |Can't be null|    x	  |    x    |
-| host        	  | string |Hostname from the client's request URL	     |       cs-host	   |    text	|   required  |Can't be null|    x	  |    X    |
-| reqmethod	      | string |Request method used from client to appliance (HTTP Method - GET, POST, CONNECT) |	cs-method | 	text |	required |	x |	X	| X |
-| useragent	      | string |Browser Type	                             | cs(User-Agent)	   |quoted text	|required 	  |Can be null but null will be replaced with -|  X	  |    X    |
-| resconttype	  | string |Content-type (Ex. text/html, image/xml)	     |rs(Content-Type) 	   | text	    |required	  |Can be null but null will be replaced with -|X	      |X        |
-| duration	      |  int   |Duration of the connection	                 |time-taken	       |numerical	|required	  |x	    |X	      |X        |
+| p_date          | string | Date for the connection                     |        date         | yyyy-mm-dd |   required  |Can't be null|:white_check_mark:|:white_check_mark:|
+| p_time	      | string | Time for the connection	                 |        time	       |  hh:MM:SS  |	required  |Can't be null|:white_check_mark:|:white_check_mark:|
+| clientip        | string |IP address of the client sending the request |        c-ip	       | ip address	|   required  |Can't be null|:white_check_mark:|:white_check_mark:|
+| host        	  | string |Hostname from the client's request URL	     |       cs-host	   |    text	|   required  |Can't be null|:white_check_mark:|:white_check_mark:|
+| reqmethod	      | string |Request method used from client to appliance (HTTP Method - GET, POST, CONNECT) |	cs-method | 	text |	required |:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| useragent	      | string |Browser Type	                             | cs(User-Agent)	   |quoted text	|required 	  |Can be null but null will be replaced with -|:white_check_mark:|:white_check_mark:|
+| resconttype	  | string |Content-type (Ex. text/html, image/xml)	     |rs(Content-Type) 	   | text	    |required	  |Can be null but null will be replaced with -|:white_check_mark:|:white_check_mark:|
+| duration	      |  int   |Duration of the connection	                 |time-taken	       |numerical	|required	  |:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | username	      |string  |Client Username	                             |cs-username	       |text	    |required	  |x	    |X	      |X        |
 | authgroup   	  |string  |Client Authentication Group	                 |cs-auth-group 	   |text	    |required	  |		    |         |         |
 | exceptionid	  |string  |Identifier of the exception resolved (empty if the transaction has not been terminated) |	x-exception-id 	| text	| required | | | |	
