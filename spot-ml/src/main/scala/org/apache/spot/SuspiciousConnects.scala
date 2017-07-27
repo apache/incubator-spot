@@ -104,8 +104,8 @@ object SuspiciousConnects {
           }
 
           case None => logger.error(s"Something went wrong while trying to run Suspicious Connects Analysis")
-            logger.error(s"The value of parameter analysis (provided: $analysis) is any of the valid analysis types? " +
-              s"(flow, dns, proxy).")
+            logger.error(s"Is the value of the analysis parameter (provided: $analysis) any of the valid analysis " +
+              s"types flow/dns/proxy?")
             logger.error("If analysis type is correct please check for other errors like schema not matching or " +
               "bad spark parameters")
         }
