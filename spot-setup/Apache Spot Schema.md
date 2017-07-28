@@ -1,10 +1,9 @@
 # Apache Spot Schema 
 
-This document is to centralize a place where users can read information about Proxy, DNS and Netflow schema.
+This document is to centralize a place where users can read information about Proxy, DNS and Netflow schema. From this document users with their own ingest can implement a module without using Spot ingest, or they can compare them. User can do that creating a data set with the expected columns by pipeline.
 
 ## Proxy
-
-*Raw data*
+The table shows the list of attributes used in proxy. The columns indicated with field (:white_check_mark:) are used by the pipeline. Also, some specific rules are specified on their corresponding fields.
 
 |**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**       |**Spot-ui**       | 
 |-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
