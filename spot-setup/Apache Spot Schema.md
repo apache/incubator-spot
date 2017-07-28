@@ -41,18 +41,3 @@ This document is to centralize a place where users can read information about Pr
 | respcode_name   |string  |IANA translation for the response code column|                -     |     -     |      -      |       -      |*Produced by OA   | Optional        |
 | uri_rep	      |string  |Reputation value according to Threat intelligence services| 	-   |	-		|        -    |  -           |*Produced by OA   | Optional        |
 | network_context |string  |User defined value					         |              -       |     -     |       -     |     -        |*Produced by OA   | Optional        | 
-
-
-## DNS
-
-|                 |        |                                             |                     |            |             |             |                  |                  |
-|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
-|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**       |**Spot-ui**       | 
-|                 |        |                                             |                     |            |             |             |                  |                  |
-
-## Netflow
-
-|                 |        |                                             |                     |            |             |             |                  |                  |
-|-----------------|--------|---------------------------------------------|---------------------|------------|-------------|-------------|------------------|------------------|
-|**Spot Field Name**|**Type**|**Description**                            |**Original Field Name**|**Format**|**Spot-ingest**|**Spot-ml**|**Spot-oa**       |**Spot-ui**       | 
-|                 |        |                                             |                     |            |             |             |                  |                  |
