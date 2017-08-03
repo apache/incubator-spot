@@ -25,9 +25,8 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.SuspiciousConnectsScoreFunction
-import org.apache.spot.lda.SpotLDAWrapper
-import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
 import org.apache.spot.lda.SpotLDAWrapperSchema._
+import org.apache.spot.lda.{SpotLDAHelper, SpotLDAInput, SpotLDAResult, SpotLDAWrapper}
 import org.apache.spot.proxy.ProxySchema._
 import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
@@ -92,7 +91,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
   */
 object ProxySuspiciousConnectsModel {
 
-  // These buckets are optimized to datasets used for training. Last bucket is of infinite size to ensure fit.
+  // These buckets are optimized to data sets used for training. Last bucket is of infinite size to ensure fit.
   // The maximum value of entropy is given by log k where k is the number of distinct categories.
   // Given that the alphabet and number of characters is finite the maximum value for entropy is upper bounded.
   // Bucket number and size can be changed to provide less/more granularity
@@ -119,8 +118,8 @@ object ProxySuspiciousConnectsModel {
     * for clustering in the topic model.
     *
     * @param sparkSession Spark Session
-    * @param logger       Logge object.
-    * @param config       SuspiciousConnetsArgumnetParser.Config object containg CLI arguments.
+    * @param logger       Logger object.
+    * @param config       SuspiciousConnectsArgumentParser.Config object containing CLI arguments.
     * @param inputRecords Dataframe for training data, with columns Host, Time, ReqMethod, FullURI, ResponseContentType,
     *                     UserAgent, RespCode (as defined in ProxySchema object).
     * @return ProxySuspiciousConnectsModel
@@ -130,7 +129,7 @@ object ProxySuspiciousConnectsModel {
                  config: SuspiciousConnectsConfig,
                  inputRecords: DataFrame): ProxySuspiciousConnectsModel = {
 
-    logger.info("training new proxy suspcious connects model")
+    logger.info("training new proxy suspicious connects model")
 
 
     val selectedRecords =
@@ -145,24 +144,24 @@ object ProxySuspiciousConnectsModel {
         .reduceByKey(_ + _).collect()
         .toMap
 
-    val agentToCountBC = sparkSession.sparkContext.broadcast(agentToCount)
-
     val docWordCount: RDD[SpotLDAInput] =
       getIPWordCounts(sparkSession, logger, selectedRecords, config.feedbackFile, config.duplicationFactor,
         agentToCount)
 
-    val SpotLDAOutput(ipToTopicMixDF, wordResults) = SpotLDAWrapper.runLDA(sparkSession,
-      docWordCount,
-      config.topicCount,
+    val spotLDAHelper: SpotLDAHelper = SpotLDAHelper(docWordCount, config.precisionUtility, sparkSession)
+
+    val model = SpotLDAWrapper.run(config.topicCount,
       logger,
       config.ldaPRGSeed,
       config.ldaAlpha,
       config.ldaBeta,
       config.ldaOptimizer,
       config.ldaMaxiterations,
-      config.precisionUtility)
+      spotLDAHelper)
 
-    new ProxySuspiciousConnectsModel(config.topicCount, ipToTopicMixDF, wordResults)
+    val results: SpotLDAResult = model.predict(spotLDAHelper)
+
+    new ProxySuspiciousConnectsModel(config.topicCount, results.documentToTopicMix, results.wordToTopicMix)
 
   }
 
