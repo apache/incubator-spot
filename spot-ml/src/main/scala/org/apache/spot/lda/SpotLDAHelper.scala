@@ -31,9 +31,10 @@ import scala.collection.immutable.Map
   */
 class SpotLDAHelper(private final val sparkSession: SparkSession,
                     final val docWordCount: RDD[SpotLDAInput],
-                    final val documentDictionary: DataFrame,
-                    final val wordDictionary: Map[String, Int],
-                    final val precisionUtility: FloatPointPrecisionUtility = FloatPointPrecisionUtility64) extends Serializable {
+                    private final val documentDictionary: DataFrame,
+                    private final val wordDictionary: Map[String, Int],
+                    private final val precisionUtility: FloatPointPrecisionUtility = FloatPointPrecisionUtility64)
+  extends Serializable {
 
   /**
     * Format document word count as RDD[(Long, Vector)] - input data for LDA algorithm

@@ -62,8 +62,8 @@ class SpotLDAWrapperTest extends TestingSparkContextFlatSpec with Matchers {
     val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
     logger.setLevel(Level.WARN)
 
-    val ldaAlpha = 1.002
-    val ldaBeta = 1.0001
+    val ldaAlpha = 1.02
+    val ldaBeta = 1.001
     val ldaMaxIterations = 100
 
     val optimizer = "em"
