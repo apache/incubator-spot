@@ -126,11 +126,10 @@ object SpotLDAModel {
     * Factory method, based on instance of ldaModel will generate an object based on DistributedLDAModel
     * implementation or LocalLDAModel.
     *
-    * @param ldaModel
-    * @param spotLDAHelper
+    * @param ldaModel Spark LDAModel
     * @return
     */
-  def apply(ldaModel: LDAModel, spotLDAHelper: SpotLDAHelper = null): SpotLDAModel = {
+  def apply(ldaModel: LDAModel): SpotLDAModel = {
 
     ldaModel match {
       case model: DistributedLDAModel => new SpotDistributedLDAModel(model)
