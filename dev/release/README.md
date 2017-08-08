@@ -72,107 +72,105 @@ Once the PR has votes, then the PPMC developer must merge the PR and the owner o
 
 ### **Create the Release Candidate**
 
-
-
 #### **Branch your release:**
 
-git checkout -b <your release name> <commit sha1> 
+* git checkout -b `<your release name>` `<commit sha1>` 
+
 push to origin:
-git push origin <your release name>
+
+* git push origin `<your release name>`
 
 #### **Tag your Branch release:**
 Apply signed tag on release branch that will indicate the 
 
 Example:
- git tag -u <GPG KEY ID> --sign <your release name>-rc# -m "Apache SPOT <your release name> (Incubating)" <SHA of HEAD of branch>
+* git tag -u `<GPG KEY ID>` --sign `<your release name>`-incubating -m "Apache SPOT `<your release name>` (Incubating)" `<SHA of HEAD of branch>`
 
 #### **Run RAT**
 Apache Rat is a release audit tool, focused on licenses. Used to improve accuracy and efficiency when checking releases for licenses.
 
 Download RAT: 
-wget http://apache.claz.org//creadur/apache-rat-0.12/apache-rat-0.12-bin.tar.gz
+* wget http://apache.claz.org//creadur/apache-rat-0.12/apache-rat-0.12-bin.tar.gz
 
 Uncompress the code:
-tar -zxvf apache-rat-0.12-bin.tar.gz
-cd apache-rat-0.12
+* tar -zxvf apache-rat-0.12-bin.tar.gz
+* cd apache-rat-0.12
 
 Now lets create the file to exclude the known extensions and files:
-vi or nano .rat-excludes
+* vi or nano .rat-excludes
 
 Add the following exclude list:
 
-.*md
-.*txt
-.gitignore
-.gitmodules
-.*png
-.*json
-.*csvss
-.*less
-.*ipynb
-.babelrc
-topojson.min.js
+    .*md
+    .*txt
+    .gitignore
+    .gitmodules
+    .*png
+    .*json
+    .*csvss
+    .*less
+    .*ipynb
+    .babelrc
+    topojson.min.js
 
 Save the File.
 
 Run the rat tool as following.
-java -jar apache-rat-0.12.jar -E /path/to/project/.rat-excludes -d /path/to/project/ > <to output file>.txt
+* java -jar apache-rat-0.12.jar -E /path/to/project/.rat-excludes -d /path/to/project/ > `<to output file>`.txt
 
 If you have rat in the same directory as the SPOT Code you can verify as:
-java -jar apache-rat-0.12.jar -E .rat-excludes -d ../apache-spot-1.0-incubating > apache-spot-1.0-incubating-rat-results.txt
+* java -jar apache-rat-0.12.jar -E .rat-excludes -d ../apache-spot-1.0-incubating > apache-spot-1.0-incubating-rat-results.txt
 
 If RAT find problems in the licences please fix the licence and run RAT again developers must fix their code and submit changes into the release branch, once there are no more findings. Upload RAT Results into subversion dev incubator repo for SPOT of the release
 
 
 Make a tarball and gzip:
-
-git archive -o ../apache-spot-<your release name>-incubating.tar --prefix=apache-spot-<your release name>-incubating/ <your tag/branch name>
-gzip ../apache-spot-<your release name>-incubating.tar
+* git archive -o ../apache-spot-`<your release name>`-incubating.tar --prefix=apache-spot-`<your release name>`-incubating/ `<your tag/branch name>`
+* gzip ../apache-spot-`<your release name>`-incubating.tar
 
 Example:
-
-$ git archive -o ../apache-spot-1.0-incubating.tar --prefix=apache-spot-1.0-incubating/ 1.0-incubating
-$ gzip ../apache-spot-1.0-incubating.tar
+    $ git archive -o ../apache-spot-1.0-incubating.tar --prefix=apache-spot-1.0-incubating/ 1.0-incubating
+    $ gzip ../apache-spot-1.0-incubating.tar
 
 Prepare MD5, SHA512 and ASC files from the source tarball:
 
-md5 apache-spot-<your release name>-incubating.tar.gz > apache-spot-<your release name>-incubating.tar.gz.md5
-shasum -a 256 apache-spot-<your release name>-incubating.tar.gz > apache-spot-<your release name>-incubating.tar.gz.sha256 
-gpg2 --detach-sign -a apache-spot-<your release name>-incubating.tar.gz
+* md5 apache-spot-`<your release name>`-incubating.tar.gz > apache-spot-`<your release name>`-incubating.tar.gz.md5
+* shasum -a 512 apache-spot-`<your release name>`-incubating.tar.gz > apache-spot-`<your release name>`-incubating.tar.gz.sha512 
+* gpg2 --detach-sign -a apache-spot-`<your release name>`-incubating.tar.gz
 
 Example:
-$ md5 apache-hawq-src-2.1.0.0-incubating.tar.gz > apache-hawq-src-2.1.0.0-incubating.tar.gz.md5
-$ shasum -a 256 apache-hawq-src-2.1.0.0-incubating.tar.gz > apache-hawq-src-2.1.0.0-incubating.tar.gz.sha256
-$ gpg2 --detach-sign -a apache-hawq-src-2.1.0.0-incubating.tar.gz
+    $ md5 apache-spot-1.0-incubating..tar.gz > apache-spot-1.0-incubating.tar.gz.md5
+    $ shasum -a 512 apache-spot-1.0-incubating.tar.gz > apache-spot-1.0-incubating.tar.gz.sha512
+    $ gpg2 --detach-sign -a apache-spot-1.0-incubating..tar.gz
  
 
 Retrieve the subversion dev incubator repo for SPOT
 
-Example: 
-svn checkout https://dist.apache.org/repos/dist/dev/incubator/spot/ --username=<your apache user>
+Example:
+* svn checkout https://dist.apache.org/repos/dist/dev/incubator/spot/ --username=`<your apache user>`
  
 Create a local folder for the release (e.g. 1.0-incubating) in svn. 
-svn mkdir -m "Creating SPOT <release number> dir" https://dist.apache.org/repos/dist/dev/incubator/spot/<release number> --username=<your apache user>
+* svn mkdir -m "Creating SPOT `<release number>` dir" https://dist.apache.org/repos/dist/dev/incubator/spot/`<release number>` --username=`<your apache user>`
 
 Example:
-svn mkdir -m "Creating SPOT 1.0-incuabting dir" https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting --username=rpanduro
+    svn mkdir -m "Creating SPOT 1.0-incuabting dir" https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting --username=`<your apache user>`
 
 
 Move the files into the release folder on local disk.
-svn add <release folder>
+* svn add `<release folder>`
 
 Example:
-svn add 1.0-incubating/
+    svn add 1.0-incubating/
 
 Commit artifacts:
-svn commit -m '<custom message>' --username=<your apache user id>
+* svn commit -m '`<custom message>`' --username=`<your apache user id>`
 
 Example: 
-svn commit -m 'adding spot 1.0-incubating candidate release artifacts' --username=<your apache user id>
+    svn commit -m 'adding spot 1.0-incubating candidate release artifacts' --username=`<your apache user id>`
 
 ### **Validate the Build**
 
-<To Be Added>
+`<To Be Added>`
 
 
 
