@@ -1,22 +1,14 @@
 # **Apache Spot (Incubating) Release Process**
 
-Apache Spot is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their computing environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale.
-
-While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge. Apache Spot provides tools to accelerate companies’ ability to expose suspicious connections and previously unseen attacks using flow and packet analysis technologies. 
-<br><br>
-
-----
-
 ## **Overview**  
 
-This document descrbes the Release Process to perform the official Apache SPOT (Incubating) release following the [Apache Software Fundation Release Policy](http://incubator.apache.org/guides/releasemanagement.html#best-practice). 
-
+This document describes the Release Process to perform the official Apache SPOT (Incubating) release following the [Apache Software Foundation Release Policy](http://incubator.apache.org/guides/releasemanagement.html#best-practice). 
+ 
 ### **Requirements**
 
 As a Release Manager (RM) you should create a code signing key to sign the release artifacts following this [guide](http://www.apache.org/dev/openpgp.html#generate-key).
 
-Public key should be deatached and added into the KEYS file in SPOT Repo under: https://dist.apache.org/repos/dist/dev/incubator/spot/KEYS
-
+Public key should be detached and added in to the KEYS file in SPOT Repo under: https://dist.apache.org/repos/dist/dev/incubator/spot/KEYS
 
 ### **Policy documents**
 
@@ -46,9 +38,9 @@ The RM should then send the pointer to the EPIC along with the tentative timelin
 
 ### **Sanitize Jira**
 
-Before a release is done, make sure that any issues that are fixed have their fix version setup correctly. If the release number is not listed in the "fix version" field, as RM create a ticket for Infraestructure asking to create the value for the "fix version" field. 
+Before a release is done, make sure that any issues that are fixed have their fix version setup correctly. If the release number is not listed in the "fix version" field, as RM create a ticket for Infrastructure asking to create the value for the "fix version" field. 
 
-Once the value is created by Infraestructure team, run the following JIRA query to see which resolved issues do not have their fix version set up correctly:
+Once the value is created by Infrastructure team, run the following JIRA query to see which resolved issues do not have their fix version set up correctly:
 
 project = spot and resolution = fixed and fixVersion is empty
 
@@ -66,7 +58,7 @@ If necessary the RM can discuss if certain issues should be fixed on the trunk i
 
 ### **Pull Request Validation**
 
-All the features that will be included inthe release EPIC needs to have a proper Pull Request (PR) created following this guide. And needs three +1 votes wich at least one of them must be from the QA Team. 
+All the features that will be included in the release EPIC needs to have a proper Pull Request (PR) created following this guide. And needs three +1 votes which at least one of them must be from the QA Team. 
 
 Once the PR has votes, then the PPMC developer must merge the PR and the owner of that PR should close it properly in Github (in case it does not closes automatically).
 
@@ -92,7 +84,7 @@ Apache Rat is a release audit tool, focused on licenses. Used to improve accurac
 Download RAT: 
 * wget http://apache.claz.org//creadur/apache-rat-0.12/apache-rat-0.12-bin.tar.gz
 
-Uncompress the code:
+Decompress the code:
 * tar -zxvf apache-rat-0.12-bin.tar.gz
 * cd apache-rat-0.12
 
@@ -115,36 +107,39 @@ Add the following exclude list:
 
 Save the File.
 
+Or download the .rat-excludes files from: https://github.com/apache/incubator-spot/blob/master/dev/release/.rat-excludes
+
 Run the rat tool as following.
 * java -jar apache-rat-0.12.jar -E /path/to/project/.rat-excludes -d /path/to/project/ > `<to output file>`.txt
 
 If you have rat in the same directory as the SPOT Code you can verify as:
 * java -jar apache-rat-0.12.jar -E .rat-excludes -d ../apache-spot-1.0-incubating > apache-spot-1.0-incubating-rat-results.txt
 
-If RAT find problems in the licences please fix the licence and run RAT again developers must fix their code and submit changes into the release branch, once there are no more findings. Upload RAT Results into subversion dev incubator repo for SPOT of the release
+If RAT find problems in the licenses please fix the licence and run RAT again developers must fix their code and submit changes into the release branch, once there are no more findings. Upload RAT Results into subversion dev incubator repo for SPOT of the release
 
-
-Make a tarball and gzip:
+#### **Make a tarball and gzip:**
 * git archive -o ../apache-spot-`<your release name>`-incubating.tar --prefix=apache-spot-`<your release name>`-incubating/ `<your tag/branch name>`
 * gzip ../apache-spot-`<your release name>`-incubating.tar
 
 Example:
+
     $ git archive -o ../apache-spot-1.0-incubating.tar --prefix=apache-spot-1.0-incubating/ 1.0-incubating
     $ gzip ../apache-spot-1.0-incubating.tar
 
-Prepare MD5, SHA512 and ASC files from the source tarball:
+#### **Prepare MD5, SHA512 and ASC files from the source tarball:**
 
 * md5 apache-spot-`<your release name>`-incubating.tar.gz > apache-spot-`<your release name>`-incubating.tar.gz.md5
 * shasum -a 512 apache-spot-`<your release name>`-incubating.tar.gz > apache-spot-`<your release name>`-incubating.tar.gz.sha512 
 * gpg2 --detach-sign -a apache-spot-`<your release name>`-incubating.tar.gz
 
 Example:
+
     $ md5 apache-spot-1.0-incubating..tar.gz > apache-spot-1.0-incubating.tar.gz.md5
     $ shasum -a 512 apache-spot-1.0-incubating.tar.gz > apache-spot-1.0-incubating.tar.gz.sha512
     $ gpg2 --detach-sign -a apache-spot-1.0-incubating..tar.gz
  
 
-Retrieve the subversion dev incubator repo for SPOT
+#### **Retrieve the subversion dev incubator repo for SPOT**
 
 Example:
 * svn checkout https://dist.apache.org/repos/dist/dev/incubator/spot/ --username=`<your apache user>`
@@ -153,33 +148,35 @@ Create a local folder for the release (e.g. 1.0-incubating) in svn.
 * svn mkdir -m "Creating SPOT `<release number>` dir" https://dist.apache.org/repos/dist/dev/incubator/spot/`<release number>` --username=`<your apache user>`
 
 Example:
-    svn mkdir -m "Creating SPOT 1.0-incuabting dir" https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting --username=`<your apache user>`
+
+    svn mkdir -m "Creating SPOT 1.0-incubating dir" https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting --username=`<your apache user>`
 
 
 Move the files into the release folder on local disk.
 * svn add `<release folder>`
 
 Example:
+
     svn add 1.0-incubating/
 
 Commit artifacts:
 * svn commit -m '`<custom message>`' --username=`<your apache user id>`
 
-Example: 
+Example:
+
     svn commit -m 'adding spot 1.0-incubating candidate release artifacts' --username=`<your apache user id>`
 
-### **Validate the Build**
+## **Validate the Build**
 
-`<To Be Added>`
+Please go to the download page to validate the build: http://nolamarketing.com/client/apache-spot/download/ (Link will be updated to the final version)
 
 
-
-### **Running the Vote**
+## **Running the Vote**
 
 As per the Apache Incubator release [guidelines](http://incubator.apache.org/policy/incubation.html#Releases), all releases for incubating projects must go through a two-step voting process. First, release voting must successfully pass within the Apache SPOT (Incubating) community via the dev@spot.incubator.apache.org mail list. Then, release voting must successfully pass within the Apache Incubator PMC via the general@incubator.apache.org mail list.
 
 
-Call for SPOT dev list votes Send an email to dev@ list. 
+Call for Vote in spot dev community list, send an email to dev list. 
 
 For example,
 
@@ -236,7 +233,7 @@ For example,
     --
     Best Regards!
     -----------------------------------
-    Ray Panduro
+    <Release Manager Name>
     http://spot.apache.org/
     -----------------------------------
 
@@ -270,7 +267,7 @@ Send a following email with the results that should include the counting votes a
     -----------------------------------
 
 
-The second voting is the most imporant since it is required to get three +1 (Binding) vote from the IPMC members from the Incubator General list to declare an official release.
+The second voting is the most important since it is required to get three +1 (Binding) vote from the IPMC members from the Incubator General list to declare an official release.
 
 Send the vote to the general Incubator list and include the voting results from the dev list. 
 
@@ -333,7 +330,7 @@ Send the vote to the general Incubator list and include the voting results from 
     Apache SPOT (incubating) is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Apache Incubator PMC.
     Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects.
 
-    While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that theproject has yet to be fully endorsed by the ASF.
+    While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that project has yet to be fully endorsed by the ASF.
     =================
 
     --
@@ -343,7 +340,7 @@ Send the vote to the general Incubator list and include the voting results from 
     http://spot.apache.org/
     -----------------------------------
 
-Monitor the voting thread and make sure you have the requiered votes, if feedback is provides fix ASAP and send the updates to the voting thread so voting reaches the required votes.
+Monitor the voting thread and make sure you have the required votes, if feedback is provides fix ASAP and send the updates to the voting thread so voting reaches the required votes.
 
 Once we have the three +1 (Binding) votes then send the following email with the results:
 
@@ -363,7 +360,7 @@ Once we have the three +1 (Binding) votes then send the following email with the
     https://lists.apache.org/thread.html/32d7c93fe66cc256ed12a5b8f91b57b1d0d659b9012c8f4f13c11191@%3Cgeneral.incubator.apache.org%3E
 
     
-    I will prepare the artifacts to officialy release Apache SPOT 1.0-incuabting. 
+    I will prepare the artifacts to officially release Apache SPOT 1.0-incubating. 
 
 
     Thanks
@@ -375,9 +372,43 @@ Once we have the three +1 (Binding) votes then send the following email with the
     -----------------------------------
 
 
-Moving the Artifacts to release stage in SVN using the follwing command.
+Moving the Artifacts to release stage in SVN using the following command.
+* svn move -m "`<comment>`" `<Directory Origin>` `<Directory Destination>` --username=`<your apache user id>`
 
-svn move -m "Moving Apache SPOT 1.0-incubating release artifacts to release stage" /* https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting https://dist.apache.org/repos/dist/release/incubator/spot/1.0-incuabting 
+Example:
+    
+    svn move -m "Moving Apache SPOT 1.0-incubating release artifacts to release stage" /* https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting https://dist.apache.org/repos/dist/release/incubator/spot/1.0-incuabting --username=`<your apache user id>`
 
-Allow 24 hours before updating and announcing the new Release in Apache SPOT (Incubating) webpage. http://nolamarketing.com/client/apache-spot/download/
+Allow 24 hours before updating the webpage and announcing the new Release in Apache SPOT (Incubating) webpage. http://nolamarketing.com/client/apache-spot/download/
 
+### **Update WebPages**
+
+You need to update the SPOT webpages to reflect the new release. 
+
+### **Announce the release**
+
+Send an email to announce@apache.org (using your @apache.org email) For example:
+
+    To: announce@apache.org, user@spot.apache.org, dev@spot.apache.org
+    Subject: [ANNOUNCE] Apache Spot 1.0 (incubating) released
+
+    The Apache SPOT (Incubating) team is pleased to announce the release of SPOT 1.0-incubating.
+
+    This is the first release of SPOT. Major step forward of the project.
+
+    Apache Spot (Incubating) is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their network environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale. While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge.
+
+    The release is available here:
+    http://nolamarketing.com/client/apache-spot/download/ (Update from final version)
+
+    The full change log is available here:
+    https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12320637&version=12340668
+
+    Your help and feedback is more than welcome. For more information on how to report problems and to get involved, visit the project website at http://spot.apache.org/.
+
+    The Apache SPOT (Incubating) Team
+
+
+### **Close the Jira Ticket**
+
+Now go to Jira and Close the EPIC created to perform the release.
