@@ -373,7 +373,7 @@ etc.).
 |              | headers_msg_id            | string            | Message ID                                                            | Coming soon                                                                         |
 |              | headers_in_reply_to       | string            | In reply to header                                                    | Coming soon                                                                         |
 |              | headers_subject           | string            | Subject                                                               | Coming soon                                                                         |
-|              | headers_x_originating_ip4 | bigint            | Originating IP address                                                | Coming soon                                                                         |
+|              | headers_x_originating_ip4 | int128            | Originating IP address                                                | Coming soon                                                                         |
 |              | headers_first_received    | string            | First to receive message                                              | Coming soon                                                                         |
 |              | headers_second_received   | string            | Second to receive message                                             | Coming soon                                                                         |
 |              | last_reply                | string            | Last reply in message chain                                           | Coming soon                                                                         |
@@ -433,7 +433,7 @@ etc.).
 |              | key_exchange_algorithm    | string            | Coming soon                                                           | Coming soon                                                                         |
 |              | host_key_algorithm        | string            | Coming soon                                                           | Coming soon                                                                         |
 | **Category** | **Attribute**             | **Data Type**     | **Description**                                                       | **Sample Values**                                                                   |
-| **DHCP**     | assigned_ip4              | bigint            | Coming soon                                                           | Coming soon                                                                         |
+| **DHCP**     | assigned_ip4              | int               | Coming soon                                                           | Coming soon                                                                         |
 |              | mac                       | string            | Coming soon                                                           | Coming soon                                                                         |
 |              | lease_time                | double            | Coming soon                                                           | Coming soon                                                                         |
 | **Category** | **Attribute**             | **Data Type**     | **Description**                                                       | **Sample Values**                                                                   |
@@ -519,8 +519,8 @@ The data model for endpoint context information is as follows:
 | **Abbreviation** | **Data Type**                                    | **Description**                                                  | **Sample Values**                                    |
 |------------------|--------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------|
 | dvc_time         | bigint                                           | Timestamp from when the endpoint context information is obtained | 1472653952                                           |
-| ip4              | bigint                                           | IP address of endpoint                                           | Integer representaion of 10.1.1.1                    |
-| ip6              | int128                                           | IP address of endpoint                                           | Integer representaion of 10.1.1.1                    |
+| ip4              | int                                              | IP address of endpoint                                           | Integer representaion of 10.1.1.1                    |
+| ip6              | int128                                           | IP address of endpoint                                           | Integer representaion of 2001:db8::1                 |
 | os               | string                                           | Operating system                                                 | Redhat Linux 6.5.1                                   |
 | os_version       | string                                           | Version of OS                                                    | 5.4                                                  |
 | os_sp            | string                                           | Service pack                                                     | SP 2.3.4.55                                          |
@@ -560,8 +560,8 @@ The data model for VPN context information is based on the VPN logs as follows:
 | **Abbreviation** | **Data Type**           | **Description**                                                            | **Sample Values**                                    |
 |------------------|-------------------------|----------------------------------------------------------------------------|------------------------------------------------------|
 | dvc_time         | bigint                  | Timestamp from when the endpoint context information is obtained           | 1472653952                                           |
-| ip4              | bigint                  | IP address of VPN box                                                      | Integer representaion of 10.1.1.1                    |
-| ip6              | bigint                  | IP address of VPN box                                                      | Integer representaion of 10.1.1.1                    |
+| ip4              | int                     | IP address of VPN box                                                      | Integer representaion of 10.1.1.1                    |
+| ip6              | int128                  | IP address of VPN box                                                      | Integer representaion of 2001:db8::1                 |
 | vpn_vendor       | string                  | Vendor VPN                                                                 | Cisco                                                |
 | vpn_version      | string                  | Version VPN                                                                | 3.0                                                  |
 | vpn_sp           | string                  | VPN Service pack                                                           | 5                                                    |
@@ -737,13 +737,13 @@ representation are detailed below.
 
 {"name":"eventtime", "type":"long", "doc":"Stop time of event""},
 
-{"name":"src_ip4", "type":"long", "doc":”Source IP Address"},
+{"name":"src_ip4", "type":"int", "doc":”Source IP Address"},
 
 {"name":"src_host", "type":"string",”doc”:”Source hostname},
 
 {"name":"src_port", "type":"int",”doc”:”Source port”},
 
-{"name":"dst_ip4", "type":"long", "doc"::”Destination IP Address"},
+{"name":"dst_ip4", "type":"int", "doc"::”Destination IP Address"},
 
 {"name":"dst_host", "type":"string", "doc":”Destination IP Address"},
 
