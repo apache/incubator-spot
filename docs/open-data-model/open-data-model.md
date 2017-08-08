@@ -307,7 +307,7 @@ etc.).
 | **Category** | **Attribute**             | **Data Type**     | **Description**                                                       | **Sample Values**                                                                   |
 | **File**     | file_name                 | string            | Filename from event                                                   | output.csv                                                                          |
 |              | file_path                 | string            | File path                                                             | /root/output.csv                                                                    |
-|              | file_atime                | bigint            | Timestamp (UTC) of file access                                        | 1472653952                                                                          |
+|              | file_atime                | long              | Timestamp (UTC) of file access                                        | 1472653952                                                                          |
 |              | file_acls                 | string            | File permissions                                                      | rwx-rwx-rwx                                                                         |
 |              | file_type                 | string            | Type of file                                                          | “.doc”                                                                              |
 |              | file_size                 | int               | Size of file in bytes                                                 | 1244                                                                                |
@@ -435,7 +435,7 @@ etc.).
 | **Category** | **Attribute**             | **Data Type**     | **Description**                                                       | **Sample Values**                                                                   |
 | **DHCP**     | assigned_ip4              | int               | Coming soon                                                           | Coming soon                                                                         |
 |              | mac                       | string            | Coming soon                                                           | Coming soon                                                                         |
-|              | lease_time                | double            | Coming soon                                                           | Coming soon                                                                         |
+|              | lease_time                | int               | mechanism through which a DHCP server knows when a host will stop using an IP address                                                           | 2592000                                                                         |
 | **Category** | **Attribute**             | **Data Type**     | **Description**                                                       | **Sample Values**                                                                   |
 | **IRC**      | user                      | string            | Coming soon                                                           | Coming soon                                                                         |
 |              | nickname                  | string            | Coming soon                                                           | Coming soon                                                                         |
@@ -483,13 +483,13 @@ The data model for user context information is as follows:
 
 | **Attribute**    | **Data Type**                                        | **Description**                                              | **Sample Values**                   |
 |------------------|------------------------------------------------------|--------------------------------------------------------------|-------------------------------------|
-| dvc_time         | bigint                                               | Timestamp from when the user context information is obtained | 1472653952                          |
-| created          | bigint                                               | Timestamp from when user was created                         | 1472653952                          |
-| Changed––––      | bigint                                               | Timestamp from when user was updated                         | 1472653952                          |
-| lastlogon        | bigint                                               | Timestamp from when user last logged on                      | 1472653952                          |
+| dvc_time         | long                                                 | Timestamp from when the user context information is obtained | 1472653952                          |
+| created          | long                                                 | Timestamp from when user was created                         | 1472653952                          |
+| Changed––––      | long                                                 | Timestamp from when user was updated                         | 1472653952                          |
+| lastlogon        | long                                                 | Timestamp from when user last logged on                      | 1472653952                          |
 | logoncount       | int                                                  | Number of times account has logged on                        | 232                                 |
-| lastreset        | bigint                                               | Timestamp from when user last reset passwod                  | 1472653952                          |
-| expiration       | bigint                                               | Date/time when user expires                                  | 1472653952                          |
+| lastreset        | long                                                 | Timestamp from when user last reset passwod                  | 1472653952                          |
+| expiration       | long                                                 | Date/time when user expires                                  | 1472653952                          |
 | userid           | string                                               | Unique user id                                               | 1234                                |
 | username         | string                                               | Username in event log/alert                                  | jsmith                              |
 | name_first       | string                                               | First name                                                   | John                                |
@@ -518,7 +518,7 @@ The data model for endpoint context information is as follows:
 
 | **Abbreviation** | **Data Type**                                    | **Description**                                                  | **Sample Values**                                    |
 |------------------|--------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------|
-| dvc_time         | bigint                                           | Timestamp from when the endpoint context information is obtained | 1472653952                                           |
+| dvc_time         | long                                             | Timestamp from when the endpoint context information is obtained | 1472653952                                           |
 | ip4              | int                                              | IP address of endpoint                                           | Integer representaion of 10.1.1.1                    |
 | ip6              | int128                                           | IP address of endpoint                                           | Integer representaion of 2001:db8::1                 |
 | os               | string                                           | Operating system                                                 | Redhat Linux 6.5.1                                   |
@@ -559,7 +559,7 @@ The data model for VPN context information is based on the VPN logs as follows:
 
 | **Abbreviation** | **Data Type**           | **Description**                                                            | **Sample Values**                                    |
 |------------------|-------------------------|----------------------------------------------------------------------------|------------------------------------------------------|
-| dvc_time         | bigint                  | Timestamp from when the endpoint context information is obtained           | 1472653952                                           |
+| dvc_time         | long                    | Timestamp from when the endpoint context information is obtained           | 1472653952                                           |
 | ip4              | int                     | IP address of VPN box                                                      | Integer representaion of 10.1.1.1                    |
 | ip6              | int128                  | IP address of VPN box                                                      | Integer representaion of 2001:db8::1                 |
 | vpn_vendor       | string                  | Vendor VPN                                                                 | Cisco                                                |
@@ -594,9 +594,9 @@ as follows:
 | registry_domain_id                     | string        | Registry Domain ID                     |                   |
 | registrar_whois_server                 | string        | Registrar WHOIS Server                 |                   |
 | registrar_url                          | string        | Registrar URL                          |                   |
-| update_date                            | bigint        | UTC timestamp                          |                   |
-| creation_date                          | bigint        | Creation Date                          |                   |
-| registrar_registration_expiration_date | bigint        | Registrar Registration Expiration Date |                   |
+| update_date                            | long          | UTC timestamp                          |                   |
+| creation_date                          | long          | Creation Date                          |                   |
+| registrar_registration_expiration_date | long          | Registrar Registration Expiration Date |                   |
 | registrar                              | string        | Registrar                              |                   |
 | registrar_iana_id                      | string        | Registrar IANA ID                      |                   |
 | registrar_abuse_contact_email          | string        | Registrar Abuse Contact Email          |                   |
