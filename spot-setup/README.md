@@ -21,6 +21,10 @@ To collaborate and run spot-setup, it is required the following prerequisites:
 
 The main script in the repository is **hdfs_setup.sh** which is responsible of loading environment variables, creating folders in Hadoop for the different use cases (flow, DNS or Proxy), create the Impala database, and finally execute Impala query scripts that creates Impala tables needed to access netflow, dns and proxy data.
 
+Options:
+--no-sudo     will execute commands as the existing user while setting `HADOOP_USER_NAME=hdfs`
+-c            specify a custom location for the spot.conf, defaults to /etc/spot.conf
+
 ## Environment Variables
 
 **spot.conf** is the file storing the variables needed during the installation process including node assignment, User interface, Machine Learning and Ingest gateway nodes.
@@ -32,6 +36,8 @@ To read more about these variables, please review the [documentation](http://spo
 ## Database Query Scripts
 
 spot-setup contains a script per use case, as of today, there is a table creation script for each DNS, flow and Proxy data.
+
+the HQL scripts are seperated by the underlying database in the ./spot-setup/ folder.
 
 These HQL scripts are intended to be executed as a Impala statement and must comply HQL standards.
 
