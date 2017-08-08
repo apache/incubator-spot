@@ -17,6 +17,13 @@
 # limitations under the License.
 #
 
+set -e
+
+function log() {
+printf "hdfs_setup.sh:\n $1\n"
+}
+
+SPOTCONF="/etc/spot.conf"
 DSOURCES=('flow' 'dns' 'proxy')
 DFOLDERS=('binary' 
 'stage'
@@ -33,17 +40,68 @@ DFOLDERS=('binary'
 'hive/oa/threat_dendro'
 )
 
+
+# input options
+for arg in "$@"; do
+    case $arg in
+        "--no-sudo")
+            log "not using sudo"
+            no_sudo=true
+            shift
+            ;;
+        "-c")
+            shift
+            SPOTCONF=$1
+            log "Spot Configuration file: ${SPOTCONF}"
+            shift
+            ;;
+    esac
+done
+
 # Sourcing spot configuration variables
-source /etc/spot.conf
+log "Sourcing ${SPOTCONF}\n"
+source $SPOTCONF
+
+if [[ ${no_sudo} == "true" ]]; then
+    hdfs_cmd="hdfs"
+
+    if [[ ! -z "${HADOOP_USER_NAME}" ]]; then
+        log "HADOOP_USER_NAME: ${HADOOP_USER_NAME}"
+    else
+        log "setting HADOOP_USER_NAME to hdfs"
+        HADOOP_USER_NAME=hdfs
+    fi
+else
+    hdfs_cmd="sudo -u hdfs hdfs"
+fi
+
+db_engine=$(echo ${DBENGINE} | tr '[:upper:]' '[:lower:]')
+
+case ${db_engine} in
+    impala)
+    db_shell="impala-shell -i ${IMPALA_DEM}"
+    db_query="${db_shell} -q"
+    db_script="${db_shell} --var=huser=${HUSER} --var=dbname=${DBNAME} -c -f"
+    ;;
+    hive)
+    db_shell="hive"
+    db_query="${db_shell} -e"
+    db_script="${db_shell} -hiveconf huser=${HUSER} -hiveconf dbname=${DBNAME} -f"
+    ;;
+    *)
+    log "$DBENGINE not compatible"
+    exit 1
+    ;;
+esac
 
 # Creating HDFS user's folder
-sudo -u hdfs hdfs dfs -mkdir ${HUSER}
-sudo -u hdfs hdfs dfs -chown ${USER}:supergroup ${HUSER}
-sudo -u hdfs hdfs dfs -chmod 775 ${HUSER}
+${hdfs_cmd} dfs -mkdir ${HUSER}
+${hdfs_cmd} dfs -chown ${USER}:supergroup ${HUSER}
+${hdfs_cmd} dfs -chmod 775 ${HUSER}
 
 # Creating HDFS paths for each use case
 for d in "${DSOURCES[@]}" 
-do 
+do
 	echo "creating /$d"
 	hdfs dfs -mkdir ${HUSER}/$d 
 	for f in "${DFOLDERS[@]}" 
@@ -54,16 +112,16 @@ do
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
 	hdfs dfs -chmod -R 775 ${HUSER}/$d
-	sudo -u hdfs hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
-	sudo -u hdfs hdfs dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
+	${hdfs_cmd} dfs -setfacl -R -m user:${db_engine}:rwx ${HUSER}/$d
+	${hdfs_cmd} dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
 done
 
 # Creating Spot Database
-impala-shell -i ${IMPALA_DEM} -q "CREATE DATABASE IF NOT EXISTS ${DBNAME};"
+ ${db_query} "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
+
 
 # Creating Impala tables
 for d in "${DSOURCES[@]}" 
 do 
-	impala-shell -i ${IMPALA_DEM} --var=huser=${HUSER} --var=dbname=${DBNAME} -c -f create_${d}_parquet.hql
+	${db_script} "./${db_engine}/create_${d}_parquet.hql"
 done
-
