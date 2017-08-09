@@ -47,10 +47,10 @@
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-		
+
 		  ga('create', 'UA-87470508-1', 'auto');
 		  ga('send', 'pageview');
-		
+
 		</script>
     </head>
 
@@ -67,21 +67,28 @@
 
                     <nav>
                         <ul id="menu-main-menu" class="nav top-nav cf">
-                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
-                            </li>
+                          <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
+                              <a href="../../get-started">Get Started</a>
+                              <ul class="sub-menu">
+                                <li><a href="../../get-started">Get Started</a></li>
+                                <li><a href="../../get-started/supporting-apache">Supporting Apache</a></li>
+                                <li><a href="../../get-started/environment">Environment</a></li>
+                                <li><a href="../../get-started/architecture">Architecture</a></li>
+                                <li><a href="../../get-started/demo">Demo</a></li>
+                              </ul>
+                          </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">Download</a>
+                                <a href="../../download">Download</a>
                             </li>
                             <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130 active">
                                 <a href="../../community">Community</a>
                                 <ul class="sub-menu com-sm">
                                 	<li class="dropmenu-head">Get in Touch</li>
-                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>                                	
+                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>
                                 	<li><a href="http://slack.apache-spot.io/" target="_blank" class="slack">Slack Channel</a></li>
                                 	<li class="divider"></li>
-                                	<li><a href="../../community/committers">Project Committers</a></li>
-                                	<li class="active"><a href="../../community/contribute">How to Contribute</a></li>
+                                	<li class="active"><a href="../../community/committers">Project Committers</a></li>
+                                	<li><a href="../../community/contribute">How to Contribute</a></li>
                                 	<li class="divider"></li>
                                 	<li class="dropmenu-head">Developer Resources</li>
                                 	<li><a href="https://github.com/apache/incubator-spot" target="_blank" class="github">Github</a></li>
@@ -97,10 +104,12 @@
                             <li class="menu-item menu-item-has-children">
                                 <a href="#">Project Components</a>
                                 <ul class="sub-menu">
-                                	<li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 	<li><a href="../../project-components/ingestion">Ingestion</a></li>
                                 	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                  <li><a href="../../project-components/suspicious-connects-analysis">Suspicous Connects Analysis</a></li>
                                 	<li><a href="../../project-components/visualization">Visualization</a></li>
+                                  <li class="under-dev">Under Development</li>
+                                  <li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 </ul>
                             </li>
                             <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13">
@@ -114,145 +123,198 @@
             </header>
 
             <div id="mobile-nav"></div>
-            
+
             <div id="content">
-            	
+
             	<div class="wrap cf"><!--if page has sidebar, add class "with-sidebar"-->
             		<div class="main">
      					<h1>Apache Spot Committers</h1>
-     					<p>Following is a list of current Spot committers.</p>    					
-     					
+     					<p>Following is a list of current Spot committers.</p>
+
 						<div class="divTable" style="width: 100%;">
 							<div class="divTableBody">
 								<div class="divTableRow tableHeading">
 									<div class="divTableCell">Username</div>
 									<div class="divTableCell">Name</div>
+                  <div class="divTableCell">Company</div>
 									<div class="divTableCell">Role</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">jarcec</div>
 									<div class="divTableCell">Jarek Jarcec Cecho</div>
+                  <div class="divTableCell">StreamSets</div>
 									<div class="divTableCell">Mentor</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">brock</div>
 									<div class="divTableCell">Brock Noland</div>
+                  <div class="divTableCell">StreamSets</div>
 									<div class="divTableCell">Mentor</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">asavu</div>
 									<div class="divTableCell">Andrei Savu</div>
+                  <div class="divTableCell">Cloudera</div>
 									<div class="divTableCell">Mentor</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">umamahesh</div>
 									<div class="divTableCell">Uma Maheswara Rao G</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">Mentor</div>
 								</div>
-																
+
 								<div class="divTableRow">
 									<div class="divTableCell">rabarona</div>
 									<div class="divTableCell">Ricardo Barona</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">cesar</div>
 									<div class="divTableCell">Cesar Berho</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">vganji</div>
 									<div class="divTableCell">Sai Ganji</div>
+                  <div class="divTableCell">Cloudwick</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">ledagl</div>
 									<div class="divTableCell">Leda Gabriela Lima Garza</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">vgonzale</div>
 									<div class="divTableCell">Victor Gonzalez</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">mark</div>
 									<div class="divTableCell">Mark Grover</div>
+                  <div class="divTableCell">Cloudera</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell"></div>
 									<div class="divTableCell">Morris Hicks</div>
+                  <div class="divTableCell">Cloudera</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">leahy</div>
 									<div class="divTableCell">Austin Leahy</div>
+                  <div class="divTableCell">Dataminion</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">ashrith</div>
 									<div class="divTableCell">Ashrith Mekala</div>
+                  <div class="divTableCell">Cloudwick</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">daortizh</div>
 									<div class="divTableCell">Diego Ortiz</div>
+                  <div class="divTableCell">AWS</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">sudarshan.rao.p</div>
 									<div class="divTableCell">Sudharshan Rao PakalaSai</div>
+                  <div class="divTableCell">Cloudwick</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">vsr</div>
 									<div class="divTableCell">Srinivasa Reddy</div>
+                  <div class="divTableCell">Cloudwick</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">alan</div>
 									<div class="divTableCell">Alan Ross</div>
+                  <div class="divTableCell">Cybraics</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">everlosa</div>
 									<div class="divTableCell">Everardo Lopez Sandoval</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell"></div>
 									<div class="divTableCell">Nathan Segerlind</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">solrac901</div>
 									<div class="divTableCell">Carlos Villavicencio</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">zrlram</div>
 									<div class="divTableCell">Raffael Marty</div>
+                  <div class="divTableCell">Sophos</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">nathanael</div>
 									<div class="divTableCell">Nathanael Smith</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
 								<div class="divTableRow">
 									<div class="divTableCell">moyete</div>
 									<div class="divTableCell">Moises Valdovinos</div>
+                  <div class="divTableCell">Intel</div>
 									<div class="divTableCell">PPMC</div>
 								</div>
-								
+                <div class="divTableRow">
+									<div class="divTableCell">raypanduro</div>
+									<div class="divTableCell">Raymundo Panduro</div>
+                  <div class="divTableCell"></div>
+									<div class="divTableCell">PPMC</div>
+								</div>
+                <div class="divTableRow">
+                  <div class="divTableCell"></div>
+                  <div class="divTableCell">Marilia Valdovinos</div>
+                  <div class="divTableCell">Semantix</div>
+                  <div class="divTableCell">PPMC</div>
+                </div>
+                <div class="divTableRow">
+                  <div class="divTableCell"></div>
+                  <div class="divTableCell">Felipe Ruiz</div>
+                  <div class="divTableCell">Semantix</div>
+                  <div class="divTableCell">PPMC</div>
+                </div>
+                <div class="divTableRow">
+                  <div class="divTableCell"></div>
+                  <div class="divTableCell">Brandon Edwards</div>
+                  <div class="divTableCell">Intel</div>
+                  <div class="divTableCell">PPMC</div>
+                </div>
+                <div class="divTableRow">
+                  <div class="divTableCell"></div>
+                  <div class="divTableCell">Gustavo Lujan</div>
+                  <div class="divTableCell">Intel</div>
+                  <div class="divTableCell">PPMC</div>
+                </div>
 							</div>
 						</div>
-            			
+
             		</div>
 
             	</div>
-            	
+
             </div>
 
 

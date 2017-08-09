@@ -67,10 +67,17 @@
                     <nav>
                         <ul id="menu-main-menu" class="nav top-nav cf">
                             <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
+                                <a href="get-started">Get Started</a>
+                                <ul class="sub-menu">
+                                  <li><a href="get-started">Get Started</a></li>
+                                  <li><a href="get-started/supporting-apache">Supporting Apache</a></li>
+                                  <li><a href="get-started/environment">Environment</a></li>
+                                  <li><a href="get-started/architecture">Architecture</a></li>
+                                  <li><a href="get-started/demo">Demo</a></li>
+                                </ul>
                             </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">GitHub</a>
+                                <a href="download">Download</a>
                             </li>
                             <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
                                 <a href="community">Community</a>
@@ -96,10 +103,12 @@
                             <li class="menu-item menu-item-has-children">
                                 <a href="#">Project Components</a>
                                 <ul class="sub-menu">
-                                	<li><a href="project-components/open-data-models">Open Data Models</a></li>
                                 	<li><a href="project-components/ingestion">Ingestion</a></li>
                                 	<li><a href="project-components/machine-learning">Machine Learning</a></li>
+                                  <li><a href="project-components/suspicious-connects-analysis">Suspicous Connects Analysis</a></li>
                                 	<li><a href="project-components/visualization">Visualization</a></li>
+                                  <li class="under-dev">Under Development</li>
+                                  <li><a href="project-components/open-data-models">Open Data Models</a></li>
                                 </ul>
                             </li>
                             <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13">
@@ -121,7 +130,7 @@
                         <h1 class="thin">A Community Approach to Fighting Cyber Threats</h1>
                     </div>
                     <div class="m-all t-1of2 d-1of2 contribute">
-                        <h3>Help Spot expand his hunting ground to see deeper into the darkness of cyber threats.</h3>
+                        <h3>Help Spot expand its hunting ground to see deeper into the darkness of cyber threats.</h3>
                         <p class="btn-margin"><a href="community/contribute" class="y-btn">Become a Contributor</a></p>
                     </div>
                 </div>
@@ -130,7 +139,9 @@
             <div id="at-a-glance">
             	<div class="wrap cf">
             		<h1>Apache Spot at a Glance</h1>
-            		<p>Apache Spot is a community-driven cybersecurity project, built from the ground up, to bring advanced analytics to all IT Telemetry data on an open, scalable platform. Spot expedites threat detection, investigation, and remediation via machine learning and consolidates all enterprise security data into a comprehensive IT telemetry hub based on open data models. Spot’s scalability and machine learning capabilities support an ecosystem of ML-based applications that can run simultaneously on a single, shared, enriched data set to provide organizations with maximum analytic flexibility. Spot harnesses a diverse community of expertise from Centrify, Cloudera, Cybraics, Endgame, Intel, Jask, Streamsets, and Webroot.</p>
+            		<p>Apache Spot is a community-driven cybersecurity project, built from the ground up, to bring advanced analytics to all IT <a href="doc/index.html#telemetry">Telemetry</a> data on an open, scalable platform. It is an open source software for leveraging insights from flow and packet analysis. Spot expedites threat detection, investigation, and remediation via <a href="doc/index.html#machine-learning">machine learning</a> and consolidates all enterprise security data into a comprehensive IT telemetry hub based on open data models. Spot’s scalability and machine learning capabilities support an ecosystem of ML-based applications that can run simultaneously on a single, shared, enriched data set to provide organizations with maximum analytic flexibility. </p>
+
+                <p>Apache Spot helps enterprises and service providers gain insight on their computed environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale. While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge. Spot harnesses a diverse community of expertise from Centrify, Cloudera, Cybraics, Endgame, Intel, Jask, Streamsets, and Webroot. Apache Spot provides tools to accelerate companies’ ability to expose suspicious connections and previously unseen attacks using flow and packet analysis technologies.</p>
             	</div>
             </div>
 
@@ -138,6 +149,8 @@
                 <div id="inner-content" class="wrap cf">
                     <main id="main" class="m-all t-all d-all cf" role="main" itemscope itemprop="mainContentOfPage" itemtype="http://schema.org/Blog">
                         <h1 class="center">Apache Spot Advantages</h1>
+                        <p>Apache Spot uses the best tools just to provide the best functionality preventing attacks, identifying unknown threats, and providing cybersecurity. Perimeter Flows, DNS, Proxy and Internal Flows provide remarkable advantages creating fast and efficient data analysis.</p>
+
                         <p style="text-align: center;"><img src="library/images/advantages-1.png" alt="advantages" width="958" height="433" class="aligncenter size-full" />
                         </p>
                     </main>
@@ -173,6 +186,16 @@
                     <div class="m-all t-2of3 d-2of3">
                         <img src="library/images/how-it-works.png" alt="" />
                     </div>
+                </div>
+                <div class="wrap cf">
+                  <h3>Parallel Ingest Framework.</h3>
+                  <p>​The systems uses opens source’s optimized decoders for binary flow and pack data, to load into HDFS and data structures inside Hadoop. The decoded data is stored in multiple formats so it is available for searching, used by machine learning, transfer to law enforcement, or inputs to other systems.</p>
+
+                  <h3>Machine Learning.</h3>
+                  <p>The system uses a combination of Apache Spark to run scalable machine learning algorithms. The machine learning component works not only as a filter for separating bad traffic from benign, but also as a way to characterize the unique behavior of network traffic in an organization.</p>
+
+                  <h3>Operational Analytics.</h3>
+                  <p>In addition to machine learning, a proven process of context enrichment, noise filtering, whitelisting, and heuristics are applied to network data to produce a short list of the most likely patterns, which may be security threats.</p>
                 </div>
             </div>
 
@@ -251,7 +274,7 @@
                             </div>
                         </div>
                         <p>
-                            Spot provides common open data model for network, endpoint, and user – Open Data Models. These Open Data Models provide a standard format of enriched event data that makes it easier to integrate cross application data to gain complete enterprise visibility and develop net new analytic functionality.  Spot’s Open Data Models helps organizations quickly share new analytics with one another as new threats are discovered.
+                            ​Apache Spot delivers common Open Data Models for network, endpoint and user, providing a standard format of enriched event data that makes it easier to integrate cross application data to gain complete enterprise visibility and develop net new analytic functionality.  Spot’s Open Data Models helps organizations quickly share new analytics with one another as new threats are discovered.
                         </p>
                     </div>
                     <div class="m-all t-1of2 d-1of2">
@@ -266,7 +289,7 @@
                             </div>
                         </div>
                         <p>
-                            Spot’s Open Data Models help organizations quickly share new analytics with one another as new threats are discovered.  And, with Hadoop, organizations able to run these analytics against comprehensive historic data sets, helping organizations identify past threats that have slipped through the cracks. With this capability, Spot aims to give security professionals the ability to collaborate like cybercriminals do.
+                            ​Apache Spot's Open Data Models help organizations to quickly share new analytics among them as new threats are discovered. And, with Hadoop, organizations able to run these analytics against comprehensive historic data sets, helping organizations identify past threats that have slipped through the cracks. With this capability, Spot aims to give security professionals the ability to collaborate like cybercriminals do.
                         </p>
                     </div>
 
@@ -305,21 +328,6 @@
 
                     <p class="center">Join the Apache Spot community and collaborate with us using a common framework.</p>
 
-                    <div class="community">
-                    	<img src="library/images/community/endgame.png" alt="Endgame" />
-                    	<img src="library/images/community/intel.png" alt="Intel" />
-                    	<img src="library/images/community/webroot.png" alt="Webroot" />
-                    	<img src="library/images/community/jask.png" alt="Jask" />
-                    	<img src="library/images/community/cloudera.png" alt="Cloudera" />
-                    	<img src="library/images/community/cloudwick.png" alt="Cloudwick" />
-                    	<img src="library/images/community/cybraics.png" alt="Cybraics" />
-                    	<img src="library/images/community/centrify.png" alt="Centrify" />
-                    	<img src="library/images/community/ebay.png" alt="Ebay" />
-                    	<img src="library/images/community/semantix.png" alt="Semantix" />
-                    	<img src="library/images/community/rich-it.png" alt="Rich-It" />
-                    	<img src="library/images/community/streamsets.png" alt="StreamSets" />
-                    </div>
-
                 </div>
             </div>
 
@@ -337,7 +345,7 @@
                                 <div class="table-cell">
                                 	<h3>Network Traffic Analytics</h3>
                                     <p>
-                                        Spot allows organizations to detect potentially malicious activity by identifying suspicious network connections, by analyzing large amounts of netflow, DNS, proxy data with algorithms that are available out of the box.
+                                        Spot allows organizations to detect potentially malicious activity by identifying suspicious network connections, by analyzing large amounts of <a href="doc/index.html#netflow">netflow</a>, <a href="doc/index.html#dns">DNS</a>, <a href="doc/index.html#proxy">proxy</a> data with algorithms that are available out of the box.
                                     </p>
                                 </div>
                             </div>
@@ -349,9 +357,9 @@
                                     <img src="library/images/Apache-Spot-Icon_Reduction-Mean-Time.png" alt="" />
                                 </div>
                                 <div class="table-cell">
-                                	<h3>Reduction of mean time to incident detection &amp;resolution (MTTR)</h3>
+                                	<h3>Reduction of mean time to incident detection &amp; resolution (MTTR)</h3>
                                     <p>
-                                        Spot provides the capability for a central data store that houses ALL the data needed to facilitate an investigation, returning investigative query results in seconds and minutes (vs. hours and days), which effectively reduces incident MTTR and minimizes the adverse impacts of a breach.
+                                        Spot provides the capability for a central data store that houses ALL the data needed to facilitate an investigation, returning investigative query results in seconds and minutes (vs. hours and days), which effectively reduces incident <a href="doc/index.html#mttr">MTTR</a> and minimizes the adverse impacts of a breach.
                                     </p>
                                 </div>
                             </div>
@@ -365,7 +373,7 @@
                                 <div class="table-cell">
                                 	<h3>Threat Hunting</h3>
                                     <p>
-                                        Spot improves the efficacy of threat hunting by providing the analytic flexibility to perform ad-hoc searches and queries over vast amounts of data, as well as applying ad-hoc algorithms to detect the needle in the haystack.
+                                        Spot improves the efficacy of threat hunting by providing the analytic flexibility to perform <a href="doc/index.html#ad-hoc">ad-hoc</a> searches and queries over vast amounts of data, as well as applying ad-hoc algorithms to detect the needle in the haystack.
                                     </p>
                                 </div>
                             </div>
@@ -379,7 +387,7 @@
                                 <div class="table-cell">
                                 	<h3>Cybersecurity Data Management</h3>
                                     <p>
-                                        Offloading data from legacy cybersecurity systems (e.g., SIEMs) to Spot delivers immediate economic value, because of the cost of data storage and processing with Hadoop. It also opens up future value as organizations deploy one of the many analytics use cases on their newly formed security data hub.
+                                        Offloading data from legacy cybersecurity systems (e.g., <a href="doc/index.html#siem">SIEMs</a>) to Spot delivers immediate economic value, because of the cost of data storage and processing with Hadoop. It also opens up future value as organizations deploy one of the many analytics use cases on their newly formed security data hub.
                                     </p>
                                 </div>
                             </div>

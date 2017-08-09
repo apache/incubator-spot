@@ -47,10 +47,10 @@
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-		
+
 		  ga('create', 'UA-87470508-1', 'auto');
 		  ga('send', 'pageview');
-		
+
 		</script>
     </head>
 
@@ -67,17 +67,24 @@
 
                     <nav>
                         <ul id="menu-main-menu" class="nav top-nav cf">
-                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
-                            </li>
+                          <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
+                              <a href="../../get-started">Get Started</a>
+                              <ul class="sub-menu">
+                                <li><a href="../../get-started">Get Started</a></li>
+                                <li><a href="../../get-started/supporting-apache">Supporting Apache</a></li>
+                                <li><a href="../../get-started/environment">Environment</a></li>
+                                <li><a href="../../get-started/architecture">Architecture</a></li>
+                                <li><a href="../../get-started/demo">Demo</a></li>
+                              </ul>
+                          </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">Download</a>
+                                <a href="../../download">Download</a>
                             </li>
                             <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130 active">
                                 <a href="../../community">Community</a>
                                 <ul class="sub-menu com-sm">
                                 	<li class="dropmenu-head">Get in Touch</li>
-                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>                                	
+                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>
                                 	<li><a href="http://slack.apache-spot.io/" target="_blank" class="slack">Slack Channel</a></li>
                                 	<li class="divider"></li>
                                 	<li><a href="../../community/committers">Project Committers</a></li>
@@ -97,10 +104,12 @@
                             <li class="menu-item menu-item-has-children">
                                 <a href="#">Project Components</a>
                                 <ul class="sub-menu">
-                                	<li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 	<li><a href="../../project-components/ingestion">Ingestion</a></li>
                                 	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                  <li><a href="../../project-components/suspicious-connects-analysis">Suspicous Connects Analysis</a></li>
                                 	<li><a href="../../project-components/visualization">Visualization</a></li>
+                                  <li class="under-dev">Under Development</li>
+                                  <li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 </ul>
                             </li>
                             <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13">
@@ -114,25 +123,23 @@
             </header>
 
             <div id="mobile-nav"></div>
-            
+
             <div id="content">
-            	
+
             	<div class="wrap cf"><!--if page has sidebar, add class "with-sidebar"-->
             		<div class="main">
             			<h1 class="page-title">Proposed Apache-Spot (incubating) Commit Workflow</h1>
-            			
+
             			<p><strong>NOTE: Most of this guide is based on ASF Documentation.</strong></p>
-            			
-            			<p>This guide is meant to provide a workflow for committers of Apache Spot. The proposed workflow is for using git with apache-spot codebase.</p>
-            			
-            			<p>Depending the nature of the change two different approaches can be used to commit to Apache Spot: <strong>Individual Push</strong> or <strong>Topic Branding</strong>.</p>
-            			
+
+            			<p>This guide is meant to provide a workflow for committers of Apache Spot. The proposed workflow is for using git with apache-spot codebase.Depending the nature of the change two different approaches can be used to commit to Apache Spot: <strong>Individual Push</strong> or <strong>Topic Branding</strong>.</p>
+
             			<h3 class="center" style="margin-top:35px;">Individual Push (most commonly used by the community):</h3>
-        			
+
             			<p><img src="../../library/images/individual-push.png" alt="" /></p>
-            			
+
             			<p><strong>Steps:</strong></p>
-            			
+
             			<ol>
             				<li>For the Github repository at <a href="https://github.com/apache/incubator-spot" target="_blank">https://github.com/apache/incubator-spot</a> if you haven't already. For more information about Fork please go to: <a href="https://help.github.com/articles/fork-a-repo/" target="_blank">https://help.github.com/articles/fork-a-repo/</a></li>
             				<li>Clone your fork, create a new branch named after a Jira issue (i.e. <strong>spot-100</strong>).</li>
@@ -141,43 +148,97 @@
             				<li>Create a pull request (PR) against the upstream repo (master) of apache-spot. For more information about how to create a pull request please go to: <a href="https://help.github.com/articles/about-pull-requests/" target="_blank">https://help.github.com/articles/about-pull-requests/</a>.</li>
             				<li>Wait for the maintainers to review your PR.</li>
             			</ol>
-            			
+
             			<h3 class="center" style="margin-top:35px;">Topic Branching (upstream)</h3>
-            			
+
             			<p>What are a topic branches?</p>
-            			
+
             			<blockquote>According to the git definition: "<em>A topic branch is a short-lived branch that you create and use for a single particular feature or related work.</em>" (<a href="https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches" target="_blank">https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches</a>)</blockquote>
-            			
+
             			<p>Sometimes a new major feature will have dependencies between modules or developers that can't be separated into individual pushes, when this happens, a topic branch will be created to deliver the complete functionality before the merge with the upstream (encapsulated dev enviroment).</p>
-            			
+
             			<p>In order to create a topic branch, three requirements are needed:</p>
-            			
+
             			<ol>
             				<li>A design document must be uploaded using Jira. This design must be approved by the maintainers.</li>
             				<li>A voting process will be required to approve the topic branch creation, at least 3 maintainers need to approve it.</li>
             				<li>A commitment to delete the branch after merging it into the upstream branch must be done. The topic branch should only exist while the work is still in progress.</li>
             			</ol>
-            			
+
             			<p>A meaningful name must be given to the branch. It is recommended to use JIRA issue created with the design document to link the branch.</p>
-            			
+
             			<p><img src="../../library/images/topic-branching.png" alt="" /></p>
-            			
+
             			<p><strong>IMPORTANT: There shouldn't be a push without a Jira created previously</strong></p>
-            			
+
             			<h3>Approvals and Voting Process:</h3>
-            			
+
             			<blockquote>
-            				<p>For code-modification, +1 votes are in favor of the proposal, but -1 votes are <u>vetos</u> and kill the proposal dead until all vetoers withdraw their -1 votes.</p> 
-            				
+            				<p>For code-modification, +1 votes are in favor of the proposal, but -1 votes are <u>vetos</u> and kill the proposal dead until all vetoers withdraw their -1 votes.</p>
+
             				<p>Unless a vote has been declared as using <u>lazy consensus</u>, three +1 votes are required for a code-modification proposal to pass.</p>
-            				
+
             				<p>Whole numbers are recommended for this type of vote, as the opinion being expressed is Boolean: 'I approve/do not approve of this change.'</p>
-            				
+
             				<p><strong>Source: <a href="http://apache.org/foundation/voting.html" target="_blank">http://apache.org/foundation/voting.html</a></strong></p>
         				</blockquote>
-        				
+
+                <h2>Bug Process Creation for Apache Spot (Incubator) Project in Jira</h2>
+
+                <p><strong>How to guide to open bugs:</strong> the following guide is intended for any contributor working with the Apache Spot (Incubator) project that needs to create a bug in Jira.</p>
+
+                <h3 class="green">Creating a bug in ASF Jira for Spot (Incubating) project.</h3>
+
+                <p>To create bugs for Apache Spot (Incubator) in Jira use the following link: <a href="https://issues.apache.org/jira/secure/Dashboard.jspa" target="_blank">https://issues.apache.org/jira/secure/Dashboard.jspa</a></p>
+
+                <p>It is required to have an active account to create bugs. An account can be created using the Sign Up link below the login form.</p>
+
+                <p class="center"><img src="../../library/images/bug-1.png" alt=""  /></p>
+
+                <p>Once an account has be created and logged into Jira a Create button in RED will be displayed.    Click the Create Button to open a new bug:</p>
+
+                <p class="center"><img src="../../library/images/bug-2.png" alt=""  /></p>
+
+                <p>A template window will show up, make sure to select Spot for the Project field and select the Bug value for Issue Type field.</p>
+
+                <p class="center"><img src="../../library/images/bug-3.png" alt=""  /></p>
+
+                <p>For summary, we recommend using the following naming convection: [Component][Pipeline]: "Bug Description"</p>
+
+                <p><strong>E.g.</strong>: [Ingest][Flow]: Ingest not ingesting data from defined path on Hadoop.</p>
+
+                <p>Priority: Please select "Triage" on the bug priority so the apache spot committee can review and analyze the bug to define the best priority based on the information of the bug.</p>
+
+                <p>Components:  Ingest, Machine Learning, Operational Analytics, User Interface.</p>
+
+                <p>Affects Version: The branch you installed on your environment.</p>
+
+                <p>Environment: Please describe the environment you currently have where you installed apache spot. This includes, OS Version, Hadoop Version, No. of nodes., under what node you have installed, Ingest, Machine Learning, Operational Analytics/UI.</p>
+
+                <p class="center"><img src="../../library/images/bug-4.png" alt=""  /></p>
+
+                <p>Description: Please use the following template to describe your problem:</p>
+
+                <p>
+                  Steps to reproduce the bug:<br />
+                  Actual Results:<br />
+                  Expected Results:
+                </p>
+
+                <p class="center"><img src="../../library/images/bug-5.png" alt=""  /></p>
+
+                <p><strong>Attachments:</strong> Please upload screenshots and logs of your findings that will be useful to debug the problem.</p>
+
+                <p class="center"><img src="../../library/images/bug-6.png" alt=""  /></p>
+
+                <p>Leave the rest of the fields as default and click the Create button.</p>
+
+                <p class="center"><img src="../../library/images/bug-7.png" alt=""  /></p>
+
+                <p>The Apache Spot (Incubator) team will review all bugs that are new and in triage state to define a priority to make a fix giving a first update in the bug adding a comment regarding the problem or in case asking for more evidence and information to determine the problem.</p>
+
         				<h3>Useful links:</h3>
-        				
+
         				<ul>
         					<li><a href="https://www.apache.org/foundation/glossary.html" target="_blank">https://www.apache.org/foundation/glossary.html</a></li>
         					<li><a href="http://www.apache.org/dev/committers" target="_blank">http://www.apache.org/dev/committers</a></li>
@@ -186,7 +247,7 @@
         				</ul>
             		</div>
             	</div>
-            	
+
             </div>
 
 
