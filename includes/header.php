@@ -86,7 +86,7 @@
                                 <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
                             </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">Download</a>
+                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">GitHub</a>
                             </li>
                             <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130 <?php if($currentPage =='contribute'){echo 'active';}?>">
                                 <a target="_blank" href="<?php echo BASE_URL; ?>/contribute" target="_blank">Contribute</a>
