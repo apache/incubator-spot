@@ -1,0 +1,464 @@
+<!doctype html>
+
+<!--[if lt IE 7]><html lang="en-US" class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en-US" class="no-js">
+    <!--<![endif]-->
+
+    <head>
+        <meta charset="utf-8">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <title>Suspicious Connects Analysis - Apache Spot</title>
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link rel="apple-touch-icon" href="../../library/images/apple-touch-icon.png">
+        <link rel="icon" href="../../favicon.png">
+        <!--[if IE]>
+        <link rel="shortcut icon" href="http://spot.incubator.apache.org/favicon.ico">
+        <![endif]-->
+        <meta name="msapplication-TileColor" content="#f01d4f">
+        <meta name="msapplication-TileImage" content="../../library/images/win8-tile-icon.png">
+        <meta name="theme-color" content="#121212">
+
+        <link rel='dns-prefetch' href='//fonts.googleapis.com' />
+        <link rel='dns-prefetch' href='//s.w.org' />
+        <link rel="alternate" type="application/rss+xml" title="Apache Spot &raquo; Feed" href="../../feed/" />
+
+        <link rel='stylesheet' id='googleFonts-css'  href='http://fonts.googleapis.com/css?family=Lato%3A400%2C700%2C400italic%2C700italic' type='text/css' media='all' />
+        <link rel='stylesheet' id='bones-stylesheet-css'  href='../../library/css/style.css' type='text/css' media='all' />
+        <!--[if lt IE 9]>
+        <link rel='stylesheet' id='bones-ie-only-css'  href='http://spot.incubator.apache.org/library/css/ie.css' type='text/css' media='all' />
+        <![endif]-->
+        <link rel='stylesheet' id='mm-css-css'  href='../../library/css/meanmenu.css' type='text/css' media='all' />
+        <script type='text/javascript' src='../../library/js/libs/modernizr.custom.min.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type='text/javascript' src='../../library/js/jquery-migrate.min.js'></script>
+        <script type='text/javascript' src='../../library/js/jquery.meanmenu.js'></script>
+
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-87470508-1', 'auto');
+		  ga('send', 'pageview');
+
+		</script>
+    </head>
+
+    <body class="page">
+
+        <div id="container">
+            <header class="header">
+
+                <div id="inner-header" class="wrap cf">
+
+                    <p id="logo" class="h1" itemscope itemtype="http://schema.org/Organization">
+                        <a href="http://spot.incubator.apache.org/" rel="nofollow"><img src="../../library/images/logo.png" alt="Apache Spot" /></a>
+                    </p>
+
+                    <nav>
+                        <ul id="menu-main-menu" class="nav top-nav cf">
+                          <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
+                              <a href="../../get-started">Get Started</a>
+                              <ul class="sub-menu">
+                                <li><a href="../../get-started">Get Started</a></li>
+                                <li><a href="../../get-started/supporting-apache">Supporting Apache</a></li>
+                                <li><a href="../../get-started/environment">Environment</a></li>
+                                <li><a href="../../get-started/architecture">Architecture</a></li>
+                                <li><a href="../../get-started/demo">Demo</a></li>
+                              </ul>
+                            </li>
+                            <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
+                                <a href="../../download">GitHub</a>
+                            </li>
+                            <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
+                                <a href="../../community">Community</a>
+                                <ul class="sub-menu com-sm">
+                                	<li class="dropmenu-head">Get in Touch</li>
+                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>
+                                	<li><a href="http://slack.apache-spot.io/" target="_blank" class="slack">Slack Channel</a></li>
+                                	<li class="divider"></li>
+                                	<li><a href="../../community/committers">Project Committers</a></li>
+                                	<li><a href="../../community/contribute">How to Contribute</a></li>
+                                	<li class="divider"></li>
+                                	<li class="dropmenu-head">Developer Resources</li>
+                                	<li><a href="https://github.com/apache/incubator-spot" target="_blank" class="github">Github</a></li>
+                                	<li><a href="https://issues.apache.org/jira/browse/SPOT/" target="_blank" class="jira">JIRA Issue Tracker</a></li>
+                                	<li class="divider"></li>
+                                	<li class="dropmenu-head">Social Media</li>
+                                	<li><a href="https://twitter.com/ApacheSpot" target="_blank" class="twitter-icon">Twitter</a></li>
+                                </ul>
+                            </li>
+                            <li id="menu-item-106" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-106">
+                                <a href="../../doc">Documentation</a>
+                            </li>
+                            <li class="menu-item menu-item-has-children active">
+                                <a href="#">Project Components</a>
+                                <ul class="sub-menu">
+                                	<li><a href="../../project-components/ingestion">Ingestion</a></li>
+                                	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                  <li class="active"><a href="../../project-components/suspicious-connects-analysis">Suspicous Connects Analysis</a></li>
+                                	<li><a href="../../project-components/visualization">Visualization</a></li>
+                                  <li class="under-dev">Under Development</li>
+                                  <li><a href="../../project-components/open-data-models">Open Data Models</a></li>
+                                </ul>
+                            </li>
+                            <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13">
+                                <a href="../../blog">Blog</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </header>
+
+            <div id="mobile-nav"></div>
+
+            <div id="content">
+
+            	<div class="wrap cf"><!--if page has sidebar, add class "with-sidebar"-->
+            		<div class="main">
+            			<h1 class="page-title">Supsicious Connects Analysis</h1>
+
+            			<p>Spot offers a family of suspicious connections analyses that identify the most suspicious or unlikely network events in the observed network and report these to the user for further investigation to determine if they are indicative of maliciousness or malfunction.  The suspicious connects analysis is a form of semi-supervised anomaly detection that uses topic modelling to infer common network behaviors and build a model of behavior for each IP address. </p>
+
+            			<p>The topic model at the core of Spot-ml is an unsupervised machine learning model. However, Spot allows for user feedback to effect the model’s view of what is suspicious (see ‘Further Notes on Spot-ml’ for more details about the feedback functionality).  This section briefly describes the mathematical principles behind the Suspicious Connects Analysis.</p>
+
+            			<h3>Supported Data for Analyses</h3>
+                  <p>Currently Spot supports analyses on the following data sources:</p>
+
+                  <ul>
+                    <li>(undirected) Netflow logs</li>
+                    <li>DNS logs</li>
+                    <li>HTTP Proxy logs</li>
+                  </ul>
+
+                  <p>In this discussion, log entries are referred to as "network events".</p>
+
+                  <h3>Anomaly Detection via Topic Modelling</h3>
+
+                  <p>The suspicious connects analysis infers a probabilistic model for the network behaviors of each IP address. Each network event is assigned an estimated probability (henceforth, the event’s “score”). Those events with the lower scores are flagged as “suspicious” for further analysis.</p>
+
+                  <p>The probabilistic model is generated via topic modelling. Topic modelling is a technique from natural language processing that analyzes a collection of natural language documents, and infers the topics discussed by the documents. In particular we use a latent Dirichlet allocation (LDA) model. For details outside of the scope of this description, please see the Journal of Machine Learning Research article “Latent Dirichlet Allocation” by David M. Blei, Andrew Y. Ng, and Michael I. Jordan. For comparison purposes, our mathematical notation is similar to that used in the JMLR article. </p>
+
+                  <p>Below we describe the probability distributions that arise from an LDA model, and describe how anomaly scores can be assigned to words of a document. We then describe how ‘words’ and ‘documents’ are formed from network logs so that a network log entry is provided an anomaly score given by the score of the word to which it is associated. </p>
+
+                  <h3>Latent Dirichlet Allocation</h3>
+
+                  <p>Input: A collection of documents, each viewed as a multiset of words (bag of words). An integer k which is the number of latent topics for the model to learn.</p>
+
+                  <p>Output:  Two families of distributions. For each document, a “document’s topic mix” which gives the probability that a word selected at random from the document belongs to any given topic (that is, the fraction of that document dedicated to any given topic).  For each topic, a “topic’s word mix” which gives the probability of any given word conditioned on the topic (that is, the fraction of that topic dedicated to each word).</p>
+
+                  <p>In mathematical notation:</p>
+
+                  <img src="../../library/images/susp-con-1.png" alt=""  />
+
+                  <p>An assumption is made that a topic’s word mix is independent of the document in question. We can therefore perform a model-estimate of the probability of a word, w, appearing in the document, d, as follows:</p>
+
+                  <img src="../../library/images/susp-con-2.png" alt=""  />
+
+                  <h3>Topic Modelling and Network Events</h3>
+                  <p>By viewing the logged behavior of an IP address as a document (eg. all DNS queries of a particular client IP) and the constituent log entries as “words” it is straightforward to apply topic modelling to analyze network traffic.</p>
+
+                  <table class="cont-table">
+                    <tr>
+                      <td>Text Corpora</td>
+                      <td>Network Logs</td>
+                    </tr>
+
+                    <tr>
+                      <td>document</td>
+                      <td>log records of a particular IP adddress</td>
+                    </tr>
+
+                    <tr>
+                      <td>word</td>
+                      <td>(simplified) log entry</td>
+                    </tr>
+
+                    <tr>
+                      <td>topic</td>
+                      <td>profile of common network behavior</td>
+                    </tr>
+                  </table>
+
+                  <p>There is one significant wrinkle: For topic modelling to provide interesting results, there should be significant overlap in the words used by different documents, whereas network log entries contain nearly unique identifiers such as network addresses and timestamps. For this reason, to perform topic modelling on network events, the log entries must be simplified into words.</p>
+
+                  <h3>From Events to Documents: Word Creation</h3>
+
+                  <p>The conversion of network events into words is the point of subtle art in the Spot Suspicious Connects analysis. The procedure for converting events into words must preserve enough information to turn up interesting anomalies during malicious behavior or malfunction, it must create words with enough overlap between documents (IP addresses) that the topic modelling step produces meaningful results, and it should distill information that is particular to the “type” of traffic rather than a specific machine (to justify the simplifying assumption made to estimate word probabilities).</p>
+
+                  <h3>Netflow</h3>
+
+                  <p>A netflow record is simplified into two separate words, one to be inserted in the document associated to the source IP and another (possibly different word) inserted into the document associated to the destination IP. The words are created as follows:</p>
+
+
+                  <table class="cont-table">
+                    <tr>
+                      <td>Feature (string 'letter in the word')</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <p>Flow Direction:</p>
+
+                        <p>If both ports (between source and destination) are 0, then this feature is missing from the words that go into both the source and destination IP documents.</p>
+
+                        <p>If exactly one port is 0, this feature is missing for the IP document associated to the 0 port, and this feature is given as “-1” for the IP document associated to the non-zero port.</p>
+
+                        <p>If neither port is zero, and either both or neither of the listed ports are strictly less than 1025, this feature is missing for both source IP and destination IP words.</p>
+
+                        <p>If neither port is zero and only one of the ports is strictly less than 1025, this feature is given as “-1” for the IP document associated with port that is less than 1025 and is missing for the IP document associated to the other (high) port.</p>
+                      </td>
+                    </tr>
+
+
+                    <tr>
+                      <td>
+                        <p>Key Port:<br />If both source and destination ports are 0 this feature is given as “0” for both source and destination IP documents.</p>
+
+                        <p>If exactly one of the ports is non-zero this feature is given as the non-zero port number for both source and destination IP documents.</p>
+
+                        <p>If exactly one port is less than 1025 and this port is not zero, this feature is given as this port number for both the source and destination IP documents.</p>
+
+                        <p>If both ports are non-zero and strictly less than 1025 this feature is given as “111111” for both the source and destination IP documents.</p>
+
+                        <p>If both ports are greater than or equal to 1025 this feature is given as “333333” for both the source and destination IP documents.</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <p>Protocol<br />Use the string as given in log entry</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <p>Time of day<br />Use the hour portion of the time stamp</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <p>Total Bytes<br />Use the string for the bin number into which the frame length  falls, using bins defined by the following cutoff values: <br />
+                        (0, 1, 2, 4, 8, …)</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <p>Number of Packets<br />
+                        Use the string for the bin number into which the frame length  falls, using bins defined by the following cutoff values: <br />
+                        (0, 1, 2, 4, 8, …)</p>
+
+                      </td>
+                    </tr>
+                  </table>
+
+                  <p>Examples:<br />
+                  (1) A record with source port 1066, destination port 301, protocol given as TCP, time of day with hour equal to 3, bytes transferred equal to 1026, with 10 packets sent. <br />
+                  The word “301_TCP_3_12_5” is created for the source IP document.<br />
+                  The word: “-1_301_TCP_3_12_5” is created for the destination IP document .</p>
+
+                  <p>(2) A record with source port 1194, destination port 1109, protocol given as UDP, time of day with hour equal to 7, bytes transferred equal to 1026, and 1 packet sent.<br />
+                  The word: “333333_UDP_7_12_1” is created for both the source and destination IP documents</p>
+
+                  <h3>DNS</h3>
+
+                  <p>A DNS log entry is simplified into a word and inserted into the document associated to the client IP making the DNS query. The word is created as follows:</p>
+
+                  <table class="cont-table">
+                    <tr>
+                      <td><p>Feature(string ‘letter in the word’)</p></td>
+                    </tr>
+                    <tr>
+                      <td><p>Analyze DNS query name:<br />
+                       If belongs to Alexa top 1 million list, use “1”<br />
+                       If belongs to user domain,  use “2”<br />
+                          (Note: For it.intel.com the domain is ‘intel’)<br />
+                       Otherwise, use “0”</p>
+                    </td>
+                    </tr>
+                    <tr>
+                      <td><p>Frame length<br />
+                      Use the string for the bin number into which the frame length  falls, using bins defined by the following cutoff values:<br />
+                      (0, 1, 2, 4, 8, …)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>Time of day<br />
+                        Use the hour portion of the time stamp</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><p>Subdomain Length<br />
+                      Use the string for the bin number into which the frame length  falls, using bins defined by the following cutoff values: <br />
+                      (0, 1, 2, 4, 8, …)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>String Entropy of Subdomain<br />
+                        Use the string for the bin number into which the frame length  falls, using bins defined by the following cutoff values: <br />
+                        (0.0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4, 2.7, 3.0, 3.3,
+                          3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 20)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>Number of periods in Subdomain<br />
+                        Use the string for the bin number into which the frame length  falls, using bins defined by the following cutoff values: <br />
+                        (0, 1, 2, 4, 8, …)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>DNS query type<br />
+                        Use the string as given in the log entry</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>DNS query response code<br />
+                        Use the string as given in the log entry</p>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <h3>Proxy</h3>
+                  <p>A proxy log entry is simplified into a word and inserted into the document associated to the client IP making the proxy request. The word is created as follows:</p>
+
+                  <table class="cont-table">
+                    <tr>
+                      <td>
+                        <p>Feature(string ‘letter in the word’)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>Analyze DNS query name:<br />
+                        If belongs to Alexa top 1 million list, use “1”<br />
+                        If belongs to user domain,  use “2”<br />
+                        (Note: For it.intel.com the domain is ‘intel’)<br />
+                        Otherwise, use “0” </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>Time of day<br />
+                        Use the hour part of the time stamp</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>Request Method<br />
+                        Use the string as given in the log entry (eg. “Get”, “Post”, etc.)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        String Entropy of URI
+                        Use the string for the bin number (0-18) into which the entropy<br />
+                        value falls, using bins defined by the following cutoff values:<br />
+                        (0.0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4, 2.7, 3.0, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 20)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>Top level content type<br />
+                        Use the string as given in the log entry (eg. “image”, “binary”)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><p>Frequency of user agent type in training data<br>
+                        Use the string for the bin number (0-&#x221e;) into which the entropy value falls, using bins defined by the following cutoff values:<br />(0, 1, 2, 4, 8, 16, 32, …)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>Response code<br />
+                        Use string as given in the log entry</p>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <h3>Further Notes on Spot-ml</h3>
+
+                  <ul>
+                    <li>
+                      <h4>Notes on the binning for word creation</h4>
+                      <p>The bin number associated to a given value is assigned as the index of the first entry in the array of cut off values for which the value is less than or equal to that entry. For example the values that will fall into bin number 0 are defined by the inequality:  value <= cut_off_array(0) and the values that lie in bin number 1 are defined by the inequality: cut_off_array(0) < value <= cut_off_array(1).</p>
+                    </li>
+
+                    <li>
+                      <h4>LDA Implementation</h4>
+                      <p>We currently use a Spark-MLlib implementation of latent Dirichlet allocation.</p>
+                    </li>
+
+                    <li>
+                      <h4>User Feedback</h4>
+                      <p>If the user determines that certain feature values of a connection are acceptable and have been wrongly classified, Spot allows the user to provide feedback in order that a new model can be generated that will no longer flag similar events as suspicious.</p>
+
+                      <p>In the UI, the user can designate a selection of features out of: source ip, destination ip, source port, and destination port; to be given a user-severity score of ‘3’ (meaning low priority). This action causes low priority designations to be associated to all of the log entries (from within the collection of the most suspicious entries that were returned from Spot-ml) that have feature values matching the features selected. These log entries are then stored into a csv file. Log entries from this file are then injected (each entry is inserted the number of times determined by the value of DUPFACTOR set in spot.conf) into the next batch of data for Spot-ml. As a result, log entries simplifying to certain words (matching the words the feedback logs simplify to) will subsequently be seen as normal due to the large volume of such words now present in the data.</p>
+                    </li>
+                  </ul>
+
+
+            		</div>
+
+            	</div>
+
+            </div>
+
+
+            <div id="more-info">
+                <div class="wrap cf">
+
+                    <p>
+                        <a href="https://github.com/apache/incubator-spot" class="y-btn" target="_blank">More Info</a>
+                    </p>
+
+                    <p style="margin-top:50px;"><img src="../../library/images/apache-incubator.png" alt="Apache Incubator" />
+                    </p>
+
+                    <p class="disclaimer">
+                        Apache Spot is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
+                    </p>
+
+                    <p class="disclaimer">
+                        The contents of this website are © 2016 Apache Software Foundation under the terms of the Apache License v2. Apache Spot and its logo are trademarks of the Apache Software Foundation.
+                    </p>
+                </div>
+            </div>
+
+            <footer class="footer" role="contentinfo" itemscope itemtype="http://schema.org/WPFooter">
+
+                <div id="inner-footer" class="wrap cf">
+
+                    <p class="source-org copyright" style="text-align:center;">
+                        &copy; 2016 Apache Spot.
+                    </p>
+
+                </div>
+
+            </footer>
+
+        </div>
+		<a href="#0" class="cd-top">Top</a>
+        <script type='text/javascript' src='../../library/js/scripts.js'></script>
+
+    </body>
+
+</html>

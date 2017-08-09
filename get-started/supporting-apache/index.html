@@ -12,7 +12,7 @@
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <title>Machine Learning - Apache Spot</title>
+        <title>Supporting Apache - Apache Spot</title>
 
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
@@ -67,15 +67,15 @@
 
                     <nav>
                         <ul id="menu-main-menu" class="nav top-nav cf">
-                          <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                              <a href="../../get-started">Get Started</a>
-                              <ul class="sub-menu">
-                                <li><a href="../../get-started">Get Started</a></li>
-                                <li><a href="../../get-started/supporting-apache">Supporting Apache</a></li>
-                                <li><a href="../../get-started/environment">Environment</a></li>
-                                <li><a href="../../get-started/architecture">Architecture</a></li>
-                                <li><a href="../../get-started/demo">Demo</a></li>
-                              </ul>
+                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129 menu-item-has-children active">
+                                <a target="_blank" href="../../get-started">Get Started</a>
+                                <ul class="sub-menu">
+                                  <li><a href="../../get-started">Get Started</a></li>
+                                  <li class="active"><a href="../../get-started/supporting-apache/">Supporting Apache</a></li>
+                                  <li><a href="../../get-started/environment">Environment</a></li>
+                                  <li><a href="../../get-started/architecture">Architecture</a></li>
+                                  <li><a href="../../get-started/demo">Demo</a></li>
+                                </ul>
                             </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
                                 <a href="../../download">GitHub</a>
@@ -101,11 +101,11 @@
                             <li id="menu-item-106" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-106">
                                 <a href="../../doc">Documentation</a>
                             </li>
-                            <li class="menu-item menu-item-has-children active">
+                            <li class="menu-item menu-item-has-children">
                                 <a href="#">Project Components</a>
                                 <ul class="sub-menu">
                                 	<li><a href="../../project-components/ingestion">Ingestion</a></li>
-                                	<li class="active"><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
                                   <li><a href="../../project-components/suspicious-connects-analysis">Suspicous Connects Analysis</a></li>
                                 	<li><a href="../../project-components/visualization">Visualization</a></li>
                                   <li class="under-dev">Under Development</li>
@@ -124,37 +124,62 @@
 
             <div id="mobile-nav"></div>
 
-			<!--
-            <div id="masthead">
-                <div class="wrap cf">
-                    <div class="m-all d-1of2 right-center">
-						<h1>Lorem ispum dolor sit amet, consectetur adipisicing elit</h1>
-                    </div>
-                </div>
-            </div>-->
-
-
             <div id="content">
 
-            	<div class="wrap cf"><!--if page has sidebar, add class "with-sidebar"-->
-            		<div class="main">
-            			<h1 class="page-title">Apache Spot Machine Learning</h1>
+              <div class="wrap cf">
 
-            			<p>The machine learning component of Apache Spot contains routines for performing suspicious connections analyses on netflow, DNS or proxy logs gathered from a network. These analyses consume a collection of network events and produce a list of the events that are considered to be the least probable, and these are consider the most suspicious.  They rely on the ingest component of Spot to collect and load netflow, DNS, and proxy records.</p>
+                <h1>Supporting Apache</h1>
+                <hr />
+                <p>Apache Spot functionality is divided into different modules, go to each module for developer documentation:</p>
+                <ul>
+                  <li><a href="https://github.com/apache/incubator-spot/blob/master/spot-ingest/README.md" target="_blank">spot-ingest</a></li>
+                  <li><a href="https://github.com/apache/incubator-spot/blob/master/spot-ml/README.md" target="_blank">spot-ml</a></li>
+                  <li><a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/README.md" target="_blank">spot-oa</a></li>
+                  <li><a href="https://github.com/apache/incubator-spot/blob/master/spot-setup/README.md" target="_blank">spot-setup</a></li>
+                </ul>
 
-            			<p>Apache Spot uses topic modeling to discover normal and abnormal behavior. It treats the collection of logs related to an IP as a document and uses Latent Dirichlet Allocation (LDA) to discover hidden semantic structures in the collection of such documents.   </p>
+                <h2>Community Support</h2>
+                <p>Our Central repository for our Apache Spot solution is found here. If you find a bug, have question or something to discuss please contact us:</p>
+                <ul>
+                  <li><a href="https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT" target="_blank">Create an Issue.</a></li>
+                  <li>Community Access.</li>
+                </ul>
 
-            			<p>LDA is a generative probabilistic model used for discrete data, such as text corpora. LDA is a three-level Bayesian model in which each word of a document is generated from a mixture of an underlying set of topics [1]. We apply LDA to network traffic by converting network log entries into words through aggregation and discretization. In this manner, documents correspond to IP addresses, words to log entries (related to an IP address) and topics to profiles of common network activity.</p>
+                <h2>Contributing to Apache Spot</h2>
+                <p>Help us improve Apache Spot!</p>
+                <p>Apache Spot is Apache 2.0 licensed and accepts contributions via GitHub pull requests. Please follow the next steps and join our community. Disconnected</p>
+                <ul>
+                  <li>Create an Issue.</li>
+                  <li>Community Access.</li>
+                </ul>
 
-            			<p>Apache Spot infers a probabilistic model for the network behavior of each IP address. Each network log entry is assigned an estimated probability (score) by the model. The events with lower scores are flagged as “suspicious” for further analysis.</p>
+                <h2>Contributing to Apache Spot code</h2>
 
-						<p class="citation">[1] Blei, David M., Andrew Y. Ng, and Michael I. Jordan. "Latent dirichlet allocation." Journal of machine Learning research 3, no. Jan (2003): 993-1022.</p>
-            		</div>
+                <ul>
+                  <li>Fork the repo of the module that you wish to commit to.</li>
+                  <li>Create a Branch, we use <a href="https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches" target="_blank">topic branches</a> for our commits.</li>
+                  <li>Push your commit(s) to your repository.</li>
+                  <li>Create a pull request to the original repo in Apache Spot organization.</li>
+                </ul>
 
-            	</div>
+                <h2>Commit Guidelines</h2>
+                <ul>
+                  <li>Bug fixes should be a single commit.</li>
+                  <li>Please be clear with the commit messages about what you are fixing or adding to the code base. If you code is addressing an open issue please add the reference to the issue in the comments with: Fix: Issue's URL.</li>
+                </ul>
 
-            </div>
+                <h2>Merge approval</h2>
+                <p>Apache Spot maintainers use +1 in a comment on the code review to indicate acceptance, at least 3 "+1" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.</p>
 
+                <h2>Licensing</h2>
+                <p>Apache Spot is licensed under the Apache License, Version 2.0. See <a href="https://github.com/apache/incubator-spot/blob/master/LICENSE" target="_blank">LICENSE</a> for the full license text.</p>
+                <ul style="margin-bottom:50px;">
+                  <li>spot-nfdump <a href="https://github.com/Open-Network-Insight/spot-nfdump/blob/master/BSD-license.txt" target="_blank">License</a></li>
+                </ul>
+
+              </div><!--/.wrap-->
+
+            </div><!--/#content-->
 
             <div id="more-info">
                 <div class="wrap cf">

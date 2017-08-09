@@ -47,10 +47,10 @@
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-		
+
 		  ga('create', 'UA-87470508-1', 'auto');
 		  ga('send', 'pageview');
-		
+
 		</script>
     </head>
 
@@ -67,17 +67,24 @@
 
                     <nav>
                         <ul id="menu-main-menu" class="nav top-nav cf">
-                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
+                          <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
+                              <a href="../../get-started">Get Started</a>
+                              <ul class="sub-menu">
+                                <li><a href="../../get-started">Get Started</a></li>
+                                <li><a href="../../get-started/supporting-apache">Supporting Apache</a></li>
+                                <li><a href="../../get-started/environment">Environment</a></li>
+                                <li><a href="../../get-started/architecture">Architecture</a></li>
+                                <li><a href="../../get-started/demo">Demo</a></li>
+                              </ul>
                             </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">GitHub</a>
+                                <a href="../../download">GitHub</a>
                             </li>
                             <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
                                 <a href="../../community">Community</a>
                                 <ul class="sub-menu com-sm">
                                 	<li class="dropmenu-head">Get in Touch</li>
-                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>                                	
+                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>
                                 	<li><a href="http://slack.apache-spot.io/" target="_blank" class="slack">Slack Channel</a></li>
                                 	<li class="divider"></li>
                                 	<li><a href="../../community/committers">Project Committers</a></li>
@@ -97,10 +104,12 @@
                             <li class="menu-item menu-item-has-children active">
                                 <a href="#">Project Components</a>
                                 <ul class="sub-menu">
-                                	<li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 	<li class="active"><a href="../../project-components/ingestion">Ingestion</a></li>
                                 	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                  <li><a href="../../project-components/suspicious-connects-analysis">Suspicous Connects Analysis</a></li>
                                 	<li><a href="../../project-components/visualization">Visualization</a></li>
+                                  <li class="under-dev">Under Development</li>
+                                  <li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 </ul>
                             </li>
                             <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13">
@@ -124,50 +133,50 @@
                 </div>
             </div>-->
 
-            
+
             <div id="content">
-            	
+
             	<div class="wrap cf"><!--if page has sidebar, add class "with-sidebar"-->
             		<div class="main">
             			<h1 class="page-title">Apache Spot Ingestion</h1>
-            			
+
             			<p>Apache Spot overcomes the challenge of how to enhance data collection from different sources when most of the time our collectors are sending thousands of events per second overflowing available server resources (CPU, memory).  With Spot, you can ensure service availability near to 100% without losing data. Spot enables a faster, scalable and distributed service when required. Because of its distributed architecture, data loss does not occur when data queuing on the data node that is executing the collector daemon when peak workloads crashes the process.  This architecture ensures availability near 99.99999%, without losing information in the effort.</p>
-            			
+
             			<p><img src="../../library/images/ingestion.png" alt="" /></p>
-            			
+
             			<h3>Inside the Ingest</h3>
-            			
+
             			<h4><em>Spot-Collectors</em></h4>
-            			
+
             			<p>Daemons running in the background monitor/collect from file system paths. Collectors detect new files generated by network tools or data generated previously and left in the path for its collection. Collectors then translate this data into a human-readable format by using dissection tools, such as nfdump and tshark.</p>
-            			
+
             			<p>Once the data is transformed, collectors store the data in HDFS with the original format (for forensics) and in Hive, in Avro-parquet format, so the data can be accessible by SQL queries.</p>
             			<p>Once a file has been uploaded there two paths are available.</p>
-            			
+
             			<ol>
             				<li>Data size > 1mb: File name and location in HDFS is sent to Kafka.</li>
             				<li>Data size < 1mb: the data event is sent to Kafka to be processed with Spark Streaming.</li>
             			</ol>
-            			
+
             			<h4><em>Kafka</em></h4>
-            			
+
             			<p>A new topic is created for each instance of the ingest process. Partitions are defined by the number of Spot Workers in the ingest.  Kafka stores data sent by the collectors, so the Spot Workers can parse the data.</p>
-            			
+
             			<h4><em>Spot Workers</em></h4>
-            			
+
             			<p>Just like the collectors, Spot Workers are daemons running in the background subscribed to a specific Kafka topic and partition. The Spot Workers read, parse and store the data in a specific Hive tables that will be consumed by the machine learning algorithm later.</p>
-            			
+
             			<p>Currently there are two types of Spot Workers.</p>
-            			
+
             			<ol>
             				<li>Python workers use multithreading to process data with the defined parsers.</li>
             				<li>Spark-Streaming workers execute a Spark application to read data from Kafka, using spark-streaming context (micro batching).</li>
-            			</ol>          			
-            			
+            			</ol>
+
             		</div>
 
             	</div>
-            	
+
             </div>
 
 
