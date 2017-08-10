@@ -1,30 +1,30 @@
 # Apache Spot Schema 
 
-This document is to centralize a place where users can read information about Proxy, DNS and flow schema. From this document users with their own ingest can implement a module without using Spot ingest, or they can compare them. User can do that creating a data set with the expected columns by pipeline.
+This document is to centralize a place where users can read information about Proxy, DNS and flow schema. From this document users with their own ingest can implement a module without using spot ingest, or they can compare them. User can do that creating a data set with the expected columns by pipeline.
 
 - [Proxy](#proxy)
 
     Attributes and rules.
-    * [Proxy Schema for Spot-ingest](#proxy-schema-for-spot-ingest) 
-    * [Proxy Schema for Spot-ml](#proxy-schema-for-spot-ml)
-    * [Proxy Schema for Spot-oa](#proxy-schema-for-spot-oa)
-    * [Proxy Schema for Spot-ui](#proxy-schema-for-spot-ui)
+    * [Proxy Schema for spot-ingest](#proxy-schema-for-spot-ingest) 
+    * [Proxy Schema for spot-ml](#proxy-schema-for-spot-ml)
+    * [Proxy Schema for spot-oa](#proxy-schema-for-spot-oa)
+    * [Proxy Schema for spot-ui](#proxy-schema-for-spot-ui)
 
-- [Flow (Spot-nfdump)](#flow-spot-nfdump)
+- [Flow (spot-nfdump)](#flow-spot-nfdump)
 
     Attributes and rules.
-    * [Flow Schema for Spot-ingest](#Flow-schema-for-spot-ingest) 
-    * [Flow Schema for Spot-ml](#flow-schema-for-spot-ml)
-    * [Flow Schema for Spot-oa](#flow-schema-for-spot-oa)
-    * [Flow Schema for Spot-ui](#flow-schema-for-spot-ui)
+    * [Flow Schema for spot-ingest](#Flow-schema-for-spot-ingest) 
+    * [Flow Schema for spot-ml](#flow-schema-for-spot-ml)
+    * [Flow Schema for spot-oa](#flow-schema-for-spot-oa)
+    * [Flow Schema for spot-ui](#flow-schema-for-spot-ui)
 
 - [DNS](#dns)
 
     Attributes and rules.
-    * [DNS Schema for Spot-ingest](#dns-schema-for-spot-ingest) 
-    * [DNS Schema for Spot-ml](#dns-schema-for-spot-ml)
-    * [DNS Schema for Spot-oa](#dns-schema-for-spot-oa)
-    * [DNS Schema for Spot-ui](#dns-schema-for-spot-ui)
+    * [DNS Schema for spot-ingest](#dns-schema-for-spot-ingest) 
+    * [DNS Schema for spot-ml](#dns-schema-for-spot-ml)
+    * [DNS Schema for spot-oa](#dns-schema-for-spot-oa)
+    * [DNS Schema for spot-ui](#dns-schema-for-spot-ui)
 
 ## Proxy
 The table shows the list of attributes used in proxy. The columns indicated with field (:white_check_mark:) are used by the pipeline.  
@@ -66,7 +66,7 @@ The table shows the list of attributes used in proxy. The columns indicated with
 | network_context |string  |User defined value					         |              -       |     -     |       -          |     -            |:white_check_mark:|:white_check_mark:| 
 
 
-## Flow (Spot-nfdump) 
+## Flow (spot-nfdump) 
 The table shows the list of attributes used in flow. The columns indicated with field (:white_check_mark:) are used by the pipeline.  
 
 |Spot Field Name  |Type    |Description                                  |Original NFDUMP Field Name           |Format                   |Spot-ingest       |Spot-ml           |Spot-oa           |Spot-ui           | 
@@ -136,7 +136,7 @@ The table shows the list of attributes used in DNS. The columns indicated with f
 |network_context  |string  |Value to identify the destination IP as internal to the network - Produced by OA | |                         | -                | -                | -                |:white_check_mark:|
 
 
-### Proxy Schema for Spot-ingest
+### Proxy Schema for spot-ingest
 The table shows proxy schema attributes and the rules used specifically for ingest.
 
 | Spot field name | Rules               | Comments               |
@@ -171,7 +171,7 @@ The table shows proxy schema attributes and the rules used specifically for inge
 | fulluri         | -                   | produced by ingest     |
 
 
-### Proxy Schema for Spot-ml
+### Proxy Schema for spot-ml
 The table shows proxy schema attributes and the rules used specifically for machine learning (ml).
 
 | Spot field name | Rules               | Comments               |
@@ -197,7 +197,7 @@ The table shows proxy schema attributes and the rules used specifically for mach
 |fulluri          | Can't be null       | -                      |
 
 
-### Proxy Schema for Spot-oa
+### Proxy Schema for spot-oa
 The table shows proxy schema attributes and the rules used specifically for operation analytics (oa).
 
 | Spot field name | Rules               | Comments               |
@@ -228,7 +228,7 @@ The table shows proxy schema attributes and the rules used specifically for oper
 | network_context | -                   | Produced by OA         |
 
 
-### Proxy Schema for Spot-ui
+### Proxy Schema for spot-ui
 The table shows proxy schema attributes and the rules used specifically for user interface (ui).
 
 | Spot field name | Rules               | Comments               |
@@ -257,7 +257,7 @@ The table shows proxy schema attributes and the rules used specifically for user
 | network_context | -                   | Optional               |
 
 
-### Flow Schema for Spot-ingest
+### Flow Schema for spot-ingest
 The table shows flow schema attributes and the rules used specifically for ingest.
 
 | Spot field name | Rules               | Comments               |
@@ -292,7 +292,7 @@ The table shows flow schema attributes and the rules used specifically for inges
 | rip        	  | -	                | -                      |
 
 
-### Flow Schema for Spot-ml
+### Flow Schema for spot-ml
 The table shows flow schema attributes and the rules used specifically for machine learning (ml).
 
 | Spot field name | Rules               | Comments               |
@@ -316,7 +316,7 @@ The table shows flow schema attributes and the rules used specifically for machi
 | obyt       	  |	-                   | -                      |
 
 
-### Flow Schema for Spot-oa
+### Flow Schema for spot-oa
 The table shows flow schema attributes and the rules used specifically for operation analytics (oa).
 
 | Spot field name | Rules               | Comments               |
@@ -340,7 +340,7 @@ The table shows flow schema attributes and the rules used specifically for opera
 
 
 
-### Flow Schema for Spot-ui
+### Flow Schema for spot-ui
 The table shows flow schema attributes and the rules used specifically for user interface (ui).
 
 | Spot field name | Rules               | Comments               |
@@ -371,7 +371,7 @@ The table shows flow schema attributes and the rules used specifically for user 
 | dst_rep         | -	                | -                      |
 
 
-### DNS Schema for Spot-ingest
+### DNS Schema for spot-ingest
 The table shows DNS schema attributes and the rules used specifically for ingest.
 
 | Spot field name | Rules               | Comments               |
@@ -388,7 +388,7 @@ The table shows DNS schema attributes and the rules used specifically for ingest
 | dns_a        	  | -	                | -                      |
 
 
-### DNS Schema for Spot-ml
+### DNS Schema for spot-ml
 The table shows DNS schema attributes and the rules used specifically for machine learning (ml).
 
 | Spot field name | Rules               | Comments               |
@@ -403,7 +403,7 @@ The table shows DNS schema attributes and the rules used specifically for machin
 | dns_qry_rcode	  | If dns_qry_class and dns_qry_type are null, this can't be null	   |-|
 
 
-### DNS Schema for Spot-oa
+### DNS Schema for spot-oa
 The table shows DNS schema attributes and the rules used specifically for operation analytics (oa).
 
 | Spot field name | Rules               | Comments               |
@@ -420,7 +420,7 @@ The table shows DNS schema attributes and the rules used specifically for operat
 | ML_score        | -	                | -                      |
 
 
-### DNS Schema for Spot-ui
+### DNS Schema for spot-ui
 The table shows DNS schema attributes and the rules used specifically for user interface (ui).
 
 | Spot field name | Rules               | Comments               |
