@@ -3,18 +3,24 @@
 This document is to centralize a place where users can read information about Proxy, DNS and flow schema. From this document users with their own ingest can implement a module without using Spot ingest, or they can compare them. User can do that creating a data set with the expected columns by pipeline.
 
 - [Proxy](#proxy)
+
+    Attributes and rules.
     * [Proxy Schema for Spot-ingest](#proxy-schema-for-spot-ingest) 
     * [Proxy Schema for Spot-ml](#proxy-schema-for-spot-ml)
     * [Proxy Schema for Spot-oa](#proxy-schema-for-spot-oa)
     * [Proxy Schema for Spot-ui](#proxy-schema-for-spot-ui)
 
 - [Flow (Spot-nfdump)](#flow-spot-nfdump)
+
+    Attributes and rules.
     * [Flow Schema for Spot-ingest](#Flow-schema-for-spot-ingest) 
     * [Flow Schema for Spot-ml](#flow-schema-for-spot-ml)
     * [Flow Schema for Spot-oa](#flow-schema-for-spot-oa)
     * [Flow Schema for Spot-ui](#flow-schema-for-spot-ui)
 
 - [DNS](#dns)
+
+    Attributes and rules.
     * [DNS Schema for Spot-ingest](#dns-schema-for-spot-ingest) 
     * [DNS Schema for Spot-ml](#dns-schema-for-spot-ml)
     * [DNS Schema for Spot-oa](#dns-schema-for-spot-oa)
@@ -58,6 +64,76 @@ The table shows the list of attributes used in proxy. The columns indicated with
 | respcode_name   |string  |IANA translation for the response code column|                -     |     -     |      -           |       -          |:white_check_mark:|:white_check_mark:|
 | uri_rep	      |string  |Reputation value according to Threat intelligence services| 	-   |	-		|        -         |  -               |:white_check_mark:|:white_check_mark:|
 | network_context |string  |User defined value					         |              -       |     -     |       -          |     -            |:white_check_mark:|:white_check_mark:| 
+
+
+## Flow (Spot-nfdump) 
+The table shows the list of attributes used in flow. The columns indicated with field (:white_check_mark:) are used by the pipeline.  
+
+|Spot Field Name  |Type    |Description                                  |Original NFDUMP Field Name           |Format                   |Spot-ingest       |Spot-ml           |Spot-oa           |Spot-ui           | 
+|---------------- |--------|---------------------------------------------|-------------------------------------|-------------------------|------------------|------------------|------------------|------------------|
+| treceived  	  | string | Time the flow was received by the collector | tr	                               |YYYY-mm-DD HH:MM:SS      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| unix_tstamp	  | bigint | treceived epoch time	                     |it is calculated by ingest hql script|number (1471431305)      |:white_check_mark:| -                | -                | -                |                     
+| tryear     	  | int    | treceived year 	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
+| trmonth    	  | int    | treceived month	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
+| trday      	  | int    | treceived day	                             |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
+| trhour     	  | int    | treceived hour	                             |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
+| trminute   	  | int    | treceived minute	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
+| trsec      	  | int    | treceived seconds	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
+| tdur       	  | float  | Duration	                                 | td	                               |xx.xx (18.04400062561035)|:white_check_mark:|:white_check_mark:| -                | -                |
+| sip        	  | string | Source IP Address          	             | sa	                               |ip address dotted decimal|:white_check_mark:|:white_check_mark:| -                | -                |
+| dip        	  | string | Destination IP Address	                     | da	                               |ip address dotted decimal|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| sport      	  | int    | Source Port	                             | sap	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| dport      	  | int    | Destination Port	                         | dap	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| proto      	  | string | Protocol	                                 | pr	                               |text (UDP, TCP, etc)     |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| flag       	  | string | TCP Flags	                                 | flg	                               |dotted flag representation (.A....)|:white_check_mark:| -      |:white_check_mark:|:white_check_mark:|   
+| fwd        	  | int    | Forwarding Status	                         | fwd	                               |numerical                |:white_check_mark:| -                | -                | -                |
+| stos       	  | int    | Source Tos (DSCP)	                         | stos	                               |numerical                |:white_check_mark:| -                |:white_check_mark:|:white_check_mark:|
+| ipkt       	  | bigint | Input Packets	                             | ipkt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| ibyt       	  | bigint | Input Bytes	                             | ibyt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| opkt       	  | bigint | Output Packets	                             | opkt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| obyt       	  | bigint | Output Bytes	                             | obyt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| input      	  | int    | Input interface SNMP number	             | in	                               |numerical                |:white_check_mark:| -                |:white_check_mark:|:white_check_mark:| 
+| output     	  | int    | Output interface SNMP number	             | out	                               |numerical                |:white_check_mark:| -                |:white_check_mark:|:white_check_mark:|
+| sas        	  | int    | Source AS number	                         | sas	                               |numerical                |:white_check_mark:| -                | -                | -                |
+| das        	  | int    | Destination AS number	                     | das	                               |numerical                |:white_check_mark:| -                | -                | -                |
+| dtos       	  | int    | Destination Tos (DSCP)	                     | dtos	                               |numerical                |:white_check_mark:| -                | -                | -                |  
+| dir        	  | int    | direction	                                 | dir	                               |numerical (0,1)          |:white_check_mark:| -                | -                | -                | 
+| rip        	  | string | Router IP	                                 | ra	                               |ip address dotted decimal|:white_check_mark:| -                |:white_check_mark:|:white_check_mark:|
+| ML_score	      |float   | Score assigned by ML - Produced by ML		 |                                     |numerical			     |                  |                  |:white_check_mark:|                  |	
+| rank	          | int    | Rank number based on the order of ML_score values - Produced by OA |		       |numerical				 |                  | -                | -                |:white_check_mark:|
+| srcip_internal  |int     | Boolean value to identify an internal source IP - Produced by OA |                |                         | -                | -                | -                |:white_check_mark:|
+| dstip_internal  |int     | Boolean value to identify an internal destination IP - Produced by OA |		   |                         | -                | -                | -			      |:white_check_mark:|
+| src_geoloc	  |string  | Lat & Long values of the source IP - Produced by OA |						       |                         | -                | -                | -                |:white_check_mark:|
+| dst_geoloc	  |string  |Lat & Long values of the destination IP - Produced by OA |						   |                         | -                | -                | -                |:white_check_mark:|
+| src_domain	  |string  |Domain assigned to the source IP - Produced by OA |                                |						 | -                | -                | -                |:white_check_mark:|
+| dst_domain	  |string  |Domain assigned to the destination IP - Produced by OA |						   |                         | -                | -                | -                |:white_check_mark:|
+| src_rep	      |string  |Collection of reputation values assigned to the source IP from different TI services - Produced by OA | |    | -                | -				   | -                |:white_check_mark:|
+| dst_rep	      |string  |Collection of reputation values  assigned to the destination IP from different TI services - Produced by OA||| -                | -                | -         		  |:white_check_mark:|
+
+
+## DNS 
+The table shows the list of attributes used in DNS. The columns indicated with field (:white_check_mark:) are used by the pipeline.  
+
+|Spot Field Name  |Type    |Description                                  |Original NFDUMP Field Name           |Format                   |Spot-ingest       |Spot-ml           |Spot-oa           |Spot-ui           | 
+|---------------- |--------|---------------------------------------------|-------------------------------------|-------------------------|------------------|------------------|------------------|------------------|
+| frame_time   	  |string  |Tshark Frame Time received	                 |frame.time	          |Ex. Jan  4 2017 04:41:06.337519000 UTC|:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
+| unix_tstamp  	  |bigint  |Tshark Frame Time received epoch format      |frame.time_epoch	                   |numerical (1483504866)	 |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |	
+| frame_len    	  |int     |Tshark Frame Length	                         |frame.len	                           |numerical	             |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
+| ip_dst       	  |string  |Tshark IP destination (Client IP)	         |ip.dst	                           |ip address dotted decimal|:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
+| ip_src       	  |string  |Tshark IP source (DNS Server IP)	         |ip.src	                           |ip address dotted decimal|-                 | -                |:white_check_mark:| -                |  				
+| dns_qry_name 	  |string  |Tshark DNS Query Name	                     |dns.qry.name	                       |text	                 |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
+| dns_qry_class	  |string  |Tshark DNS Query Class	                     |dns.qry.class	                       |hexadecimal (0x00000001) |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
+| dns_qry_type 	  |int     |Tshark DNS Query Type	                     |dns.qry.type	                       |numerical	             |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
+| dns_qry_rcode	  |int     |Tshark DNS Query Response Code	             |dns.flags.rcode	                   |numerical	             |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |	
+| dns_a        	  |string  |Tshark DNS Query A Record	                 |dns.a	text				           |                         | -                | -                | -                |:white_check_mark:|
+|ML_score	      |float   |Produced by ML                               |                                     |                         | -                | -                |:white_check_mark:|:white_check_mark:| 
+|tld	          |string  |Top level domain obtained from query name column - Produced by OA |                |                         | -                | -                | -                |:white_check_mark:|
+|query_rep	      |string  |Collection of reputation values assigned to the destination IP from different TI services - Produced by OA|| | -                | -                | -                |:white_check_mark:|
+|hh	              |int     |Obtained from frame time column - Produced by OA |                                 |                         | -                | -                | -                |:white_check_mark:|
+|dns_qry_class_name|string |Translation for the query class code - Produced by OA |                            |                         | -                | -                | -                |:white_check_mark:|
+|dns_qry_type_name|string  |Translation for the query type code - Produced by OA |                             |                         | -                | -                | -                |:white_check_mark:|
+|dns_qry_rcode_name|string |Translation for the query response code - Produced by OA |                         |                         | -                | -                | -                |:white_check_mark:|
+|network_context  |string  |Value to identify the destination IP as internal to the network - Produced by OA | |                         | -                | -                | -                |:white_check_mark:|
 
 
 ### Proxy Schema for Spot-ingest
@@ -181,52 +257,6 @@ The table shows proxy schema attributes and the rules used specifically for user
 | network_context | -                   | Optional               |
 
 
-## Flow (Spot-nfdump) 
-The table shows the list of attributes used in flow. The columns indicated with field (:white_check_mark:) are used by the pipeline.  
-
-|Spot Field Name  |Type    |Description                                  |Original NFDUMP Field Name           |Format                   |Spot-ingest       |Spot-ml           |Spot-oa           |Spot-ui           | 
-|---------------- |--------|---------------------------------------------|-------------------------------------|-------------------------|------------------|------------------|------------------|------------------|
-| treceived  	  | string | Time the flow was received by the collector | tr	                               |YYYY-mm-DD HH:MM:SS      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| unix_tstamp	  | bigint | treceived epoch time	                     |it is calculated by ingest hql script|number (1471431305)      |:white_check_mark:| -                | -                | -                |                     
-| tryear     	  | int    | treceived year 	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
-| trmonth    	  | int    | treceived month	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
-| trday      	  | int    | treceived day	                             |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
-| trhour     	  | int    | treceived hour	                             |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
-| trminute   	  | int    | treceived minute	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
-| trsec      	  | int    | treceived seconds	                         |it is calculated by spot-nfdump	   |numerical                |:white_check_mark:|:white_check_mark:| -                | -                |
-| tdur       	  | float  | Duration	                                 | td	                               |xx.xx (18.04400062561035)|:white_check_mark:|:white_check_mark:| -                | -                |
-| sip        	  | string | Source IP Address          	             | sa	                               |ip address dotted decimal|:white_check_mark:|:white_check_mark:| -                | -                |
-| dip        	  | string | Destination IP Address	                     | da	                               |ip address dotted decimal|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| sport      	  | int    | Source Port	                             | sap	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| dport      	  | int    | Destination Port	                         | dap	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| proto      	  | string | Protocol	                                 | pr	                               |text (UDP, TCP, etc)     |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| flag       	  | string | TCP Flags	                                 | flg	                               |dotted flag representation (.A....)|:white_check_mark:| -      |:white_check_mark:|:white_check_mark:|   
-| fwd        	  | int    | Forwarding Status	                         | fwd	                               |numerical                |:white_check_mark:| -                | -                | -                |
-| stos       	  | int    | Source Tos (DSCP)	                         | stos	                               |numerical                |:white_check_mark:| -                |:white_check_mark:|:white_check_mark:|
-| ipkt       	  | bigint | Input Packets	                             | ipkt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| ibyt       	  | bigint | Input Bytes	                             | ibyt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| opkt       	  | bigint | Output Packets	                             | opkt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| obyt       	  | bigint | Output Bytes	                             | obyt	                               |numerical                |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| input      	  | int    | Input interface SNMP number	             | in	                               |numerical                |:white_check_mark:| -                |:white_check_mark:|:white_check_mark:| 
-| output     	  | int    | Output interface SNMP number	             | out	                               |numerical                |:white_check_mark:| -                |:white_check_mark:|:white_check_mark:|
-| sas        	  | int    | Source AS number	                         | sas	                               |numerical                |:white_check_mark:| -                | -                | -                |
-| das        	  | int    | Destination AS number	                     | das	                               |numerical                |:white_check_mark:| -                | -                | -                |
-| dtos       	  | int    | Destination Tos (DSCP)	                     | dtos	                               |numerical                |:white_check_mark:| -                | -                | -                |  
-| dir        	  | int    | direction	                                 | dir	                               |numerical (0,1)          |:white_check_mark:| -                | -                | -                | 
-| rip        	  | string | Router IP	                                 | ra	                               |ip address dotted decimal|:white_check_mark:| -                |:white_check_mark:|:white_check_mark:|
-| ML_score	      |float   | Score assigned by ML - Produced by ML		 |                                     |numerical			     |                  |                  |:white_check_mark:|                  |	
-| rank	          | int    | Rank number based on the order of ML_score values - Produced by OA |		       |numerical				 |                  | -                | -                |:white_check_mark:|
-| srcip_internal  |int     | Boolean value to identify an internal source IP - Produced by OA |                |                         | -                | -                | -                |:white_check_mark:|
-| dstip_internal  |int     | Boolean value to identify an internal destination IP - Produced by OA |		   |                         | -                | -                | -			      |:white_check_mark:|
-| src_geoloc	  |string  | Lat & Long values of the source IP - Produced by OA |						       |                         | -                | -                | -                |:white_check_mark:|
-| dst_geoloc	  |string  |Lat & Long values of the destination IP - Produced by OA |						   |                         | -                | -                | -                |:white_check_mark:|
-| src_domain	  |string  |Domain assigned to the source IP - Produced by OA |                                |						 | -                | -                | -                |:white_check_mark:|
-| dst_domain	  |string  |Domain assigned to the destination IP - Produced by OA |						   |                         | -                | -                | -                |:white_check_mark:|
-| src_rep	      |string  |Collection of reputation values assigned to the source IP from different TI services - Produced by OA | |    | -                | -				   | -                |:white_check_mark:|
-| dst_rep	      |string  |Collection of reputation values  assigned to the destination IP from different TI services - Produced by OA||| -                | -                | -         		  |:white_check_mark:|
-
-
-
 ### Flow Schema for Spot-ingest
 The table shows flow schema attributes and the rules used specifically for ingest.
 
@@ -339,31 +369,6 @@ The table shows flow schema attributes and the rules used specifically for user 
 | dst_domain      | -	                | -                      |
 | src_rep         | -	                | -                      |
 | dst_rep         | -	                | -                      |
-
-
-## DNS 
-The table shows the list of attributes used in DNS. The columns indicated with field (:white_check_mark:) are used by the pipeline.  
-
-|Spot Field Name  |Type    |Description                                  |Original NFDUMP Field Name           |Format                   |Spot-ingest       |Spot-ml           |Spot-oa           |Spot-ui           | 
-|---------------- |--------|---------------------------------------------|-------------------------------------|-------------------------|------------------|------------------|------------------|------------------|
-| frame_time   	  |string  |Tshark Frame Time received	                 |frame.time	          |Ex. Jan  4 2017 04:41:06.337519000 UTC|:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
-| unix_tstamp  	  |bigint  |Tshark Frame Time received epoch format      |frame.time_epoch	                   |numerical (1483504866)	 |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |	
-| frame_len    	  |int     |Tshark Frame Length	                         |frame.len	                           |numerical	             |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
-| ip_dst       	  |string  |Tshark IP destination (Client IP)	         |ip.dst	                           |ip address dotted decimal|:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
-| ip_src       	  |string  |Tshark IP source (DNS Server IP)	         |ip.src	                           |ip address dotted decimal|-                 | -                |:white_check_mark:| -                |  				
-| dns_qry_name 	  |string  |Tshark DNS Query Name	                     |dns.qry.name	                       |text	                 |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
-| dns_qry_class	  |string  |Tshark DNS Query Class	                     |dns.qry.class	                       |hexadecimal (0x00000001) |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
-| dns_qry_type 	  |int     |Tshark DNS Query Type	                     |dns.qry.type	                       |numerical	             |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |		
-| dns_qry_rcode	  |int     |Tshark DNS Query Response Code	             |dns.flags.rcode	                   |numerical	             |:white_check_mark:|:white_check_mark:|:white_check_mark:| -                |	
-| dns_a        	  |string  |Tshark DNS Query A Record	                 |dns.a	text				           |                         | -                | -                | -                |:white_check_mark:|
-|ML_score	      |float   |Produced by ML                               |                                     |                         | -                | -                |:white_check_mark:|:white_check_mark:| 
-|tld	          |string  |Top level domain obtained from query name column - Produced by OA |                |                         | -                | -                | -                |:white_check_mark:|
-|query_rep	      |string  |Collection of reputation values assigned to the destination IP from different TI services - Produced by OA|| | -                | -                | -                |:white_check_mark:|
-|hh	              |int     |Obtained from frame time column - Produced by OA |                                 |                         | -                | -                | -                |:white_check_mark:|
-|dns_qry_class_name|string |Translation for the query class code - Produced by OA |                            |                         | -                | -                | -                |:white_check_mark:|
-|dns_qry_type_name|string  |Translation for the query type code - Produced by OA |                             |                         | -                | -                | -                |:white_check_mark:|
-|dns_qry_rcode_name|string |Translation for the query response code - Produced by OA |                         |                         | -                | -                | -                |:white_check_mark:|
-|network_context  |string  |Value to identify the destination IP as internal to the network - Produced by OA | |                         | -                | -                | -                |:white_check_mark:|
 
 
 ### DNS Schema for Spot-ingest
