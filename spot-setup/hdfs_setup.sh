@@ -23,6 +23,20 @@ function log() {
 printf "hdfs_setup.sh:\n $1\n"
 }
 
+function safe_mkdir() {
+        # takes the hdfs command options and a directory
+        # checks for the directory before trying to create it
+        # keeps the script from existing on existing folders
+        local hdfs_cmd=$1
+        local dir=$2
+        if $(hdfs dfs -test -d ${dir}); then
+            log "${dir} already exists"
+        else
+            log "running mkdir on ${dir}"
+            ${hdfs_cmd} dfs -mkdir ${dir}
+        fi
+}
+
 SPOTCONF="/etc/spot.conf"
 DSOURCES=('flow' 'dns' 'proxy')
 DFOLDERS=('binary' 
@@ -95,7 +109,7 @@ case ${db_engine} in
 esac
 
 # Creating HDFS user's folder
-${hdfs_cmd} dfs -mkdir ${HUSER}
+safe_mkdir ${hdfs_cmd} ${HUSER}
 ${hdfs_cmd} dfs -chown ${USER}:supergroup ${HUSER}
 ${hdfs_cmd} dfs -chmod 775 ${HUSER}
 
@@ -103,11 +117,11 @@ ${hdfs_cmd} dfs -chmod 775 ${HUSER}
 for d in "${DSOURCES[@]}" 
 do
 	echo "creating /$d"
-	hdfs dfs -mkdir ${HUSER}/$d 
+	safe_mkdir hdfs ${HUSER}/$d
 	for f in "${DFOLDERS[@]}" 
 	do 
 		echo "creating $d/$f"
-		hdfs dfs -mkdir ${HUSER}/$d/$f
+		safe_mkdir ${hdfs_cmd} ${HUSER}/$d/$f
 	done
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
@@ -120,7 +134,7 @@ done
  ${db_query} "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
 
 
-# Creating Impala tables
+# Creating tables
 for d in "${DSOURCES[@]}" 
 do 
 	${db_script} "./${db_engine}/create_${d}_parquet.hql"
