@@ -6,21 +6,21 @@ This document describes the Release Process to perform the official Apache SPOT 
  
 ### **Requirements**
 
-As a Release Manager (RM) you should create a code signing key to sign the release artifacts following this [guide](http://www.apache.org/dev/openpgp.html#generate-key).
+As a Release Manager (RM), you should create a code signing key to sign the release artifacts following this [guide](http://www.apache.org/dev/openpgp.html#generate-key).
 
 Public key should be detached and added in to the KEYS file in SPOT Repo under: https://dist.apache.org/repos/dist/dev/incubator/spot/KEYS
 
 ### **Policy documents**
 
-Frequently asked questions for making Apache releases are available on Releases FAQ page.
+Frequently asked questions for making Apache releases are available on [Releases FAQ page](http://www.apache.org/legal/release-policy.html#releases).
 
 The Release Manager must go through the policy document to understand all the tasks and responsibilities of running a release.
 
 ### **Give a heads up**
 
-The RM should first create an EPIC in Jira and then setup a timeline for release branch point. The time for the day the EPIC is created to the release branch point must be at least two weeks in order to give the community a chance to prioritize and commit any last minute features and issues they would like to see in the upcoming release.
+The release manager should create an EPIC in Jira and then setup a timeline for release branch point. The time for the day the EPIC is created to the release branch point must be at least two weeks in order to give the community a chance to prioritize and commit any last minute features and issues they would like to see in the upcoming release.
 
-The RM should then send the pointer to the EPIC along with the tentative timeline (Code Freeze) for branch point to the user and developer lists. Any work identified as release related that needs to be completed should be added as a subtask of the umbrella issue to allow users to see the overall release progress in one place.
+The release manager should then send the pointer to the EPIC along with the tentative timeline (Code Freeze) for branch point to the user and developer lists. Any work identified as release related that needs to be completed should be added as a subtask of the umbrella issue to allow users to see the overall release progress in one place.
 
     To: dev@spot.apache.org
 
@@ -60,9 +60,15 @@ If necessary the RM can discuss if certain issues should be fixed on the trunk i
 
 All the features that will be included in the release EPIC needs to have a proper Pull Request (PR) created following this guide. And needs three +1 votes which at least one of them must be from the QA Team. 
 
+Development must be done in to a Topic Branch or Master Branch, depending on the scope of the release.
+
 Once the PR has votes, then the PPMC developer must merge the PR and the owner of that PR should close it properly in Github (in case it does not closes automatically).
 
+If Development is performed in Topic Branch, then Topic Branch should be merged in to master branch once development is done. 
+
 ### **Create the Release Candidate**
+
+The Release candidate branch will be created from Master branch once all pull requests form the EPIC are merged to a topic branch or directly to master branch before code freeze date.
 
 #### **Branch your release:**
 
@@ -78,7 +84,7 @@ Apply signed tag on release branch that will indicate the
 Example:
 * git tag -u `<GPG KEY ID>` --sign `<your release name>`-incubating -m "Apache SPOT `<your release name>` (Incubating)" `<SHA of HEAD of branch>`
 
-#### **Run RAT**
+### **Run RAT**
 Apache Rat is a release audit tool, focused on licenses. Used to improve accuracy and efficiency when checking releases for licenses.
 
 Download RAT: 
@@ -168,15 +174,66 @@ Example:
 
 ## **Validate the Build**
 
-Please go to the download page to validate the build: http://nolamarketing.com/client/apache-spot/download/ (Link will be updated to the final version)
+* Download the tarball.
+
+     http://spot.apache.org/download
+
+* Decompress the tarball. Instruction:
+    
+    tar -zxvf apache-spot-1.0-incubating.tar.gz
+    
+* Change directory. Instruction:
+    
+    cd apache-spot-1.0-incubator
+
+* Apache Spot (incubating) is composed of more than one module or sub-projects. Since some of them are Python or Javascript code, they don’t need compilation.
+
+* For more instructions about how to install each module please read below instructions.
+
+    **You should see the content of the folder:**
+
+    spotadmin-mac01:apache-spot-1.0-incubating spotadmin$ **ls -la**
+    total 72
+    drwxr-xr-x 14 spotadmin staff 476 Jul 24 16:45 .
+    drwxr-xr-x 7 spotadmin staff 238 Aug 4 09:32 ..
+    -rw-r--r-- 1 spotadmin staff 20 Jul 24 16:45 .gitignore
+    -rw-r--r-- 1 spotadmin staff 0 Jul 24 16:45 .gitmodules
+    -rw-r--r-- 1 spotadmin staff 560 Jul 24 16:45 DISCLAIMER
+    -rw-r--r-- 1 spotadmin staff 11918 Jul 24 16:45 LICENSE
+    -rw-r--r-- 1 spotadmin staff 1493 Jul 24 16:45 LICENSE-topojson.txt
+    -rw-r--r-- 1 spotadmin staff 159 Jul 24 16:45 NOTICE
+    -rw-r--r-- 1 spotadmin staff 6761 Jul 24 16:45 README.md
+    drwxr-xr-x 3 spotadmin staff 102 Jul 24 16:45 docs
+    drwxr-xr-x 10 spotadmin staff 340 Jul 24 16:45 spot-ingest
+    drwxr-xr-x 13 spotadmin staff 442 Jul 24 16:45 spot-ml
+    drwxr-xr-x 11 spotadmin staff 374 Jul 24 16:45 spot-oa
+    drwxr-xr-x 10 spotadmin staff 340 Jul 24 16:45 spot-setup
+    Decompressed tarball content should be the same with the content located in:
+    https://github.com/apache/incubator-spot/tree/v1.0-incubating
+
+* To install the properly component please follow this guide:
+
+    http://spot.apache.org/doc/#installation
+
+* Spot-ingest, Spot-setup, Spot UI and Spot-OA have specific requirements to install manually.
+    
+    http://spot.apache.org/doc/#configuration
+    http://spot.apache.org/doc/#ingest
+    http://spot.apache.org/doc/#oa
+    http://spot.apache.org/doc/#ui
+
+* Spot-ML is the only component to build the binary files using sbt assembly commands. Please follows these instructions.
+    
+    http://spot.apache.org/doc/#ml
 
 
 ## **Running the Vote**
 
 As per the Apache Incubator release [guidelines](http://incubator.apache.org/policy/incubation.html#Releases), all releases for incubating projects must go through a two-step voting process. First, release voting must successfully pass within the Apache SPOT (Incubating) community via the dev@spot.incubator.apache.org mail list. Then, release voting must successfully pass within the Apache Incubator PMC via the general@incubator.apache.org mail list.
 
+### **Call for SPOT Community Vote**
 
-Call for Vote in spot dev community list, send an email to dev list. 
+Call for Vote in spot dev community sending an email to dev list. 
 
 For example,
 
@@ -227,7 +284,7 @@ For example,
     Apache SPOT (incubating) is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Apache Incubator PMC.
     Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects.
 
-    While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that theproject has yet to be fully endorsed by the ASF.
+    While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
     =================
 
     --
@@ -266,10 +323,11 @@ Send a following email with the results that should include the counting votes a
     http://spot.apache.org/
     -----------------------------------
 
+### **Call for Incubator PMC Vote**
 
 The second voting is the most important since it is required to get three +1 (Binding) vote from the IPMC members from the Incubator General list to declare an official release.
 
-Send the vote to the general Incubator list and include the voting results from the dev list. 
+Send the vote to the general Incubator list and include the voting results from the dev list as evidence. 
 
     To: general@incubator.apache.org
     Subject: [VOTE] Release Apache SPOT 1.0-incubating
@@ -383,11 +441,11 @@ Allow 24 hours before updating the webpage and announcing the new Release in Apa
 
 ### **Update WebPages**
 
-You need to update the SPOT webpages to reflect the new release. 
+You need to update the SPOT webpages to reflect the new release.
 
 ### **Announce the release**
 
-Send an email to announce@apache.org (using your @apache.org email) For example:
+Email to the different distribution lists announce@apache.org, user@spot.apache.org, dev@spot.apache.org (using your @apache.org email) For example:
 
     To: announce@apache.org, user@spot.apache.org, dev@spot.apache.org
     Subject: [ANNOUNCE] Apache Spot 1.0 (incubating) released
@@ -411,4 +469,4 @@ Send an email to announce@apache.org (using your @apache.org email) For example:
 
 ### **Close the Jira Ticket**
 
-Now go to Jira and Close the EPIC created to perform the release.
+Once the release is announced you can go to Jira and Close the EPIC created to perform the release.
