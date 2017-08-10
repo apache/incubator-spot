@@ -174,21 +174,21 @@ Example:
 
 ## **Validate the Build**
 
-* Download the tarball.
+Download the tarball.
 
      http://spot.apache.org/download
 
-* Decompress the tarball. Instruction:
+Decompress the tarball. Instruction:
     
     tar -zxvf apache-spot-1.0-incubating.tar.gz
-    
-* Change directory. Instruction:
+
+Change directory. Instruction:
     
     cd apache-spot-1.0-incubator
 
-* Apache Spot (incubating) is composed of more than one module or sub-projects. Since some of them are Python or Javascript code, they don’t need compilation.
+Apache Spot (incubating) is composed of more than one module or sub-projects. Since some of them are Python or Javascript code, they don’t need compilation.
 
-* For more instructions about how to install each module please read below instructions.
+For more instructions about how to install each module please read below instructions.
 
     **You should see the content of the folder:**
 
@@ -211,18 +211,18 @@ Example:
     Decompressed tarball content should be the same with the content located in:
     https://github.com/apache/incubator-spot/tree/v1.0-incubating
 
-* To install the properly component please follow this guide:
+To install the properly component please follow this guide:
 
     http://spot.apache.org/doc/#installation
 
-* Spot-ingest, Spot-setup, Spot UI and Spot-OA have specific requirements to install manually.
+Spot-ingest, Spot-setup, Spot UI and Spot-OA have specific requirements to install manually.
     
     http://spot.apache.org/doc/#configuration
     http://spot.apache.org/doc/#ingest
     http://spot.apache.org/doc/#oa
     http://spot.apache.org/doc/#ui
 
-* Spot-ML is the only component to build the binary files using sbt assembly commands. Please follows these instructions.
+Spot-ML is the only component to build the binary files using sbt assembly commands. Please follows these instructions.
     
     http://spot.apache.org/doc/#ml
 
