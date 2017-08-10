@@ -57,7 +57,7 @@ STORED AS PARQUET
 LOCATION '${hiveconf:huser}/flow/hive';
 
 
-CREATE EXTERNAL TABLE ${hiveconf:dbname}.flow_chords (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_chords (
 ip_threat STRING,
 srcip STRING,
 dstip STRING,
@@ -73,7 +73,7 @@ STORED AS PARQUET
 LOCATION '${hiveconf:huser}/flow/hive/oa/chords';
 
 
-CREATE EXTERNAL TABLE ${hiveconf:dbname}.flow_edge (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_edge (
 tstart STRING, 
 srcip STRING,
 dstip STRING,
@@ -101,7 +101,7 @@ STORED AS PARQUET
 LOCATION '${hiveconf:huser}/flow/hive/oa/edge';
 
 
-CREATE EXTERNAL TABLE ${hiveconf:dbname}.flow_ingest_summary (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_ingest_summary (
 tdate STRING,
 total BIGINT 
 )
@@ -114,7 +114,7 @@ STORED AS PARQUET
 LOCATION '${hiveconf:huser}/flow/hive/oa/summary';
 
 
-CREATE EXTERNAL TABLE ${hiveconf:dbname}.flow_scores (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_scores (
 tstart STRING, 
 srcip STRING,
 dstip STRING,
@@ -145,7 +145,7 @@ STORED AS PARQUET
 LOCATION '${hiveconf:huser}/flow/hive/oa/suspicious';
 
 
-CREATE EXTERNAL TABLE ${hiveconf:dbname}.flow_storyboard (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_storyboard (
 ip_threat STRING,
 title STRING,
 text STRING
@@ -159,7 +159,7 @@ STORED AS PARQUET
 LOCATION '${hiveconf:huser}/flow/hive/oa/storyboard';
 
 
-CREATE EXTERNAL TABLE ${hiveconf:dbname}.flow_threat_investigation ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_threat_investigation (
 tstart STRING,
 srcip STRING, 
 dstip STRING, 
@@ -176,7 +176,7 @@ STORED AS PARQUET
 LOCATION '${hiveconf:huser}/flow/hive/oa/threat_investigation';
 
 
-CREATE EXTERNAL TABLE ${hiveconf:dbname}.flow_timeline (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_timeline (
 ip_threat STRING,
 tstart STRING, 
 tend STRING, 

@@ -55,7 +55,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/proxy/hive';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_edge ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.proxy_edge (
 tdate STRING,
 time STRING, 
 clientip STRING, 
@@ -83,7 +83,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/proxy/hive/oa/edge';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_ingest_summary ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.proxy_ingest_summary (
 tdate STRING,
 total BIGINT 
 )
@@ -96,7 +96,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/proxy/hive/oa/summary';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_scores ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.proxy_scores (
 tdate STRING,
 time STRING, 
 clientip STRING, 
@@ -131,7 +131,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/proxy/hive/oa/suspicious';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_storyboard ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.proxy_storyboard (
 p_threat STRING, 
 title STRING,
 text STRING
@@ -145,7 +145,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/proxy/hive/oa/storyboard';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_threat_investigation ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.proxy_threat_investigation (
 tdate STRING,
 fulluri STRING,
 uri_sev INT
@@ -159,7 +159,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/proxy/hive/oa/threat_investigation';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_timeline ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.proxy_timeline (
 p_threat STRING, 
 tstart STRING, 
 tend STRING, 

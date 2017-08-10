@@ -37,7 +37,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/dns/hive';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.dns_dendro (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.dns_dendro (
 unix_tstamp BIGINT,
 dns_a STRING,
 dns_qry_name STRING,
@@ -52,7 +52,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/dns/hive/oa/dendro';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.dns_edge ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.dns_edge (
 unix_tstamp BIGINT,
 frame_len BIGINT,
 ip_dst STRING,
@@ -77,7 +77,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/dns/hive/oa/edge';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.dns_ingest_summary ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.dns_ingest_summary (
 tdate STRING,
 total BIGINT
 )
@@ -90,7 +90,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/dns/hive/oa/summary';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.dns_scores ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.dns_scores (
 frame_time STRING, 
 unix_tstamp BIGINT,
 frame_len BIGINT,
@@ -117,7 +117,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/dns/hive/oa/suspicious';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.dns_storyboard ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.dns_storyboard (
 ip_threat STRING,
 dns_threat STRING, 
 title STRING,
@@ -132,7 +132,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/dns/hive/oa/storyboard';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.dns_threat_dendro (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.dns_threat_dendro (
 anchor STRING, 
 total BIGINT,
 dns_qry_name STRING, 
@@ -147,7 +147,7 @@ STORED AS PARQUET
 LOCATION '${var:huser}/dns/hive/oa/threat_dendro';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.dns_threat_investigation ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.dns_threat_investigation (
 unix_tstamp BIGINT,
 ip_dst STRING, 
 dns_qry_name STRING, 
