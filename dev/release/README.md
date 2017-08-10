@@ -190,9 +190,9 @@ Apache Spot (incubating) is composed of more than one module or sub-projects. Si
 
 For more instructions about how to install each module please read below instructions.
 
-    **You should see the content of the folder:**
+ You should see the content of the folder:
 
-    spotadmin-mac01:apache-spot-1.0-incubating spotadmin$ **ls -la**
+    spotadmin-mac01:apache-spot-1.0-incubating spotadmin$ ls -la
     total 72
     drwxr-xr-x 14 spotadmin staff 476 Jul 24 16:45 .
     drwxr-xr-x 7 spotadmin staff 238 Aug 4 09:32 ..
@@ -208,23 +208,24 @@ For more instructions about how to install each module please read below instruc
     drwxr-xr-x 13 spotadmin staff 442 Jul 24 16:45 spot-ml
     drwxr-xr-x 11 spotadmin staff 374 Jul 24 16:45 spot-oa
     drwxr-xr-x 10 spotadmin staff 340 Jul 24 16:45 spot-setup
-    Decompressed tarball content should be the same with the content located in:
-    https://github.com/apache/incubator-spot/tree/v1.0-incubating
+
+Decompressed tarball content should be the same with the content located in: 
+[https://github.com/apache/incubator-spot/tree/v1.0-incubating](https://github.com/apache/incubator-spot/tree/v1.0-incubating)
 
 To install the properly component please follow this guide:
 
-    http://spot.apache.org/doc/#installation
+[http://spot.apache.org/doc/#installation](http://spot.apache.org/doc/#installation)
 
 Spot-ingest, Spot-setup, Spot UI and Spot-OA have specific requirements to install manually.
     
-    http://spot.apache.org/doc/#configuration
-    http://spot.apache.org/doc/#ingest
-    http://spot.apache.org/doc/#oa
-    http://spot.apache.org/doc/#ui
+[http://spot.apache.org/doc/#configuration](http://spot.apache.org/doc/#configuration)
+[http://spot.apache.org/doc/#ingest](http://spot.apache.org/doc/#ingest)
+[http://spot.apache.org/doc/#oa](http://spot.apache.org/doc/#oa)
+[http://spot.apache.org/doc/#ui](http://spot.apache.org/doc/#ui)
 
 Spot-ML is the only component to build the binary files using sbt assembly commands. Please follows these instructions.
     
-    http://spot.apache.org/doc/#ml
+[http://spot.apache.org/doc/#ml](http://spot.apache.org/doc/#ml)
 
 
 ## **Running the Vote**
