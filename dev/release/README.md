@@ -2,13 +2,13 @@
 
 ## **Overview**  
 
-This document describes the Release Process to perform the official Apache SPOT (Incubating) release following the [Apache Software Foundation Release Policy](http://incubator.apache.org/guides/releasemanagement.html#best-practice). 
+This document describes the Release Process to perform the official Apache Spot (Incubating) release following the [Apache Software Foundation Release Policy](http://incubator.apache.org/guides/releasemanagement.html#best-practice). 
  
 ### **Requirements**
 
 As a Release Manager (RM), you should create a code signing key to sign the release artifacts following this [guide](http://www.apache.org/dev/openpgp.html#generate-key).
 
-Public key should be detached and added in to the KEYS file in SPOT Repo under: https://dist.apache.org/repos/dist/dev/incubator/spot/KEYS
+Public key should be detached and added in to the KEYS file in Spot Repo under: https://dist.apache.org/repos/dist/dev/incubator/spot/KEYS
 
 ### **Policy documents**
 
@@ -27,7 +27,7 @@ The release manager should then send the pointer to the EPIC along with the tent
     Subject: Work on Spot <your release name>  (Incubating) Release has started + Code Freeze Date
 
 
-    We are starting the process to prepare for SPOT <your release name> (Incubating) release. I have opened JIRA $jira to cover the features included in this release.
+    We are starting the process to prepare for Spot <your release name> (Incubating) release. I have opened JIRA $jira to cover the features included in this release.
 
     If you have any JIRA in progress and would like to include in this release, please follow the process to do so. Code Freeze for final integration will be on $code_freeze_date.
 
@@ -62,7 +62,7 @@ All the features that will be included in the release EPIC needs to have a prope
 
 Development must be done in to a Topic Branch or Master Branch, depending on the scope of the release.
 
-Once the PR has votes, then the PPMC developer must merge the PR and the owner of that PR should close it properly in Github (in case it does not closes automatically).
+Once the PR has votes, then the PPMC developer must merge the PR and the owner of that PR should close it properly in Github (in case it does not close automatically).
 
 If Development is performed in Topic Branch, then Topic Branch should be merged in to master branch once development is done. 
 
@@ -79,10 +79,10 @@ push to origin:
 * git push origin `<your release name>`
 
 #### **Tag your Branch release:**
-Apply signed tag on release branch that will indicate the 
+Apply signed tag on release branch that will indicate where the release candidate was generated.
 
 Example:
-* git tag -u `<GPG KEY ID>` --sign `<your release name>`-incubating -m "Apache SPOT `<your release name>` (Incubating)" `<SHA of HEAD of branch>`
+* git tag -u `<GPG KEY ID>` --sign `<your release name>`-incubating -m "Apache Spot `<your release name>` (Incubating)" `<SHA of HEAD of branch>`
 
 ### **Run RAT**
 Apache Rat is a release audit tool, focused on licenses. Used to improve accuracy and efficiency when checking releases for licenses.
@@ -118,10 +118,10 @@ Or download the .rat-excludes files from: https://github.com/apache/incubator-sp
 Run the rat tool as following.
 * java -jar apache-rat-0.12.jar -E /path/to/project/.rat-excludes -d /path/to/project/ > `<to output file>`.txt
 
-If you have rat in the same directory as the SPOT Code you can verify as:
+If you have rat in the same directory as the Spot Code you can verify as:
 * java -jar apache-rat-0.12.jar -E .rat-excludes -d ../apache-spot-1.0-incubating > apache-spot-1.0-incubating-rat-results.txt
 
-If RAT find problems in the licenses please fix the licence and run RAT again developers must fix their code and submit changes into the release branch, once there are no more findings. Upload RAT Results into subversion dev incubator repo for SPOT of the release
+If RAT find problems in the licenses please fix the licence and run RAT again developers must fix their code and submit changes into the release branch, once there are no more findings. Upload RAT Results into subversion dev incubator repo for Spot of the release
 
 #### **Make a tarball and gzip:**
 * git archive -o ../apache-spot-`<your release name>`-incubating.tar --prefix=apache-spot-`<your release name>`-incubating/ `<your tag/branch name>`
@@ -145,17 +145,17 @@ Example:
     $ gpg2 --detach-sign -a apache-spot-1.0-incubating..tar.gz
  
 
-#### **Retrieve the subversion dev incubator repo for SPOT**
+#### **Retrieve the subversion dev incubator repo for Spot**
 
 Example:
 * svn checkout https://dist.apache.org/repos/dist/dev/incubator/spot/ --username=`<your apache user>`
  
 Create a local folder for the release (e.g. 1.0-incubating) in svn. 
-* svn mkdir -m "Creating SPOT `<release number>` dir" https://dist.apache.org/repos/dist/dev/incubator/spot/`<release number>` --username=`<your apache user>`
+* svn mkdir -m "Creating Spot `<release number>` dir" https://dist.apache.org/repos/dist/dev/incubator/spot/`<release number>` --username=`<your apache user>`
 
 Example:
 
-    svn mkdir -m "Creating SPOT 1.0-incubating dir" https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting --username=`<your apache user>`
+    svn mkdir -m "Creating Spot 1.0-incubating dir" https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting --username=`<your apache user>`
 
 
 Move the files into the release folder on local disk.
@@ -176,7 +176,7 @@ Example:
 
 Download the tarball.
 
-     http://spot.apache.org/download
+* http://spot.apache.org/download
 
 Decompress the tarball. Instruction:
     
@@ -217,34 +217,34 @@ To install the properly component please follow this guide:
 
 * [http://spot.apache.org/doc/#installation](http://spot.apache.org/doc/#installation)
 
-Spot-ingest, Spot-setup, Spot UI and Spot-OA have specific requirements to install manually.
+Spot Ingest, Spot Setup, Spot OA and Spot UI have specific requirements to install manually.
     
 * [http://spot.apache.org/doc/#configuration](http://spot.apache.org/doc/#configuration)
 * [http://spot.apache.org/doc/#ingest](http://spot.apache.org/doc/#ingest)
 * [http://spot.apache.org/doc/#oa](http://spot.apache.org/doc/#oa)
 * [http://spot.apache.org/doc/#ui](http://spot.apache.org/doc/#ui)
 
-Spot-ML is the only component to build the binary files using sbt assembly commands. Please follows these instructions.
+Spot ML is the only component to build the binary files using sbt assembly commands. Please follows these instructions.
     
 * [http://spot.apache.org/doc/#ml](http://spot.apache.org/doc/#ml)
 
 
 ## **Running the Vote**
 
-As per the Apache Incubator release [guidelines](http://incubator.apache.org/policy/incubation.html#Releases), all releases for incubating projects must go through a two-step voting process. First, release voting must successfully pass within the Apache SPOT (Incubating) community via the dev@spot.incubator.apache.org mail list. Then, release voting must successfully pass within the Apache Incubator PMC via the general@incubator.apache.org mail list.
+As per the Apache Incubator release [guidelines](http://incubator.apache.org/policy/incubation.html#Releases), all releases for incubating projects must go through a two-step voting process. First, release voting must successfully pass within the Apache Spot (Incubating) community via the dev@spot.incubator.apache.org mail list. Then, release voting must successfully pass within the Apache Incubator PMC via the general@incubator.apache.org mail list.
 
-### **Call for SPOT Community Vote**
+### **Call for Spot Community Vote**
 
-Call for Vote in spot dev community sending an email to dev list. 
+Call for Vote in spot dev community sending an email to dev list.
 
 For example,
 
     To: dev@spot.apache.org
-    Subject: [VOTE] Release Apache SPOT 1.0-incubating
+    Subject: [VOTE] Release Apache Spot 1.0-incubating
 
     Hi All, 
 
-    This is the vote for Apache SPOT 1.0 (incubating) release.
+    This is the vote for Apache Spot 1.0 (incubating) release.
 
     The vote will run for at least 72 hours and will close on July 27,2017.
 
@@ -283,7 +283,7 @@ For example,
     =================
     DISCLAIMER
 
-    Apache SPOT (incubating) is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Apache Incubator PMC.
+    Apache Spot (incubating) is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Apache Incubator PMC.
     Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects.
 
     While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
@@ -296,16 +296,16 @@ For example,
     http://spot.apache.org/
     -----------------------------------
 
-Allow the community to vote and any -1 vote with comments please fix ASAP and send findings to the thread until the required votes are reached by the PPMC members of SPOT.
+Allow the community to vote and any -1 vote with comments please fix ASAP and send findings to the thread until the required votes are reached by the PPMC members of Spot.
 
 Send a following email with the results that should include the counting votes and thread of the results listed in http://lists.apache.org
 
     To: dev@spot.apache.org
-    Subject: [RESULT][VOTE] Release Apache SPOT 1.0-incubating
+    Subject: [RESULT][VOTE] Release Apache Spot 1.0-incubating
 
     Hi All, 
 
-    The voting process for the Release Apache SPOT 1.0-incubating is now closed with the following and positive results:
+    The voting process for the Release Apache Spot 1.0-incubating is now closed with the following and positive results:
 
     [10] Binding Votes
     [1] Non-binding
@@ -332,11 +332,11 @@ The second voting is the most important since it is required to get three +1 (Bi
 Send the vote to the general Incubator list and include the voting results from the dev list as evidence. 
 
     To: general@incubator.apache.org
-    Subject: [VOTE] Release Apache SPOT 1.0-incubating
+    Subject: [VOTE] Release Apache Spot 1.0-incubating
 
     Dear IPMC team,
 
-    This is the vote for Apache SPOT 1.0 (incubating) release. This is the first release of SPOT.
+    This is the vote for Apache Spot 1.0 (incubating) release. This is the first release of Spot.
 
     Apache Spot (Incubating) is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their network environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale. While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge. Apache Spot provides tools to accelerate companies’ ability to expose suspicious connections and previously unseen attacks using flow and packet analysis technologies.
 
@@ -379,15 +379,15 @@ Send the vote to the general Incubator list and include the voting results from 
     Download the release candidate and evaluate the necessary items.
 
     Please vote accordingly:
-    [ ] +1, approve as the official Apache SPOT 1.0-incubating release
-    [ ] -1, do not accept as the official as the official Apache SPOT 1.0-incubating release because...
+    [ ] +1, approve as the official Apache Spot 1.0-incubating release
+    [ ] -1, do not accept as the official as the official Apache Spot 1.0-incubating release because...
 
     The vote will run for at least 72 hours or until necessary number of votes are reached.
 
     =================
     DISCLAIMER
 
-    Apache SPOT (incubating) is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Apache Incubator PMC.
+    Apache Spot (incubating) is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Apache Incubator PMC.
     Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects.
 
     While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that project has yet to be fully endorsed by the ASF.
@@ -406,11 +406,11 @@ Once we have the three +1 (Binding) votes then send the following email with the
 
 
     To: general@incubator.apache.org
-    Subject: [RESULT][VOTE] Release Apache SPOT 1.0-incubating
+    Subject: [RESULT][VOTE] Release Apache Spot 1.0-incubating
 
     Hi All, 
 
-    The voting process for the Release Apache SPOT 1.0-incubating is now closed with the following and positive results:
+    The voting process for the Release Apache Spot 1.0-incubating is now closed with the following and positive results:
 
     [3] Binding Votes
     [1] Non-binding
@@ -420,7 +420,7 @@ Once we have the three +1 (Binding) votes then send the following email with the
     https://lists.apache.org/thread.html/32d7c93fe66cc256ed12a5b8f91b57b1d0d659b9012c8f4f13c11191@%3Cgeneral.incubator.apache.org%3E
 
     
-    I will prepare the artifacts to officially release Apache SPOT 1.0-incubating. 
+    I will prepare the artifacts to officially release Apache Spot 1.0-incubating. 
 
 
     Thanks
@@ -437,13 +437,13 @@ Moving the Artifacts to release stage in SVN using the following command.
 
 Example:
     
-    svn move -m "Moving Apache SPOT 1.0-incubating release artifacts to release stage" /* https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting https://dist.apache.org/repos/dist/release/incubator/spot/1.0-incuabting --username=`<your apache user id>`
+    svn move -m "Moving Apache Spot 1.0-incubating release artifacts to release stage" /* https://dist.apache.org/repos/dist/dev/incubator/spot/1.0-incuabting https://dist.apache.org/repos/dist/release/incubator/spot/1.0-incuabting --username=`<your apache user id>`
 
-Allow 24 hours before updating the webpage and announcing the new Release in Apache SPOT (Incubating) webpage. http://nolamarketing.com/client/apache-spot/download/
+Allow 24 hours before updating the webpage and announcing the new Release in Apache Spot (Incubating) webpage. http://nolamarketing.com/client/apache-spot/download/
 
 ### **Update WebPages**
 
-You need to update the SPOT webpages to reflect the new release.
+You need to update the Spot webpages to reflect the new release.
 
 ### **Announce the release**
 
@@ -452,9 +452,9 @@ Email to the different distribution lists announce@apache.org, user@spot.apache.
     To: announce@apache.org, user@spot.apache.org, dev@spot.apache.org
     Subject: [ANNOUNCE] Apache Spot 1.0 (incubating) released
 
-    The Apache SPOT (Incubating) team is pleased to announce the release of SPOT 1.0-incubating.
+    The Apache Spot (Incubating) team is pleased to announce the release of Spot 1.0-incubating.
 
-    This is the first release of SPOT. Major step forward of the project.
+    This is the first release of Spot. Major step forward of the project.
 
     Apache Spot (Incubating) is open source software for leveraging insights from flow and packet analysis. It helps enterprises and service providers gain insight on their network environments through transparency of service delivery and identification of potential security threats or attacks happening among resources operating at cloud scale. While current threat intelligence tools help, identifying unknown threats and attacks remains a challenge.
 
@@ -466,7 +466,7 @@ Email to the different distribution lists announce@apache.org, user@spot.apache.
 
     Your help and feedback is more than welcome. For more information on how to report problems and to get involved, visit the project website at http://spot.apache.org/.
 
-    The Apache SPOT (Incubating) Team
+    The Apache Spot (Incubating) Team
 
 
 ### **Close the Jira Ticket**
