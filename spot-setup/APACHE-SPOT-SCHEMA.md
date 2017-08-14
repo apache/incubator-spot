@@ -1,6 +1,6 @@
 # Apache Spot Schema 
 
-This document is to centralize a place where users can read information about Proxy, DNS and flow schema. From this document users with their own ingest can implement a module without using spot ingest, or they can compare them. User can do that creating a data set with the expected columns by pipeline.
+This document is to centralize a place where users can read information about Proxy, DNS and flow schema. From this document users with their own ingest can implement a module without using spot-ingest, or they can compare them. User can do that creating a data set with the expected columns by pipeline.
 
 - [Proxy](#proxy)
 
