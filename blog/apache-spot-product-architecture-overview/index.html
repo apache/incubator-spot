@@ -47,10 +47,10 @@
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-		
+
 		  ga('create', 'UA-87470508-1', 'auto');
 		  ga('send', 'pageview');
-		
+
 		</script>
     </head>
 
@@ -67,17 +67,27 @@
 
                     <nav>
                         <ul id="menu-main-menu" class="nav top-nav cf">
-                            <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot#try-the-apache-spot-ui-with-example-data">Get Started</a>
+                          <li id="menu-item-129" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
+                              <a href="../../get-started">Get Started</a>
+                              <ul class="sub-menu">
+                                <li><a href="../../get-started">Get Started</a></li>
+                                <li><a href="../../get-started/supporting-apache">Supporting Apache</a></li>
+                                <li><a href="../../get-started/environment">Environment</a></li>
+                                <li><a href="../../get-started/architecture">Architecture</a></li>
+                                <li><a href="../../get-started/demo">Demo</a></li>
+                              </ul>
                             </li>
                             <li id="menu-item-5" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5">
-                                <a target="_blank" href="https://github.com/apache/incubator-spot.git">GitHub</a>
+                                <a href="../../download">Download</a>
+                            </li>
+                            <li class="menu-item menu-item-type-custom menu-item-object-custom">
+                                <a href="https://github.com/apache/incubator-spot.git" target="_blank">Github</a>
                             </li>
                             <li id="menu-item-130" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
                                 <a href="../../community">Community</a>
                                 <ul class="sub-menu com-sm">
                                 	<li class="dropmenu-head">Get in Touch</li>
-                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>                                	
+                                	<li><a href="../../community" class="mail">Mailing Lists</a></li>
                                 	<li><a href="http://slack.apache-spot.io/" target="_blank" class="slack">Slack Channel</a></li>
                                 	<li class="divider"></li>
                                 	<li><a href="../../community/committers">Project Committers</a></li>
@@ -97,10 +107,12 @@
                             <li class="menu-item menu-item-has-children">
                                 <a href="#">Project Components</a>
                                 <ul class="sub-menu">
-                                	<li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 	<li><a href="../../project-components/ingestion">Ingestion</a></li>
                                 	<li><a href="../../project-components/machine-learning">Machine Learning</a></li>
+                                  <li><a href="../../project-components/suspicious-connects-analysis">Suspicous Connects Analysis</a></li>
                                 	<li><a href="../../project-components/visualization">Visualization</a></li>
+                                  <li class="under-dev">Under Development</li>
+                                  <li><a href="../../project-components/open-data-models">Open Data Models</a></li>
                                 </ul>
                             </li>
                             <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13 active">
@@ -142,22 +154,22 @@
 								<p>Spot can directly collect netflow data, DNS data and/or proxy data. This data can be collected also from a SIEM or from a common logging server. Additional data types can be collected using Open Data Model. Any number of data sources can be analyzed using Spot. Because most of these data sources represent a large volume of data, most organizations start with the data source that represents the area of highest risk.</p>
 								<h3>Data Storage</h3>
 								<p>Using nfdump for netflow data, TShark for DNS data and a parser for proxy data, the Spot collectors process the information that is sent. This data is ingested into Spot’s HDFS. Once Spot has received 3-4 hours of data, the analysis to detect suspicious connections using machine learning algorithms is performed.</p>
-								
+
 								<h3>Data Analysis and Machine Learning</h3>
 								<p>The machine learning component of Spot contains routines for performing suspicious connections analyses on netflow, DNS or proxy logs gathered from a network. These analyses consume a collection of network events and produce a list of the events that are considered to be the least probable and most suspicious. They rely on the ingest component of Spot to collect and load netflow, DNS and proxy records.</p>
-								
+
 								<p>Spot uses topic modeling to discover normal and abnormal behavior. It treats the collection of logs related to an IP as a document and uses Latent Dirichlet Allocation (LDA) to discover hidden semantic structures in the collection of such documents.</p>
-								
+
 								<p>Spot infers a probabilistic model for the network behavior of each IP address. Each network log entry is assigned an estimated probability (score) by the model. The events with lower scores are flagged as “suspicious” for further analysis.</p>
-								
+
 								<blockquote>LDA is a generative probabilistic model used for discrete data such as text corpora. LDA is a three- level Bayesian model in which each word of a document is generated from a mixture of an underlying set of topics [1]. We apply LDA to network traffic by converting network log entries into words through aggregation and discretization. In this manner, documents correspond to IP addresses, words to log entries (related to an IP address) and topics to profiles of common network activity.</blockquote>
-								
+
 								<h3>Analytics</h3>
 								<p>Context is then added to the results generated by machine learning algorithms. The results are enriched, with relocalization and threat reputation for each connection, accelerating the detection of compromise indicators.</p>
-								
+
 								<h3>Visualization</h3>
 								<p>The top 300 suspicious results are sent to the Spot GUI to visualize. With the Spot GUI, the top suspicious network activity can be reviewed and the user can engage with data right in the browser. The Spot GUI can also be used to execute advanced search or create a storyboard of the security threats. It also takes advantage of latest Web technologies to provide Web Components (ReactJS+Flux), amazing user experience (Bootstrap + D3), data manipulation (IPython notebooks) and easy access to data using GraphQL.</p>
-								
+
 								<h3>New in March 10, 2017 Release</h3>
 								<ul>
 									<li>Use GraphQL to query data from HDFS Parquet files instead of Local File System CSVs files</li>
@@ -166,7 +178,7 @@
 									<li>Modify ML component to read feedback direct from HDFS</li>
 									<li>Database schema change to store spot data</li>
 								</ul>
-								
+
 								<h3>Coming in Future Releases</h3>
 								<p>In the next releases, Apache Spot will share IoC (suspicious results ranked) with other security tools. Suspicious results scored as a critical can be shared using McAfee Open DXL with the Open Security Controller and/or McAfee ePO to adjust or tune your security policies in real time.</p>
 								<p class="small">[1] Blei, David M., Andrew Y. Ng, and Michael I. Jordan. “Latent Dirichlet Allocation.” Journal of Machine Learning Research 3, no. Jan (2003): 993-1022.</p>
@@ -182,7 +194,7 @@
                     </main>
 
 					<div id="sidebar1" class="sidebar m-all t-1of3 d-2of7 last-col cf" role="complementary">
-					
+
 						<div id="recent-posts-2" class="widget widget_recent_entries">
 							<h4 class="widgettitle">Recent Posts</h4>
 							<ul>
@@ -226,7 +238,7 @@
 								</li>
 							</ul>
 						</div>
-					
+
 					</div>
 
                 </div>

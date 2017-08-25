@@ -214,6 +214,22 @@ a.meanmenu-reveal {
 	background:rgba(255,255,255,.1) url('../images/twitter-icon.png') no-repeat;
 }
 
+@media only screen and (max-width:1030px) {
+	.under-dev {
+	  background:#aea698;
+	  color:#fff;
+	  font-weight:700;
+	  text-transform: uppercase;
+	  padding:10px;
+	  width:100%;
+	  border-bottom:1px solid #ccc;
+	  line-height: 1.4em;
+	  font-size:11pt;
+	  letter-spacing: 1px;
+	  text-align: center;
+	}
+}
+
 @media only screen and (min-width:768px) {
 	.mean-container .mean-nav .slack {
 		background-position:left 7% center !important;
