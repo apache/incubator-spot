@@ -106,13 +106,13 @@ class OA(object):
         table_schema=['suspicious', 'edge', 'dendro', 'threat_dendro', 'threat_investigation', 'storyboard', 'summary' ]
 
         for path in table_schema:
-            HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4}/d={5}".format(HUSER,self._table_name,path,yr,int(mn),int(dy)),user="impala")
+            HDFSClient.delete_folder("{0}/{1}/hive/oa/{2}/y={3}/m={4:0>2}/d={5:0>2}".format(HUSER,self._table_name,path,yr,int(mn),int(dy)),user="impala")
         impala.execute_query("invalidate metadata")
 
         #removes Feedback file
-        HDFSClient.delete_folder("{0}/{1}/scored_results/{2}{3}{4}/feedback/ml_feedback.csv".format(HUSER,self._table_name,yr,mn,dy))
+        HDFSClient.delete_folder("{0}/{1}/scored_results/{2}{3:0>2}{4:0>2}/feedback/ml_feedback.csv".format(HUSER,self._table_name,yr,mn,dy))
         #removes json files from the storyboard
-        HDFSClient.delete_folder("{0}/{1}/oa/{2}/{3}/{4}/{5}".format(HUSER,self._table_name,"storyboard",yr,mn,dy))
+        HDFSClient.delete_folder("{0}/{1}/oa/{2}/{3}/{4:0>2}/{5:0>2}".format(HUSER,self._table_name,"storyboard",yr,mn,dy))
 
 
     def _create_folder_structure(self):
@@ -419,3 +419,4 @@ class OA(object):
                 INSERT INTO {0}.dns_ingest_summary PARTITION (y={1}, m={2}, d={3}) VALUES {4};
             """).format(self._db, yr, mn, dy, tuple(df_final))
             impala.execute_query(query_to_insert)
+
