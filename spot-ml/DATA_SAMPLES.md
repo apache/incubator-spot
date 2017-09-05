@@ -34,7 +34,7 @@ Within Apache Spot only responses from DNS servers are ingested (since the respo
 
 
 | Super Flow Name           | Transaction IDs    | Description |              |
-|---------------------------|:------------------:|:-----------:|
+|---------------------------|:------------------:|-------------|
 | Brandon_DNS_domain_Test   | 1008 (0x000003f0)  | [Normal] This super flow simulates normal DNS queries distributed over time and IP address within the network.|
 | DNS_Tunnel_BE_1           | 1002 (0x000003ea)  | [Attack] This super flow simulates a message being tunneled over DNS via the query name field (url's are random strings), with a ip address response (drawn from a file of randomly generated IPs) being sent via the DNS answer field. |
 | DNS_Tunnel_BE_2           | 1003 (0x000003eb})  | [Attack] This super flow simulates a message being tunneled over DNS via the query name field (url's random strings), with a response being given as no such url found. |
