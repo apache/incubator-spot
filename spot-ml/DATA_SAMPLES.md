@@ -33,7 +33,7 @@ Within BreakingPoint, Transaction IDs are represented as a decimal number. Howev
 Within Apache Spot only responses from DNS servers are ingested (since the response packet contains the query made by the client and the response from the server in the same packet)
 
 
-| Super Flow Name           | Transaction IDs    | Description |              |
+| Super Flow Name           | Transaction IDs    | Description |
 |---------------------------|:------------------:|-------------|
 | Brandon_DNS_domain_Test   | 1008 (0x000003f0)  | [Normal] This super flow simulates normal DNS queries distributed over time and IP address within the network.|
 | DNS_Tunnel_BE_1           | 1002 (0x000003ea)  | [Attack] This super flow simulates a message being tunneled over DNS via the query name field (url's are random strings), with a ip address response (drawn from a file of randomly generated IPs) being sent via the DNS answer field. |
@@ -45,7 +45,7 @@ Within Apache Spot only responses from DNS servers are ingested (since the respo
 ## Data Sets
 
 | Simulation Date   | Type  | Location  | Size  | Additional Comments   |
-|-------------------|:-----:|:---------:|:-----:|:---------------------:|
+|-------------------|:------|:---------:|:-----:|:---------------------:|
 | May 9, 2017       | Tarball of pcap files | | | |
 | May 9, 2017       | Tarball of ingested data (parquet format) | | | |
 | July 20, 2017     | Tarball of pcap files | | | | 
@@ -54,7 +54,7 @@ Within Apache Spot only responses from DNS servers are ingested (since the respo
 
 
 | Simulation Date  | Total Records  | dns_id=1008 | dns_id=1002 | dns_id=1003 | dns_id=1001 | dns_id=1005 | dns_id=1007 |
-|-----------------:|:--------------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|
+|:-----------------|:--------------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|
 | 5/9/2017         | 391,364,387    | 391,314,477 | 16,317      | 21,666      | 4,156       | 2,743       | 5, 028      |
 | 7/20/2017        | 406,050,508    | 406,043,921 | 856         | 1,269       | 1,167       | 1,694       | 1,601       |
 
