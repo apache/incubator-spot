@@ -1,13 +1,13 @@
 
 # DNS Labeled Data Set
 
-An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Spot injested (both original pcaps and injested parquet files are available in Amazon-S3). The attacks and the normal activity can be differentiated due to codes that were inserted into the Transaction ID field(upon ingestion the field is: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific dns tunneling activity being used.  We provide the schema for the injested pcap data as well as the location and specifications of the data within Amazon-S3. Information is also provieded for how to interpret the ‘dns_id’ codes.
+An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Apache Spot (incubating) were injested. The attacks can be differentiated from the normal activity due to codes that were inserted into the Transaction ID field(upon ingestion the field is: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific dns tunneling activity being used.  We provide the schema for the injested pcap data as well as the location and specifications of both the raw pcaps and ingested data within Amazon-S3. Information is also provided for how to interpret the Transaction ID codes.
 
 
 
-## Schema For Ingested Data (same for both data sets)
+## Schema For Ingested Data
 
-The schema for this DNS data includes one field, 'dns_id', in addition to   addition what is usually used for DNS data in Spot. The schema is as follows:
+The schema for the ingested DNS data includes one field, 'dns_id', in addition to what is usually used for DNS data in Apache Spot (incubating). The schema is as follows:
 
 
 | Name         | Type      |
@@ -24,12 +24,12 @@ The schema for this DNS data includes one field, 'dns_id', in addition to   addi
 | dns_a        | string    |
 | dns_id       | string    |
 
-## Transaction ID Interpretations (same for both data sets)
-The following provides interpretations for the values of the transaction ID field, ‘dns_id’. Each value indicates that either the data row was taken from a packet capture of simulated normal DNS traffic, or from a packet capture of a particular type of simulated attack.
+## Transaction ID Interpretations
+Each value of the transaction ID ('dns_id' in the ingested data) indicates that either the data row was taken from a packet capture of simulated normal DNS traffic, or from a packet capture of a particular type of simulated DNS tunnelling.
 
-Within BreakingPoint, Transaction IDs are represented as a decimal number. However, tshark dissect the transaction id in its hexadecimal representation in the format contained within parenthesis below.
+Within BreakingPoint, Transaction IDs are represented as a decimal number. However, tshark dissects the transaction ID in its hexadecimal representation(the format contained within parenthesis in the table below).
 
-Within Apache Spot only responses from DNS servers are ingested (since the response packet contains the query made by the client and the response from the server in the same packet)
+Within Apache Spot(incubating) only responses from DNS servers are ingested since the response packet contains the query made by the client and the response from the server in the same packet.
 
 
 | Super Flow Name           | Transaction IDs    | Description |
@@ -47,14 +47,12 @@ Within Apache Spot only responses from DNS servers are ingested (since the respo
 |-------------------|:------|:---------:|:-----:|:---------------------:|
 | May 9, 2017       | Tarball of pcap files | | | |
 | May 9, 2017       | Tarball of ingested data (parquet format) | | | |
-| July 20, 2017     | Tarball of pcap files | | | | 
-| July 20, 2017     | Tarball of ingested data (parquet format) | | | |)
 
 
+## Number of Rows associated to each Transaction ID
 
 | Simulation Date  | Total Records  | dns_id=1008 | dns_id=1002 | dns_id=1003 | dns_id=1001 | dns_id=1005 | dns_id=1007 |
 |:-----------------|:--------------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|
 | 5/9/2017         | 391,364,387    | 391,314,477 | 16,317      | 21,666      | 4,156       | 2,743       | 5, 028      |
-| 7/20/2017        | 406,050,508    | 406,043,921 | 856         | 1,269       | 1,167       | 1,694       | 1,601       |
 
 
