@@ -36,12 +36,12 @@ class Kerberos(object):
 
         self._kinit_args = [self._kinit,self._kinitopts,self._keytab,self._krb_user]
 
-	def authenticate(self):
+    def authenticate(self):
 
-		kinit = subprocess.Popen(self._kinit_args, stderr = subprocess.PIPE)
-		output,error = kinit.communicate()
-		if not kinit.returncode == 0:
-			if error:
-				print error.rstrip()
-				sys.exit(kinit.returncode)
-		print "Successfully authenticated!"
+        kinit = subprocess.Popen(self._kinit_args, stderr = subprocess.PIPE)
+        output,error = kinit.communicate()
+        if not kinit.returncode == 0:
+            if error:
+                print error.rstrip()
+                sys.exit(kinit.returncode)
+        print "Successfully authenticated!"
