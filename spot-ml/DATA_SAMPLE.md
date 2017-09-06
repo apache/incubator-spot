@@ -1,13 +1,13 @@
 
 # DNS Labeled Data Set
 
-An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Apache Spot (incubating) were injested. The attacks can be differentiated from the normal activity due to codes that were inserted into the Transaction ID field (upon ingestion: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific DNS tunneling activity being used. We provide the schema for the injested pcap data as well as the location and specifications the ingested data within Amazon-S3. Information is also provided for how to interpret the dns_id field..
+An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Apache Spot (incubating) were injested. The attacks can be differentiated from the normal activity due to codes that were inserted into the Transaction ID field (upon ingestion: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific DNS tunneling activity being used. We provide the data schema as well as the location and specifications of the data within Amazon-S3. Information is also provided for how to interpret the dns_id field.
 
 
 
 ## Data Schema
 
-The schema for this data includes one field ('dns_id') in addition to what is usually used for DNS data in Apache Spot (incubating). The schema is as follows:
+The schema for this data includes one field (called 'dns_id') in addition to what is usually used for DNS data in Apache Spot (incubating). The schema is as follows:
 
 
 | Name         | Type      |
@@ -45,7 +45,7 @@ Within Apache Spot (incubating), only responses from DNS servers are ingested si
 
 | Simulation Date   | Type  | Location  | Size  | Additional Comments   |
 |-------------------|:------|:---------:|:-----:|:---------------------:|
-| May 9, 2017       | Tarball of ingested data (parquet format) | | | |
+| May 9, 2017       | Tarball of ingested data (parquet format) | | 5.3G | |
 
 
 ## Number of Rows associated to each Value of dns_id
