@@ -43,12 +43,12 @@ Within Apache Spot (incubating), only responses from DNS servers are ingested si
 
 ## Data Location
 
-| Simulation Date   | Type  | Location  | Size  | Additional Comments   |
-|-------------------|:------|:---------:|:-----:|:---------------------:|
-| May 9, 2017       | Tarball of ingested data (parquet format) | | 5.3G | |
+| File   | Description | Location  | Size  |
+|-------------------|:------|:---------:|------:|
+| 20170509_parquet.tar.gz | Tarball of directory (parquet files) simulated May 9, 2017 | https://s3-us-west-2.amazonaws.com/apachespot/public_data_sets/dns_labeled_data/20170509_parquet.tar.gz | 5.3G |
+| 20170509_Data_SPEC.md | Mark down document (the one you are reading now) | https://s3-us-west-2.amazonaws.com/apachespot/public_data_sets/dns_labeled_data/20170509_DATA_SPEC.md | 4K |
 
-
-## Number of Rows associated to each Value of dns_id
+## Number of Rows associated to each Value of dns_id in the Data File
 
 | Simulation Date  | Total Records  | dns_id=1008 | dns_id=1002 | dns_id=1003 | dns_id=1001 | dns_id=1005 | dns_id=1007 |
 |:-----------------|:--------------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|
