@@ -34,7 +34,7 @@ class Kerberos(object):
             print "Please verify kerberos configuration, some environment variables are missing."
             sys.exit(1)
 
-        self._kinit_args = [self._kinit,self._kinitopts,self._keytab,self._krb_user]
+        self._kinit_args = [self._kinit,self._kinitopts,"-kt",self._keytab,self._krb_user]
 
     def authenticate(self):
 
