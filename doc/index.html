@@ -667,7 +667,7 @@
                   </li>
                   <li>
                     <p class="short-mrg">With root privileges, install browserify and uglify as global commands on your system.</p>
-                    <p class="terminal">npm install –g browserify uglifyjs</p>
+                    <p class="terminal">npm install –g browserify uglify-js</p>
                   </li>
                   <li>
                     <p class="short-mrg">Install dependencies and build Spot UI.</p>
@@ -756,7 +756,7 @@
                   </li>
                 </ol>
 
-                <h4 class="gray">The Notebook frame</h4>
+                <h4 class="gray">Scoring Frame</h4>
                 <p class="short-mrg">This frame contains a section where the analyst can score IP Addresses and Ports with different values. In order to assign a risk to a specific connection, select it using a combination of all the combo boxes, select the correct risk rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button. Selecting a value from each list will narrow down the coincidences, therefore if the analyst
                   wishes to score all connections with one same relevant attribute (i.e. src port 80), then select only the combo boxes that are relevant and leave the rest at the first row at the top.</p>
                 <img src="images/1.1_sc10.png" class="box-shadow" alt="" />
@@ -843,14 +843,14 @@
                   </li>
                   <li>
                     <p class="short-mrg">Your view should look something like this, depending on the IP's you have analyzed on the Threat Analysis for that day. You can select a different date from the calendar.</p>
-                    <img src="images/flow_sb_1.jpg" class="box-shadow" alt="" />
+                    <img src="images/DNS_4.png" class="box-shadow" alt="" />
                   </li>
                   <li>
                     <p class="short-mrg">Review the results:</p>
 
                     <p class="orange-bold" style="margin-bottom:0;">Executive Threat Briefing</p>
                     <p class="short-mrg">Executive Threat Briefing lists all the incident titles you entered at the Threat Investigation notebook. You can click on any title and the additional information will be displayed.</p>
-                    <p class="short-mrg" style="text-align: center"><img src="images/flow_sb_2.jpg" class="box-shadow" alt="" /></p>
+                    <p class="short-mrg" style="text-align: center"><img src="images/DNS_5.png" class="box-shadow" alt="" /></p>
 
 
                     <p class="short-mrg">Clicking on a threat from the list will also update the additional frames.</p>
@@ -890,11 +890,11 @@
                 <ol>
                   <li>
                     <p class="short-mrg">Load the Ingest Summary page by going to <strong>http://"server-ip":8889/files/index_ingest.html</strong> or using the drop down menu.</p>
-                    <img src="images/is1.png" class="box-shadow" alt="" />
+                    <img src="images/Flow_1.png" class="box-shadow" alt="" />
                   </li>
                   <li>
                     <p class="short-mrg">Select a start date, end date and click the reload button to load ingest data. Ingest summary will default to last 7 seven days. Your view should now look like this:</p>
-                    <img src="images/is2.png" class="box-shadow" alt="" />
+                    <img src="images/Flow_2.png" class="box-shadow" alt="" />
                   </li>
                   <li>
                     <p class="short-mrg">Ingest Summary presents the Flows ingestion timeline, showing the total flows for a particular period of time.</p>
@@ -915,7 +915,7 @@
                 <h4 class="gray" style="margin-top:0;">Suspicious DNS</h4>
                     <p><strong>Open the analyst view for Suspicious DNS:</strong> <i>http://"server-ip":8889/files/ui/dns/suspicious.html.</i> Select the date that you want to review (defaults to current date).</p>
                     <p class="short-mrg">Your screen should now look like this:</p>
-                    <img src="images/1.1_dns_sc01.jpg" class="box-shadow" alt="" />
+                    <img src="images/DNS_1.png" class="box-shadow" alt="" />
 
                     <p class="short-mrg">Suspicious Connects Web Page contains 4 frames with different functions and information:</p>
 
@@ -951,7 +951,7 @@
                       <li><strong>Dendrogram diagram (when you select an IP address in the Network View frame)</strong></li>
                     </ul>
 
-                    <p><strong>The Notebook Scoring Frame</strong><br>The main function in this frame is to allow the Analyst to score IP Addresses and DNS records with different values. In order to assign a risk to a specific
+                    <p><strong>Scoring Frame</strong><br>The main function in this frame is to allow the Analyst to score IP Addresses and DNS records with different values. In order to assign a risk to a specific
                       connection, select it using a combination of all the combo boxes, select the correct risk rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button. Selecting a value from each list will narrow
                       down the coincidences, therefore if the analyst wishes to score all connections with one same relevant attribute (i.e. ip address 10.1.1.1), then select only the combo boxes that are relevant and leave the rest at the first row at
                       the top.</p>
@@ -972,14 +972,14 @@
                 <h4 class="gray">DNS Threat Investigation</h4>
                 <p>Access the analyst view for DNS Suspicious Connects. Select the date that you want to review.</p>
                 <p class="short-mrg">Your view should now look like this:</p>
-                <img src="images/1.1_dns_sc01.jpg" class="box-shadow" alt="" />
+                <img src="images/DNS_1.png" class="box-shadow" alt="" />
 
                 <p class="short-mrg">The analyst must previously score the suspicious connections before moving into Threat Investigation View, please refer to DNS Suspicious Connects Analyst View walk-through.</p>
                 <p class="short-mrg">Select <strong>DNS > Threat Investigation</strong> from Apache Spot (incubating) Menu.</p>
-                <img src="images/1.1_dns_ti01.jpg" class="box-shadow" alt="" />
+                <img src="images/DNS_2.png" class="box-shadow" alt="" />
 
                 <p class="short-mrg">Threat Investigation Web Page will be opened, loading the embedded IPython notebook. A list with all IPs and DNS Names scored as High risk will be presented</p>
-                <img src="images/1.1_dns_ti02.png" class="box-shadow" alt="" />
+                <img src="images/DNS_3.png" class="box-shadow" alt="" />
 
                 <p class="orange-bold" style="margin-bottom:0;">Expanded Search</p>
                 <p class="short-mrg">Select any value from the list and press the "Search" button. The system will execute a query to the dns table, looking into the raw data initially collected to find additional activity of the selected IP or DNS Name according to the following
@@ -1013,11 +1013,11 @@
                 <ol>
                   <li>
                     <p>Select the option <strong>DNS > Storyboard</strong> from Apache Spot (incubating) Menu.</p>
-                    <img src="images/dns_sb_tit1.jpg" class="box-shadow" alt="" />
+                    <img src="images/DNS_6.png" class="box-shadow" alt="" />
                   </li>
                   <li>
                     <p class="short-mrg">Your view should look something like this, pending on how many threats you have analyzed and commented on the Threat Analysis for that day. You can select a different date from the calendar.</p>
-                    <img src="images/1.1_dns_sb01.jpg" class="box-shadow" alt="" />
+                    <img src="images/DNS_4.png" class="box-shadow" alt="" />
                   </li>
                 </ol>
                 <p class="orange-bold" style="margin-bottom:0;">Executive Threat Briefing</p>
@@ -1026,7 +1026,7 @@
 
                 <p class="short-mrg">Incident progression frame is located on the right side of the Web page.</p>
 
-                <img src="images/1.1_dns_sb02.jpg" class="box-shadow" alt="" />
+                <img src="images/DNS_5.png" class="box-shadow" alt="" />
 
                 <p class="short-mrg">This will display a tree graph (dendrogram) detailing the type of connections that conform the activity related to the threat.</p>
                 </p>
@@ -1042,7 +1042,7 @@
                   <li>
                     <p class="short-mrg"><strong>Open the analyst view for Suspicious Proxy:</strong> <i>http://"server-ip":8889/files/ui/proxy/suspicious.html</i>. Select the date that you want to review (defaults to current date).</p>
                     <p class="short-mrg">Your screen should now look like this:</p>
-                    <img src="images/1.1_proxy_sc01.jpg" class="box-shadow" alt="" /><br><br>
+                    <img src="images/Proxy_1.png" class="box-shadow" alt="" /><br><br>
 
                     <p class="short-mrg">Suspicious Connects Web Page contains 4 frames with different functions and information:</p>
                     <ul>
@@ -1054,7 +1054,7 @@
 
                   </li>
                   <li>
-                    <p class="short-mrg"><strong>The Suspicious frame</strong><br>Located at the top left of the Web page, this frame shows the top 250 Suspicious Proxy connections from the Machine Learning (ML) output.</p>
+                    <p class="short-mrg"><strong>Suspicious Frame</strong><br>Located at the top left of the Web page, this frame shows the top 250 Suspicious Proxy connections from the Machine Learning (ML) output.</p>
 
                     <ol>
                       <li>
@@ -1086,31 +1086,31 @@
                     <ol>
                       <li>
                         <p class="short-mrg">As soon as you move your mouse over a node, a dialog shows up providing additional information.</p>
-                        <img src="images/1.1_proxy_sc02.jpg" class="box-shadow" alt="" />
+                        <img src="images/Proxy_2.png" class="box-shadow" alt="" />
                       </li>
                       <li>
                         <p class="short-mrg">Graph can be zoomed in/out and can be moved in the frame</p>
-                        <img src="images/1.1_proxy_sc03.jpg" class="box-shadow" alt="" />
+                        <img src="images/Proxy_3.png" class="box-shadow" alt="" />
                       </li>
                       <li>
                         <p class="short-mrg">By double-clicking in the Root Proxy Node the graph can be fully expanded/collapsed</p>
-                        <img src="images/1.1_proxy_sc04.jpg" class="box-shadow" alt="" />
+                        <img src="images/Proxy_4.png" class="box-shadow" alt="" />
                       </li>
                       <li>
                         <p class="short-mrg">By double-clicking a node, the node can be expanded/collapsed one level</p>
-                        <img src="images/1.1_proxy_sc05.jpg" class="box-shadow" alt="" />
+                        <img src="images/Proxy_5.png" class="box-shadow" alt="" />
                       </li>
                       <li>
                         <p class="short-mrg">The path in yellow represents the Suspicious record selected in the suspicious frame</p>
-                        <img src="images/1.1_proxy_sc06.jpg" class="box-shadow" alt="" />
+                        <img src="images/Proxy_6.png" class="box-shadow" alt="" />
                       </li>
                       <li>
                         <p class="short-mrg">Records will be highlighted with different colors depending upon the Risk Reputation provided by the Reputation Service</p>
-                        <img src="images/1.1_proxy_sc07.jpg" class="box-shadow" alt="" />
+                        <img src="images/Proxy_7.png" class="box-shadow" alt="" />
                       </li>
                       <li>
                         <p class="short-mrg">A secondary mouse click over the Proxy Path or Client IP address nodes populates the Filter Box which eventually filter Suspicious &amp; Network View Frames </p>
-                        <img src="images/1.1_proxy_sc08.jpg" class="box-shadow" alt="" />
+                        <img src="images/Proxy_8.png" class="box-shadow" alt="" />
                       </li>
                     </ol>
                   </li>
@@ -1118,12 +1118,12 @@
                     <p class="short-mrg" style="margin-bottom:0;"><strong>The Details frame</strong></p>
                     <p class="short-mrg">Located at the bottom of the Web page. It provides additional information for the selected connection in the Suspicious frame. It includes columns that are not part of the Suspicious frame such as User Agent, MIME Type,
                       Proxy Server IP, Bytes.</p>
-                    <img src="images/1.1_proxy_sc09.jpg" class="box-shadow" alt="" />
+                    <img src="images/Proxy_9.png" class="box-shadow" alt="" />
                   </li>
                   <li>
                     <p class="short-mrg"><strong>The Scoring frame</strong><br> This frame contains a section where the Analyst can score Proxy records with different values. In order to assign a risk to a specific connection,
                       select the correct rating (1=High risk, 2 = Medium/Potential risk, 3 = Low/Accepted risk) and click Score button.</p>
-                    <img src="images/1.1_proxy_sc10.jpg" class="box-shadow" alt="" />
+                    <img src="images/Proxy_10.png" class="box-shadow" alt="" />
 
                   </li>
                 </ol>
@@ -1142,21 +1142,21 @@
                 <p class="orange-bold" style="margin-bottom:0;">Walk-through</p>
                 <p class="short-mrg">Access the analyst view for Proxy Suspicious Connects. Select the date that you want to review.</p>
                 <p class="short-mrg">Your view should now look like this:</p>
-                <img src="images/1.1_proxy_sc01.jpg" class="box-shadow" alt="" />
+                <img src="images/Proxy_11.png" class="box-shadow" alt="" />
 
                 <p class="short-mrg">The analyst must previously score the suspicious connections before moving into Threat Investigation View, please refer to Proxy Suspicious Connects Analyst View walk-through.</p>
                 <p class="short-mrg">Select <strong>Proxy > Threat Investigation</strong> from Apache Spot (incubating) Menu.</p>
-                <img src="images/1.1_proxy_ti01.jpg" class="box-shadow" alt="" /><br><br>
+                <img src="images/Proxy_12_previous.png" class="box-shadow" alt="" /><br><br>
 
                 <p class="short-mrg">Threat Investigation Web Page will be opened, loading the embedded IPython notebook. A list with all Proxy Records scored as High risk will be presented</p>
-                <img src="images/1.1_proxy_ti02.jpg" class="box-shadow" alt="" /><br><br>
+                <img src="images/Proxy_12.png" class="box-shadow" alt="" /><br><br>
 
                 <p class="orange-bold" style="margin-bottom:0;">Expanded Search</p>
 
                 <p class="short-mrg">Select any value from the list and press the "Search" button. The system will execute a query to the proxy table, looking into the raw data initially collected to find additional activity for the selected Proxy Record. Results will be
                   extracted and displayed as a table in the UI. The quantity of results displayed on screen can be set by modifying the top_results
                   variable, additional information on how to modify this variable can be found <a href="https://github.com/apache/incubator-spot/blob/master/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md"> here</a></p>
-                <img src="images/1.1_proxy_ti03.jpg" class="box-shadow" alt="" />
+                <img src="images/Proxy_13.png" class="box-shadow" alt="" />
                 <p class="orange-bold" style="margin-bottom:0;">Save comments.</p>
                 <p class="short-mrg">In addition, a web form is displayed under the title of 'Threat summary', where the analyst can enter a Title &amp; Description on the kind of attack/behavior described by the particular Proxy Record that is under investigation.</p>
                 <img src="images/1.1_proxy_ti04.jpg" class="box-shadow" alt="" />
@@ -1172,18 +1172,18 @@
                 <ol>
                   <li>
                     Select the option <strong>Proxy > Storyboard</strong> from Apache Spot (incubating) Menu.<br><br>
-                    <img src="images/1.1_proxy_sb01.jpg" class="box-shadow" alt="" />
+                    <img src="images/Proxy_15.png" class="box-shadow" alt="" />
                   </li>
                   <li>
                     <p class="short-mrg">Your view should look something like this, depending on how many threats you have analyzed and commented on the Threat Investigation page for that day. You can select a different date from the calendar.</p>
-                    <img src="images/1.1_proxy_sb02.jpg" class="box-shadow" alt="" />
+                    <img src="images/Proxy_16.png" class="box-shadow" alt="" />
                   </li>
                 </ol>
 
                 <p class="orange-bold">Executive Threat Briefing</p>
                 <p class="short-mrg">Executive Threat Briefing frame lists all the incident titles you entered at the Threat Investigation notebook. You can click on any title and view the comments at the bottom area of the panel.</p>
 
-                <p style="text-align: center;"><img src="images/1.1_proxy_sb03.jpg" class="box-shadow" alt="" /></p>
+                <p style="text-align: center;"><img src="images/Proxy_17.png" class="box-shadow" alt="" /></p>
 
                 <p class="orange-bold" style="margin-bottom:0;">Incident progression</p>
                 <p class="short-mrg"><strong>Data source file:</strong> incident-progression-{id}.json<br>Incident progression frame is located on the right side of the Web page. Incident Progression displays a tree graph (dendrogram) detailing the type of connections that
@@ -1196,10 +1196,10 @@
                   <li><strong>Threat</strong> - Represents the Suspicious Proxy Record</li>
                   <li><strong>Referred</strong> - URLs that the Suspicious Proxy Record referred to</li>
                 </ul>
-                <img src="images/1.1_proxy_sb04.jpg" class="box-shadow" alt="" />
+                <img src="images/Proxy_18.png" class="box-shadow" alt="" />
 
                 <p class="short-mrg">If multiple IP Addresses connects to a particular Proxy Threat (URL) you can scroll down/up, arrows indicate that there are more elements in the list.</p>
-                <img src="images/1.1_proxy_sb06.jpg" class="box-shadow" alt="" /><br><br>
+                <img src="images/proxy_19.png" class="box-shadow" alt="" /><br><br>
 
                 <p class="orange-bold" style="margin-bottom:0;">Timeline</p>
                 <p class="short-mrg">Timeline is created using the connections found during the Threat Investigation process. It will display 'clusters' of IP connections to the Proxy Record (URL), grouped by time; showing
