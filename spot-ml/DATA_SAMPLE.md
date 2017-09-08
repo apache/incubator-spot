@@ -11,18 +11,18 @@ The schema for this data includes one field (called 'dns_id') in addition to wha
 
 
 | Name         | Type      | Description |
-|--------------|:---------:|------------:|
-| frame_time   | string    | Time of packet captured (UTC) |
+|--------------|:---------:|:-----------:|
+| frame_time   | string    | Time of packet capture (UTC) |
 | unix_tstamp  | bigint    | Time of packet capture (UNIX time) | 
 | frame_len    | int       | Entire packet length |
 | ip_dst       | string    | IP address making the DNS query |
-| ip_src       | string    | IP address of DNS server |
+| ip_src       | string    | IP address of the DNS server |
 | dns_qry_name | string    | Resource record being queried, ex: 'google.com' |
-| dns_qry_class| string    | Class of query being executed, ex: '0x00000001' (for Internet) | 
+| dns_qry_class| string    | Class of DNS record, ex: '0x00000001' (for Internet) | 
 | dns_qry_type | int       | Type of resource record, ex: 1 (for a host address) |
 | dns_qry_rcode| int       | Error code for the results of the query, ex: 0 (for No Error)
-| dns_a        | string    | Answer for the query |
-| dns_id       | string    | Hexidecimal code inserting artificially during simulation to differerntiate normal queries from tunnelling (more details below) |
+| dns_a        | string    | Answer to the query |
+| dns_id       | string    | Hexidecimal code inserting as the transaction ID used to differentiate normal queries from tunnelling (more details below) |
 
 ## Interpreting dns_id
 The value of dns_id indicates that either the data row was taken from a packet capture of simulated normal DNS traffic, or from a packet capture of a particular type of simulated DNS tunnelling.
