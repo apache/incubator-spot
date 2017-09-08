@@ -1,28 +1,28 @@
 
 # DNS Labeled Data Set
 
-An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Apache Spot (incubating) were injested. The attacks can be differentiated from the normal activity due to codes that were inserted into the Transaction ID field (upon ingestion: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific DNS tunneling activity being used. We provide the data schema as well as the location and specifications of the data within Amazon-S3. Information is also provided for how to interpret the dns_id field.
+An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Apache Spot (incubating) were ingested. The attacks can be differentiated from the normal activity due to codes that were inserted into the Transaction ID field (upon ingestion: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific DNS tunneling activity being used. We provide the data schema as well as the location and specifications of the data within Amazon-S3. Information is also provided for how to interpret the dns_id field.
 
 
 
 ## Data Schema
 
-The schema for this data includes one field (called 'dns_id') in addition to what is usually used for DNS data in Apache Spot (incubating). The schema is as follows:
+The schema for this data includes one field (called 'dns_id') in addition to what is usually used for DNS data in Apache Spot (incubating). The schema is as follows (see: http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-6 for more information):
 
 
-| Name         | Type      |
-|--------------|:---------:|
-| frame_time   | string    |
-| unix_tstamp  | bigint    |
-| frame_len    | int       |
-| ip_dst       | string    |
-| ip_src       | string    |
-| dns_qry_name | string    |
-| dns_qry_class| string    |
-| dns_qry_type | int       |
-| dns_qry_rcode| int       |
-| dns_a        | string    |
-| dns_id       | string    |
+| Name         | Type      | Description |
+|--------------|:---------:|------------:|
+| frame_time   | string    | Time of packet captured (UTC) |
+| unix_tstamp  | bigint    | Time of packet capture (UNIX time) | 
+| frame_len    | int       | Entire packet length |
+| ip_dst       | string    | IP address making the DNS query |
+| ip_src       | string    | IP address of DNS server |
+| dns_qry_name | string    | Resource record being queried, ex: 'google.com' |
+| dns_qry_class| string    | Class of query being executed, ex: '0x00000001' (for Internet) | 
+| dns_qry_type | int       | Type of resource record, ex: 1 (for a host address) |
+| dns_qry_rcode| int       | Error code for the results of the query, ex: 0 (for No Error)
+| dns_a        | string    | Answer for the query |
+| dns_id       | string    | Hexidecimal code inserting artificially during simulation to differerntiate normal queries from tunnelling (more details below) |
 
 ## Interpreting dns_id
 The value of dns_id indicates that either the data row was taken from a packet capture of simulated normal DNS traffic, or from a packet capture of a particular type of simulated DNS tunnelling.
