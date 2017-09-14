@@ -1,7 +1,7 @@
 
 # DNS Labeled Data Set
 
-An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Apache Spot (incubating) were ingested. The attacks can be differentiated from the normal activity due to codes that were inserted into the Transaction ID field (upon ingestion: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific DNS tunneling activity being used. We provide the data schema as well as the location and specifications of the data within Amazon-S3. Information is also provided for how to interpret the dns_id field.
+An IXIA BreakingPoint box was used to simulate both normal and attack (DNS tunnelling) DNS traffic. The resulting pcaps were obtained and fields relevant to Apache Spot (incubating) were ingested and stored in parquet format. The attacks can be differentiated from the normal activity due to codes that were inserted into the Transaction ID field (upon ingestion: ‘dns_id’) which identifies either the fact that the traffic was normal or identifies the specific DNS tunneling activity being used. We provide the data schema as well as the location and specifications of the data within Amazon-S3. Information is also provided for how to interpret the dns_id field.
 
 
 
