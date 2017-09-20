@@ -33,7 +33,7 @@ end_architecture string,
 end_uuid string,
 end_risk float,
 end_memtotal int,
-additional_attrs string)
+additional_attrs map<string,string>)
 STORED AS PARQUET
 LOCATION '${VAR:ODM_LOCATION}'
 ;

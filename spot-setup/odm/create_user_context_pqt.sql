@@ -28,7 +28,7 @@ dvc_vendor string,
 user_risk float,
 dvc_version string,
 user_img string,
-additional_attrs string)
+additional_attrs map<string,string>)
 STORED AS PARQUET
 LOCATION '${VAR:ODM_LOCATION}'
 ;

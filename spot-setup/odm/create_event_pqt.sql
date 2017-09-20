@@ -23,7 +23,7 @@ in_bytes int,
 out_bytes int,
 xref string,
 version string,
-additional_attrs string,
+additional_attrs map<string,string>,
 -- Device
 dvc_time bigint,
 dvc_ip4 bigint,
