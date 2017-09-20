@@ -17,6 +17,20 @@
 # limitations under the License.
 #
 
+# Instructions
+#   To execute this script, run ./odm_setup with a format type (pqt, avro) as an argument.
+#
+#   i.e. ./odm_setup pqt
+#   
+#   NOTE: At this time only Parquet and Avro storage formats are supported for the ODM tables.
+
+# Check the format argument and make sure its supported
+format=$1
+if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
+    echo "Format argument $format is not supported. Only Parquet and Avro are supported data storage formats. Use 'pqt' or 'avro'  instead (i.e. ./odm_setup pqt)."
+    exit 0
+fi
+
 DSOURCES=('odm')
 DFOLDERS=(
 'event' 
@@ -40,6 +54,12 @@ for d in "${DSOURCES[@]}"
 do 
 	echo "creating /$d"
 	sudo -u hdfs hdfs dfs -mkdir ${HUSER}/$d 
+    
+    # Create Avro schemas directory on HDFS if Avro storage is selected
+    if [ "$format" == "avro" ] ; then
+        echo "creating /$d/schema"
+        sudo -u hdfs hdfs dfs -mkdir ${HUSER}/$d/schema
+    fi
 
 	for f in "${DFOLDERS[@]}" 
 	do 
@@ -48,6 +68,7 @@ do
 	done
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
+    echo "modifying permissions recursively on ${HUSER}/$d"
 	sudo -u hdfs hdfs dfs -chmod -R 775 ${HUSER}/$d
 	sudo -u hdfs hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
 	sudo -u hdfs hdfs dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
@@ -61,9 +82,23 @@ for d in "${DSOURCES[@]}"
 do 
     for f in "${DFOLDERS[@]}" 
 	do 
-        echo "Creating ODM Impala table..."
-		echo "impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f create_${f}_pqt.sql"
+        #If desired storage format is parquet, create ODM as Parquet tables
+        if [ "$format" == "pqt" ] ; then
+            echo "Creating ODM Impala Parquet table ${f}..."
+            echo "impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f create_${f}_pqt.sql"
+            
+            impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f create_${f}_pqt.sql
+        fi
+        # If desired storage format is "avro", create ODM as Avro tables with Avro schemas
+        if [ "$format" == "avro" ] ; then
+            echo "Adding ${f} Avro schema to ${HUSER}/$d/schema ..."
+            echo "sudo -u hdfs hdfs dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc"
+            sudo -u hdfs hdfs dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc
         
-        impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f create_${f}_pqt.sql
+            echo "Creating ODM Impala Avro table ${f}..."
+            echo "impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} var=AVRO_URL_LOCATION=${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql"
+        
+            impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} var=AVRO_URL_LOCATION=${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql
+        fi
 	done
 done
