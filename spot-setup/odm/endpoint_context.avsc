@@ -28,7 +28,7 @@
 		{"name":"end_procs", "type":["null",{"type":"array", "items":"string"}],"doc":"Processes","default":null},
 		{"name":"end_criticality", "type":["null","string"],"doc":"Criticality of device","default":null},
 		{"name":"end_apps", "type":["null",{"type":"array", "items":"string"}],"doc":"Applications running on system","default":null},
-		{"name":"end_desc", "type":["null","float"],"doc":"Endpoint descriptor","default":null},
+		{"name":"end_desc", "type":["null","string"],"doc":"Endpoint descriptor","default":null},
 		{"name":"dvc_type", "type":["null","string"],"doc":"Device type that generated the log","default":null},
         {"name":"dvc_vendor", "type":["null","string"],"doc":"Vendor","default":null},
 		{"name":"dvc_version", "type":["null","string"],"doc":"Version","default":null},
