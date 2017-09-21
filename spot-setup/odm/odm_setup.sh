@@ -27,7 +27,7 @@
 # Check the format argument and make sure its supported
 format=$1
 if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
-    echo "Format argument $format is not supported. Only Parquet and Avro are supported data storage formats. Use 'pqt' or 'avro'  instead (i.e. ./odm_setup pqt)."
+    echo "Format argument '$format' is not supported. Only Parquet and Avro are supported data storage formats. Use 'pqt' or 'avro'  instead (i.e. ./odm_setup pqt)."
     exit 0
 fi
 
@@ -92,13 +92,14 @@ do
         # If desired storage format is "avro", create ODM as Avro tables with Avro schemas
         if [ "$format" == "avro" ] ; then
             echo "Adding ${f} Avro schema to ${HUSER}/$d/schema ..."
-            echo "sudo -u hdfs hdfs dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc"
-            sudo -u hdfs hdfs dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc
+            echo "sudo -u ${USER} hdfs dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc"
+            
+            sudo -u ${USER} hdfs dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc
         
             echo "Creating ODM Impala Avro table ${f}..."
-            echo "impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} var=AVRO_URL_LOCATION=${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql"
+            echo "impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} --var=ODM_AVRO_URL=hdfs://${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql"
         
-            impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} var=AVRO_URL_LOCATION=${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql
+            impala-shell -i ${IMPALA_DEM} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} --var=ODM_AVRO_URL=hdfs://${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql
         fi
 	done
 done
