@@ -24,7 +24,8 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.proxy.ProxySchema._
-import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataValidation}
+import org.apache.spot.utilities.data.validation.InputSchema.InputSchemaValidationResponse
+import org.apache.spot.utilities.data.validation.{InputSchema, InvalidDataHandler => dataValidation}
 
 /**
   * Run suspicious connections analysis on proxy data.
@@ -84,36 +85,45 @@ object ProxySuspiciousConnectsAnalysis {
     * @param logger       Logs execution progress, information and errors for user.
     */
   def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
-          inputProxyRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
+          inputProxyRecords: DataFrame): Option[SuspiciousConnectsAnalysisResults] = {
 
     logger.info("Starting proxy suspicious connects analysis.")
 
-    val proxyRecords = filterRecords(inputProxyRecords)
-      .select(InSchema: _*)
-      .na.fill(DefaultUserAgent, Seq(UserAgent))
-      .na.fill(DefaultResponseContentType, Seq(ResponseContentType))
+    logger.info("Validating schema...")
+    val InputSchemaValidationResponse(isValid, errorMessages) = validateSchema(inputProxyRecords)
 
-    logger.info("Fitting probabilistic model to data")
-    val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger, config, proxyRecords)
+    if (!isValid) {
+      errorMessages.foreach(logger.error(_))
 
-    logger.info("Identifying outliers")
-    val scoredProxyRecords = model.score(sparkSession, proxyRecords, config.precisionUtility)
+      None
+    } else {
+      val proxyRecords = filterRecords(inputProxyRecords)
+        .select(InSchema: _*)
+        .na.fill(DefaultUserAgent, Seq(UserAgent))
+        .na.fill(DefaultResponseContentType, Seq(ResponseContentType))
 
-    // take the maxResults least probable events of probability below the threshold and sort
+      logger.info("Fitting probabilistic model to data")
+      val model = ProxySuspiciousConnectsModel.trainModel(sparkSession, logger, config, proxyRecords)
 
-    val filteredScored = filterScoredRecords(scoredProxyRecords, config.threshold)
+      logger.info("Identifying outliers")
+      val scoredProxyRecords = model.score(sparkSession, proxyRecords, config.precisionUtility)
 
-    val orderedProxyRecords = filteredScored.orderBy(Score)
+      // take the maxResults least probable events of probability below the threshold and sort
 
-    val mostSuspiciousProxyRecords =
-      if (config.maxResults > 0) orderedProxyRecords.limit(config.maxResults)
-      else orderedProxyRecords
+      val filteredScored = filterScoredRecords(scoredProxyRecords, config.threshold)
 
-    val outputProxyRecords = mostSuspiciousProxyRecords.select(OutSchema: _*)
+      val orderedProxyRecords = filteredScored.orderBy(Score)
 
-    val invalidProxyRecords = filterInvalidRecords(inputProxyRecords).select(InSchema: _*)
+      val mostSuspiciousProxyRecords =
+        if (config.maxResults > 0) orderedProxyRecords.limit(config.maxResults)
+        else orderedProxyRecords
 
-    SuspiciousConnectsAnalysisResults(outputProxyRecords, invalidProxyRecords)
+      val outputProxyRecords = mostSuspiciousProxyRecords.select(OutSchema: _*)
+
+      val invalidProxyRecords = filterInvalidRecords(inputProxyRecords).select(InSchema: _*)
+
+      Option(SuspiciousConnectsAnalysisResults(outputProxyRecords, invalidProxyRecords))
+    }
 
   }
 
@@ -163,6 +173,18 @@ object ProxySuspiciousConnectsAnalysis {
       scoredProxyRecords(Score).gt(dataValidation.ScoreError)
 
     scoredProxyRecords.filter(filteredProxyRecordsFilter)
+  }
+
+  /**
+    * Validates incoming data matches required schema for model training and scoring.
+    *
+    * @param inputProxyRecords incoming data frame
+    * @return
+    */
+  def validateSchema(inputProxyRecords: DataFrame): InputSchemaValidationResponse = {
+
+    InputSchema.validate(inputProxyRecords.schema, ProxySuspiciousConnectsModel.ModelSchema)
+
   }
 
 }

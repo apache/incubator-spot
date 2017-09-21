@@ -92,8 +92,10 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val SuspiciousConnectsAnalysisResults(scoredData, _) = FlowSuspiciousConnectsAnalysis.run(emTestConfig,
-      sparkSession, logger, data)
+    val SuspiciousConnectsAnalysisResults(scoredData, _) =
+      FlowSuspiciousConnectsAnalysis.run(emTestConfig, sparkSession, logger, data)
+        .getOrElse(SuspiciousConnectsAnalysisResults(sparkSession.sqlContext.emptyDataFrame,
+          sparkSession.sqlContext.emptyDataFrame))
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -124,8 +126,10 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val SuspiciousConnectsAnalysisResults(scoredData, _) = FlowSuspiciousConnectsAnalysis.run(onlineTestConfig,
-      sparkSession, logger, data)
+    val SuspiciousConnectsAnalysisResults(scoredData, _) =
+      FlowSuspiciousConnectsAnalysis.run(onlineTestConfig, sparkSession, logger, data)
+        .getOrElse(SuspiciousConnectsAnalysisResults(sparkSession.sqlContext.emptyDataFrame,
+          sparkSession.sqlContext.emptyDataFrame))
 
     val anomalyScore = scoredData.filter(scoredData(Hour) === 0).first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Hour) === 13).collect().map(_.getAs[Double](Score))
@@ -239,6 +243,27 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
 
   }
 
+  it should "return None when input data frame doesn't matches expected schema" in {
+    val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
+    logger.setLevel(Level.OFF)
+
+    val anomalousRecord = FlowInvalidRecord("2016-05-05 00:11:01", 2016, 5, 5, 0, 0, 1, 972, "172.16.0.129", "10.0" +
+      ".2.202", 1024, 80, "TCP", "39l", "12522l", "0l", "0l")
+
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, anomalousRecord, anomalousRecord, anomalousRecord))
+
+    val result =
+      FlowSuspiciousConnectsAnalysis.run(emTestConfig, sparkSession, logger, data)
+
+    val none = result match {
+      case None => true
+      case Some(_) => false
+    }
+
+    none shouldBe true
+
+  }
+
   "filterRecords" should "return data set without garbage" in {
 
     val cleanedFlowRecords = FlowSuspiciousConnectsAnalysis
@@ -265,6 +290,29 @@ class FlowSuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wit
       .filterScoredRecords(testFlowRecords.scoredFlowRecordsDF, threshold)
 
     scoredFlowRecords.count should be(2)
+  }
+
+  "validateSchema" should "return false when passing an invalid schema" in {
+    val anomalousRecord = FlowInvalidRecord("2016-05-05 00:11:01", 2016, 5, 5, 0, 0, 1, 972, "172.16.0.129", "10.0" +
+      ".2.202", 1024, 80, "TCP", "39l", "12522l", "0l", "0l")
+
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, anomalousRecord, anomalousRecord, anomalousRecord))
+
+    val results = FlowSuspiciousConnectsAnalysis.validateSchema(data)
+
+    results.isValid shouldBe false
+  }
+
+  it should "return true when passing a valid schema" in {
+    val typicalRecord = FlowRecord("2016-05-05 13:54:58", 2016, 5, 5, 13, 54, 58, 0.972f, "172.16.0.129", "10.0.2" +
+      ".202", 1024, 80, "TCP", 39, 12522, 0, 0)
+
+    val data = sparkSession.createDataFrame(Seq(typicalRecord, typicalRecord, typicalRecord, typicalRecord,
+      typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
+
+    val results = FlowSuspiciousConnectsAnalysis.validateSchema(data)
+
+    results.isValid shouldBe true
   }
 
   def testFlowRecords = new {

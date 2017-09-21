@@ -50,12 +50,27 @@ For example:
 ./ml_ops.sh 19731231 flow 1e-20 200
 ```
 
-You should have a list of the 200 most suspiciouc flow events from 
+You should have a list of the 200 most suspicious flow events from 
 
      $HPATH/flow/scored_results/YYYYMMDD/scores/flow_results.csv
 
 
 It is a csv file in which network events annotated with estimated probabilities and sorted in ascending order.
+
+## User Feedback
+
+The spot front end allows users to mark individual logged events as high, medium or low risk. 
+
+The risk score is stored as a 1 for high risk, 2 for medium risk and 3 for low risk.
+
+At present, the scores of events similar to low risk items are inflated by the model, and nothing (at present) changes events flagged medium or high risk.
+
+
+This information is stored in a tab-separated text file stored on HDFS at:
+
+
+	/user/<user_name>/<data source>/scored_results/<date>/feedback/ml_feedback.csv
+
 
 ## Licensing
 

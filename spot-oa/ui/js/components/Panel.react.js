@@ -1,4 +1,19 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
+//
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.
+// The ASF licenses this file to You under the Apache License, Version 2.0
+// (the "License"); you may not use this file except in compliance with
+// the License.  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 var React = require('react');
 var assign = require('object-assign');
@@ -39,6 +54,17 @@ var Panel = React.createClass({
 
         if (this.props.header) {
             buttons = [];
+            if (this.props.switchable) {
+                buttons.push(
+                    <li key="switchBtn">
+                        <button type="button" className="btn btn-default btn-xs pull-right"
+                                onClick={this.props.onSwitch}>
+                            <span className="glyphicon glyphicon-sort" aria-hidden="true"></span>
+                        </button>
+                    </li>
+                );
+            }
+
             if (this.props.reloadable) {
                 buttons.push(
                     <li key="realoadBtn" className="refresh">

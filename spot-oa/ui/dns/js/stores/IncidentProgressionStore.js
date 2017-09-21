@@ -1,76 +1,106 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
+//
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.
+// The ASF licenses this file to You under the Apache License, Version 2.0
+// (the "License"); you may not use this file except in compliance with
+// the License.  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
-var assign = require('object-assign');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var DnsConstants = require('../constants/DnsConstants');
-var RestStore = require('../../../js/stores/RestStore');
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-var fields = ['title', 'summary'];
-var filterName;
+const DATE_VAR = 'date';
+const QUERY_VAR = 'dnsQuery';
+const CLIENT_IP_VAR = 'clientIp';
 
-var IncidentProgressionStore = assign(new RestStore(DnsConstants.API_INCIDENT_PROGRESSION), {
-  errorMessages: {
-    404: 'Please choose a different date, no data has been found'
-  },
-  setDate: function (date)
-  {
-    this.setEndpoint(DnsConstants.API_INCIDENT_PROGRESSION.replace('${date}', date.replace(/-/g, '')));
-  },
-  setFilter: function (name, value)
-  {
-    filterName = name;
-    this.setRestFilter('id', value);
-  },
-  getFilterName: function ()
-  {
-    return filterName;
-  },
-  getFilterValue: function ()
-  {
-    return this.getRestFilter('id');
-  },
-  clearFilter: function ()
-  {
-    this.removeRestFilter('id');
-  }
-});
+class IncidentProgressionStore extends ObservableGraphQLStore {
+    constructor() {
+        super();
+
+        this.filterName = null;
+    }
+
+    getQuery() {
+        return `
+            query($date:SpotDateType, $dnsQuery: String, $clientIp:SpotIpType) {
+                dns {
+                    threat {
+                        incidentProgression(date:$date, dnsQuery:$dnsQuery, clientIp:$clientIp) {
+                            ...QueryFragment
+                            ...ClientIpFragment
+                        }
+                    }
+                }
+            }
+
+            fragment QueryFragment on DnsIncidentProgressionQueryType {
+                dnsQuery
+            }
+
+            fragment ClientIpFragment on DnsIncidentProgressionClientIpType {
+                clientIp
+            }
+        `;
+    }
+
+    unboxData(data) {
+        return data.dns.threat.incidentProgression;
+    }
+
+    setDate(date) {
+        this.setVariable(DATE_VAR, date);
+    }
+
+    setFilter(name, value) {
+        this.filterName = name==QUERY_VAR?name:CLIENT_IP_VAR;
+        this.setVariable(this.filterName, value);
+    }
+
+    getFilterName() {
+        return this.filterName;
+    }
+
+    getFilterValue() {
+        return this.getVariable(this.filterName);
+    }
+
+    clearFilter() {
+        this.unsetVariable(this.filterName);
+        this.filterName = null;
+    }
+}
+
+const ips = new IncidentProgressionStore();
 
 SpotDispatcher.register(function (action) {
   switch (action.actionType) {
     case SpotConstants.UPDATE_DATE:
-      IncidentProgressionStore.setDate(action.date);
-      IncidentProgressionStore.clearFilter();
-      IncidentProgressionStore.resetData();
+      ips.setDate(action.date);
+      ips.clearFilter();
+      ips.resetData();
 
       break;
     case SpotConstants.SELECT_COMMENT:
-      var comment, filterParts, key;
+      ips.clearFilter();
 
-      IncidentProgressionStore.clearFilter();
+      let filterName = QUERY_VAR in action.comment ? QUERY_VAR : CLIENT_IP_VAR;
+      ips.setFilter(filterName, action.comment[filterName]);
 
-      comment = action.comment;
-
-      filterParts = [];
-
-      for (key in comment)
-      {
-        // Skip comment fields
-        if (fields.indexOf(key)>=0) continue;
-
-        if (comment[key])
-        {
-          IncidentProgressionStore.setFilter(key, comment[key]);
-
-          break;
-        }
-      }
-
-      IncidentProgressionStore.reload();
+      ips.sendQuery();
 
       break;
   }
 });
 
-module.exports = IncidentProgressionStore;
+module.exports = ips;

@@ -25,7 +25,8 @@ import org.apache.spot.SuspiciousConnects.SuspiciousConnectsAnalysisResults
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.model.FlowSuspiciousConnectsModel
-import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataValidation}
+import org.apache.spot.utilities.data.validation.InputSchema.InputSchemaValidationResponse
+import org.apache.spot.utilities.data.validation.{InputSchema, InvalidDataHandler => dataValidation}
 
 
 /**
@@ -83,32 +84,40 @@ object FlowSuspiciousConnectsAnalysis {
     * @return
     */
   def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
-          inputFlowRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
+          inputFlowRecords: DataFrame): Option[SuspiciousConnectsAnalysisResults] = {
 
     logger.info("Starting flow suspicious connects analysis.")
 
-    val flowRecords = filterRecords(inputFlowRecords).select(InSchema: _*)
+    logger.info("Validating schema...")
+    val InputSchemaValidationResponse(isValid, errorMessages) = validateSchema(inputFlowRecords)
 
-    logger.info("Fitting probabilistic model to data")
-    val model =
-      FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, config, flowRecords)
+    if (!isValid) {
+      errorMessages.foreach(logger.error(_))
+      None
 
-    logger.info("Identifying outliers")
-    val scoredFlowRecords = model.score(sparkSession, flowRecords, config.precisionUtility)
+    } else {
+      val flowRecords = filterRecords(inputFlowRecords).select(InSchema: _*)
 
-    val filteredScored = filterScoredRecords(scoredFlowRecords, config.threshold)
+      logger.info("Fitting probabilistic model to data")
+      val model =
+        FlowSuspiciousConnectsModel.trainModel(sparkSession, logger, config, flowRecords)
 
-    val orderedFlowRecords = filteredScored.orderBy(Score)
+      logger.info("Identifying outliers")
+      val scoredFlowRecords = model.score(sparkSession, flowRecords, config.precisionUtility)
 
-    val mostSuspiciousFlowRecords =
-      if (config.maxResults > 0) orderedFlowRecords.limit(config.maxResults) else orderedFlowRecords
+      val filteredScored = filterScoredRecords(scoredFlowRecords, config.threshold)
 
-    val outputFlowRecords = mostSuspiciousFlowRecords.select(OutSchema: _*)
+      val orderedFlowRecords = filteredScored.orderBy(Score)
 
-    val invalidFlowRecords = filterInvalidRecords(inputFlowRecords).select(InSchema: _*)
+      val mostSuspiciousFlowRecords =
+        if (config.maxResults > 0) orderedFlowRecords.limit(config.maxResults) else orderedFlowRecords
 
-    SuspiciousConnectsAnalysisResults(outputFlowRecords, invalidFlowRecords)
+      val outputFlowRecords = mostSuspiciousFlowRecords.select(OutSchema: _*)
 
+      val invalidFlowRecords = filterInvalidRecords(inputFlowRecords).select(InSchema: _*)
+
+      Option(SuspiciousConnectsAnalysisResults(outputFlowRecords, invalidFlowRecords))
+    }
   }
 
   /**
@@ -175,6 +184,18 @@ object FlowSuspiciousConnectsAnalysis {
       scoredFlowRecords(Score).gt(dataValidation.ScoreError)
 
     scoredFlowRecords.filter(filteredFlowRecordsFilter)
+  }
+
+  /**
+    * Validates incoming data matches required schema for model training and scoring.
+    *
+    * @param inputFlowRecords incoming data frame
+    * @return
+    */
+  def validateSchema(inputFlowRecords: DataFrame): InputSchemaValidationResponse = {
+
+    InputSchema.validate(inputFlowRecords.schema, FlowSuspiciousConnectsModel.ModelSchema)
+
   }
 
 }

@@ -1,203 +1,191 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
+//
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.
+// The ASF licenses this file to You under the Apache License, Version 2.0
+// (the "License"); you may not use this file except in compliance with
+// the License.  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var DnsConstants = require('../constants/DnsConstants');
-var RestStore = require('../../../js/stores/RestStore');
-var SpotUtils = require('../../../js/utils/SpotUtils');
-var assign = require('object-assign');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
+const SpotUtils = require('../../../js/utils/SpotUtils');
 
-var IP_FILTER = 'ip_dst';
-var DNS_FILTER = 'dns_qry_name';
+const ObservableWithHeadersGraphQLStore = require('../../../js/stores/ObservableWithHeadersGraphQLStore');
 
-var CHANGE_FILTER_EVENT = 'change_filter';
-var CHANGE_DATE_EVENT = 'change_date';
-var HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
-var UNHIGHLIGHT_THREAT_EVENT = 'unhightlight_thread';
-var SELECT_THREAT_EVENT = 'select_treath';
+const DATE_VAR = 'date';
+const IP_VAR = 'ipClient';
+const DNS_VAR = 'dnsQuery';
 
-var filter = '';
-var filterName = '';
-var date = '';
-var highlightedThread = null;
-var selectedThread = null;
-var unfilteredData = null;
+const CHANGE_FILTER_EVENT = 'change_filter';
+const HIGHLIGHT_THREAT_EVENT = 'hightlight_thread';
+const UNHIGHLIGHT_THREAT_EVENT = 'unhightlight_thread';
+const SELECT_THREAT_EVENT = 'select_treath';
 
-var SuspiciousStore = assign(new RestStore(DnsConstants.API_SUSPICIOUS), {
-  errorMessages: {
-    404: 'Please choose a different date, no data has been found'
-  },
-  headers: {
-    frame_time: 'Timestamp',
-    ip_dst: 'Client IP',
-    dns_qry_name: 'Query',
-    query_rep: ' ',
-    dns_qry_class_name: 'Query Class',
-    dns_qry_type_name: 'Query Type',
-    dns_qry_rcode_name: 'Response Code'
-  },
-  ITERATOR: ['frame_time', 'ip_dst', 'dns_qry_name', 'query_rep', 'dns_qry_class_name', 'dns_qry_type_name', 'dns_qry_rcode_name'],
-  getData: function ()
-  {
-    var state;
+class SuspiciousStore extends ObservableWithHeadersGraphQLStore {
+    constructor() {
+        super();
 
-    if (!filter || !unfilteredData)
-    {
-        state = this._data;
+        this.headers = {
+            frame_time: 'Timestamp',
+            ip_dst: 'Client IP',
+            dns_qry_name: 'Query',
+            query_rep: ' ',
+            dns_qry_class_name: 'Query Class',
+            dns_qry_type_name: 'Query Type',
+            dns_qry_rcode_name: 'Response Code'
+        };
+
+        this.ITERATOR = ['frame_time', 'ip_dst', 'dns_qry_name', 'query_rep', 'dns_qry_class_name', 'dns_qry_type_name', 'dns_qry_rcode_name'];
+
+        this.highlightedThread = null;
+        this.selectedThread = null;
     }
-    else
-    {
-        state = assign(
-            {},
-            unfilteredData
-        );
 
-        if (unfilteredData.data) {
-            state.data = unfilteredData.data.filter(function (item) {
-                return filterName===IP_FILTER ? item[filterName]==filter : item[filterName].indexOf(filter)>=0;
-            });
+    getQuery() {
+        return `
+            query($date:SpotDateType!,$dnsQuery:String,$ipClient:SpotIpType) {
+                dns {
+                    suspicious(date: $date, dnsQuery:$dnsQuery, clientIp:$ipClient) {
+                        unix_tstamp: unixTimestamp
+                        dns_qry_type: dnsQueryType
+                        frame_len: frameLength
+                        dns_qry_type_name: dnsQueryTypeLabel
+                        dns_sev: dnsQuerySev
+                        ip_sev: clientIpSev
+                        frame_time: frameTime
+                        dns_qry_class_name: dnsQueryClassLabel
+                        dns_qry_rcode: dnsQueryRcode
+                        score
+                        dns_qry_rcode_name: dnsQueryRcodeLabel
+                        network_context: networkContext
+                        tld
+                        dns_qry_class: dnsQueryClass
+                        ip_dst: clientIp
+                        query_rep: dnsQueryRep
+                        dns_qry_name: dnsQuery
+                    }
+                }
+            }
+        `;
+    }
+
+    unboxData(data) {
+        return data.dns.suspicious;
+    }
+
+    setDate(date) {
+        this.setVariable(DATE_VAR, date);
+    }
+
+    setFilter(filter) {
+        if (filter==='') {
+            this.unsetVariable(IP_VAR);
+            this.unsetVariable(DNS_VAR);
         }
+        else if (SpotUtils.IP_V4_REGEX.test(filter)) {
+            this.unsetVariable(DNS_VAR);
+            this.setVariable(IP_VAR, filter);
+        }
+        else {
+            this.unsetVariable(IP_VAR);
+            this.setVariable(DNS_VAR, filter);
+        }
+
+        this.notifyListeners(CHANGE_FILTER_EVENT);
     }
 
-    if (state.data) {
-        state.data = state.data.filter(function (item) {
-            return item.dns_sev=="0";
-        });
-
-        if (state.data.length>SpotConstants.MAX_SUSPICIOUS_ROWS) state.data = state.data.slice(0, SpotConstants.MAX_SUSPICIOUS_ROWS);
+    getFilter() {
+        return this.getVariable(IP_VAR) || this.getVariable(DNS_VAR) || '';
     }
 
-    return state;
-  },
-  setData: function (data)
-  {
-    this._data = unfilteredData = data;
-
-    this.emitChangeData();
-  },
-  setDate: function (date)
-  {
-    this.setEndpoint(DnsConstants.API_SUSPICIOUS.replace('${date}', date.replace(/-/g, '')));
-  },
-  setFilter: function (newFilter)
-  {
-    filter = newFilter;
-
-    if (filter==='')
-    {
-      filterName = '';
-      this.removeRestFilter(IP_FILTER);
-      this.removeRestFilter(DNS_FILTER);
-    }
-    else if (SpotUtils.IP_V4_REGEX.test(filter))
-    {
-      this.removeRestFilter(DNS_FILTER);
-      this.setRestFilter(IP_FILTER, filter);
-      filterName = IP_FILTER;
-    }
-    else
-    {
-      this.removeRestFilter(IP_FILTER);
-      this.setRestFilter(DNS_FILTER, filter);
-      filterName = DNS_FILTER;
+    addChangeFilterListener(callback) {
+        this.addListener(CHANGE_FILTER_EVENT, callback);
     }
 
-    this.emitChangeFilter();
-  },
-  getFilter: function (){
-    return filter;
-  },
-  emitChangeFilter: function () {
-    this.emit(CHANGE_FILTER_EVENT);
-  },
-  addChangeFilterListener: function (callback) {
-    this.on(CHANGE_FILTER_EVENT, callback);
-  },
-  removeChangeFilterListener: function (callback) {
-    this.removeListener(CHANGE_FILTER_EVENT, callback);
-  },
-  highlightThreat: function (threat)
-  {
-    highlightedThread = threat;
-    this.emitHighlightThreat();
-  },
-  getHighlightedThreat: function ()
-  {
-    return highlightedThread;
-  },
-  addThreatHighlightListener: function (callback)
-  {
-    this.on(HIGHLIGHT_THREAT_EVENT, callback);
-  },
-  removeThreatHighlightListener: function (callback)
-  {
-    this.removeListener(HIGHLIGHT_THREAT_EVENT, callback);
-  },
-  emitHighlightThreat: function ()
-  {
-    this.emit(HIGHLIGHT_THREAT_EVENT);
-  },
-  unhighlightThreat: function ()
-  {
-    highlightedThread = null;
-    this.emitUnhighlightThreat();
-  },
-  addThreatUnhighlightListener: function (callback)
-  {
-    this.on(UNHIGHLIGHT_THREAT_EVENT, callback);
-  },
-  removeThreatUnhighlightListener: function (callback)
-  {
-    this.removeListener(UNHIGHLIGHT_THREAT_EVENT, callback);
-  },
-  emitUnhighlightThreat: function ()
-  {
-    this.emit(UNHIGHLIGHT_THREAT_EVENT);
-  },
-  selectThreat: function (threat)
-  {
-    selectedThread = threat;
-    this.emitThreatSelect();
-  },
-  getSelectedThreat: function ()
-  {
-    return selectedThread;
-  },
-  addThreatSelectListener: function (callback)
-  {
-    this.on(SELECT_THREAT_EVENT, callback);
-  },
-  removeThreatSelectListener: function (callback)
-  {
-    this.removeListener(SELECT_THREAT_EVENT, callback);
-  },
-  emitThreatSelect: function ()
-  {
-    this.emit(SELECT_THREAT_EVENT);
-  }
-});
+    removeChangeFilterListener(callback) {
+        this.removeListener(CHANGE_FILTER_EVENT, callback);
+    }
+
+    highlightThreat(threat) {
+        this.highlightedThread = threat;
+        this.notifyListeners(HIGHLIGHT_THREAT_EVENT);
+    }
+
+    getHighlightedThreat() {
+        return this.highlightedThread;
+    }
+
+    unhighlightThreat() {
+        this.highlightedThread = null;
+        this.notifyListeners(UNHIGHLIGHT_THREAT_EVENT);
+    }
+
+    addThreatHighlightListener(callback) {
+        this.addListener(HIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    removeThreatHighlightListener(callback) {
+        this.removeListener(HIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    addThreatUnhighlightListener(callback) {
+        this.addListener(UNHIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    removeThreatUnhighlightListener(callback) {
+        this.removeListener(UNHIGHLIGHT_THREAT_EVENT, callback);
+    }
+
+    selectThreat(threat) {
+        this.selectedThread = threat;
+        this.notifyListeners(SELECT_THREAT_EVENT);
+    }
+
+    getSelectedThreat() {
+        return this.selectedThread;
+    }
+
+    addThreatSelectListener(callback) {
+        this.addListener(SELECT_THREAT_EVENT, callback);
+    }
+
+    removeThreatSelectListener(callback) {
+        this.removeListener(SELECT_THREAT_EVENT, callback);
+    }
+}
+
+const ss = new SuspiciousStore();
 
 SpotDispatcher.register(function (action) {
   switch (action.actionType) {
     case SpotConstants.UPDATE_FILTER:
-      SuspiciousStore.setFilter(action.filter);
+      ss.setFilter(action.filter);
       break;
     case SpotConstants.UPDATE_DATE:
-      SuspiciousStore.setDate(action.date);
+      ss.setDate(action.date);
       break;
     case SpotConstants.RELOAD_SUSPICIOUS:
-      SuspiciousStore.reload();
+      ss.sendQuery();
       break;
     case SpotConstants.HIGHLIGHT_THREAT:
-      SuspiciousStore.highlightThreat(action.threat);
+      ss.highlightThreat(action.threat);
       break;
     case SpotConstants.UNHIGHLIGHT_THREAT:
-      SuspiciousStore.unhighlightThreat();
+      ss.unhighlightThreat();
       break;
     case SpotConstants.SELECT_THREAT:
-      SuspiciousStore.selectThreat(action.threat);
+      ss.selectThreat(action.threat);
       break;
   }
 });
 
-module.exports = SuspiciousStore;
+module.exports = ss;

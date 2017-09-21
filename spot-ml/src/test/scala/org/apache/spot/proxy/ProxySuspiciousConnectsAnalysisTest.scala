@@ -47,6 +47,26 @@ case class ProxyInput(p_date: String,
                       csbytes: Int,
                       fulluri: String)
 
+case class ProxyInvalidInput(p_date: String,
+                             p_time: String,
+                             clientip: String,
+                             host: Double,
+                             reqmethod: String,
+                             useragent: String,
+                             resconttype: Int,
+                             duration: Int,
+                             username: String,
+                             webcat: String,
+                             referer: String,
+                             respcode: String,
+                             uriport: Int,
+                             uripath: String,
+                             uriquery: String,
+                             serverip: String,
+                             scbytes: Int,
+                             csbytes: Int,
+                             fulluri: Double)
+
 class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec with Matchers {
 
 
@@ -107,8 +127,10 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     val data = sparkSession.createDataFrame(Seq(anomalousRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord,
       typicalRecord, typicalRecord, typicalRecord, typicalRecord, typicalRecord))
 
-    val SuspiciousConnectsAnalysisResults(scoredData, _) = ProxySuspiciousConnectsAnalysis.run(emTestConfigProxy,
-      sparkSession, logger, data)
+    val SuspiciousConnectsAnalysisResults(scoredData, _) =
+      ProxySuspiciousConnectsAnalysis.run(emTestConfigProxy, sparkSession, logger, data)
+        .getOrElse(SuspiciousConnectsAnalysisResults(sparkSession.sqlContext.emptyDataFrame,
+          sparkSession.sqlContext.emptyDataFrame))
 
     val anomalyScore = scoredData.filter(scoredData(Host) === "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -152,6 +174,8 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
 
     val SuspiciousConnectsAnalysisResults(scoredData, _) =
       ProxySuspiciousConnectsAnalysis.run(onlineTestConfigProxy, sparkSession, logger, data)
+        .getOrElse(SuspiciousConnectsAnalysisResults(sparkSession.sqlContext.emptyDataFrame,
+          sparkSession.sqlContext.emptyDataFrame))
 
     val anomalyScore = scoredData.filter(scoredData(Host) ===  "intel.com").first().getAs[Double](Score)
     val typicalScores = scoredData.filter(scoredData(Host) === "maw.bronto.com").collect().map(_.getAs[Double](Score))
@@ -202,6 +226,32 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
     Math.abs(typicalScores(8) - 0.9d) should be <= 0.01d
   }
 
+  it should "return None when input data frame doesn't matches expected schema" in {
+    val logger = LogManager.getLogger("SuspiciousConnectsAnalysis")
+    logger.setLevel(Level.WARN)
+
+
+    val anomalousRecord = ProxyInvalidInput("2016-10-03", "04:57:36", "127.0.0.1", 0.0d, "PUT",
+      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+      1, 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
+      "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
+      "-", "127.0.0.1", 338, 647,
+      1.0d)
+
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, anomalousRecord, anomalousRecord, anomalousRecord,
+      anomalousRecord))
+
+    val results =
+      ProxySuspiciousConnectsAnalysis.run(emTestConfigProxy, sparkSession, logger, data)
+
+    val none = results match {
+      case None => true
+      case Some(_) => false
+    }
+
+    none shouldBe true
+  }
+
   "filterRecords" should "return data without garbage" in {
 
     val cleanedProxyRecords = ProxySuspiciousConnectsAnalysis
@@ -229,6 +279,39 @@ class ProxySuspiciousConnectsAnalysisTest extends TestingSparkContextFlatSpec wi
       .filterScoredRecords(testProxyRecords.scoredProxyRecordsDF, threshold)
 
     scoredProxyRecords.count should be(2)
+
+  }
+
+  "validateSchema" should "return false when passing an invalid schema" in {
+    val anomalousRecord = ProxyInvalidInput("2016-10-03", "04:57:36", "127.0.0.1", 0.0d, "PUT",
+      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+      1, 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
+      "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
+      "-", "127.0.0.1", 338, 647,
+      1.0d)
+
+    val data = sparkSession.createDataFrame(Seq(anomalousRecord, anomalousRecord, anomalousRecord, anomalousRecord,
+      anomalousRecord))
+
+    val results = ProxySuspiciousConnectsAnalysis.validateSchema(data)
+
+    results.isValid shouldBe false
+
+  }
+
+  it should "return true when passing a valid schema" in {
+    val typicalRecord = ProxyInput("2016-10-03", "04:57:36", "127.0.0.1", "maw.bronto.com", "PUT",
+      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+      "text/plain", 230, "-", "Technology/Internet", "http://www.spoonflower.com/tags/color", "202", 80,
+      "/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle",
+      "-", "127.0.0.1", 338, 647,
+      "maw.bronto.com/sites/c37i4q22szvir8ga3m8mtxaft7gwnm5fio8hfxo35mu81absi1/carts/4b3a313d-50f6-4117-8ffd-4e804fd354ef/fiddle")
+
+    val data = sparkSession.createDataFrame(Seq(typicalRecord, typicalRecord, typicalRecord))
+
+    val results = ProxySuspiciousConnectsAnalysis.validateSchema(data)
+
+    results.isValid shouldBe true
 
   }
 

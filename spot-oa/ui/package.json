@@ -2,7 +2,7 @@
   "name": "spot_ui",
   "version": "1.1.0",
   "description": "Apache Spot :: UI",
-  "repository": "https://github.com/Open-Network-Insight/open-network-insight",
+  "repository": "https://github.com/apache/incubator-spot",
   "license": "Apache License, Version 2.0",
   "dependencies": {
     "bootstrap": "3.3.5",
@@ -19,6 +19,7 @@
     "object-assign": "^1.0.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "sweetalert2": "^6.6.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -36,7 +37,7 @@
   "scripts": {
     "test": "jest",
     "postinstall": "npm run build-all",
-    "watch-ingest-summary": "NODE_ENV=development watchify js/ingest-summary.js -o js/ingest-summary.bundle.min.js -v -d",
+    "watch-ingest-summary": "watchify js/ingest-summary.js -o js/ingest-summary.bundle.min.js -v",
     "build-all": "npm run build-flow && npm run build-dns && npm run build-proxy && npm run build-ingest-summary",
     "build-flow": "cd flow/ && npm run build-all && cd ../",
     "build-dns": "cd dns/ && npm run build-all && cd ../",

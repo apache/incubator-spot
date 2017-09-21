@@ -71,12 +71,12 @@ object SuspiciousConnects {
         }
 
         val results: Option[SuspiciousConnectsAnalysisResults] = analysis match {
-          case "flow" => Some(FlowSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
-            inputDataFrame))
-          case "dns" => Some(DNSSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
-            inputDataFrame))
-          case "proxy" => Some(ProxySuspiciousConnectsAnalysis.run(config, sparkSession, logger,
-            inputDataFrame))
+          case "flow" => FlowSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame)
+          case "dns" => DNSSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame)
+          case "proxy" => ProxySuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame)
           case _ => None
         }
 
@@ -103,7 +103,11 @@ object SuspiciousConnects {
             InvalidDataHandler.showAndSaveInvalidRecords(invalidRecords, config.hdfsScoredConnect, logger)
           }
 
-          case None => logger.error("Unsupported (or misspelled) analysis: " + analysis)
+          case None => logger.error(s"Something went wrong while trying to run Suspicious Connects Analysis")
+            logger.error(s"Is the value of the analysis parameter (provided: $analysis) any of the valid analysis " +
+              s"types flow/dns/proxy?")
+            logger.error("If analysis type is correct please check for other errors like schema not matching or " +
+              "bad spark parameters")
         }
 
         sparkSession.stop()
