@@ -1,0 +1,40 @@
+DROP TABLE IF EXISTS ${VAR:ODM_DBNAME}.${VAR:ODM_TABLENAME};
+CREATE EXTERNAL TABLE IF NOT EXISTS ${VAR:ODM_DBNAME}.${VAR:ODM_TABLENAME} (
+dvc_time bigint,
+end_ip4 bigint,
+end_ip6 bigint,
+end_os string,
+end_os_version string,
+end_os_sp string,
+end_tz string,
+end_hotfixes array<string>,
+end_disks array<string>,
+end_removeables array<string>,
+end_nics array<string>,
+end_drivers array<string>,
+end_users array<string>,
+end_host string,
+end_mac string,
+end_owner string,
+end_vulns array<string>,
+end_loc string,
+end_departm string,
+end_company string,
+end_regs array<string>,
+end_svcs array<string>,
+end_procs array<string>,
+end_criticality string,
+end_apps array<string>,
+end_desc float,
+dvc_type string,
+dvc_vendor string,
+dvc_version string,
+end_architecture string,
+end_uuid string,
+end_risk float,
+end_memtotal int,
+additional_attrs map<string,string>)
+STORED AS AVRO
+LOCATION '${VAR:ODM_LOCATION}'
+TBLPROPERTIES ('avro.schema.url'='${VAR:ODM_AVRO_URL}')
+;
