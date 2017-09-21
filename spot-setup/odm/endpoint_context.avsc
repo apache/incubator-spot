@@ -5,7 +5,9 @@
 	"fields": [
         {"name":"dvc_time","type":["null","long"],"doc":"Timestamp from when the endpoint context information is obtained","default":null},
 		{"name":"end_ip4", "type":["null","long"],"doc":"IP address of endpoint","default":null},
+        {"name":"end_ip4_str", "type":["null","string"],"doc":"IP address of endpoint","default":null},
 		{"name":"end_ip6", "type":["null","long"],"doc":"IP address of endpoint","default":null},
+        {"name":"end_ip6_str", "type":["null","string"],"doc":"IP address of endpoint","default":null},
 		{"name":"end_os", "type":["null","string"],"doc":"Operating system","default":null},
 		{"name":"end_os_version", "type":["null","string"],"doc":"Version of OS","default":null},
 		{"name":"end_os_sp", "type":["null","string"],"doc":"Service pack","default":null},

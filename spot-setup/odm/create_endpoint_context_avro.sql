@@ -2,7 +2,9 @@ DROP TABLE IF EXISTS ${VAR:ODM_DBNAME}.${VAR:ODM_TABLENAME};
 CREATE EXTERNAL TABLE IF NOT EXISTS ${VAR:ODM_DBNAME}.${VAR:ODM_TABLENAME} (
 dvc_time bigint,
 end_ip4 bigint,
+end_ip4_str string,
 end_ip6 bigint,
+end_ip6_str string,
 end_os string,
 end_os_version string,
 end_os_sp string,
