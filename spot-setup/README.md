@@ -61,7 +61,7 @@ Create a pull request and contact the maintainers.
 
 ## Issues
 
-Report issues at the Apache Spot [issues] (https://github.com/Open-Network-Insight/open-network-insight/issues) page.
+Report issues at the Apache Spot [issues] (https://issues.apache.org/jira/projects/SPOT/issues) page.
 
 ## Maintainers
 
