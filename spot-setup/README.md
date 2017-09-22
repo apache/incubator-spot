@@ -26,7 +26,7 @@ The main script in the repository is **hdfs_setup.sh** which is responsible of l
 
 This file also contains sources desired to be installed as part of Apache Spot, general paths for HDFS folders, Kerberos information and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
 
-To read more about these variables, please review the [wiki] (https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration).
+To read more about these variables, please review the [wiki] (http://spot.incubator.apache.org/doc/#configuration).
 
 ## Database Query Scripts
 
