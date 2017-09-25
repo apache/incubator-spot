@@ -10,6 +10,7 @@
 		{"name":"user_logon_count", "type":["null","int"],"doc":"Number of times account has logged on","default":null},
 		{"name":"user_last_reset", "type":["null","long"],"doc":"Timestamp from when user last reset password","default":null},
 		{"name":"user_expiration", "type":["null","long"],"doc":"Date/time when user expires","default":null},
+		{"name":"user_image", "type":["null","binary"],"doc":"Image data for user","default":null},
 		{"name":"user_id", "type":["null","string"],"doc":"Unique user id","default":null},
 		{"name":"user_name", "type":["null","string"],"doc":"Username in event log/alert","default":null},
 		{"name":"user_name_first", "type":["null","string"],"doc":"First name","default":null},
@@ -30,7 +31,6 @@
 		{"name":"dvc_vendor", "type":["null","string"],"doc":"Vendor","default":null},
 		{"name":"user_risk", "type":["null","float"],"doc":"Risk score","default":null},
 		{"name":"dvc_version", "type":["null","string"],"doc":"Version","default":null},
-        {"name":"user_img", "type":["null","string"],"doc":"Image data for user","default":null},
 		{"name":"additional_attrs", "type":["null",{"type":"map","values":["null","string"]}],"default":null,"doc":"Additional attributes of user"}
 	],
 	"doc": "A view schema for storing Apache Spot User Context data."

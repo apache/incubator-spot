@@ -23,6 +23,7 @@ user_last_logon bigint,
 user_logon_count int,
 user_last_reset bigint,
 user_expiration bigint,
+user_img binary,
 user_id string,
 user_name string,
 user_name_first string,
@@ -43,7 +44,6 @@ dvc_type string,
 dvc_vendor string,
 user_risk float,
 dvc_version string,
-user_img string,
 additional_attrs map<string,string>)
 STORED AS PARQUET
 LOCATION '${VAR:ODM_LOCATION}'
