@@ -49,7 +49,14 @@
         {"name":"ti_indicator_security_id", "type":["null","string"],"doc":"if known securityID associated with the indicator.", "default": null},
         {"name":"ti_indicator_pe_info", "type":["null",{"type":"array", "items":"string"}],"doc":"Subsystem, BaseAddress, PETImeStamp, Expert, JumpCodes, DetectedAnomalies, DigitalSignatures,VersionInfo, ResourceInfo,Imported Modules", "default": null},
         {"name":"ti_indicator_pe_type", "type":["null",{"type":"array", "items":"string"}],"doc":"Executable, DLL, Invalid, Unknown, Native, Windows_GUI, OS2, POSIX, EFI, etc", "default": null},
-        {"name":"ti_indicator_strings", "type":["null",{"type":"array", "items":"string"}],"doc":"Any strings associated with the file indicated that might be useful in identification or further indicator development or adversary identification.", "default": null}
+        {"name":"ti_indicator_strings", "type":["null",{"type":"array", "items":"string"}],"doc":"Any strings associated with the file indicated that might be useful in identification or further indicator development or adversary identification.", "default": null},
+        {"name":"ti_indicator_org", "type":["null","string"],"doc":"Name of the business that owns the IP address associated with the indicator", "default": null},
+        {"name":"ti_indicator_reg_name", "type":["null","string"],"doc":"Name of the person who registered the domain", "default": null},
+        {"name":"ti_indicator_reg_email", "type":["null","string"],"doc":"Email address of the person who registered the domain", "default": null},
+        {"name":"ti_indicator_reg_org", "type":["null","string"],"doc":"Name of the organisation that registered the domain", "default": null},
+        {"name":"ti_indicator_reg_phone", "type":["null","string"],"doc":"Phone number associated with the domain registered", "default": null},
+        {"name":"ti_tags", "type":["null","string"],"doc":"Additional comments/associations from the feed", "default": null},
+        {"name":"ti_threat_type", "type":["null","string"],"doc":"malware, compromised, apt, c2, etc...", "default": null}
 	],
 	"doc": "A view schema for storing Apache Spot Threat Intelligence Context data."
   }

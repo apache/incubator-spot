@@ -62,7 +62,14 @@ ti_indicator_user_name string,
 ti_indicator_security_id string,
 ti_indicator_pe_info array<string>,
 ti_indicator_pe_type array<string>,
-ti_indicator_strings array<string>)
+ti_indicator_strings array<string>,
+ti_indicator_org string,
+ti_indicator_reg_name string,
+ti_indicator_reg_email string,
+ti_indicator_reg_org string,
+ti_indicator_reg_phone string,
+ti_tags string,
+ti_threat_type string)
 STORED AS AVRO
 LOCATION '${VAR:ODM_LOCATION}'
 TBLPROPERTIES ('avro.schema.url'='${VAR:ODM_AVRO_URL}')
