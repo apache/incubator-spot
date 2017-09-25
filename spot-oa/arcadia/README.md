@@ -10,11 +10,8 @@ Contained in this directory is a configuration file (spot_app.json) that include
 
 #### Included Dashboards
 
-- Network Activity - Provides views of events and suspicious network flow activity
-- User Activity Summary - Provides summary level view of suspicious activity related to users in your environment.
-- User Activity Detail - Provides a contextual view of events related to users in your environment
-- Endpoint Activity Summary - Provides a summary level view of suspicious activity related to endpoint in your environment.
-- Endpoint Activity Detail - Provides a contextual view of events related to endpoints in your environment.
+- User Activity Summary - Provides summary level view of activity related to users in your environment.
+- Endpoint Activity Summary - Provides a summary level view of activity related to endpoints in your environment.
 - Vulnerabilities - Provides a contextual view of vulnerabilities and details related to endpoints in your environment.
 
 End users are encouraged to customize these dashboards for their own purposes and use-cases.
