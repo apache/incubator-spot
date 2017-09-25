@@ -260,7 +260,6 @@ flow_input string,
 flow_output string,
 -- Vulnerability
 vuln_id string,
-vuln_title string,
 vuln_type string,
 vuln_status string,
 vuln_severity string,

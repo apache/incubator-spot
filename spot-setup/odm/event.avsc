@@ -230,7 +230,6 @@
         {"name":"flow_input", "type":["null","string"],"doc":"TBD", "default": null},
         {"name":"flow_output", "type":["null","string"],"doc":"TBD", "default": null},
         {"name":"vuln_id", "type":["null","string"],"doc":"TBD", "default": null},
-        {"name":"vuln_title", "type":["null","string"],"doc":"TBD", "default": null},
         {"name":"vuln_type", "type":["null","string"],"doc":"TBD", "default": null},
         {"name":"vuln_status", "type":["null","string"],"doc":"TBD", "default": null},
         {"name":"vuln_severity", "type":["null","string"],"doc":"TBD", "default": null},
