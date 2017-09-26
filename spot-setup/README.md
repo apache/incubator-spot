@@ -86,12 +86,13 @@ Create a pull request and contact the maintainers.
 
 ## Issues
 
-<<<<<<< HEAD
 - Create an [issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT).
 - Go to our Slack [channel](https://apachespot.slack.com/messages/general).
-=======
+
 Report issues at the Apache Spot [issues] (https://issues.apache.org/jira/projects/SPOT/issues) page.
->>>>>>> SPOT-233 closes apache/incubator-spot#119
+
+- Create an [issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT).
+- Go to our Slack [channel](https://apachespot.slack.com/messages/general).
 
 ## Maintainers
 
