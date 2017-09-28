@@ -24,6 +24,7 @@ The main script in the repository is **hdfs_setup.sh** which is responsible of l
 Options:
 --no-sudo     will execute commands as the existing user while setting `HADOOP_USER_NAME=hdfs`
 -c            specify a custom location for the spot.conf, defaults to /etc/spot.conf
+-d            specific which database client to use `-d beeline`
 
 ## Environment Variables
 
