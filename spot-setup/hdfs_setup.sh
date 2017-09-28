@@ -69,6 +69,11 @@ for arg in "$@"; do
             log "Spot Configuration file: ${SPOTCONF}"
             shift
             ;;
+        "-d")
+            shift
+            db_override=$1
+            shift
+            ;;
     esac
 done
 
@@ -89,23 +94,34 @@ else
     hdfs_cmd="sudo -u hdfs hdfs"
 fi
 
-db_engine=$(echo ${DBENGINE} | tr '[:upper:]' '[:lower:]')
+if [[ -z "${db_override}" ]]; then
+        DBENGINE=$(echo ${DBENGINE} | tr '[:upper:]' '[:lower:]')
+        log "setting database engine to ${DBENGINE}"
+else
+        DBENGINE=$(echo ${db_override} | tr '[:upper:]' '[:lower:]')
+        log "setting database engine to $db_override"
+fi
 
-case ${db_engine} in
+case ${DBENGINE} in
     impala)
-    db_shell="impala-shell -i ${IMPALA_DEM}"
-    db_query="${db_shell} -q"
-    db_script="${db_shell} --var=huser=${HUSER} --var=dbname=${DBNAME} -c -f"
-    ;;
+        db_shell="impala-shell -i ${IMPALA_DEM}"
+        db_query="${db_shell} -q"
+        db_script="${db_shell} --var=huser=${HUSER} --var=dbname=${DBNAME} -c -f"
+        ;;
     hive)
-    db_shell="hive"
-    db_query="${db_shell} -e"
-    db_script="${db_shell} -hiveconf huser=${HUSER} -hiveconf dbname=${DBNAME} -f"
-    ;;
+        db_shell="hive"
+        db_query="${db_shell} -e"
+        db_script="${db_shell} -hiveconf huser=${HUSER} -hiveconf dbname=${DBNAME} -f"
+        ;;
+    beeline)
+        db_shell="beeline -u jdbc:${JDBC_URL}"
+        db_query="${db_shell} -e"
+        db_script="${db_shell} --hivevar huser=${HUSER} --hivevar dbname=${DBNAME} -f"
+        ;;
     *)
-    log "$DBENGINE not compatible"
-    exit 1
-    ;;
+        log "DBENGINE not compatible or not set in spot.conf: DBENGINE--> ${DBENGINE:-empty}"
+        exit 1
+        ;;
 esac
 
 # Creating HDFS user's folder
@@ -126,9 +142,10 @@ do
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
 	hdfs dfs -chmod -R 775 ${HUSER}/$d
-	${hdfs_cmd} dfs -setfacl -R -m user:${db_engine}:rwx ${HUSER}/$d
+	${hdfs_cmd} dfs -setfacl -R -m user:${db_override}:rwx ${HUSER}/$d
 	${hdfs_cmd} dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
 done
+
 
 # Creating Spot Database
  ${db_query} "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
@@ -136,6 +153,6 @@ done
 
 # Creating tables
 for d in "${DSOURCES[@]}" 
-do 
-	${db_script} "./${db_engine}/create_${d}_parquet.hql"
+do
+	${db_script} "./${DBENGINE}/create_${d}_parquet.hql"
 done
