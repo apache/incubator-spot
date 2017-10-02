@@ -1,4 +1,4 @@
-Apache Spot Open Data Model (ODM)
+Apache Spot (Incubating) Open Data Model (ODM)
 
 (v1.1)
 
@@ -74,7 +74,7 @@ In order to provide a framework for effectively analyzing data for cyber threats
 
 In the diagram below, the raw event tells us that user "jsmith" successfully logged in to an Oracle database from the IP address 10:1.1.3.  Based on the raw event only, we don’t know if this event is a legitimate threat or not.  After injecting user and endpoint context, the enriched event tells us this event is a potential threat that requires further investigation.
 
-![image alt text](image_0.png)
+![image alt text](https://lh3.googleusercontent.com/-Q8TasmY-vRQ/WHVnoXAK44I/AAAAAAAAAtw/XBDy3PC98k800iaWpNIzAYoQ8S9zc5NBQCLcB/s0/ODMimage1.jpg)
 
 Based on the need to collect and analyze both security event logs/alerts and contextual data, support for the following types of security information are included in the Spot open data model:
 
@@ -2999,7 +2999,7 @@ Something similar can be done for endpoint context model, security event log/ale
 
 The relationships between the data model entities are illustrated below.
 
-# ![image alt text](image_1.png)
+# ![image alt text](https://lh3.googleusercontent.com/-SxEubiTPzFE/WHVo0uxgJtI/AAAAAAAAAt8/3su9v3h0MsovJ0Mhy08EbuFTvRvKEoIwQCLcB/s0/ODMimage2.jpg)
 
 # Data Ingestion Framework
 
