@@ -61,7 +61,10 @@ which is intended to be located in the /etc directory by default.
 
 1. run wget http://get.arcadiadata.com.s3.amazonaws.com/spot/sample/odm_sample_setup.sh to retrieve the sample data setup script.
 2. run chmod +x odm_sample_setup.sh to make the script executable.
-3. run ./odm_sample_setup.sh to retrieve, store, and make sample data available in your ODM tables.
+3. run `./odm_sample_setup.sh pqt` or `./odm_sample_setup.sh avro` to retrieve, store, and make sample data available in your ODM tables in the appropriate format.
+
+NOTE: Your sample data format should match the storage format of your ODM tables.
+For example, if you've created your ODM tables to store data as Parquet, run the sample script with the "pqt" argument.
 
 ## Licensing
 
