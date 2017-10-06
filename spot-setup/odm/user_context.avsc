@@ -26,12 +26,12 @@
 		{"name":"user_ou", "type":["null","string"],"doc":"Organizational unit","default":null},
 		{"name":"user_empid", "type":["null","string"],"doc":"Employee ID","default":null},
 		{"name":"user_title", "type":["null","string"],"doc":"Job Title","default":null},
-		{"name":"user_groups", "type":["null",{"type":"array", "items":"string"}],"doc":"Groups to which the user belongs","default":null},
+		{"name":"user_groups", "type":["null","string"],"doc":"Groups to which the user belongs","default":null},
 		{"name":"dvc_type", "type":["null","string"],"doc":"Device type that generated the user context data","default":null},
 		{"name":"dvc_vendor", "type":["null","string"],"doc":"Vendor","default":null},
 		{"name":"user_risk", "type":["null","float"],"doc":"Risk score","default":null},
 		{"name":"dvc_version", "type":["null","string"],"doc":"Version","default":null},
-		{"name":"additional_attrs", "type":["null",{"type":"map","values":["null","string"]}],"default":null,"doc":"Additional attributes of user"}
+		{"name":"additional_attrs", "type":["null","string"],"default":null,"doc":"Additional attributes of user"}
 	],
 	"doc": "A view schema for storing Apache Spot User Context data."
   }
