@@ -104,20 +104,70 @@ the timeframe provided.
 def ingest_summary(start_date,end_date):
 
     db = Configuration.db()
+
+    daterange_select = daterange_query(start_date, end_date)
+
     is_query = ("""
             SELECT
                 tdate,total
             FROM {0}.flow_ingest_summary
             WHERE
-                ( y >= {1} AND y <= {2}) AND
-                ( m >= {3} AND m <= {4}) AND
-                ( d >= {5} AND d <= {6})
+                {1}
             ORDER BY tdate
-            """).format(db,start_date.year,end_date.year, \
-                        start_date.month,end_date.month, \
-                        start_date.day, end_date.day)
+            """).format(db, daterange_select)
 
     return ImpalaEngine.execute_query_as_list(is_query)
+
+
+"""
+--------------------------------------------------------------------------
+Return a succinct query substring for selecting date ranges between a start   
+and an end date. Dates can be from arbitrary year and month, boundaries 
+are handled correctly. Reusable by other modules dns/proxy if moved 
+elsewhere (impala_engine.py?)
+--------------------------------------------------------------------------
+"""
+
+
+def daterange_query(start_date, end_date):
+    curyear = start_date.year
+    qrystring = ''
+    while (curyear <= end_date.year):
+        if ((curyear == start_date.year)):
+            # Till end of start month, don't lose lower days in other months
+            if (curyear == end_date.year):
+                if (start_date.month == end_date.month):
+                    qrystring += '(y = {} AND m = {} AND d >= {} AND d <= {}) '.format(
+                        start_date.year, start_date.month, start_date.day, end_date.day)
+                else:
+                    qrystring += '(y = {} AND m = {} AND d >={}) '.format(
+                        start_date.year, start_date.month, start_date.day, end_date.day)
+                    if (end_date.month > (start_date.month + 1)):
+                        qrystring += 'OR (y = {} AND m > {} AND m < {} ) '.format(
+                            start_date.year, start_date.month, end_date.month)
+                    qrystring += 'OR (y = {} AND m = {} AND d <= {} ) '.format(
+                        start_date.year, end_date.month, end_date.day)
+            # Go till end of the year in case we are crossing yearly boundaries
+            else:
+                qrystring += '(y = {} AND m = {} AND d >={}) '.format(
+                    start_date.year, start_date.month, start_date.day, end_date.day)
+                if (start_date.month != 12):
+                    qrystring += ' OR (y = {} AND m > {}) '.format(
+                        start_date.year, start_date.month)
+
+        # Intermediate full years
+        elif((curyear > start_date.year) and (curyear < end_date.year)):
+            qrystring += ' OR (y = {}) '.format(curyear)
+        # End year, but not also start year
+        elif ((curyear == end_date.year)):
+            qrystring += ' OR (y = {} AND m < {}) '.format(end_date.year,
+                                                           end_date.month)
+            qrystring += ' OR (y = {} AND m = {} and d <= {})'.format(
+                end_date.year, end_date.month, end_date.day)
+
+        curyear = curyear + 1
+
+    return qrystring
 
 """
 --------------------------------------------------------------------------
@@ -492,8 +542,8 @@ def create_incident_progression(anchor, inbound, outbound, twoway, date):
     }
 
     #----- Add Inbound Connections-------#
+    obj["children"].append({'name': 'Inbound Only', 'children': [], 'impact': 0})
     if len(inbound) > 0:
-        obj["children"].append({'name': 'Inbound Only', 'children': [], 'impact': 0})
         in_ctxs = {}
         for ip in inbound:
             if 'nwloc' in inbound[ip] and len(inbound[ip]['nwloc']) > 0:
@@ -509,8 +559,8 @@ def create_incident_progression(anchor, inbound, outbound, twoway, date):
                 })
 
     #------ Add Outbound ----------------#
+    obj["children"].append({'name':'Outbound Only','children':[],'impact':0})
     if len(outbound) > 0:
-        obj["children"].append({'name':'Outbound Only','children':[],'impact':0})
         out_ctxs = {}
         for ip in outbound:
             if 'nwloc' in outbound[ip] and len(outbound[ip]['nwloc']) > 0:
@@ -526,8 +576,8 @@ def create_incident_progression(anchor, inbound, outbound, twoway, date):
                 })
 
     #------ Add TwoWay ----------------#
+    obj["children"].append({'name':'two way','children': [], 'impact': 0})
     if len(twoway) > 0:
-        obj["children"].append({'name':'two way','children': [], 'impact': 0})
         tw_ctxs = {}
         for ip in twoway:
             if 'nwloc' in twoway[ip] and len(twoway[ip]['nwloc']) > 0:
