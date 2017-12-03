@@ -18,10 +18,10 @@ DROP TABLE IF EXISTS ${VAR:ODM_DBNAME}.${VAR:ODM_TABLENAME};
 CREATE EXTERNAL TABLE IF NOT EXISTS ${VAR:ODM_DBNAME}.${VAR:ODM_TABLENAME} (
 -- Common
 event_time bigint,
-begintime bigint,
-endtime bigint,
-event_insertime bigint,
-lastupdatetime bigint,
+begin_time bigint,
+end_time bigint,
+event_insert_time bigint,
+last_update_time bigint,
 duration float,
 event_id string,
 name string,
