@@ -1,11 +1,11 @@
 {
   "pipelineConfig" : {
-    "schemaVersion" : 4,
+    "schemaVersion" : 5,
     "version" : 7,
     "pipelineId" : "ODMWindowsEventLogs9fae6da4-eb7f-4aca-820a-1f561a40e7cc",
     "title" : "ODMWindowsEventLogs",
     "description" : "",
-    "uuid" : "a155ab31-89d9-44d9-94d3-c06fc1fda992",
+    "uuid" : "3c91ae21-f045-413a-b316-c46298982991",
     "configuration" : [ {
       "name" : "executionMode",
       "value" : "STANDALONE"
@@ -48,8 +48,11 @@
         "key" : "HIVE_URL",
         "value" : ""
       }, {
-        "key" : "WINDOWS_EVENT_DIR",
-        "value" : ""
+        "key" : "WINDOWS_HTTP_APP_ID",
+        "value" : "windowsSpotApp"
+      }, {
+        "key" : "HTTP_PORT",
+        "value" : "8000"
       } ]
     }, {
       "name" : "badRecordsHandling",
@@ -90,6 +93,9 @@
     }, {
       "name" : "statsAggregatorStage",
       "value" : "streamsets-datacollector-basic-lib::com_streamsets_pipeline_stage_destination_devnull_StatsDpmDirectlyDTarget::1"
+    }, {
+      "name" : "shouldCreateFailureSnapshot",
+      "value" : true
     } ],
     "uiInfo" : {
       "previewConfig" : {
@@ -104,254 +110,265 @@
       }
     },
     "stages" : [ {
-      "instanceName" : "Directory_01",
+      "instanceName" : "HTTPServer_01",
       "library" : "streamsets-datacollector-basic-lib",
-      "stageName" : "com_streamsets_pipeline_stage_origin_spooldir_SpoolDirDSource",
-      "stageVersion" : "9",
+      "stageName" : "com_streamsets_pipeline_stage_origin_httpserver_HttpServerDPushSource",
+      "stageVersion" : "10",
       "configuration" : [ {
-        "name" : "conf.dataFormatConfig.compression",
-        "value" : "NONE"
-      }, {
-        "name" : "conf.dataFormatConfig.filePatternInArchive",
-        "value" : "*"
-      }, {
-        "name" : "conf.dataFormatConfig.charset",
-        "value" : "UTF-8"
-      }, {
-        "name" : "conf.dataFormatConfig.removeCtrlChars",
+        "name" : "httpConfigs.tlsConfigBean.tlsEnabled",
         "value" : false
       }, {
-        "name" : "conf.dataFormatConfig.textMaxLineLen",
-        "value" : 1024
-      }, {
-        "name" : "conf.dataFormatConfig.useCustomDelimiter",
-        "value" : false
-      }, {
-        "name" : "conf.dataFormatConfig.customDelimiter",
-        "value" : "\\r\\n"
-      }, {
-        "name" : "conf.dataFormatConfig.includeCustomDelimiterInTheText",
-        "value" : false
-      }, {
-        "name" : "conf.dataFormatConfig.jsonContent",
-        "value" : "MULTIPLE_OBJECTS"
-      }, {
-        "name" : "conf.dataFormatConfig.jsonMaxObjectLen",
-        "value" : 4096000
-      }, {
-        "name" : "conf.dataFormatConfig.csvFileFormat",
-        "value" : "CSV"
-      }, {
-        "name" : "conf.dataFormatConfig.csvHeader",
-        "value" : "NO_HEADER"
-      }, {
-        "name" : "conf.dataFormatConfig.csvMaxObjectLen",
-        "value" : 1024
-      }, {
-        "name" : "conf.dataFormatConfig.csvAllowExtraColumns",
-        "value" : false
-      }, {
-        "name" : "conf.dataFormatConfig.csvExtraColumnPrefix",
-        "value" : "_extra_"
-      }, {
-        "name" : "conf.dataFormatConfig.csvCustomDelimiter",
-        "value" : "|"
-      }, {
-        "name" : "conf.dataFormatConfig.csvCustomEscape",
-        "value" : "\\"
-      }, {
-        "name" : "conf.dataFormatConfig.csvCustomQuote",
-        "value" : "\""
-      }, {
-        "name" : "conf.dataFormatConfig.csvEnableComments",
-        "value" : false
-      }, {
-        "name" : "conf.dataFormatConfig.csvCommentMarker",
-        "value" : "#"
-      }, {
-        "name" : "conf.dataFormatConfig.csvIgnoreEmptyLines",
-        "value" : true
-      }, {
-        "name" : "conf.dataFormatConfig.csvRecordType",
-        "value" : "LIST_MAP"
-      }, {
-        "name" : "conf.dataFormatConfig.csvSkipStartLines",
-        "value" : 0
-      }, {
-        "name" : "conf.dataFormatConfig.parseNull",
-        "value" : false
-      }, {
-        "name" : "conf.dataFormatConfig.nullConstant",
-        "value" : "\\\\N"
-      }, {
-        "name" : "conf.dataFormatConfig.xmlRecordElement",
+        "name" : "httpConfigs.tlsConfigBean.keyStoreFilePath",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.includeFieldXpathAttributes",
-        "value" : false
+        "name" : "httpConfigs.tlsConfigBean.keyStoreType",
+        "value" : "JKS"
       }, {
-        "name" : "conf.dataFormatConfig.xPathNamespaceContext",
+        "name" : "httpConfigs.tlsConfigBean.keyStorePassword",
+        "value" : null
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.keyStoreAlgorithm",
+        "value" : "SunX509"
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.useDefaultProtocols",
+        "value" : true
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.protocols",
         "value" : [ ]
       }, {
-        "name" : "conf.dataFormatConfig.outputFieldAttributes",
+        "name" : "httpConfigs.tlsConfigBean.useDefaultCiperSuites",
+        "value" : true
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.cipherSuites",
+        "value" : [ ]
+      }, {
+        "name" : "httpConfigs.port",
+        "value" : "${HTTP_PORT}"
+      }, {
+        "name" : "httpConfigs.maxConcurrentRequests",
+        "value" : 10
+      }, {
+        "name" : "httpConfigs.appId",
+        "value" : "${WINDOWS_HTTP_APP_ID}"
+      }, {
+        "name" : "httpConfigs.appIdViaQueryParamAllowed",
         "value" : false
       }, {
-        "name" : "conf.dataFormatConfig.xmlMaxObjectLen",
-        "value" : 4096
+        "name" : "maxRequestSizeMB",
+        "value" : 100
       }, {
-        "name" : "conf.dataFormatConfig.logMode",
-        "value" : "COMMON_LOG_FORMAT"
+        "name" : "dataFormat",
+        "value" : "SDC_JSON"
       }, {
-        "name" : "conf.dataFormatConfig.logMaxObjectLen",
+        "name" : "dataFormatConfig.compression",
+        "value" : "NONE"
+      }, {
+        "name" : "dataFormatConfig.filePatternInArchive",
+        "value" : "*"
+      }, {
+        "name" : "dataFormatConfig.charset",
+        "value" : "UTF-8"
+      }, {
+        "name" : "dataFormatConfig.removeCtrlChars",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.textMaxLineLen",
         "value" : 1024
       }, {
-        "name" : "conf.dataFormatConfig.retainOriginalLine",
+        "name" : "dataFormatConfig.useCustomDelimiter",
         "value" : false
       }, {
-        "name" : "conf.dataFormatConfig.customLogFormat",
+        "name" : "dataFormatConfig.customDelimiter",
+        "value" : "\\r\\n"
+      }, {
+        "name" : "dataFormatConfig.includeCustomDelimiterInTheText",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.jsonContent",
+        "value" : "MULTIPLE_OBJECTS"
+      }, {
+        "name" : "dataFormatConfig.jsonMaxObjectLen",
+        "value" : 4096
+      }, {
+        "name" : "dataFormatConfig.csvFileFormat",
+        "value" : "CSV"
+      }, {
+        "name" : "dataFormatConfig.csvHeader",
+        "value" : "NO_HEADER"
+      }, {
+        "name" : "dataFormatConfig.csvAllowExtraColumns",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.csvExtraColumnPrefix",
+        "value" : "_extra_"
+      }, {
+        "name" : "dataFormatConfig.csvMaxObjectLen",
+        "value" : 1024
+      }, {
+        "name" : "dataFormatConfig.csvCustomDelimiter",
+        "value" : "|"
+      }, {
+        "name" : "dataFormatConfig.csvCustomEscape",
+        "value" : "\\"
+      }, {
+        "name" : "dataFormatConfig.csvCustomQuote",
+        "value" : "\""
+      }, {
+        "name" : "dataFormatConfig.csvEnableComments",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.csvCommentMarker",
+        "value" : "#"
+      }, {
+        "name" : "dataFormatConfig.csvIgnoreEmptyLines",
+        "value" : true
+      }, {
+        "name" : "dataFormatConfig.csvRecordType",
+        "value" : "LIST_MAP"
+      }, {
+        "name" : "dataFormatConfig.csvSkipStartLines",
+        "value" : 0
+      }, {
+        "name" : "dataFormatConfig.parseNull",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.nullConstant",
+        "value" : "\\\\N"
+      }, {
+        "name" : "dataFormatConfig.xmlRecordElement",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.includeFieldXpathAttributes",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.xPathNamespaceContext",
+        "value" : [ ]
+      }, {
+        "name" : "dataFormatConfig.outputFieldAttributes",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.xmlMaxObjectLen",
+        "value" : 4096
+      }, {
+        "name" : "dataFormatConfig.logMode",
+        "value" : "COMMON_LOG_FORMAT"
+      }, {
+        "name" : "dataFormatConfig.logMaxObjectLen",
+        "value" : 1024
+      }, {
+        "name" : "dataFormatConfig.retainOriginalLine",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.customLogFormat",
         "value" : "%h %l %u %t \"%r\" %>s %b"
       }, {
-        "name" : "conf.dataFormatConfig.regex",
+        "name" : "dataFormatConfig.regex",
         "value" : "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)"
       }, {
-        "name" : "conf.dataFormatConfig.fieldPathsToGroupName",
+        "name" : "dataFormatConfig.fieldPathsToGroupName",
         "value" : [ {
           "fieldPath" : "/",
           "group" : 1
         } ]
       }, {
-        "name" : "conf.dataFormatConfig.grokPatternDefinition",
+        "name" : "dataFormatConfig.grokPatternDefinition",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.grokPattern",
+        "name" : "dataFormatConfig.grokPattern",
         "value" : "%{COMMONAPACHELOG}"
       }, {
-        "name" : "conf.dataFormatConfig.onParseError",
+        "name" : "dataFormatConfig.onParseError",
         "value" : "ERROR"
       }, {
-        "name" : "conf.dataFormatConfig.maxStackTraceLines",
+        "name" : "dataFormatConfig.maxStackTraceLines",
         "value" : 50
       }, {
-        "name" : "conf.dataFormatConfig.enableLog4jCustomLogFormat",
+        "name" : "dataFormatConfig.enableLog4jCustomLogFormat",
         "value" : false
       }, {
-        "name" : "conf.dataFormatConfig.log4jCustomLogFormat",
+        "name" : "dataFormatConfig.log4jCustomLogFormat",
         "value" : "%r [%t] %-5p %c %x - %m%n"
       }, {
-        "name" : "conf.dataFormatConfig.avroSchema",
+        "name" : "dataFormatConfig.avroSchema",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.schemaRegistryUrls",
+        "name" : "dataFormatConfig.schemaRegistryUrls",
         "value" : [ ]
       }, {
-        "name" : "conf.dataFormatConfig.schemaLookupMode",
+        "name" : "dataFormatConfig.schemaLookupMode",
         "value" : "SUBJECT"
       }, {
-        "name" : "conf.dataFormatConfig.subject",
+        "name" : "dataFormatConfig.subject",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.schemaId",
+        "name" : "dataFormatConfig.schemaId",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.protoDescriptorFile",
+        "name" : "dataFormatConfig.protoDescriptorFile",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.messageType",
+        "name" : "dataFormatConfig.messageType",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.isDelimited",
+        "name" : "dataFormatConfig.isDelimited",
         "value" : true
       }, {
-        "name" : "conf.dataFormatConfig.binaryMaxObjectLen",
+        "name" : "dataFormatConfig.binaryMaxObjectLen",
         "value" : 1024
       }, {
-        "name" : "conf.dataFormatConfig.datagramMode",
+        "name" : "dataFormatConfig.datagramMode",
         "value" : "SYSLOG"
       }, {
-        "name" : "conf.dataFormatConfig.typesDbPath",
+        "name" : "dataFormatConfig.typesDbPath",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.convertTime",
+        "name" : "dataFormatConfig.convertTime",
         "value" : false
       }, {
-        "name" : "conf.dataFormatConfig.excludeInterval",
+        "name" : "dataFormatConfig.excludeInterval",
         "value" : true
       }, {
-        "name" : "conf.dataFormatConfig.authFilePath",
+        "name" : "dataFormatConfig.authFilePath",
         "value" : null
       }, {
-        "name" : "conf.dataFormatConfig.wholeFileMaxObjectLen",
+        "name" : "dataFormatConfig.netflowOutputValuesMode",
+        "value" : "RAW_AND_INTERPRETED"
+      }, {
+        "name" : "dataFormatConfig.maxTemplateCacheSize",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.templateCacheTimeoutMs",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.netflowOutputValuesModeDatagram",
+        "value" : "RAW_AND_INTERPRETED"
+      }, {
+        "name" : "dataFormatConfig.maxTemplateCacheSizeDatagram",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.templateCacheTimeoutMsDatagram",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.wholeFileMaxObjectLen",
         "value" : 8192
       }, {
-        "name" : "conf.dataFormatConfig.rateLimit",
+        "name" : "dataFormatConfig.rateLimit",
         "value" : "-1"
-      }, {
-        "name" : "conf.dataFormat",
-        "value" : "JSON"
-      }, {
-        "name" : "conf.spoolDir",
-        "value" : "${WINDOWS_EVENT_DIR}"
-      }, {
-        "name" : "conf.pathMatcherMode",
-        "value" : "GLOB"
-      }, {
-        "name" : "conf.filePattern",
-        "value" : "*"
-      }, {
-        "name" : "conf.useLastModified",
-        "value" : "TIMESTAMP"
-      }, {
-        "name" : "conf.processSubdirectories",
-        "value" : false
-      }, {
-        "name" : "conf.allowLateDirectory",
-        "value" : false
-      }, {
-        "name" : "conf.overrunLimit",
-        "value" : 128
-      }, {
-        "name" : "conf.batchSize",
-        "value" : 1000
-      }, {
-        "name" : "conf.poolingTimeoutSecs",
-        "value" : 600
-      }, {
-        "name" : "conf.maxSpoolFiles",
-        "value" : 1000
-      }, {
-        "name" : "conf.initialFileToProcess",
-        "value" : null
-      }, {
-        "name" : "conf.errorArchiveDir",
-        "value" : null
-      }, {
-        "name" : "conf.postProcessing",
-        "value" : "NONE"
-      }, {
-        "name" : "conf.archiveDir",
-        "value" : null
-      }, {
-        "name" : "conf.retentionTimeMins",
-        "value" : 0
       }, {
         "name" : "stageOnRecordError",
         "value" : "TO_ERROR"
       } ],
       "uiInfo" : {
-        "yPos" : 50,
-        "stageType" : "SOURCE",
-        "rawSource" : {
-          "configuration" : [ {
-            "name" : "fileName"
-          } ]
-        },
         "description" : "",
-        "label" : "Read Windows Event Files",
-        "xPos" : 60
+        "label" : "HTTP Server 1",
+        "xPos" : 60,
+        "yPos" : 50,
+        "stageType" : "SOURCE"
       },
       "inputLanes" : [ ],
-      "outputLanes" : [ "Directory_01OutputLane15059716464100" ],
-      "eventLanes" : [ ]
+      "outputLanes" : [ "HTTPServer_01OutputLane15161394829660" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
     }, {
       "instanceName" : "ExpressionEvaluator_01",
       "library" : "streamsets-datacollector-basic-lib",
@@ -413,9 +430,10 @@
         "yPos" : 50,
         "stageType" : "PROCESSOR"
       },
-      "inputLanes" : [ "Directory_01OutputLane15059716464100" ],
+      "inputLanes" : [ "HTTPServer_01OutputLane15161394829660" ],
       "outputLanes" : [ "ExpressionEvaluator_01OutputLane15059452532370" ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     }, {
       "instanceName" : "FieldRemover_01",
       "library" : "streamsets-datacollector-basic-lib",
@@ -443,7 +461,8 @@
       },
       "inputLanes" : [ "ExpressionEvaluator_01OutputLane15059452532370" ],
       "outputLanes" : [ "FieldRemover_01OutputLane15059461007910" ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     }, {
       "instanceName" : "HadoopFS_01",
       "library" : "streamsets-datacollector-cdh_5_11-lib",
@@ -651,7 +670,8 @@
       },
       "inputLanes" : [ "FieldRemover_01OutputLane15059461007910" ],
       "outputLanes" : [ ],
-      "eventLanes" : [ "HadoopFS_01_EventLane" ]
+      "eventLanes" : [ "HadoopFS_01_EventLane" ],
+      "services" : [ ]
     }, {
       "instanceName" : "ExpressionEvaluator_02",
       "library" : "streamsets-datacollector-basic-lib",
@@ -696,7 +716,8 @@
       },
       "inputLanes" : [ "HadoopFS_01_EventLane" ],
       "outputLanes" : [ "ExpressionEvaluator_02OutputLane15059713441990" ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     }, {
       "instanceName" : "HiveQuery_01",
       "library" : "streamsets-datacollector-cdh_5_11-lib",
@@ -729,6 +750,9 @@
       }, {
         "name" : "stageRecordPreconditions",
         "value" : [ ]
+      }, {
+        "name" : "config.hiveConfigBean.driverProperties",
+        "value" : [ ]
       } ],
       "uiInfo" : {
         "description" : "",
@@ -739,7 +763,8 @@
       },
       "inputLanes" : [ "ExpressionEvaluator_02OutputLane15059713441990" ],
       "outputLanes" : [ ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     } ],
     "errorStage" : {
       "instanceName" : "Discard_ErrorStage",
@@ -756,28 +781,29 @@
       },
       "inputLanes" : [ ],
       "outputLanes" : [ ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     },
     "info" : {
       "pipelineId" : "ODMWindowsEventLogs9fae6da4-eb7f-4aca-820a-1f561a40e7cc",
       "title" : "ODMWindowsEventLogs",
       "description" : "",
       "created" : 1505971638546,
-      "lastModified" : 1505972055258,
+      "lastModified" : 1516141132063,
       "creator" : "natty@dpmfield",
       "lastModifier" : "natty@dpmfield",
       "lastRev" : "0",
-      "uuid" : "a155ab31-89d9-44d9-94d3-c06fc1fda992",
+      "uuid" : "3c91ae21-f045-413a-b316-c46298982991",
       "valid" : true,
       "metadata" : {
-        "labels" : [ ]
+        "labels" : [ "Spot/WindowsLogs" ]
       },
       "name" : "ODMWindowsEventLogs9fae6da4-eb7f-4aca-820a-1f561a40e7cc",
-      "sdcVersion" : "2.7.1.0",
+      "sdcVersion" : "3.0.0.0",
       "sdcId" : "f0ff6a12-61b1-44a6-bc5f-0d7e67d7d482"
     },
     "metadata" : {
-      "labels" : [ ]
+      "labels" : [ "Spot/WindowsLogs" ]
     },
     "statsAggregatorStage" : {
       "instanceName" : "WritetoDPMdirectly_StatsAggregatorStage",
@@ -794,7 +820,8 @@
       },
       "inputLanes" : [ ],
       "outputLanes" : [ ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     },
     "startEventStages" : [ {
       "instanceName" : "Discard_StartEventStage",
@@ -811,7 +838,8 @@
       },
       "inputLanes" : [ ],
       "outputLanes" : [ ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     } ],
     "stopEventStages" : [ {
       "instanceName" : "Discard_StopEventStage",
@@ -828,7 +856,8 @@
       },
       "inputLanes" : [ ],
       "outputLanes" : [ ],
-      "eventLanes" : [ ]
+      "eventLanes" : [ ],
+      "services" : [ ]
     } ],
     "valid" : true,
     "issues" : {
