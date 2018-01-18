@@ -15,14 +15,32 @@
 # limitations under the License.
 #
 from impala.dbapi import connect
-import api.resources.configurator as Config
+import api.resources.configurator as config
+
 
 def create_connection():
 
-    impala_host, impala_port =  Config.impala()
-    db = Config.db()
-    conn = connect(host=impala_host, port=int(impala_port),database=db)
+    impala_host, impala_port = config.impala()
+    conf = {}
+
+    # TODO: if using hive, kerberos service name must be changed, impyla sets 'impala' as default
+    service_name = {'kerberos_service_name': 'impala'}
+
+    if config.kerberos_enabled():
+        principal, keytab, sasl_mech, security_proto = config.kerberos()
+        conf.update({'auth_mechanism': 'GSSAPI',
+                     })
+
+    if config.ssl_enabled():
+        ssl_verify, ca_location, cert, key = config.ssl()
+        conf.update({'ca_cert': cert,
+                     'use_ssl': ssl_verify
+                     })
+
+    db = config.db()
+    conn = connect(host=impala_host, port=int(impala_port), database=db, **conf)
     return conn.cursor()
+
 
 def execute_query(query,fetch=False):
 
@@ -30,6 +48,7 @@ def execute_query(query,fetch=False):
     impala_cursor.execute(query)
 
     return impala_cursor if not fetch else impala_cursor.fetchall()
+
 
 def execute_query_as_list(query):
 
@@ -46,5 +65,3 @@ def execute_query_as_list(query):
         row_result = {}
 
     return results
-
-
