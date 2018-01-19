@@ -17,31 +17,37 @@
 # limitations under the License.
 #
 
-import os
-import subprocess
 import sys
+import os
+import common.configurator as config
+from common.utils import Util
+
 
 class Kerberos(object):
-
     def __init__(self):
 
-        self._kinit =  os.getenv('KINITPATH')
-        self._kinitopts =  os.getenv('KINITOPTS')
-        self._keytab =  os.getenv('KEYTABPATH')
-        self._krb_user =  os.getenv('KRB_USER')
+        self._logger = Util.get_logger('SPOT.COMMON.KERBEROS')
+        principal, keytab, sasl_mech, security_proto = config.kerberos()
 
-        if self._kinit == None or self._kinitopts == None or self._keytab == None or self._krb_user == None:
-            print "Please verify kerberos configuration, some environment variables are missing."
+        if os.getenv('KINITPATH'):
+            self._kinit = os.getenv('KINITPATH')
+        else:
+            self._kinit = "kinit"
+
+        self._kinitopts = os.getenv('KINITOPTS')
+        self._keytab = "-kt {0}".format(keytab)
+        self._krb_user = principal
+
+        if self._kinit == None or self._keytab == None or self._krb_user == None:
+            self._logger.error("Please verify kerberos configuration, some environment variables are missing.")
             sys.exit(1)
 
-        self._kinit_args = [self._kinit,self._kinitopts,self._keytab,self._krb_user]
+        if self._kinitopts is None:
+            self._kinit_cmd = "{0} {1} {2}".format(self._kinit, self._keytab, self._krb_user)
+        else:
+            self._kinit_cmd = "{0} {1} {2} {3}".format(self._kinit, self._kinitopts, self._keytab, self._krb_user)
 
-	def authenticate(self):
+    def authenticate(self):
 
-		kinit = subprocess.Popen(self._kinit_args, stderr = subprocess.PIPE)
-		output,error = kinit.communicate()
-		if not kinit.returncode == 0:
-			if error:
-				print error.rstrip()
-				sys.exit(kinit.returncode)
-		print "Successfully authenticated!"
+        Util.execute_cmd(self._kinit_cmd, self._logger)
+        self._logger.info("Kerberos ticket obtained")
