@@ -24,10 +24,12 @@ import sys
 from common.utils import Util
 from common.kerberos import Kerberos
 from common.kafka_client import KafkaConsumer
+import common.configurator as Config
 
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 CONF_FILE = "{0}/ingest_conf.json".format(SCRIPT_PATH)
 WORKER_CONF = json.loads(open(CONF_FILE).read())
+
 
 def main():
 
@@ -63,8 +65,8 @@ def start_worker(type, topic, id, processes=None):
         logger.error("The provided data source {0} is not valid".format(type))
         sys.exit(1)
 
-    # validate if kerberos authentication is requiered.
-    if os.getenv('KRB_AUTH'):
+    # validate if kerberos authentication is required.
+    if Config.kerberos_enabled():
         kb = Kerberos()
         kb.authenticate()
 
