@@ -8,7 +8,7 @@ run the following in addition to the typical installation instructions
 
 ### Spot-OA
 
-`pip install -r ./spot-ingest/kerberos-requirements.txt`
+`pip install -r ./spot-oa/kerberos-requirements.txt`
 
 
 ## spot.conf
