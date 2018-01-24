@@ -30,7 +30,7 @@ and finally execute hive query scripts that creates Hive tables needed to access
 
 **spot.conf** is the file storing the variables needed during the installation process including node assignment, User interface, Machine Learning and Ingest gateway nodes.
 This file also contains sources desired to be installed as part of Apache Spot, general paths for HDFS folders, Kerberos information and local paths in the Linux filesystem for the user as well as for machine learning, ipython, lda and ingest processes.
-To read more about these variables, please review the [wiki] (https://github.com/Open-Network-Insight/open-network-insight/wiki/Edit%20Solution%20Configuration).
+To read more about these variables, please review the [wiki](http://spot.incubator.apache.org/doc/#configuration).
 
 By default, **odm_setup.sh** expects **spot.conf** to be located in the **/etc** directory on the node. An example spot.conf file is provided in the spot-setup parent directory to help you get started.
 
@@ -64,5 +64,5 @@ Create a pull request and contact the maintainers.
 
 ## Issues
 
-Report issues at the Apache Spot [issues] (https://github.com/Open-Network-Insight/open-network-insight/issues) page.
+Report issues at the Apache Spot [issues](https://issues.apache.org/jira/projects/SPOT/issues) page.
 
