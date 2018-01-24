@@ -1,0 +1,2 @@
+%TS% - This is IP: %IP%
+%TS% - This is random char: %CHAR%
