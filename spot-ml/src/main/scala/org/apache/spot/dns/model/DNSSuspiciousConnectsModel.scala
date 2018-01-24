@@ -19,21 +19,17 @@ package org.apache.spot.dns.model
 
 import org.apache.log4j.Logger
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.apache.spark.sql.{Column, DataFrame, Row, SparkSession}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.DNSWordCreation
-import org.apache.spot.lda.SpotLDAWrapper
-import org.apache.spot.lda.SpotLDAWrapper._
 import org.apache.spot.lda.SpotLDAWrapperSchema._
+import org.apache.spot.lda._
 import org.apache.spot.utilities.DomainProcessor.DomainInfo
 import org.apache.spot.utilities._
 import org.apache.spot.utilities.data.validation.InvalidDataHandler
-
-import scala.util.{Failure, Success, Try}
 
 
 /**
@@ -50,17 +46,17 @@ import scala.util.{Failure, Success, Try}
   *
   * Create these models using the  factory in the companion object.
   *
-  * @param inTopicCount          Number of topics to use in the topic model.
-  * @param inIpToTopicMix        Per-IP topic mix.
-  * @param inWordToPerTopicProb  Per-word,  an array of probability of word given topic per topic.
+  * @param inTopicCount         Number of topics to use in the topic model.
+  * @param inIpToTopicMix       Per-IP topic mix.
+  * @param inWordToPerTopicProb Per-word,  an array of probability of word given topic per topic.
   */
 class DNSSuspiciousConnectsModel(inTopicCount: Int,
                                  inIpToTopicMix: DataFrame,
                                  inWordToPerTopicProb: Map[String, Array[Double]]) {
 
-  val topicCount = inTopicCount
-  val ipToTopicMix = inIpToTopicMix
-  val wordToPerTopicProb = inWordToPerTopicProb
+  val topicCount: Int = inTopicCount
+  val ipToTopicMix: DataFrame = inIpToTopicMix
+  val wordToPerTopicProb: Map[String, Array[Double]] = inWordToPerTopicProb
 
   /**
     * Use a suspicious connects model to assign estimated probabilities to a dataframe of
@@ -128,7 +124,7 @@ object DNSSuspiciousConnectsModel {
     QueryTypeField,
     QueryResponseCodeField))
 
-  val modelColumns = ModelSchema.fieldNames.toList.map(col)
+  val modelColumns: List[Column] = ModelSchema.fieldNames.toList.map(col)
 
   val DomainStatsSchema = StructType(List(TopDomainField, SubdomainLengthField, SubdomainEntropyField, NumPeriodsField))
 
@@ -136,7 +132,7 @@ object DNSSuspiciousConnectsModel {
     * Create a new DNS Suspicious Connects model by training it on a data frame and a feedback file.
     *
     * @param sparkSession Spark Session
-    * @param logger
+    * @param logger       Application logger
     * @param config       Analysis configuration object containing CLI parameters.
     *                     Contains the path to the feedback file in config.scoresFile
     * @param inputRecords Data used to train the model.
@@ -155,7 +151,6 @@ object DNSSuspiciousConnectsModel {
       config.feedbackFile,
       config.duplicationFactor))
 
-    val countryCodesBC = sparkSession.sparkContext.broadcast(CountryCodes.CountryCodes)
     val topDomainsBC = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = config.userDomain
 
@@ -175,19 +170,20 @@ object DNSSuspiciousConnectsModel {
         .reduceByKey(_ + _)
         .map({ case ((ipDst, word), count) => SpotLDAInput(ipDst, word, count) })
 
+    val spotLDAHelper: SpotLDAHelper = SpotLDAHelper(ipDstWordCounts, config.precisionUtility, sparkSession)
 
-    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkSession,
-      ipDstWordCounts,
-      config.topicCount,
+    val model: SpotLDAModel = SpotLDAWrapper.run(config.topicCount,
       logger,
       config.ldaPRGSeed,
       config.ldaAlpha,
       config.ldaBeta,
       config.ldaOptimizer,
       config.ldaMaxiterations,
-      config.precisionUtility)
+      spotLDAHelper)
 
-    new DNSSuspiciousConnectsModel(config.topicCount, ipToTopicMix, wordToPerTopicProb)
+    val results: SpotLDAResult = model.predict(spotLDAHelper)
+
+    new DNSSuspiciousConnectsModel(config.topicCount, results.documentToTopicMix, results.wordToTopicMix)
 
   }
 
@@ -205,15 +201,16 @@ object DNSSuspiciousConnectsModel {
                        userDomain: String,
                        url: String): TempFields = {
 
-    val DomainInfo(_, topDomainClass, subdomain, subdomainLength, subdomainEntropy, numPeriods) =
+    val DomainInfo(_, topDomainClass, _, subDomainLength, subDomainEntropy, numPeriods) =
       DomainProcessor.extractDomainInfo(url, topDomainsBC, userDomain)
 
 
     TempFields(topDomainClass = topDomainClass,
-      subdomainLength = subdomainLength,
-      subdomainEntropy = subdomainEntropy,
+      subdomainLength = subDomainLength,
+      subdomainEntropy = subDomainEntropy,
       numPeriods = numPeriods)
   }
 
   case class TempFields(topDomainClass: Int, subdomainLength: Integer, subdomainEntropy: Double, numPeriods: Integer)
+
 }
