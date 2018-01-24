@@ -492,8 +492,8 @@ def create_incident_progression(anchor, inbound, outbound, twoway, date):
     }
 
     #----- Add Inbound Connections-------#
+    obj["children"].append({'name': 'Inbound Only', 'children': [], 'impact': 0})
     if len(inbound) > 0:
-        obj["children"].append({'name': 'Inbound Only', 'children': [], 'impact': 0})
         in_ctxs = {}
         for ip in inbound:
             if 'nwloc' in inbound[ip] and len(inbound[ip]['nwloc']) > 0:
@@ -509,8 +509,8 @@ def create_incident_progression(anchor, inbound, outbound, twoway, date):
                 })
 
     #------ Add Outbound ----------------#
+    obj["children"].append({'name':'Outbound Only','children':[],'impact':0})
     if len(outbound) > 0:
-        obj["children"].append({'name':'Outbound Only','children':[],'impact':0})
         out_ctxs = {}
         for ip in outbound:
             if 'nwloc' in outbound[ip] and len(outbound[ip]['nwloc']) > 0:
@@ -526,8 +526,8 @@ def create_incident_progression(anchor, inbound, outbound, twoway, date):
                 })
 
     #------ Add TwoWay ----------------#
+    obj["children"].append({'name':'two way','children': [], 'impact': 0})
     if len(twoway) > 0:
-        obj["children"].append({'name':'two way','children': [], 'impact': 0})
         tw_ctxs = {}
         for ip in twoway:
             if 'nwloc' in twoway[ip] and len(twoway[ip]['nwloc']) > 0:

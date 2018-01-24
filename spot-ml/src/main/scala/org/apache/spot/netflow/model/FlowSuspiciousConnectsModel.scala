@@ -20,11 +20,10 @@ package org.apache.spot.netflow.model
 import org.apache.log4j.Logger
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.apache.spark.sql.{Column, DataFrame, Row, SparkSession}
 import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
-import org.apache.spot.lda.SpotLDAWrapper
-import org.apache.spot.lda.SpotLDAWrapper.{SpotLDAInput, SpotLDAOutput}
 import org.apache.spot.lda.SpotLDAWrapperSchema._
+import org.apache.spot.lda.{SpotLDAHelper, SpotLDAInput, SpotLDAResult, SpotLDAWrapper}
 import org.apache.spot.netflow.FlowSchema._
 import org.apache.spot.netflow.FlowWordCreator
 import org.apache.spot.utilities.FloatPointPrecisionUtility
@@ -36,7 +35,7 @@ import org.apache.spot.utilities.data.validation.InvalidDataHandler
   * The model uses a topic-modelling approach that:
   * 1. Simplifies netflow records into words, one word at the source IP and another (possibly different) at the
   * destination IP.
-  * 2. The netflow words about each IP are treated as collections of thes words.
+  * 2. The netflow words about each IP are treated as collections of these words.
   * 3. A topic modelling approach is used to infer a collection of "topics" that represent common profiles
   * of network traffic. These "topics" are probability distributions on words.
   * 4. Each IP has a mix of topics corresponding to its behavior.
@@ -112,7 +111,7 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
 }
 
 /**
-  * Contains dataframe schema information as well as the train-from-dataframe routine
+  * Contains DataFrame schema information as well as the train-from-dataframe routine
   * (which is a kind of factory routine) for [[FlowSuspiciousConnectsModel]] instances.
   *
   */
@@ -127,7 +126,7 @@ object FlowSuspiciousConnectsModel {
     IbytField,
     IpktField))
 
-  val ModelColumns = ModelSchema.fieldNames.toList.map(col)
+  val ModelColumns: List[Column] = ModelSchema.fieldNames.toList.map(col)
 
 
   def trainModel(sparkSession: SparkSession,
@@ -146,12 +145,11 @@ object FlowSuspiciousConnectsModel {
       config.duplicationFactor))
 
 
+    import sparkSession.implicits._
     // simplify netflow log entries into "words"
 
     val dataWithWords = totalRecords.withColumn(SourceWord, FlowWordCreator.srcWordUDF(ModelColumns: _*))
       .withColumn(DestinationWord, FlowWordCreator.dstWordUDF(ModelColumns: _*))
-
-    import sparkSession.implicits._
 
     // Aggregate per-word counts at each IP
     val srcWordCounts = dataWithWords
@@ -173,20 +171,19 @@ object FlowSuspiciousConnectsModel {
         .reduceByKey(_ + _)
         .map({ case ((ip, word), count) => SpotLDAInput(ip, word, count) })
 
+    val spotLDAHelper: SpotLDAHelper = SpotLDAHelper(ipWordCounts, config.precisionUtility, sparkSession)
 
-    val SpotLDAOutput(ipToTopicMix, wordToPerTopicProb) = SpotLDAWrapper.runLDA(sparkSession,
-      ipWordCounts,
-      config.topicCount,
+    val model = SpotLDAWrapper.run(config.topicCount,
       logger,
       config.ldaPRGSeed,
       config.ldaAlpha,
       config.ldaBeta,
       config.ldaOptimizer,
       config.ldaMaxiterations,
-      config.precisionUtility)
+      spotLDAHelper)
 
-    new FlowSuspiciousConnectsModel(config.topicCount,
-      ipToTopicMix,
-      wordToPerTopicProb)
+    val results: SpotLDAResult = model.predict(spotLDAHelper)
+
+    new FlowSuspiciousConnectsModel(config.topicCount, results.documentToTopicMix, results.wordToTopicMix)
   }
 }
