@@ -62,7 +62,10 @@ proxy_schema = StructType([
                                     StructField("h", StringType(), True)])
 
 def main():
-    
+    """
+    Handle commandline arguments and
+    start the collector.
+    """
     # input Parameters
     parser = argparse.ArgumentParser(description="Bluecoat Parser")
     parser.add_argument('-zk','--zookeeper',dest='zk',required=True,help='Zookeeper IP and port (i.e. 10.0.0.1:2181)',metavar='')
@@ -83,7 +86,12 @@ def spot_decoder(s):
     return s
 
 def split_log_entry(line):
+    """
+    Split the given line into its fields.
 
+    :param line: line to split
+    :returns: list
+    """
     lex = shlex.shlex(line)
     lex.quotes = '"'
     lex.whitespace_split = True
@@ -91,7 +99,12 @@ def split_log_entry(line):
     return list(lex)
 
 def proxy_parser(proxy_fields):
-    
+    """
+    Parse and normalize data.
+
+    :param proxy_fields: list with fields from log
+    :returns: list of str
+    """
     proxy_parsed_data = []
 
     if len(proxy_fields) > 1:
@@ -114,7 +127,9 @@ def proxy_parser(proxy_fields):
 
 
 def save_data(rdd,sqc,db,db_table,topic):
-
+    """
+    Create and save a data frame with the given data.
+    """
     if not rdd.isEmpty():
 
         df = sqc.createDataFrame(rdd,proxy_schema)        
