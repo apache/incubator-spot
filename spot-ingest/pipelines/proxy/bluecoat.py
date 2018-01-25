@@ -170,21 +170,30 @@ def save_data(rdd, sqc, db, db_table, topic):
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
 
 
-def bluecoat_parse(zk,topic,db,db_table,num_of_workers,batch_size):
-    
+def bluecoat_parse(zk, topic, db, db_table, num_of_workers, batch_size):
+    """
+    Parse and save bluecoat logs.
+
+    :param zk: Apache ZooKeeper quorum
+    :param topic: Apache Kafka topic (application name)
+    :param db: Apache Hive database to save into
+    :param db_table: table of `db` to save into
+    :param num_of_workers: number of Apache Kafka workers
+    :param batch_size: batch size for Apache Spark streaming context
+    """
     app_name = topic
     wrks = int(num_of_workers)
 
     # create spark context
     sc = SparkContext(appName=app_name)
-    ssc = StreamingContext(sc,int(batch_size))
+    ssc = StreamingContext(sc, int(batch_size))
     sqc = HiveContext(sc)
 
     tp_stream = KafkaUtils.createStream(ssc, zk, app_name, {topic: wrks}, keyDecoder=spot_decoder, valueDecoder=spot_decoder)
 
-    proxy_data = tp_stream.map(lambda row: row[1]).flatMap(lambda row: row.split("\n")).filter(lambda row: rex_date.match(row)).map(lambda row: row.strip("\n").strip("\r").replace("\t", " ").replace("  ", " ")).map(lambda row:  split_log_entry(row)).map(lambda row: proxy_parser(row))
-    saved_data = proxy_data.foreachRDD(lambda row: save_data(row,sqc,db,db_table,topic))
-    ssc.start();
+    proxy_data = tp_stream.map(lambda row: row[1]).flatMap(lambda row: row.split("\n")).filter(lambda row: rex_date.match(row)).map(lambda row: row.strip("\n").strip("\r").replace("\t", " ").replace("  ", " ")).map(lambda row: split_log_entry(row)).map(lambda row: proxy_parser(row))
+    saved_data = proxy_data.foreachRDD(lambda row: save_data(row, sqc, db, db_table, topic))
+    ssc.start()
     ssc.awaitTermination()
 
 
