@@ -197,5 +197,5 @@ def bluecoat_parse(zk, topic, db, db_table, num_of_workers, batch_size):
     ssc.awaitTermination()
 
 
-if __name__ =='__main__':
+if __name__ == '__main__':
     main()
