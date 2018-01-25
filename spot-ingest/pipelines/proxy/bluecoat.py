@@ -148,20 +148,27 @@ def proxy_parser(proxy_fields):
     return proxy_parsed_data
 
 
-def save_data(rdd,sqc,db,db_table,topic):
+def save_data(rdd, sqc, db, db_table, topic):
     """
     Create and save a data frame with the given data.
+
+    :param rdd: collection of objects (Resilient Distributed Dataset) to store
+    :param sqc: Apache Hive context
+    :param db: Apache Hive database to save into
+    :param db_table: table of `db` to save into
+    :param topic: Apache Kafka topic to listen for (if `rdd` is empty)
     """
     if not rdd.isEmpty():
 
-        df = sqc.createDataFrame(rdd,proxy_schema)        
+        df = sqc.createDataFrame(rdd, proxy_schema)
         sqc.setConf("hive.exec.dynamic.partition", "true")
         sqc.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
-        hive_table = "{0}.{1}".format(db,db_table)
+        hive_table = "{0}.{1}".format(db, db_table)
         df.write.format("parquet").mode("append").insertInto(hive_table)
 
     else:
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
+
 
 def bluecoat_parse(zk,topic,db,db_table,num_of_workers,batch_size):
     
