@@ -1,4 +1,19 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
+//
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.
+// The ASF licenses this file to You under the Apache License, Version 2.0
+// (the "License"); you may not use this file except in compliance with
+// the License.  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 const $ = require('jquery');
 const assign = require('object-assign');
@@ -102,7 +117,7 @@ var NetworkViewPanel = React.createClass({
         // Delete old links
         this.link.exit().remove();
 
-        // Update nodes
+        // Update nodesw
         this.node = this.canvas.selectAll('.node, .proxy_node')
             .data(nodes.filter((node) => node.visible), function(d) { return d.id; });
 
@@ -261,7 +276,7 @@ var NetworkViewPanel = React.createClass({
                 type: 'Root',
                 tooltip: 'Double click to toggle child nodes',
                 rep: -1,
-                visible: true,
+                visible: state.data.length > 0 ? true : false,
                 expanded: false,
                 root: true
             };
@@ -375,7 +390,7 @@ var NetworkViewPanel = React.createClass({
                     0
                 );
             } else {
-                node.size = node.hits.length;
+                node.size = node.hits === undefined ? 0 : node.hits.length;
             }
 
             nodes.push(node);

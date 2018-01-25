@@ -1,10 +1,26 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
+//
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.
+// The ASF licenses this file to You under the Apache License, Version 2.0
+// (the "License"); you may not use this file except in compliance with
+// the License.  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 var React = require('react');
 
 var SpotActions = require('../actions/SpotActions');
 var SpotConstants = require('../constants/SpotConstants');
 var SpotStore = require('../stores/SpotStore');
+var easyModeS = true;
 
 var IPythonNotebookPanel = React.createClass({
     propTypes: {
@@ -14,10 +30,11 @@ var IPythonNotebookPanel = React.createClass({
     },
     statics: {
         createIPythonNotebookClosure: function (title, easyMode) {
-            var closure;
-
+            var closure; 
+            
             easyMode = typeof easyMode=='undefined' ? true : typeof easyMode=='boolean' ? easyMode : !!easyMode;
 
+            easyModeS = easyMode; 
             closure = {
                 getTitle: function () {
                     return title;
@@ -57,7 +74,7 @@ var IPythonNotebookPanel = React.createClass({
         }
     },
     getInitialState: function () {
-        return {date: this.props.date.replace(/-/g, ''), easyMode: true};
+        return {date: this.props.date.replace(/-/g, ''), easyMode: easyModeS};
     },
     componentDidMount: function () {
         SpotStore.addChangeDateListener(this._onDateChange);

@@ -44,16 +44,16 @@ spot-oa is the root folder, below are more details about child folders:
  * [EdgeNotebook](/spot-oa/oa/proxy/ipynb_templates/EdgeNotebook.md)
  * [ThreatInvestigation](/spot-oa/oa/proxy/ipynb_templates/ThreatInvestigation.md)
 
-##**Views**
+## **Views**
 
-###Analyst View (suspicious.html)
+### Analyst View (suspicious.html)
 The Analyst view provides a dashboard showing the top 250 suspicious connects.
 
-###**Threat Investigation (threat-investigation.html)**
+### **Threat Investigation (threat-investigation.html)**
 HTML page container for the Threat Investigation Notebook
 
-###**Story Board (storyboard.html)**
+### **Story Board (storyboard.html)**
 Executive Briefing dashboard
 
-###**Ingest Summary (ingest-summary.html)**
+### **Ingest Summary (ingest-summary.html)**
 Interactive histogram dashboard that shows the amount of data captured in a certain period of time.

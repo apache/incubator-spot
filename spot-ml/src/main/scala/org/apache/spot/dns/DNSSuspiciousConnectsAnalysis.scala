@@ -26,7 +26,8 @@ import org.apache.spot.SuspiciousConnectsArgumentParser.SuspiciousConnectsConfig
 import org.apache.spot.dns.DNSSchema._
 import org.apache.spot.dns.model.DNSSuspiciousConnectsModel
 import org.apache.spot.proxy.ProxySchema.Score
-import org.apache.spot.utilities.data.validation.{InvalidDataHandler => dataValidation}
+import org.apache.spot.utilities.data.validation.InputSchema.InputSchemaValidationResponse
+import org.apache.spot.utilities.data.validation.{InputSchema, InvalidDataHandler => dataValidation}
 
 /**
   * The suspicious connections analysis of DNS log data develops a probabilistic model the DNS queries
@@ -62,38 +63,45 @@ object DNSSuspiciousConnectsAnalysis {
     * @param logger
     */
   def run(config: SuspiciousConnectsConfig, sparkSession: SparkSession, logger: Logger,
-          inputDNSRecords: DataFrame): SuspiciousConnectsAnalysisResults = {
+          inputDNSRecords: DataFrame): Option[SuspiciousConnectsAnalysisResults] = {
 
 
     logger.info("Starting DNS suspicious connects analysis.")
 
-    val dnsRecords = filterRecords(inputDNSRecords)
-      .select(InSchema: _*)
-      .na.fill(DefaultQueryClass, Seq(QueryClass))
-      .na.fill(DefaultQueryType, Seq(QueryType))
-      .na.fill(DefaultQueryResponseCode, Seq(QueryResponseCode))
+    logger.info("Validating schema...")
+    val InputSchemaValidationResponse(isValid, errorMessages) = validateSchema(inputDNSRecords)
 
-    logger.info("Fitting probabilistic model to data")
-    val model =
-      DNSSuspiciousConnectsModel.trainModel(sparkSession, logger, config, dnsRecords)
+    if (!isValid) {
+      errorMessages.foreach(logger.error(_))
+      None
+    } else {
+      val dnsRecords = filterRecords(inputDNSRecords)
+        .select(InSchema: _*)
+        .na.fill(DefaultQueryClass, Seq(QueryClass))
+        .na.fill(DefaultQueryType, Seq(QueryType))
+        .na.fill(DefaultQueryResponseCode, Seq(QueryResponseCode))
 
-    logger.info("Identifying outliers")
-    val scoredDNSRecords = model.score(sparkSession, dnsRecords, config.userDomain, config.precisionUtility)
+      logger.info("Fitting probabilistic model to data")
+      val model =
+        DNSSuspiciousConnectsModel.trainModel(sparkSession, logger, config, dnsRecords)
 
-    val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold)
+      logger.info("Identifying outliers")
+      val scoredDNSRecords = model.score(sparkSession, dnsRecords, config.userDomain, config.precisionUtility)
 
-    val orderedDNSRecords = filteredScored.orderBy(Score)
+      val filteredScored = filterScoredRecords(scoredDNSRecords, config.threshold)
 
-    val mostSuspiciousDNSRecords =
-      if (config.maxResults > 0) orderedDNSRecords.limit(config.maxResults)
-      else orderedDNSRecords
+      val orderedDNSRecords = filteredScored.orderBy(Score)
 
-    val outputDNSRecords = mostSuspiciousDNSRecords.select(OutSchema: _*)
+      val mostSuspiciousDNSRecords =
+        if (config.maxResults > 0) orderedDNSRecords.limit(config.maxResults)
+        else orderedDNSRecords
 
-    val invalidDNSRecords = filterInvalidRecords(inputDNSRecords).select(InSchema: _*)
+      val outputDNSRecords = mostSuspiciousDNSRecords.select(OutSchema: _*)
 
-    SuspiciousConnectsAnalysisResults(outputDNSRecords, invalidDNSRecords)
+      val invalidDNSRecords = filterInvalidRecords(inputDNSRecords).select(InSchema: _*)
 
+      Option(SuspiciousConnectsAnalysisResults(outputDNSRecords, invalidDNSRecords))
+    }
   }
 
 
@@ -158,7 +166,7 @@ object DNSSuspiciousConnectsAnalysis {
   /**
     *
     * @param scoredDNSRecords scored DNS records.
-    * @param threshold score tolerance.
+    * @param threshold        score tolerance.
     * @return
     */
   def filterScoredRecords(scoredDNSRecords: DataFrame, threshold: Double): DataFrame = {
@@ -168,6 +176,18 @@ object DNSSuspiciousConnectsAnalysis {
       scoredDNSRecords(Score).gt(dataValidation.ScoreError)
 
     scoredDNSRecords.filter(filteredDNSRecordsFilter)
+  }
+
+  /**
+    * Validates incoming data matches required schema for model training and scoring.
+    *
+    * @param inputDNSRecords incoming data frame
+    * @return
+    */
+  def validateSchema(inputDNSRecords: DataFrame): InputSchemaValidationResponse = {
+
+    InputSchema.validate(inputDNSRecords.schema, DNSSuspiciousConnectsModel.ModelSchema)
+
   }
 
 }

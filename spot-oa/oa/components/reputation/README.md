@@ -1,4 +1,4 @@
-###Reputation
+### Reputation
 This section describes the functionality of the current reputation service modules and how you can implement your own. 
 
  It's possible to add new reputation services by implementing a new sub-module, to do that developers should follow

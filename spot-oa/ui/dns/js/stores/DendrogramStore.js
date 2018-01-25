@@ -1,50 +1,81 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0.
+//
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.
+// The ASF licenses this file to You under the Apache License, Version 2.0
+// (the "License"); you may not use this file except in compliance with
+// the License.  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
-var SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
-var SpotConstants = require('../../../js/constants/SpotConstants');
-var DnsConstants = require('../constants/DnsConstants');
-var RestStore = require('../../../js/stores/RestStore');
-var assign = require('object-assign');
+const SpotDispatcher = require('../../../js/dispatchers/SpotDispatcher');
+const SpotConstants = require('../../../js/constants/SpotConstants');
 
-var SRC_IP_FILTER = 'ip_dst';
+const ObservableGraphQLStore = require('../../../js/stores/ObservableGraphQLStore');
 
-var DendrogramStore = assign(new RestStore(DnsConstants.API_VISUAL_DETAILS), {
-  setDate: function (date)
-  {
-    this.setEndpoint(DnsConstants.API_VISUAL_DETAILS.replace('${date}', date.replace(/-/g, '')));
-  },
-  setSrcIp: function (srcIp)
-  {
-    this.setRestFilter(SRC_IP_FILTER, srcIp);
-  },
-  getSrcIp: function ()
-  {
-    return this.getRestFilter(SRC_IP_FILTER);
-  },
-  setData: function (data)
-  {
-    this._data = data;
+const DATE_VAR = 'date'
+const CLIENT_IP_VAR = 'clientIp';
 
-    this.emitChangeData();
-  }
-});
+class DendrogramStore extends ObservableGraphQLStore {
+    getQuery() {
+        return `
+            query($date:SpotDateType!,$clientIp:SpotIpType!) {
+                dns {
+                    ipDetails(date:$date, clientIp:$clientIp) {
+                        dns_qry_name: dnsQuery
+                        dns_a: dnsQueryAnswers
+                    }
+                }
+            }
+        `;
+    }
+
+    unboxData(data) {
+        return data.dns.ipDetails;
+    }
+
+    setDate(date) {
+        this.setVariable(DATE_VAR, date);
+    }
+
+    setClientIp (clientIp) {
+        this.setVariable(CLIENT_IP_VAR, clientIp);
+    }
+
+    unsetClientIp (clientIp) {
+        this.unsetVariable(CLIENT_IP_VAR);
+    }
+
+    getClientIp() {
+        return this.getVariable(CLIENT_IP_VAR);
+    }
+}
+
+const ds = new DendrogramStore();
 
 SpotDispatcher.register(function (action) {
   switch (action.actionType) {
     case SpotConstants.UPDATE_DATE:
-      DendrogramStore.setDate(action.date);
+      ds.setDate(action.date);
       break;
     case SpotConstants.SELECT_IP:
-      DendrogramStore.setSrcIp(action.ip);
+      ds.setClientIp(action.ip);
       break;
     case SpotConstants.RELOAD_SUSPICIOUS:
-      DendrogramStore.setSrcIp('');
-      DendrogramStore.resetData();
+      ds.unsetClientIp();
+      ds.resetData();
       break;
     case SpotConstants.RELOAD_DETAILS_VISUAL:
-      DendrogramStore.reload();
+      ds.sendQuery();
       break;
   }
 });
 
-module.exports = DendrogramStore;
+module.exports = ds;

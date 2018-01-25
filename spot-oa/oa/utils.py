@@ -121,6 +121,18 @@ class Util(object):
 			writer.writerows(content)
 
 
+	@classmethod
+    	def cast_val(self,value):
+       	    try: 
+            	val = int(value) 
+            except:
+            	try:
+                    val = float(value) 
+            	except:
+                    val = str(value) 
+            return val    
+
+
 class SecHead(object):
     def __init__(self, fp):
         self.fp = fp

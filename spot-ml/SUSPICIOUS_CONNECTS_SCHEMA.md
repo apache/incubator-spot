@@ -2,7 +2,7 @@
 
 
 
-Three kinds of network logs can be analyzed by the Spot Suspicious Connects analyses:  Netflow records, DNS queriess, and proxy logs.
+Three kinds of network logs can be analyzed by the Spot Suspicious Connects analyses:  Netflow records, DNS queries, and proxy logs.
 
 Data from these logs is expected to have been stored in parquet files on HDFS with column structure extending the following schema.
 
@@ -35,7 +35,7 @@ Data from these logs is expected to have been stored in parquet files on HDFS wi
 - p_date: Date of the query, String.
 - p_time: Time of the query, String.  (FORMAT?) 
 - clientip: IP address of client making proxy request, String.                          
-- host: Host of reuest, String.
+- host: Host of request, String.
 - reqmethod: Request method, String.                                    
 - useragent: User agent, String.                                      
 - resconttype: Response content type, String.                                                                           

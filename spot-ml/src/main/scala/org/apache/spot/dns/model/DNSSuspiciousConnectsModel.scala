@@ -159,12 +159,8 @@ object DNSSuspiciousConnectsModel {
     val topDomainsBC = sparkSession.sparkContext.broadcast(TopDomains.TopDomains)
     val userDomain = config.userDomain
 
-    val domainStatsRecords = createDomainStatsDF(sparkSession, countryCodesBC, topDomainsBC, userDomain, totalRecords)
-
     // simplify DNS log entries into "words"
-
     val dnsWordCreator = new DNSWordCreation(topDomainsBC, userDomain)
-
     val dataWithWord = totalRecords.withColumn(Word, dnsWordCreator.wordCreationUDF(modelColumns: _*))
 
     import sparkSession.implicits._
@@ -195,30 +191,6 @@ object DNSSuspiciousConnectsModel {
 
   }
 
-  /**
-    * Add  domain statistics fields to a data frame.
-    *
-    * @param sparkSession   Spark Session
-    * @param countryCodesBC Broadcast of the country codes set.
-    * @param topDomainsBC   Broadcast of the most-popular domains set.
-    * @param userDomain     Domain associated to network data (ex: 'intel')
-    * @param inDF           Incoming dataframe. Schema is expected to provide the field [[QueryName]]
-    * @return A new dataframe with the new columns added. The new columns have the schema [[DomainStatsSchema]]
-    */
-
-  def createDomainStatsDF(sparkSession: SparkSession,
-                          countryCodesBC: Broadcast[Set[String]],
-                          topDomainsBC: Broadcast[Set[String]],
-                          userDomain: String,
-                          inDF: DataFrame): DataFrame = {
-
-    val queryNameIndex = inDF.schema.fieldNames.indexOf(QueryName)
-
-    val domainStatsRDD: RDD[Row] = inDF.rdd.map(row =>
-      Row.fromTuple(createTempFields(countryCodesBC, topDomainsBC, userDomain, row.getString(queryNameIndex))))
-
-    sparkSession.createDataFrame(domainStatsRDD, DomainStatsSchema)
-  }
 
   /**
     *
