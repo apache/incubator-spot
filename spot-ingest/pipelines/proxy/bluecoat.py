@@ -61,6 +61,7 @@ proxy_schema = StructType([
     StructField("d", StringType(), True),
     StructField("h", StringType(), True)])
 
+
 def main():
     """
     Handle commandline arguments and
@@ -83,7 +84,8 @@ def main():
     args = parser.parse_args()
 
     # start collector based on data source type.
-    bluecoat_parse(args.zk,args.topic,args.db,args.db_table,args.num_of_workers,args.batch_size)
+    bluecoat_parse(args.zk, args.topic, args.db, args.db_table, args.num_of_workers, args.batch_size)
+
 
 def spot_decoder(s):
 
