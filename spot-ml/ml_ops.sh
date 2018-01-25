@@ -101,11 +101,6 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --conf spark.yarn.executor.memoryOverhead=${SPK_EXEC_MEM_OVERHEAD} target/scala-2.11/spot-ml-assembly-1.1.jar \
   --analysis ${DSOURCE} \
   --input ${RAWDATA_PATH}  \
-  --database ${DBNAME} \
-  --datatable ${DATA_TABLE} \
-  --year ${YR} \
-  --month ${MH} \
-  --day ${DY} \
   --dupfactor ${DUPFACTOR} \
   --feedback ${FEEDBACK_PATH} \
   --ldatopiccount ${TOPIC_COUNT} \
@@ -118,4 +113,3 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --ldaoptimizer ${LDA_OPTIMIZER} \
   --precision ${PRECISION} \
   $USER_DOMAIN_CMD
-
