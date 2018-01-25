@@ -118,25 +118,32 @@ def proxy_parser(proxy_fields):
     Parse and normalize data.
 
     :param proxy_fields: list with fields from log
-    :returns: list of str
+    :returns: list
     """
     proxy_parsed_data = []
 
     if len(proxy_fields) > 1:
 
         # create full URI.
-        proxy_uri_path =  proxy_fields[17] if  len(proxy_fields[17]) > 1 else ""
-        proxy_uri_qry =  proxy_fields[18] if  len(proxy_fields[18]) > 1 else ""
-        full_uri= "{0}{1}{2}".format(proxy_fields[15],proxy_uri_path,proxy_uri_qry)
+        proxy_uri_path = proxy_fields[17] if len(proxy_fields[17]) > 1 else ""
+        proxy_uri_qry = proxy_fields[18] if len(proxy_fields[18]) > 1 else ""
+        full_uri = "{0}{1}{2}".format(proxy_fields[15], proxy_uri_path, proxy_uri_qry)
         date = proxy_fields[0].split('-')
-        year =  date[0]
+        year = date[0]
         month = date[1].zfill(2)
         day = date[2].zfill(2)
         hour = proxy_fields[1].split(":")[0].zfill(2)
-        # re-order fields. 
-        proxy_parsed_data = [proxy_fields[0],proxy_fields[1],proxy_fields[3],proxy_fields[15],proxy_fields[12],proxy_fields[20],proxy_fields[13],int(proxy_fields[2]),proxy_fields[4],
-        proxy_fields[5],proxy_fields[6],proxy_fields[7],proxy_fields[8],proxy_fields[9],proxy_fields[10],proxy_fields[11],proxy_fields[14],proxy_fields[16],proxy_fields[17],proxy_fields[18],
-        proxy_fields[19],proxy_fields[21],int(proxy_fields[22]),int(proxy_fields[23]),proxy_fields[24],proxy_fields[25],proxy_fields[26],full_uri,year,month,day,hour ]
+        # re-order fields.
+        proxy_parsed_data = [proxy_fields[0], proxy_fields[1], proxy_fields[3],
+                             proxy_fields[15], proxy_fields[12], proxy_fields[20],
+                             proxy_fields[13], int(proxy_fields[2]), proxy_fields[4],
+                             proxy_fields[5], proxy_fields[6], proxy_fields[7],
+                             proxy_fields[8], proxy_fields[9], proxy_fields[10],
+                             proxy_fields[11], proxy_fields[14], proxy_fields[16],
+                             proxy_fields[17], proxy_fields[18], proxy_fields[19],
+                             proxy_fields[21], int(proxy_fields[22]), int(proxy_fields[23]),
+                             proxy_fields[24], proxy_fields[25], proxy_fields[26],
+                             full_uri, year, month, day, hour]
 
     return proxy_parsed_data
 
