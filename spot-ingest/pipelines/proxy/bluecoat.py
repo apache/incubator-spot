@@ -88,10 +88,16 @@ def main():
 
 
 def spot_decoder(s):
+    """
+    Dummy decoder function.
 
+    :param s: input to decode
+    :returns: s
+    """
     if s is None:
         return None
     return s
+
 
 def split_log_entry(line):
     """
@@ -105,6 +111,7 @@ def split_log_entry(line):
     lex.whitespace_split = True
     lex.commenters = ''
     return list(lex)
+
 
 def proxy_parser(proxy_fields):
     """
