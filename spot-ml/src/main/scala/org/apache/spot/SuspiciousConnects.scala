@@ -63,32 +63,30 @@ object SuspiciousConnects {
           .enableHiveSupport()
           .getOrCreate()
 
-        /*
-        val inputDataFrame = InputOutputDataHandler.getInputDataFrame(sparkSession, config.inputPath, logger)
-          .getOrElse(sparkSession.emptyDataFrame)
-        if(inputDataFrame.rdd.isEmpty()) {
-          logger.error("Couldn't read data from location " + config.inputPath +", please verify it's a valid location and that " +
-            s"contains parquet files with a given schema and try again.")
-          System.exit(0)
-        }
-        */
+        val inputQuery = "SELECT * FROM " + config.database + "." + config.dataTable + " where (y=" +
+                         config.year + " and m=" + config.month + " and d=" + config.day + ")"
+      
+        val inputDataFrame = if (config.database.trim.nonEmpty) {
+                               InputOutputDataHandler.getInputDataFrame(sparkSession, inputQuery, logger, true)
+                                 .getOrElse(sparkSession.emptyDataFrame)
+                             } else {
+                               InputOutputDataHandler.getInputDataFrame(sparkSession, config.inputPath, logger, false)
+                                 .getOrElse(sparkSession.emptyDataFrame)
+                             }
 
-        val hive_query = "SELECT * FROM " + config.database + "." + config.dataTable + " where (y=" + config.year + " and m=" + config.month + " and d=" + config.day + ")"
-
-        val inputDataFrame = InputOutputDataHandler.getInputDataFrame(sparkSession, hive_query, logger)
-          .getOrElse(sparkSession.emptyDataFrame)
         if(inputDataFrame.rdd.isEmpty()) {
-          logger.error("No records returned for Hive query " + hive_query +", please verify that data exists or issues with Hive connection.")
+          val dataFramePath = if (config.database.trim.nonEmpty) " query=(" + inputQuery + ")" else " path=(hdfs: " + config.inputPath + ")" 
+          logger.error("No records returned for" + dataFramePath +", please verify that data and/or connectivity is available")
           System.exit(0)
         }
 
         val results: Option[SuspiciousConnectsAnalysisResults] = analysis match {
-          case "flow" => Some(FlowSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
-            inputDataFrame))
-          case "dns" => Some(DNSSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
-            inputDataFrame))
-          case "proxy" => Some(ProxySuspiciousConnectsAnalysis.run(config, sparkSession, logger,
-            inputDataFrame))
+          case "flow" => FlowSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame)
+          case "dns" => DNSSuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame)
+          case "proxy" => ProxySuspiciousConnectsAnalysis.run(config, sparkSession, logger,
+            inputDataFrame)
           case _ => None
         }
 
@@ -115,7 +113,11 @@ object SuspiciousConnects {
             InvalidDataHandler.showAndSaveInvalidRecords(invalidRecords, config.hdfsScoredConnect, logger)
           }
 
-          case None => logger.error("Unsupported (or misspelled) analysis: " + analysis)
+          case None => logger.error(s"Something went wrong while trying to run Suspicious Connects Analysis")
+            logger.error(s"Is the value of the analysis parameter (provided: $analysis) any of the valid analysis " +
+              s"types flow/dns/proxy?")
+            logger.error("If analysis type is correct please check for other errors like schema not matching or " +
+              "bad spark parameters")
         }
 
         sparkSession.stop()
