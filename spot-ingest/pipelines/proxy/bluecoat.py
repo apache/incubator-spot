@@ -168,7 +168,7 @@ def save_data(rdd, sqc, db, db_table, topic):
         sqc.setConf("hive.exec.dynamic.partition", "true")
         sqc.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
         hive_table = "{0}.{1}".format(db, db_table)
-        df.write.format("parquet").mode("append").insertInto(hive_table)
+        df.write.format("parquet").mode("append").partitionBy('y', 'm', 'd', 'h').insertInto(hive_table)
 
     else:
         print("------------------------LISTENING KAFKA TOPIC:{0}------------------------".format(topic))
