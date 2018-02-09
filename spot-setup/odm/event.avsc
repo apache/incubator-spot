@@ -41,7 +41,7 @@
         {"name":"sensitivity", "type":["null","string"],"doc":"Sensitivity label", "default": null},
         {"name":"count", "type":["null","int"],"doc":"Generic count", "default": null},
         {"name":"company", "type":["null","string"],"doc":"Company label", "default": null},
-        {"name":"additional_attrs","type":["null","string"],"default":null, "doc":"Additional attributes of the event"},
+        {"name":"additional_attrs","type":["null", {"type": "map", "values": "string"}],"default":null, "doc":"Additional attributes of the event"},
         {"name":"totrust", "type":["null","string"],"doc":"TBD", "default": null},
         {"name":"fromtrust", "type":["null","string"],"doc":"TBD", "default": null},
         {"name":"rule", "type":["null","string"],"doc":"TBD", "default": null},

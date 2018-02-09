@@ -1,0 +1,13 @@
+<162>%TS%: %ASA-2-106001: Inbound TCP connection denied from %_IP%/%_PORT% to %_IP%/%_PORT% flags SYN  on interface Inside
+<163>%TS%: %ASA-3-106014: Deny inbound icmp src Inside:%_IP% dst Inside:%_IP% (type 8, code 0)
+<163>%TS%: %ASA-3-313001: Denied ICMP type=3, code=3 from %_IP% on interface Outside
+<164>%TS%: %ASA-4-106023: Deny %proto% src Inside:%_IP%/%_PORT% dst Outside:%_IP%/%_PORT% by access-group "Inside_access_in" [0x962df600, 0x0]
+<164>%TS%: %ASA-4-313005: No matching connection for ICMP error message: icmp src Outside:%_IP% dst identity:%_IP% (type 3, code 3) on Outside interface.  Original IP payload: udp src %_IP%/%_PORT% dst %_IP%/%_PORT%.
+<142>%TS%: %ASA-6-106015: Deny TCP (no connection) from %_IP%/%_PORT% to %_IP%/%_PORT% flags %FLAGS%  on interface %INTERF%
+<166>%TS%: %ASA-6-110002: Failed to locate egress interface for UDP from Inside:%_IP%/%_PORT% to %_IP%/%_PORT%
+<166>%TS%: %ASA-6-302021: Teardown ICMP connection for faddr %_IP%/%_PORT%(LOCAL\user.name) gaddr %_IP%/%_PORT% laddr %_IP%/0
+<166>%TS%: %ASA-6-305011: Built dynamic TCP translation from inside:%_IP%/%_PORT% to outside:%_IP%/%_PORT%
+<166>%TS%: %ASA-6-305012: Teardown dynamic %PROTO% translation from inside:%_IP%/%_PORT% to outside:%_IP%/%_PORT% duration 0:00:%SEC%
+<167>%TS%: %ASA-7-609001: Built local-host inside:%_IP%
+<167>%TS%: %ASA-7-609002: Teardown local-host inside:%_IP% duration 0:00:00
+<167>%TS%: %ASA-7-710005: UDP request discarded from %_IP%/%_PORT% to outside:%_IP%/%_PORT%

@@ -1,0 +1,4 @@
+<86>%TS% %HOST% su: pam_unix(su:session): session opened for user %USERNAME% by (uid=%UID%)
+<86>%TS% %HOST% su: pam_unix(su:session): session closed for user %USERNAME%
+<85>%TS% %HOST% sudo:   %RUSERNAME% : user NOT in sudoers ; TTY=%TTY% ; PWD=%PWD% ; USER=%USERNAME% ; COMMAND=%COMMAND%
+<85>%TS% %HOST% sudo:   %RUSERNAME% : TTY=%TTY% ; PWD=%PWD% ; USER=%USERNAME% ; COMMAND=%COMMAND%

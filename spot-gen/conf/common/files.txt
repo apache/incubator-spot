@@ -1,0 +1,2 @@
+C:\\Windows\\System32\\taskhost.exe
+C:\\Windows\\System32\\notepad.exe
