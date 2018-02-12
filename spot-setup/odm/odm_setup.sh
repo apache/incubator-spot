@@ -104,33 +104,34 @@ else
 fi
 
 # Creating HDFS user's folder
-sudo -u hdfs hdfs dfs -mkdir ${HUSER}
-sudo -u hdfs hdfs dfs -chown ${USER}:supergroup ${HUSER}
-sudo -u hdfs hdfs dfs -chmod 775 ${HUSER}
+log "creating ${HUSER}"
+safe_mkdir ${hdfs_cmd} ${HUSER}
+${hdfs_cmd} dfs -chown ${USER}:supergroup ${HUSER}
+${hdfs_cmd} dfs -chmod 775 ${HUSER}
 
 # Creating HDFS paths for each use case
 for d in "${DSOURCES[@]}" 
 do 
-	echo "creating /$d"
-	sudo -u hdfs hdfs dfs -mkdir ${HUSER}/$d 
+	log "creating /$d"
+	safe_mkdir hdfs ${HUSER}/$d
     
     # Create Avro schemas directory on HDFS if Avro storage is selected
     if [ "$format" == "avro" ] ; then
-        echo "creating /$d/schema"
-        sudo -u hdfs hdfs dfs -mkdir ${HUSER}/$d/schema
+        log "creating ${HUSER}/$d/schema"
+        safe_mkdir ${hdfs_cmd} ${HUSER}/$d/schema
     fi
 
 	for f in "${DFOLDERS[@]}" 
 	do 
-		echo "creating $d/$f"
-		sudo -u hdfs hdfs dfs -mkdir ${HUSER}/$d/$f
+		log "creating ${HUSER}/$d/$f"
+		safe_mkdir ${hdfs_cmd} ${HUSER}/$d/$f
 	done
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
-    echo "modifying permissions recursively on ${HUSER}/$d"
-	sudo -u hdfs hdfs dfs -chmod -R 775 ${HUSER}/$d
-	sudo -u hdfs hdfs dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
-	sudo -u hdfs hdfs dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
+    log "modifying permissions recursively on ${HUSER}/$d"
+	hdfs dfs -chmod -R 775 ${HUSER}/$d
+	${hdfs_cmd} dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
+	${hdfs_cmd} dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
 done
 
 # Creating Spot Database
