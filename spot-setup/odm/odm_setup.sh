@@ -53,6 +53,7 @@ if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
     exit 0
 fi
 
+SPOTCONF="/etc/spot.conf"
 DSOURCES=('odm')
 DFOLDERS=(
 'event' 
