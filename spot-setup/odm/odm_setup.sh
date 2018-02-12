@@ -89,6 +89,20 @@ fi
 log "Sourcing ${SPOTCONF}\n"
 source $SPOTCONF
 
+# Check no-sudo argument and set the proper hdfs command to run our create table statements later
+if [[ ${no_sudo} == "true" ]]; then
+    hdfs_cmd="hdfs"
+
+    if [[ ! -z "${HADOOP_USER_NAME}" ]]; then
+        log "HADOOP_USER_NAME: ${HADOOP_USER_NAME}"
+    else
+        log "setting HADOOP_USER_NAME to hdfs"
+        HADOOP_USER_NAME=hdfs
+    fi
+else
+    hdfs_cmd="sudo -u hdfs hdfs"
+fi
+
 # Creating HDFS user's folder
 sudo -u hdfs hdfs dfs -mkdir ${HUSER}
 sudo -u hdfs hdfs dfs -chown ${USER}:supergroup ${HUSER}
