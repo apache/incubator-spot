@@ -85,8 +85,9 @@ if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
     exit 1
 fi
 
-# Sourcing ODM Spot configuration variables
-source /etc/spot.conf
+# Sourcing spot configuration variables
+log "Sourcing ${SPOTCONF}\n"
+source $SPOTCONF
 
 # Creating HDFS user's folder
 sudo -u hdfs hdfs dfs -mkdir ${HUSER}
