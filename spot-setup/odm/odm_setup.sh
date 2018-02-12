@@ -24,6 +24,28 @@
 #   
 #   NOTE: At this time only Parquet and Avro storage formats are supported for the ODM tables.
 
+
+set -e
+
+function log() {
+    # General logger for the ODM setup script that prints any input provided to it
+    printf "hdfs_setup.sh:\n $1\n"
+}
+
+function safe_mkdir() {
+    # 1. Takes the hdfs command options and a directory
+    # 2. Checks for the directory before trying to create it and keeps the script from creating existing directories
+
+    local hdfs_cmd=$1
+    local dir=$2
+    if $(hdfs dfs -test -d ${dir}); then
+        log "${dir} already exists"
+    else
+        log "running mkdir on ${dir}"
+        ${hdfs_cmd} dfs -mkdir ${dir}
+    fi
+}
+
 # Check the format argument and make sure its supported
 format=$1
 if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
