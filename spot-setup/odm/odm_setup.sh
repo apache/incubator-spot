@@ -134,8 +134,22 @@ do
 	${hdfs_cmd} dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
 done
 
+# Check if Kerberos is enabled, and create the proper impala-shell configuration and arguments to be used when creating the ODM tables
+
+log "Using Impala as execution engine."
+impala_db_shell="impala-shell -i ${IMPALA_DEM}"
+log "${impala_db_shell}"
+
+if [[ ${KERBEROS} == "true" ]]; then
+    log "Kerberos enabled. Modifying Impala Shell arguments"
+    impala_db_shell="${impala_db_shell} -k"
+    log "${impala_db_shell}"
+fi
+
 # Creating Spot Database
-impala-shell -i ${IMPALA_DEM} -q "CREATE DATABASE IF NOT EXISTS ${DBNAME};"
+
+log "CREATE DATABASE IF NOT EXISTS ${DBNAME};"
+${impala_db_shell} "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
 
 # Creating ODM Impala tables
 for d in "${DSOURCES[@]}" 
