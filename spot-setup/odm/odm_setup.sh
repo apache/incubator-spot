@@ -46,13 +46,6 @@ function safe_mkdir() {
     fi
 }
 
-# Check the format argument and make sure its supported
-format=$1
-if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
-    echo "Format argument '$format' is not supported. Only Parquet and Avro are supported data storage formats. Use 'pqt' or 'avro'  instead (i.e. ./odm_setup pqt)."
-    exit 0
-fi
-
 SPOTCONF="/etc/spot.conf"
 DSOURCES=('odm')
 DFOLDERS=(
@@ -63,6 +56,34 @@ DFOLDERS=(
 'threat_intelligence_context'
 'vulnerability_context'
 )
+
+# Check input argument options
+for arg in "$@"; do
+    case $arg in
+        "--no-sudo")
+            log "not using sudo"
+            no_sudo=true
+            shift
+            ;;
+        "-c")
+            shift
+            SPOTCONF=$1
+            log "Spot Configuration file: ${SPOTCONF}"
+            shift
+            ;;
+        "-f")
+            shift
+            format=$1
+            shift
+            ;;
+    esac
+done
+
+# Check the format argument and make sure its supported
+if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
+    log "Format argument '$format' is not supported. Only Parquet and Avro are supported data storage formats. Use 'pqt' or 'avro'  instead (i.e. ./odm_setup pqt)."
+    exit 1
+fi
 
 # Sourcing ODM Spot configuration variables
 source /etc/spot.conf
