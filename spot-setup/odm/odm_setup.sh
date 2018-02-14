@@ -100,7 +100,9 @@ source $SPOTCONF
 # Check no-sudo argument and set the proper hdfs command to run our create table statements later
 if [[ ${no_sudo} == "true" ]]; then
     hdfs_cmd="hdfs"
+    user_hdfs_cmd="hdfs"
 
+    # If HADOOP_USER_NAME already set, don't attempt to set as hdfs
     if [[ ! -z "${HADOOP_USER_NAME}" ]]; then
         log "HADOOP_USER_NAME: ${HADOOP_USER_NAME}"
     else
@@ -109,6 +111,7 @@ if [[ ${no_sudo} == "true" ]]; then
     fi
 else
     hdfs_cmd="sudo -u hdfs hdfs"
+    user_hdfs_cmd="sudo -u ${USER} hdfs"
 fi
 
 # Creating HDFS user's folder
@@ -178,9 +181,9 @@ do
 
         if [ "$format" == "avro" ] ; then
             log "Adding ${f} Avro schema to ${HUSER}/$d/schema ..."
-            log "${hdfs_cmd} dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc"
+            log "${user_hdfs_cmd} dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc"
             
-            ${hdfs_cmd} dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc
+            ${user_hdfs_cmd} dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc
         
             log "Creating ODM Impala Avro table ${f}..."
             log "${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} --var=ODM_AVRO_URL=hdfs://${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql"
