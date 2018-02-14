@@ -54,6 +54,9 @@ function safe_mkdir() {
     fi
 }
 
+# Set path where local files adjacent to odm_setup.sh can be sourced
+ODM_FILES_DIR="$(dirname "$0")"
+
 SPOTCONF="/etc/spot.conf"
 DSOURCES=('odm')
 DFOLDERS=(
@@ -172,23 +175,23 @@ do
 
         if [ "$format" == "pqt" ] ; then
             log "Creating ODM Impala Parquet table ${f}..."
-            log "${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f create_${f}_pqt.sql"
+            log "${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f ${ODM_FILES_DIR}/create_${f}_pqt.sql"
 
-            ${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f create_${f}_pqt.sql
+            ${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} -c -f ${ODM_FILES_DIR}/create_${f}_pqt.sql
         fi
 
         # If desired storage format is avro, create ODM as Avro tables with Avro schemas
 
         if [ "$format" == "avro" ] ; then
             log "Adding ${f} Avro schema to ${HUSER}/$d/schema ..."
-            log "${user_hdfs_cmd} dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc"
+            log "${user_hdfs_cmd} dfs -put -f ${ODM_FILES_DIR}/$f.avsc ${HUSER}/$d/schema/$f.avsc"
             
-            ${user_hdfs_cmd} dfs -put -f $f.avsc ${HUSER}/$d/schema/$f.avsc
+            ${user_hdfs_cmd} dfs -put -f ${ODM_FILES_DIR}/$f.avsc ${HUSER}/$d/schema/$f.avsc
         
             log "Creating ODM Impala Avro table ${f}..."
-            log "${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} --var=ODM_AVRO_URL=hdfs://${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql"
+            log "${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} --var=ODM_AVRO_URL=hdfs://${HUSER}/${d}/schema/${f}.avsc -c -f ${ODM_FILES_DIR}/create_${f}_avro.sql"
         
-            ${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} --var=ODM_AVRO_URL=hdfs://${HUSER}/${d}/schema/${f}.avsc -c -f create_${f}_avro.sql
+            ${impala_db_shell} --var=ODM_DBNAME=${DBNAME} --var=ODM_TABLENAME=${f} --var=ODM_LOCATION=${HUSER}/${d}/${f} --var=ODM_AVRO_URL=hdfs://${HUSER}/${d}/schema/${f}.avsc -c -f ${ODM_FILES_DIR}/create_${f}_avro.sql
         fi
 	done
 done
