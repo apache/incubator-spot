@@ -137,7 +137,7 @@ do
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
     log "modifying permissions recursively on ${HUSER}/$d"
-	hdfs dfs -chmod -R 775 ${HUSER}/$d
+	${hdfs_cmd} dfs -chmod -R 775 ${HUSER}/$d
 	${hdfs_cmd} dfs -setfacl -R -m user:impala:rwx ${HUSER}/$d
 	${hdfs_cmd} dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
 done
