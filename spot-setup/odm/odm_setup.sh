@@ -20,7 +20,15 @@
 # Instructions
 #   To execute this script, run ./odm_setup with a format type (pqt, avro) as an argument.
 #
-#   i.e. ./odm_setup pqt
+#   i.e. ./odm_setup -f pqt
+#
+#   Required Arguments:
+#       -f : desired storage format for ODM tables
+#
+#   Optional Arguments:
+#       --no-sudo : run hdfs commands without sudo
+#       -c : provide custom path to spot.conf
+#
 #   
 #   NOTE: At this time only Parquet and Avro storage formats are supported for the ODM tables.
 
@@ -29,7 +37,7 @@ set -e
 
 function log() {
     # General logger for the ODM setup script that prints any input provided to it
-    printf "hdfs_setup.sh:\n $1\n"
+    printf "odm_setup.sh:\n $1\n"
 }
 
 function safe_mkdir() {
