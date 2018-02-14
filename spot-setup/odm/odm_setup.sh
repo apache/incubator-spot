@@ -157,7 +157,7 @@ fi
 # Creating Spot Database
 
 log "CREATE DATABASE IF NOT EXISTS ${DBNAME};"
-${impala_db_shell} "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
+${impala_db_shell} -q "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
 
 # Creating ODM Impala tables
 
