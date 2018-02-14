@@ -44,8 +44,8 @@ function safe_mkdir() {
     # 1. Takes the hdfs command options and a directory
     # 2. Checks for the directory before trying to create it and keeps the script from creating existing directories
 
-    local hdfs_cmd=$1
-    local dir=$2
+    local hdfs_cmd="$1"
+    local dir="$2"
     if $(hdfs dfs -test -d ${dir}); then
         log "${dir} already exists"
     else
@@ -113,7 +113,7 @@ fi
 
 # Creating HDFS user's folder
 log "creating ${HUSER}"
-safe_mkdir ${hdfs_cmd} ${HUSER}
+safe_mkdir "${hdfs_cmd}" "${HUSER}"
 ${hdfs_cmd} dfs -chown ${USER}:supergroup ${HUSER}
 ${hdfs_cmd} dfs -chmod 775 ${HUSER}
 
@@ -121,18 +121,18 @@ ${hdfs_cmd} dfs -chmod 775 ${HUSER}
 for d in "${DSOURCES[@]}" 
 do 
 	log "creating /$d"
-	safe_mkdir hdfs ${HUSER}/$d
+	safe_mkdir "${hdfs_cmd}" "${HUSER}/$d"
     
     # Create Avro schemas directory on HDFS if Avro storage is selected
     if [ "$format" == "avro" ] ; then
         log "creating ${HUSER}/$d/schema"
-        safe_mkdir ${hdfs_cmd} ${HUSER}/$d/schema
+        safe_mkdir "${hdfs_cmd}" "${HUSER}/$d/schema"
     fi
 
 	for f in "${DFOLDERS[@]}" 
 	do 
 		log "creating ${HUSER}/$d/$f"
-		safe_mkdir ${hdfs_cmd} ${HUSER}/$d/$f
+		safe_mkdir "${hdfs_cmd}" "${HUSER}/$d/$f"
 	done
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
