@@ -32,14 +32,18 @@ object InputOutputDataHandler {
   /**
     *
     * @param sparkSession Spark Session.
-    * @param inputPath    HDFS input folder for every execution; flow, dns or proxy.
+    * @param inputPath    SQL expression to select relevant data for flow, dns or proxy OR hdfs input data path.
     * @param logger       Application logger.
+    * @param isHive       whether or not inputPath is a Hive query (true) OR an HDFS input data path (false).
     * @return raw data frame.
     */
-  def getInputDataFrame(sparkSession: SparkSession, inputPath: String, logger: Logger): Option[DataFrame] = {
+  def getInputDataFrame(sparkSession: SparkSession, inputPath: String, logger: Logger, isHive: Boolean): Option[DataFrame] = {
     try {
       logger.info("Loading data from: " + inputPath)
-      Some(sparkSession.read.parquet(inputPath))
+      if (isHive) 
+        Some(sparkSession.sql(inputPath))
+      else 
+        Some(sparkSession.read.parquet(inputPath))
     } catch {
       case _: Throwable => None
     }

@@ -22,6 +22,7 @@ if __name__=='__main__':
 
 from flask import Flask, Blueprint
 from flask_graphql import GraphQLView
+from flask_cors import CORS
 import os
 
 from schema import SpotSchema
@@ -32,6 +33,10 @@ blueprint = Blueprint('graphql_api', __name__)
 blueprint.add_url_rule('/graphql', strict_slashes=False, view_func=GraphQLView.as_view('graphql', schema=SpotSchema, graphiql=os.environ.get('SPOT_DEV')=='1'))
 
 app.register_blueprint(blueprint)
+
+# Configure CORS
+origins = os.environ.get('ACCESS_CONTROL_ALLOW_ORIGIN').split(",")
+CORS(app, origins=origins)
 
 if __name__=='__main__':
     port = int(sys.argv[1]) if len(sys.argv)>1 else 8889

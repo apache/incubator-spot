@@ -1,0 +1,14 @@
+---
+timeformat: "%b %-d %H:%M:%S"
+linebreak: "\n"
+templates:
+  - { type: 'file', samples: 'unix/unix_events.sample', period: 60, min: 1, max: 5 }
+replaces:
+  - [ '%HOST%', 'common/hosts.txt' ]
+  - [ '%USERNAME%', 'common/users.txt' ]
+  - [ '%RUSERNAME%', 'common/users.txt' ]
+  - [ '%TTY%', ['pts/0', 'pts/1', 'pts/2', 'pts/3', 'pts/4', 'pts/5'] ]
+  - [ '%UID%', [0, 99, 600, 1000, 1001, 30432] ]
+  - [ '%PWD%', ['/home/crux', '/', '/var/lib'] ]
+  - [ '%COMMAND%', ['/bin/cat /etc/shadow', '/bin/bash sploit.sh', '/bin/rm -rf /', '/bin/vi /etc/passwd'] ]
+...

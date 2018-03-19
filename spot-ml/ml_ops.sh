@@ -62,6 +62,14 @@ else
     RAWDATA_PATH=${PROXY_PATH}
 fi
 
+if [ "$DSOURCE" == "flow" ]; then
+    DATA_TABLE=${FLOW_TABLE}
+elif [ "$DSOURCE" == "dns" ]; then
+    DATA_TABLE=${DNS_TABLE}
+else
+    DATA_TABLE=${PROXY_TABLE}
+fi
+
 # pass the user domain designation if not empty
 
 if [ ! -z $USER_DOMAIN ] ; then
@@ -105,4 +113,3 @@ time spark-submit --class "org.apache.spot.SuspiciousConnects" \
   --ldaoptimizer ${LDA_OPTIMIZER} \
   --precision ${PRECISION} \
   $USER_DOMAIN_CMD
-

@@ -33,9 +33,29 @@ object SuspiciousConnectsArgumentParser {
       action((x, c) => c.copy(analysis = x)).
       text("choice of suspicious connections analysis to perform")
 
-    opt[String]("input").required().valueName("<hdfs path>").
+    opt[String]("input").optional().valueName("<hdfs path>").
       action((x, c) => c.copy(inputPath = x)).
       text("HDFS path to input")
+
+    opt[String]("database").optional().valueName("<database name>").
+      action((x, c) => c.copy(database = x)).
+      text("Database name").children(
+        opt[String]("datatable").required().valueName("<source table name>").
+          action((x, c) => c.copy(dataTable = x)).
+          text("hive table name"),
+
+        opt[Int]("year").required().valueName("<input year>").
+          action((x, c) => c.copy(year = x)).
+          text("input year"),
+
+        opt[Int]("month").required().valueName("<input month>").
+          action((x, c) => c.copy(month = x)).
+          text("input month"),
+
+        opt[Int]("day").required().valueName("<input day>").
+          action((x, c) => c.copy(day = x)).
+          text("input day")
+      )
 
     opt[String]("feedback").valueName("<local file>").
       action((x, c) => c.copy(feedbackFile = x)).
@@ -96,10 +116,24 @@ object SuspiciousConnectsArgumentParser {
     opt[String]("ldaoptimizer").optional().valueName("lda optimizer").
       action((x, c) => c.copy(ldaOptimizer = x)).
       text("LDA Optimizer: em for EM Optimizer or online Online Optimizer")
+
+    checkConfig { params =>
+      if ((!params.inputPath.isEmpty  && !params.database.isEmpty) || 
+          (params.inputPath.isEmpty   && params.database.isEmpty)) {
+        failure(s"(input) and (database) options are mutually exclusive - please use one or the other.")
+      } else {
+        success
+      }
+    }
   }
 
   case class SuspiciousConnectsConfig(analysis: String = "",
                                       inputPath: String = "",
+                                      database: String = "",
+                                      dataTable: String = "",
+                                      year: Int = 0,
+                                      month: Int = 0,
+                                      day: Int = 0,
                                       feedbackFile: String = "",
                                       duplicationFactor: Int = 1,
                                       topicCount: Int = 20,

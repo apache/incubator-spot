@@ -1,0 +1,2 @@
+domain1.example.com
+domain2.example.com

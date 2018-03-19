@@ -1,0 +1,40 @@
+<163>%TS%: %ASA-3-106010: Deny inbound protocol 47 src Outside:%_IP% dst Outside:%_IP%
+<163>%TS%: %ASA-3-713227: IP = %_IP%, Rejecting new IPSec SA negotiation for peer %_IP%. A negotiation was already in progress for local Proxy %_IP%/%_IP%, remote Proxy %_IP%/%_IP%
+<163>%TS%: %ASA-3-713902: Group = %_IP%, IP = %_IP%, Removing peer from correlator table failed, no match!
+<163>%TS%: %ASA-3-752015: Tunnel Manager has failed to establish an L2L SA.  All configured IKE versions failed to establish the tunnel. Map Tag= demap.  Map Sequence Number = 1.
+<164>%TS%: %ASA-4-113019: Group = %_IP%, Username = %_IP%, IP = %_IP%, Session disconnected. Session Type: LAN-to-LAN, Duration: 12d 9h:11m:22s, Bytes xmt: %INT%, Bytes rcv: %INT%, Reason: Lost Service
+<164>%TS%: %ASA-4-313004: Denied ICMP type=0, from laddr %_IP% on interface Outside to %_IP%: no matching session
+<164>%TS%: %ASA-4-713903: IKE Receiver: Runt ISAKMP packet discarded on Port 500 from %_IP%:%_PORT%
+<164>%TS%: %ASA-4-752010: IKEv2 Doesn't have a proposal specified
+<164>%TS%: %ASA-4-752012: IKEv1 was unsuccessful at setting up a tunnel.  Map Tag = demap.  Map Sequence Number = 1.
+<165>%TS%: %ASA-5-111010: User 'admin', running 'N/A' from IP %_IP%, executed 'service-object object TCP44720-44722'
+<165>%TS%: %ASA-5-500003: Bad TCP hdr length (hdrlen=4, pktlen=74) from %_IP%/%_PORT% to %_IP%/0, flags: INVALID, on interface Outside
+<165>%TS%: %ASA-5-713050: Group = %_IP%, IP = %_IP%, Connection terminated for peer %_IP%.  Reason: IPSec SA Idle Timeout  Remote Proxy %_IP%, Local Proxy %_IP%
+<165>%TS%: %ASA-5-713202: IP = %_IP%, Duplicate first packet detected.  Ignoring packet.
+<165>%TS%: %ASA-5-713259: Group = %_IP%, IP = %_IP%, Session is being torn down. Reason: Lost Service
+<165>%TS%: %ASA-5-752004: Tunnel Manager dispatching a KEY_ACQUIRE message to IKEv1.  Map Tag = demap.  Map Sequence Number = 1.
+<165>%TS%: %ASA-5-713904: IP = %_IP%, Received encrypted packet with no matching SA, dropping
+<166>%TS%: %ASA-6-113009: AAA retrieved default group policy (DefaultPolicyCA) for user = %_IP%
+<166>%TS%: %ASA-6-302013: Built inbound TCP connection %CONN_NUM% for outside:%_IP%/%_PORT% (%_IP%/%_PORT%)(LOCAL\user.name) to inside:%_IP%/%_PORT% (%_IP%/%_PORT%) (user.name)
+<174>%TS%: %ASA-6-302013: Built inbound TCP connection %CONN_NUM% for outside:%_IP%/%_PORT% (%_IP%/%_PORT%) to inside:%_IP%/%_PORT% (%_IP%/%_PORT%) (user.name)
+<166>%TS%: %ASA-6-302013: Built outbound TCP connection %CONN_NUM% for outside:%_IP%/%_PORT% (%_IP%/%_PORT%) to inside:%_IP%/%_PORT% (%_IP%/%_PORT%)
+<166>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for outside:%_IP%/%_PORT% to inside:%_IP%/%_PORT% duration 0:00:%SEC bytes %INT% TCP FINs
+<166>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for outside:%_IP%/%_PORT%(LOCAL\user.name) to inside:%_IP%/%_PORT% duration 0:00:%SEC% bytes %INT% TCP FINs (user.name)
+<166>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for outside:%_IP%/%_PORT%(LOCAL\user.name) to inside:%_IP%/%_PORT% duration 0:00:00 bytes 0 TCP FINs (user.name)
+<166>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for outside:%_IP%/%_PORT%(LOCAL\user.name) to inside:%_IP%/%_PORT% duration 0:00:%SEC% bytes %INT% TCP Reset-I (user.name)
+<142>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for DMZ-Inside:%_IP%/%_PORT% to Inside-Trunk:%_IP%/%_PORT% duration 0:%SEC%:%SEC% bytes %INT% TCP Reset-O
+<142>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for Outside_VPN:%_IP%/%_PORT% to DMZ-Inside:%_IP%/%_PORT% duration 0:%SEC%:%SEC% bytes %INT% TCP Reset-O
+<142>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for Outside_VPN:%_IP%/%_PORT% to Inside-Trunk:%_IP%/%_PORT% duration 0:%SEC%:%SEC% bytes %INT% TCP Reset-O
+<142>%TS%: %ASA-6-302014: Teardown TCP connection %CONN_NUM% for Outside_VPN:%_IP%/%_PORT% to Inside-Trunk:%_IP%/%_PORT% duration 0:%SEC%:%SEC% bytes %INT% TCP FINs
+<166>%TS%: %ASA-6-302015: Built inbound UDP connection %CONN_NUM% for outside:%_IP%/%_PORT% (%_IP%/%_PORT%)(LOCAL\user.name) to inside:%_IP%/%_PORT% (%_IP%/%_PORT%) (user.name)
+<174>%TS%: %ASA-6-302015: Built inbound UDP connection %CONN_NUM% for outside:%_IP%/%_PORT% (%_IP%/%_PORT%) to inside:%_IP%/%_PORT% (%_IP%/%_PORT%) (user.name)
+<166>%TS%: %ASA-6-302016: Teardown UDP connection %CONN_NUM% for outside:%_IP%/%_PORT% to inside:%_IP%/%_PORT% duration 0:%SEC%:%SEC% bytes %INT%
+<166>%TS%: %ASA-6-302016: Teardown UDP connection %CONN_NUM% for outside:%_IP%/%_PORT%(LOCAL\user.name) to inside:%_IP%/%_PORT% duration 0:%SEC%:%SEC% bytes %INT% (user.name)
+<182>%TS%: %ASA-6-302020: Built inbound ICMP connection for faddr %_IP%/%_PORT% gaddr %_IP%/%_PORT% laddr %_IP%/%_PORT%
+<166>%TS%: %ASA-6-302020: Built inbound ICMP connection for faddr %_IP%/%_PORT%(LOCAL\user.name) gaddr %_IP%/%_PORT% laddr %_IP%/%_PORT% (user.name)
+<174>%TS%: %ASA-6-302020: Built inbound ICMP connection for faddr %_IP%/%_PORT% gaddr %_IP%/%_PORT% laddr %_IP%/%_PORT% (user.name)
+<166>%TS%: %ASA-6-302020: Built inbound ICMP connection for faddr %_IP%/%_PORT% gaddr %_IP%/%_PORT% laddr %_IP%/%_PORT%
+<174>%TS%: %ASA-6-302020: Built outbound ICMP connection for faddr %_IP%/%_PORT% gaddr %_IP%/%_PORT% laddr %_IP%/0
+<166>%TS%: %ASA-6-713219: IP = %_IP%, Queuing KEY-ACQUIRE messages to be processed when P1 SA is complete.
+<166>%TS%: %ASA-6-713220: Group = %_IP%, IP = %_IP%, De-queuing KEY-ACQUIRE messages that were left pending.
+<166>%TS%: %ASA-6-713905: INFO: IKE Transform #8 next payload is 3 (should be 0).

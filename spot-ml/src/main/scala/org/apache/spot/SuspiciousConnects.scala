@@ -60,13 +60,23 @@ object SuspiciousConnects {
         val sparkSession = SparkSession.builder
           .appName("Spot ML:  " + analysis + " suspicious connects analysis")
           .master("yarn")
+          .enableHiveSupport()
           .getOrCreate()
 
-        val inputDataFrame = InputOutputDataHandler.getInputDataFrame(sparkSession, config.inputPath, logger)
-          .getOrElse(sparkSession.emptyDataFrame)
+        val inputQuery = "SELECT * FROM " + config.database + "." + config.dataTable + " where (y=" +
+                         config.year + " and m=" + config.month + " and d=" + config.day + ")"
+      
+        val inputDataFrame = if (config.database.trim.nonEmpty) {
+                               InputOutputDataHandler.getInputDataFrame(sparkSession, inputQuery, logger, true)
+                                 .getOrElse(sparkSession.emptyDataFrame)
+                             } else {
+                               InputOutputDataHandler.getInputDataFrame(sparkSession, config.inputPath, logger, false)
+                                 .getOrElse(sparkSession.emptyDataFrame)
+                             }
+
         if(inputDataFrame.rdd.isEmpty()) {
-          logger.error("Couldn't read data from location " + config.inputPath +", please verify it's a valid location and that " +
-            s"contains parquet files with a given schema and try again.")
+          val dataFramePath = if (config.database.trim.nonEmpty) " query=(" + inputQuery + ")" else " path=(hdfs: " + config.inputPath + ")" 
+          logger.error("No records returned for" + dataFramePath +", please verify that data and/or connectivity is available")
           System.exit(0)
         }
 

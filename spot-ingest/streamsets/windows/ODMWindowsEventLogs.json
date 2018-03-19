@@ -1,0 +1,943 @@
+{
+  "pipelineConfig" : {
+    "schemaVersion" : 5,
+    "version" : 7,
+    "pipelineId" : "ODMWindowsEventLogs9fae6da4-eb7f-4aca-820a-1f561a40e7cc",
+    "title" : "ODMWindowsEventLogs",
+    "description" : "",
+    "uuid" : "3c91ae21-f045-413a-b316-c46298982991",
+    "configuration" : [ {
+      "name" : "executionMode",
+      "value" : "STANDALONE"
+    }, {
+      "name" : "deliveryGuarantee",
+      "value" : "AT_LEAST_ONCE"
+    }, {
+      "name" : "startEventStage",
+      "value" : "streamsets-datacollector-basic-lib::com_streamsets_pipeline_stage_destination_devnull_ToErrorNullDTarget::1"
+    }, {
+      "name" : "stopEventStage",
+      "value" : "streamsets-datacollector-basic-lib::com_streamsets_pipeline_stage_destination_devnull_ToErrorNullDTarget::1"
+    }, {
+      "name" : "shouldRetry",
+      "value" : true
+    }, {
+      "name" : "retryAttempts",
+      "value" : -1
+    }, {
+      "name" : "memoryLimit",
+      "value" : "${jvm:maxMemoryMB() * 0.65}"
+    }, {
+      "name" : "memoryLimitExceeded",
+      "value" : "STOP_PIPELINE"
+    }, {
+      "name" : "notifyOnStates",
+      "value" : [ "RUN_ERROR", "STOPPED", "FINISHED" ]
+    }, {
+      "name" : "emailIDs",
+      "value" : [ ]
+    }, {
+      "name" : "constants",
+      "value" : [ {
+        "key" : "ODM_EVENTS_LOCATION",
+        "value" : ""
+      }, {
+        "key" : "ODM_EVENTS_TABLE_NAME",
+        "value" : ""
+      }, {
+        "key" : "HIVE_URL",
+        "value" : ""
+      }, {
+        "key" : "WINDOWS_HTTP_APP_ID",
+        "value" : "windowsSpotApp"
+      }, {
+        "key" : "HTTP_PORT",
+        "value" : "8000"
+      } ]
+    }, {
+      "name" : "badRecordsHandling",
+      "value" : "streamsets-datacollector-basic-lib::com_streamsets_pipeline_stage_destination_devnull_ToErrorNullDTarget::1"
+    }, {
+      "name" : "errorRecordPolicy",
+      "value" : "ORIGINAL_RECORD"
+    }, {
+      "name" : "workerCount",
+      "value" : 0
+    }, {
+      "name" : "clusterSlaveMemory",
+      "value" : 1024
+    }, {
+      "name" : "clusterSlaveJavaOpts",
+      "value" : "-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -Dlog4j.debug"
+    }, {
+      "name" : "clusterLauncherEnv",
+      "value" : [ ]
+    }, {
+      "name" : "mesosDispatcherURL",
+      "value" : null
+    }, {
+      "name" : "hdfsS3ConfDir",
+      "value" : null
+    }, {
+      "name" : "rateLimit",
+      "value" : 0
+    }, {
+      "name" : "maxRunners",
+      "value" : 0
+    }, {
+      "name" : "webhookConfigs",
+      "value" : [ ]
+    }, {
+      "name" : "sparkConfigs",
+      "value" : [ ]
+    }, {
+      "name" : "statsAggregatorStage",
+      "value" : "streamsets-datacollector-basic-lib::com_streamsets_pipeline_stage_destination_devnull_StatsDpmDirectlyDTarget::1"
+    }, {
+      "name" : "shouldCreateFailureSnapshot",
+      "value" : true
+    } ],
+    "uiInfo" : {
+      "previewConfig" : {
+        "previewSource" : "CONFIGURED_SOURCE",
+        "batchSize" : 10,
+        "timeout" : 10000,
+        "writeToDestinations" : false,
+        "executeLifecycleEvents" : false,
+        "showHeader" : false,
+        "showFieldType" : true,
+        "rememberMe" : false
+      }
+    },
+    "stages" : [ {
+      "instanceName" : "HTTPServer_01",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_origin_httpserver_HttpServerDPushSource",
+      "stageVersion" : "10",
+      "configuration" : [ {
+        "name" : "httpConfigs.tlsConfigBean.tlsEnabled",
+        "value" : false
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.keyStoreFilePath",
+        "value" : null
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.keyStoreType",
+        "value" : "JKS"
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.keyStorePassword",
+        "value" : null
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.keyStoreAlgorithm",
+        "value" : "SunX509"
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.useDefaultProtocols",
+        "value" : true
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.protocols",
+        "value" : [ ]
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.useDefaultCiperSuites",
+        "value" : true
+      }, {
+        "name" : "httpConfigs.tlsConfigBean.cipherSuites",
+        "value" : [ ]
+      }, {
+        "name" : "httpConfigs.port",
+        "value" : "${HTTP_PORT}"
+      }, {
+        "name" : "httpConfigs.maxConcurrentRequests",
+        "value" : 10
+      }, {
+        "name" : "httpConfigs.appId",
+        "value" : "${WINDOWS_HTTP_APP_ID}"
+      }, {
+        "name" : "httpConfigs.appIdViaQueryParamAllowed",
+        "value" : false
+      }, {
+        "name" : "maxRequestSizeMB",
+        "value" : 100
+      }, {
+        "name" : "dataFormat",
+        "value" : "SDC_JSON"
+      }, {
+        "name" : "dataFormatConfig.compression",
+        "value" : "NONE"
+      }, {
+        "name" : "dataFormatConfig.filePatternInArchive",
+        "value" : "*"
+      }, {
+        "name" : "dataFormatConfig.charset",
+        "value" : "UTF-8"
+      }, {
+        "name" : "dataFormatConfig.removeCtrlChars",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.textMaxLineLen",
+        "value" : 1024
+      }, {
+        "name" : "dataFormatConfig.useCustomDelimiter",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.customDelimiter",
+        "value" : "\\r\\n"
+      }, {
+        "name" : "dataFormatConfig.includeCustomDelimiterInTheText",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.jsonContent",
+        "value" : "MULTIPLE_OBJECTS"
+      }, {
+        "name" : "dataFormatConfig.jsonMaxObjectLen",
+        "value" : 4096
+      }, {
+        "name" : "dataFormatConfig.csvFileFormat",
+        "value" : "CSV"
+      }, {
+        "name" : "dataFormatConfig.csvHeader",
+        "value" : "NO_HEADER"
+      }, {
+        "name" : "dataFormatConfig.csvAllowExtraColumns",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.csvExtraColumnPrefix",
+        "value" : "_extra_"
+      }, {
+        "name" : "dataFormatConfig.csvMaxObjectLen",
+        "value" : 1024
+      }, {
+        "name" : "dataFormatConfig.csvCustomDelimiter",
+        "value" : "|"
+      }, {
+        "name" : "dataFormatConfig.csvCustomEscape",
+        "value" : "\\"
+      }, {
+        "name" : "dataFormatConfig.csvCustomQuote",
+        "value" : "\""
+      }, {
+        "name" : "dataFormatConfig.csvEnableComments",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.csvCommentMarker",
+        "value" : "#"
+      }, {
+        "name" : "dataFormatConfig.csvIgnoreEmptyLines",
+        "value" : true
+      }, {
+        "name" : "dataFormatConfig.csvRecordType",
+        "value" : "LIST_MAP"
+      }, {
+        "name" : "dataFormatConfig.csvSkipStartLines",
+        "value" : 0
+      }, {
+        "name" : "dataFormatConfig.parseNull",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.nullConstant",
+        "value" : "\\\\N"
+      }, {
+        "name" : "dataFormatConfig.xmlRecordElement",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.includeFieldXpathAttributes",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.xPathNamespaceContext",
+        "value" : [ ]
+      }, {
+        "name" : "dataFormatConfig.outputFieldAttributes",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.xmlMaxObjectLen",
+        "value" : 4096
+      }, {
+        "name" : "dataFormatConfig.logMode",
+        "value" : "COMMON_LOG_FORMAT"
+      }, {
+        "name" : "dataFormatConfig.logMaxObjectLen",
+        "value" : 1024
+      }, {
+        "name" : "dataFormatConfig.retainOriginalLine",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.customLogFormat",
+        "value" : "%h %l %u %t \"%r\" %>s %b"
+      }, {
+        "name" : "dataFormatConfig.regex",
+        "value" : "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)"
+      }, {
+        "name" : "dataFormatConfig.fieldPathsToGroupName",
+        "value" : [ {
+          "fieldPath" : "/",
+          "group" : 1
+        } ]
+      }, {
+        "name" : "dataFormatConfig.grokPatternDefinition",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.grokPattern",
+        "value" : "%{COMMONAPACHELOG}"
+      }, {
+        "name" : "dataFormatConfig.onParseError",
+        "value" : "ERROR"
+      }, {
+        "name" : "dataFormatConfig.maxStackTraceLines",
+        "value" : 50
+      }, {
+        "name" : "dataFormatConfig.enableLog4jCustomLogFormat",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.log4jCustomLogFormat",
+        "value" : "%r [%t] %-5p %c %x - %m%n"
+      }, {
+        "name" : "dataFormatConfig.avroSchema",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.schemaRegistryUrls",
+        "value" : [ ]
+      }, {
+        "name" : "dataFormatConfig.schemaLookupMode",
+        "value" : "SUBJECT"
+      }, {
+        "name" : "dataFormatConfig.subject",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.schemaId",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.protoDescriptorFile",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.messageType",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.isDelimited",
+        "value" : true
+      }, {
+        "name" : "dataFormatConfig.binaryMaxObjectLen",
+        "value" : 1024
+      }, {
+        "name" : "dataFormatConfig.datagramMode",
+        "value" : "SYSLOG"
+      }, {
+        "name" : "dataFormatConfig.typesDbPath",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.convertTime",
+        "value" : false
+      }, {
+        "name" : "dataFormatConfig.excludeInterval",
+        "value" : true
+      }, {
+        "name" : "dataFormatConfig.authFilePath",
+        "value" : null
+      }, {
+        "name" : "dataFormatConfig.netflowOutputValuesMode",
+        "value" : "RAW_AND_INTERPRETED"
+      }, {
+        "name" : "dataFormatConfig.maxTemplateCacheSize",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.templateCacheTimeoutMs",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.netflowOutputValuesModeDatagram",
+        "value" : "RAW_AND_INTERPRETED"
+      }, {
+        "name" : "dataFormatConfig.maxTemplateCacheSizeDatagram",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.templateCacheTimeoutMsDatagram",
+        "value" : -1
+      }, {
+        "name" : "dataFormatConfig.wholeFileMaxObjectLen",
+        "value" : 8192
+      }, {
+        "name" : "dataFormatConfig.rateLimit",
+        "value" : "-1"
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      } ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "HTTP Server 1",
+        "xPos" : 60,
+        "yPos" : 50,
+        "stageType" : "SOURCE"
+      },
+      "inputLanes" : [ ],
+      "outputLanes" : [ "HTTPServer_01OutputLane15161394829660" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "ExpressionEvaluator_01",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_expression_ExpressionDProcessor",
+      "stageVersion" : "2",
+      "configuration" : [ {
+        "name" : "expressionProcessorConfigs",
+        "value" : [ {
+          "fieldToSet" : "/dvc_host",
+          "expression" : "${record:value('/ComputerName')}"
+        }, {
+          "fieldToSet" : "/event_time",
+          "expression" : "${record:value('/TimeGenerated') * 1000}"
+        }, {
+          "fieldToSet" : "/msg",
+          "expression" : "${record:value('/Message')}"
+        }, {
+          "fieldToSet" : "/name",
+          "expression" : "${record:value('/LogName')}"
+        }, {
+          "fieldToSet" : "/category",
+          "expression" : "${record:value('/Category')}"
+        }, {
+          "fieldToSet" : "/event_id",
+          "expression" : "${record:value('/EventId')}"
+        }, {
+          "fieldToSet" : "/user",
+          "expression" : "${record:value('/User')}"
+        } ]
+      }, {
+        "name" : "headerAttributeConfigs",
+        "value" : [ {
+          "attributeToSet" : "p_dvc_vendor",
+          "headerAttributeExpression" : "Microsoft"
+        }, {
+          "attributeToSet" : "p_dvc_type",
+          "headerAttributeExpression" : "${record:value('/SourceName')}"
+        }, {
+          "attributeToSet" : "p_dt",
+          "headerAttributeExpression" : "${time:extractStringFromDate(time:now(),'YYYY-MM-dd')}"
+        } ]
+      }, {
+        "name" : "fieldAttributeConfigs",
+        "value" : [ ]
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Map to ODM",
+        "xPos" : 280,
+        "yPos" : 50,
+        "stageType" : "PROCESSOR"
+      },
+      "inputLanes" : [ "HTTPServer_01OutputLane15161394829660" ],
+      "outputLanes" : [ "ExpressionEvaluator_01OutputLane15059452532370" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "FieldRemover_01",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_fieldfilter_FieldFilterDProcessor",
+      "stageVersion" : "1",
+      "configuration" : [ {
+        "name" : "filterOperation",
+        "value" : "KEEP"
+      }, {
+        "name" : "fields",
+        "value" : [ "/msg", "/name", "/category", "/dvc_host", "/event_id", "/user", "/event_time" ]
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Field Remover 1",
+        "xPos" : 500,
+        "yPos" : 50,
+        "stageType" : "PROCESSOR"
+      },
+      "inputLanes" : [ "ExpressionEvaluator_01OutputLane15059452532370" ],
+      "outputLanes" : [ "FieldRemover_01OutputLane15059461007910" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "HadoopFS_01",
+      "library" : "streamsets-datacollector-cdh_5_11-lib",
+      "stageName" : "com_streamsets_pipeline_stage_destination_hdfs_HdfsDTarget",
+      "stageVersion" : "4",
+      "configuration" : [ {
+        "name" : "hdfsTargetConfigBean.hdfsUri",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.hdfsUser",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.hdfsKerberos",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.hdfsConfDir",
+        "value" : "hadoop-conf"
+      }, {
+        "name" : "hdfsTargetConfigBean.hdfsConfigs",
+        "value" : [ ]
+      }, {
+        "name" : "hdfsTargetConfigBean.uniquePrefix",
+        "value" : "sdc-${sdc:id()}"
+      }, {
+        "name" : "hdfsTargetConfigBean.fileNameSuffix",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.dirPathTemplateInHeader",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.dirPathTemplate",
+        "value" : "${ODM_EVENTS_LOCATION}/p_dvc_type='${record:attribute(\"p_dvc_type\")}'/p_dvc_vendor='${record:attribute(\"p_dvc_vendor\")}'/p_dt='${record:attribute(\"p_dt\")}'"
+      }, {
+        "name" : "hdfsTargetConfigBean.timeZoneID",
+        "value" : "UTC"
+      }, {
+        "name" : "hdfsTargetConfigBean.timeDriver",
+        "value" : "${time:now()}"
+      }, {
+        "name" : "hdfsTargetConfigBean.maxRecordsPerFile",
+        "value" : 1
+      }, {
+        "name" : "hdfsTargetConfigBean.maxFileSize",
+        "value" : 0
+      }, {
+        "name" : "hdfsTargetConfigBean.idleTimeout",
+        "value" : "${1 * HOURS}"
+      }, {
+        "name" : "hdfsTargetConfigBean.compression",
+        "value" : "NONE"
+      }, {
+        "name" : "hdfsTargetConfigBean.otherCompression",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.fileType",
+        "value" : "TEXT"
+      }, {
+        "name" : "hdfsTargetConfigBean.keyEl",
+        "value" : "${uuid()}"
+      }, {
+        "name" : "hdfsTargetConfigBean.seqFileCompressionType",
+        "value" : "BLOCK"
+      }, {
+        "name" : "hdfsTargetConfigBean.lateRecordsLimit",
+        "value" : "${1 * HOURS}"
+      }, {
+        "name" : "hdfsTargetConfigBean.rollIfHeader",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.rollHeaderName",
+        "value" : "roll"
+      }, {
+        "name" : "hdfsTargetConfigBean.lateRecordsAction",
+        "value" : "SEND_TO_ERROR"
+      }, {
+        "name" : "hdfsTargetConfigBean.lateRecordsDirPathTemplate",
+        "value" : "/tmp/late/${YYYY()}-${MM()}-${DD()}"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataFormat",
+        "value" : "AVRO"
+      }, {
+        "name" : "hdfsTargetConfigBean.hdfsPermissionCheck",
+        "value" : true
+      }, {
+        "name" : "hdfsTargetConfigBean.permissionEL",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.skipOldTempFileRecovery",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.charset",
+        "value" : "UTF-8"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.csvFileFormat",
+        "value" : "CSV"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.csvHeader",
+        "value" : "NO_HEADER"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.csvReplaceNewLines",
+        "value" : true
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.csvReplaceNewLinesString",
+        "value" : " "
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.csvCustomDelimiter",
+        "value" : "|"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.csvCustomEscape",
+        "value" : "\\"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.csvCustomQuote",
+        "value" : "\""
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.jsonMode",
+        "value" : "MULTIPLE_OBJECTS"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.textFieldPath",
+        "value" : "/text"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.textRecordSeparator",
+        "value" : "\\n"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.textFieldMissingAction",
+        "value" : "ERROR"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.textEmptyLineIfNull",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.avroSchemaSource",
+        "value" : "INLINE"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.avroSchema",
+        "value" : "{\n\n     \"namespace\":\"org.apache.spot\",\n     \"name\":\"event\",\n     \"type\": \"record\",\n     \"fields\": [\n        {\"name\":\"event_time\",\"type\":[\"null\",\"long\"],\"doc\":\"timestamp of event (UTC)\", \"default\": null},\n          {\"name\":\"duration\", \"type\":[\"null\",\"float\"],\"doc\":\"Time duration (milliseconds)\", \"default\": null},\n          {\"name\":\"event_id\", \"type\":[\"null\",\"string\"],\"doc\":\"Unique identifier for event\", \"default\": null},\n          {\"name\":\"name\", \"type\":[\"null\",\"string\"],\"doc\":\"Name of event\", \"default\": null},\n          {\"name\":\"org\", \"type\":[\"null\",\"string\"],\"doc\":\"Organization\", \"default\": null},\n          {\"name\":\"type\", \"type\":[\"null\",\"string\"],\"doc\":\"Type information\", \"default\": null},\n          {\"name\":\"n_proto\", \"type\":[\"null\",\"string\"],\"doc\":\"Network protocol of event\", \"default\": null},\n          {\"name\":\"a_proto\", \"type\":[\"null\",\"string\"],\"doc\":\"Application protocol of event\", \"default\": null},\n          {\"name\":\"msg\", \"type\":[\"null\",\"string\"],\"doc\":\"Message (details of action taken on object)\", \"default\": null},\n          {\"name\":\"mac\", \"type\":[\"null\",\"string\"],\"doc\":\"MAC address\", \"default\": null},\n          {\"name\":\"severity\", \"type\":[\"null\",\"string\"],\"doc\":\"Severity of event\", \"default\": null},\n          {\"name\":\"raw\", \"type\":[\"null\",\"string\"],\"doc\":\"Raw text message of entire event\", \"default\": null},\n          {\"name\":\"risk\", \"type\":[\"null\",\"float\"],\"doc\":\"Risk score\", \"default\": null},\n          {\"name\":\"code\", \"type\":[\"null\",\"string\"],\"doc\":\"Response or error code\", \"default\": null},\n          {\"name\":\"category\", \"type\":[\"null\",\"string\"],\"doc\":\"Event category\", \"default\": null},\n          {\"name\":\"query\", \"type\":[\"null\",\"string\"],\"doc\":\"Query (DNS query, URI query, SQL query, etc.)\", \"default\": null},\n          {\"name\":\"service\", \"type\":[\"null\",\"string\"],\"doc\":\"(i.e. service name, type of service)\", \"default\": null},\n          {\"name\":\"state\", \"type\":[\"null\",\"string\"],\"doc\":\"State of object\", \"default\": null},\n          {\"name\":\"in_bytes\", \"type\":[\"null\",\"int\"],\"doc\":\"Bytes in\", \"default\": null},\n          {\"name\":\"out_bytes\", \"type\":[\"null\",\"int\"],\"doc\":\"Bytes out\", \"default\": null},\n          {\"name\":\"xref\", \"type\":[\"null\",\"string\"],\"doc\":\"External reference to public description\", \"default\": null},\n          {\"name\":\"version\", \"type\":[\"null\",\"string\"],\"doc\":\"Version\", \"default\": null},\n          {\"name\":\"additional_attrs\",\"type\":[\"null\",{\"type\":\"map\",\"values\":[\"null\",\"string\"]}],\"default\":null, \"doc\":\"Additional attributes of the event\", \"default\": null},\n        {\"name\":\"dvc_time\", \"type\":[\"null\",\"long\"],\"doc\":\"UTC timestamp from device where event/alert originates or is received\", \"default\": null},\n        {\"name\":\"dvc_ip4\", \"type\":[\"null\",\"string\"],\"doc\":\"IP address of device\", \"default\": null},\n        {\"name\":\"dvc_ip6\", \"type\":[\"null\",\"string\"],\"doc\":\"IP address of device\", \"default\": null},\n        {\"name\":\"dvc_host\", \"type\":[\"null\",\"string\"],\"doc\":\"Hostname of device\", \"default\": null},\n        {\"name\":\"dvc_type\", \"type\":[\"null\",\"string\"],\"doc\":\"Device type that generated the log\", \"default\": null},\n        {\"name\":\"dvc_vendor\", \"type\":[\"null\",\"string\"],\"doc\":\"Vendor\", \"default\": null},\n        {\"name\":\"dvc_fwd_ip4\", \"type\":[\"null\",\"long\"],\"doc\":\"Forwarded from device\", \"default\": null},\n        {\"name\":\"dvc_fwd_ip6\", \"type\":[\"null\",\"long\"],\"doc\":\"Forwarded from device\", \"default\": null},\n        {\"name\":\"dvc_version\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"src_ip4\", \"type\":[\"null\",\"long\"],\"doc\":\"Source ip address of event\", \"default\": null},\n        {\"name\":\"src_ip6\", \"type\":[\"null\",\"long\"],\"doc\":\"Source ip address of event\", \"default\": null},\n        {\"name\":\"src_host\", \"type\":[\"null\",\"string\"],\"doc\":\"Source FQDN of event\", \"default\": null},\n        {\"name\":\"src_domain\", \"type\":[\"null\",\"string\"],\"doc\":\"Domain name of source address\", \"default\": null},\n        {\"name\":\"src_port\", \"type\":[\"null\",\"int\"],\"doc\":\"Source port of event\", \"default\": null},\n        {\"name\":\"src_country_code\", \"type\":[\"null\",\"string\"],\"doc\":\"Source country code\", \"default\": null},\n        {\"name\":\"src_country_name\", \"type\":[\"null\",\"string\"],\"doc\":\"Source country name\", \"default\": null},\n        {\"name\":\"src_region\", \"type\":[\"null\",\"string\"],\"doc\":\"Source region\", \"default\": null},\n        {\"name\":\"src_city\", \"type\":[\"null\",\"string\"],\"doc\":\"Source city\", \"default\": null},\n        {\"name\":\"src_lat\", \"type\":[\"null\",\"int\"],\"doc\":\"Source latitude\", \"default\": null},\n        {\"name\":\"src_long\", \"type\":[\"null\",\"int\"],\"doc\":\"Source longitude\", \"default\": null},\n        {\"name\":\"dst_ip4\", \"type\":[\"null\",\"long\"],\"doc\":\"Destination ip address of event\", \"default\": null},\n        {\"name\":\"dst_ip6\", \"type\":[\"null\",\"long\"],\"doc\":\"Destination ip address of event\", \"default\": null},\n        {\"name\":\"dst_host\", \"type\":[\"null\",\"string\"],\"doc\":\"Destination FQDN of event\", \"default\": null},\n        {\"name\":\"dst_domain\", \"type\":[\"null\",\"string\"],\"doc\":\"Domain name of destination address\", \"default\": null},\n        {\"name\":\"dst_port\", \"type\":[\"null\",\"int\"],\"doc\":\"Destination port of event\", \"default\": null},\n        {\"name\":\"dst_country_code\", \"type\":[\"null\",\"string\"],\"doc\":\"Source country code\", \"default\": null},\n        {\"name\":\"dst_country_name\", \"type\":[\"null\",\"string\"],\"doc\":\"Source country name\", \"default\": null},\n        {\"name\":\"dst_region\", \"type\":[\"null\",\"string\"],\"doc\":\"Source region\", \"default\": null},\n        {\"name\":\"dst_city\", \"type\":[\"null\",\"string\"],\"doc\":\"Source city\", \"default\": null},\n        {\"name\":\"dst_lat\", \"type\":[\"null\",\"int\"],\"doc\":\"Source latitude\", \"default\": null},\n        {\"name\":\"dst_long\", \"type\":[\"null\",\"int\"],\"doc\":\"Source longitude\", \"default\": null},\n        {\"name\":\"src_asn\", \"type\":[\"null\",\"int\"],\"doc\":\"Autonomous system number\", \"default\": null},\n        {\"name\":\"dst_asn\", \"type\":[\"null\",\"int\"],\"doc\":\"Autonomous system number\", \"default\": null},\n        {\"name\":\"net_direction\", \"type\":[\"null\",\"string\"],\"doc\":\"Direction\", \"default\": null},\n        {\"name\":\"net_flags\", \"type\":[\"null\",\"string\"],\"doc\":\"TCP flags\", \"default\": null},\n        {\"name\":\"file_name\", \"type\":[\"null\",\"string\"],\"doc\":\"Filename from event\", \"default\": null},\n        {\"name\":\"file_path\", \"type\":[\"null\",\"string\"],\"doc\":\"File path\", \"default\": null},\n        {\"name\":\"file_atime\", \"type\":[\"null\",\"long\"],\"doc\":\"Timestamp (UTC) of file access\", \"default\": null},\n        {\"name\":\"file_acls\", \"type\":[\"null\",\"string\"],\"doc\":\"File permissions\", \"default\": null},\n        {\"name\":\"file_type\", \"type\":[\"null\",\"string\"],\"doc\":\"Type of file\", \"default\": null},\n        {\"name\":\"file_size\", \"type\":[\"null\",\"int\"],\"doc\":\"Size of file in bytes\", \"default\": null},\n        {\"name\":\"file_desc\", \"type\":[\"null\",\"string\"],\"doc\":\"Description of file\", \"default\": null},\n        {\"name\":\"file_hash\", \"type\":[\"null\",\"string\"],\"doc\":\"Hash of file\", \"default\": null},\n        {\"name\":\"file_hash_type\", \"type\":[\"null\",\"string\"],\"doc\":\"Type of hash\", \"default\": null},\n        {\"name\":\"end_object\", \"type\":[\"null\",\"string\"],\"doc\":\"File/Process/ Registry\", \"default\": null},\n        {\"name\":\"end_action\", \"type\":[\"null\",\"string\"],\"doc\":\"Action taken on object (open/delete/ edit)\", \"default\": null},\n        {\"name\":\"end_msg\", \"type\":[\"null\",\"string\"],\"doc\":\"Message (details of action taken on object)\", \"default\": null},\n        {\"name\":\"end_app\", \"type\":[\"null\",\"string\"],\"doc\":\"Application\", \"default\": null},\n        {\"name\":\"end_location\", \"type\":[\"null\",\"string\"],\"doc\":\"Location\", \"default\": null},\n        {\"name\":\"end_proc\", \"type\":[\"null\",\"string\"],\"doc\":\"Process\", \"default\": null},\n        {\"name\":\"user_name\", \"type\":[\"null\",\"string\"],\"doc\":\"username from event\", \"default\": null},\n        {\"name\":\"src_user_name\", \"type\":[\"null\",\"string\"],\"doc\":\"username from event\", \"default\": null},\n        {\"name\":\"dst_user_name\", \"type\":[\"null\",\"string\"],\"doc\":\"username from event\", \"default\": null},\n        {\"name\":\"user_email\", \"type\":[\"null\",\"string\"],\"doc\":\"Email address\", \"default\": null},\n        {\"name\":\"user_id\", \"type\":[\"null\",\"string\"],\"doc\":\"userid\", \"default\": null},\n        {\"name\":\"user_loc\", \"type\":[\"null\",\"string\"],\"doc\":\"location\", \"default\": null},\n        {\"name\":\"user_desc\", \"type\":[\"null\",\"string\"],\"doc\":\"Description of user\", \"default\": null},\n        {\"name\":\"dns_class\", \"type\":[\"null\",\"string\"],\"doc\":\"DNS class\", \"default\": null},\n        {\"name\":\"dns_len\", \"type\":[\"null\",\"int\"],\"doc\":\"DNS frame length\", \"default\": null},\n        {\"name\":\"dns_query\", \"type\":[\"null\",\"string\"],\"doc\":\"Requested DNS query\", \"default\": null},\n        {\"name\":\"dns_response_code\", \"type\":[\"null\",\"string\"],\"doc\":\"Response code\", \"default\": null},\n        {\"name\":\"dns_answers\", \"type\":[\"null\",\"string\"],\"doc\":\"Response to DNS Query\", \"default\": null},\n        {\"name\":\"dns_type\", \"type\":[\"null\",\"int\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"prx_category\", \"type\":[\"null\",\"string\"],\"doc\":\"Event category\", \"default\": null},\n        {\"name\":\"prx_browser\", \"type\":[\"null\",\"string\"],\"doc\":\"Web browser\", \"default\": null},\n        {\"name\":\"prx_code\", \"type\":[\"null\",\"string\"],\"doc\":\"Error or response code\", \"default\": null},\n        {\"name\":\"prx_referrer\", \"type\":[\"null\",\"string\"],\"doc\":\"Referrer\", \"default\": null},\n        {\"name\":\"prx_host\", \"type\":[\"null\",\"string\"],\"doc\":\"Requested URI\", \"default\": null},\n        {\"name\":\"prx_filter_rule\", \"type\":[\"null\",\"string\"],\"doc\":\"Applied filter or rule\", \"default\": null},\n        {\"name\":\"prx_filter_result\", \"type\":[\"null\",\"string\"],\"doc\":\"Result of applied filter or rule\", \"default\": null},\n        {\"name\":\"prx_query\", \"type\":[\"null\",\"string\"],\"doc\":\"URI query\", \"default\": null},\n        {\"name\":\"prx_action\", \"type\":[\"null\",\"string\"],\"doc\":\"Action taken on object\", \"default\": null},\n        {\"name\":\"prx_method\", \"type\":[\"null\",\"string\"],\"doc\":\"HTTP method\", \"default\": null},\n        {\"name\":\"prx_type\", \"type\":[\"null\",\"string\"],\"doc\":\"Type of request\", \"default\": null},\n        {\"name\":\"http_request_method\", \"type\":[\"null\",\"string\"],\"doc\":\"HTTP method\", \"default\": null},\n        {\"name\":\"http_request_uri\", \"type\":[\"null\",\"string\"],\"doc\":\"Requested URI\", \"default\": null},\n        {\"name\":\"http_request_body_len\", \"type\":[\"null\",\"int\"],\"doc\":\"Length of request body\", \"default\": null},\n        {\"name\":\"http_request_user_name\", \"type\":[\"null\",\"string\"],\"doc\":\"username from event\", \"default\": null},\n        {\"name\":\"http_request_password\", \"type\":[\"null\",\"string\"],\"doc\":\"Password from event\", \"default\": null},\n        {\"name\":\"http_request_proxied\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"http_request_headers\", \"type\":[\"null\",\"string\"],\"doc\":\"HTTP request headers\", \"default\": null},\n        {\"name\":\"http_response_status_code\", \"type\":[\"null\",\"int\"],\"doc\":\"HTTP response status code\", \"default\": null},\n        {\"name\":\"http_response_status_msg\", \"type\":[\"null\",\"string\"],\"doc\":\"HTTP response status message\", \"default\": null},\n        {\"name\":\"http_response_body_len\", \"type\":[\"null\",\"string\"],\"doc\":\"Length of response body\", \"default\": null},\n        {\"name\":\"http_response_info_code\", \"type\":[\"null\",\"int\"],\"doc\":\"HTTP response info code\", \"default\": null},\n        {\"name\":\"http_response_info_msg\", \"type\":[\"null\",\"string\"],\"doc\":\"HTTP response info message\", \"default\": null},\n        {\"name\":\"http_response_resp_fuids\", \"type\":[\"null\",\"string\"],\"doc\":\"Response FUIDS\", \"default\": null},\n        {\"name\":\"http_response_mime_types\", \"type\":[\"null\",\"string\"],\"doc\":\"Mime types\", \"default\": null},\n        {\"name\":\"http_response_headers\", \"type\":[\"null\",\"string\"],\"doc\":\"Response headers\", \"default\": null},\n        {\"name\":\"smtp_trans_depth\", \"type\":[\"null\",\"int\"],\"doc\":\"Depth of email into SMTP exchange\", \"default\": null},\n        {\"name\":\"smtp_headers_helo\", \"type\":[\"null\",\"string\"],\"doc\":\"Helo header\", \"default\": null},\n        {\"name\":\"smtp_headers_mailfrom\", \"type\":[\"null\",\"string\"],\"doc\":\"Mailfrom header\", \"default\": null},\n        {\"name\":\"smtp_headers_rcptto\", \"type\":[\"null\",\"string\"],\"doc\":\"Rcptto header\", \"default\": null},\n        {\"name\":\"smtp_headers_date\", \"type\":[\"null\",\"string\"],\"doc\":\"Header date\", \"default\": null},\n        {\"name\":\"smtp_headers_from\", \"type\":[\"null\",\"string\"],\"doc\":\"From header\", \"default\": null},\n        {\"name\":\"smtp_headers_to\", \"type\":[\"null\",\"string\"],\"doc\":\"To header\", \"default\": null},\n        {\"name\":\"smtp_headers_reply_to\", \"type\":[\"null\",\"string\"],\"doc\":\"Reply to header\", \"default\": null},\n        {\"name\":\"smtp_headers_msg_id\", \"type\":[\"null\",\"string\"],\"doc\":\"Message ID\", \"default\": null},\n        {\"name\":\"smtp_headers_in_reply_to\", \"type\":[\"null\",\"string\"],\"doc\":\"In reply to header\", \"default\": null},\n        {\"name\":\"smpt_headers_subject\", \"type\":[\"null\",\"string\"],\"doc\":\"Subject\", \"default\": null},\n        {\"name\":\"smtp_headers_x_originating_ip4\", \"type\":[\"null\",\"long\"],\"doc\":\"Originating IP address\", \"default\": null},\n        {\"name\":\"smtp_headers_first_received\", \"type\":[\"null\",\"string\"],\"doc\":\"First to receive message\", \"default\": null},\n        {\"name\":\"smtp_headers_second_received\", \"type\":[\"null\",\"string\"],\"doc\":\"Second to receive message\", \"default\": null},\n        {\"name\":\"smtp_last_reply\", \"type\":[\"null\",\"string\"],\"doc\":\"Last reply in message chain\", \"default\": null},\n        {\"name\":\"smtp_path\", \"type\":[\"null\",\"string\"],\"doc\":\"Path of message\", \"default\": null},\n        {\"name\":\"smtp_user_agent\", \"type\":[\"null\",\"string\"],\"doc\":\"User agent\", \"default\": null},\n        {\"name\":\"smtp_tls\", \"type\":[\"null\",\"boolean\"],\"doc\":\"Indication of TLS use\", \"default\": null},\n        {\"name\":\"smtp_is_webmail\", \"type\":[\"null\",\"boolean\"],\"doc\":\"Indication of webmail\", \"default\": null},\n        {\"name\":\"ftp_user_name\", \"type\":[\"null\",\"string\"],\"doc\":\"Username\", \"default\": null},\n        {\"name\":\"ftp_password\", \"type\":[\"null\",\"string\"],\"doc\":\"Password\", \"default\": null},\n        {\"name\":\"ftp_command\", \"type\":[\"null\",\"string\"],\"doc\":\"FTP command\", \"default\": null},\n        {\"name\":\"ftp_arg\", \"type\":[\"null\",\"string\"],\"doc\":\"Argument\", \"default\": null},\n        {\"name\":\"ftp_mime_type\", \"type\":[\"null\",\"string\"],\"doc\":\"Mime type\", \"default\": null},\n        {\"name\":\"ftp_file_size\", \"type\":[\"null\",\"int\"],\"doc\":\"File size\", \"default\": null},\n        {\"name\":\"ftp_reply_code\", \"type\":[\"null\",\"int\"],\"doc\":\"Reply code\", \"default\": null},\n        {\"name\":\"ftp_reply_msg\", \"type\":[\"null\",\"string\"],\"doc\":\"Reply message\", \"default\": null},\n        {\"name\":\"ftp_data_channel_passive\", \"type\":[\"null\",\"boolean\"],\"doc\":\"Passive data channel?\", \"default\": null},\n        {\"name\":\"ftp_data_channel_rsp_p\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ftp_cwd\", \"type\":[\"null\",\"string\"],\"doc\":\"Current working directory\", \"default\": null},\n        {\"name\":\"ftp_cmdarg_ts\", \"type\":[\"null\",\"float\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ftp_cmdarg_cmd\", \"type\":[\"null\",\"string\"],\"doc\":\"Command\", \"default\": null},\n        {\"name\":\"ftp_cmdarg_arg\", \"type\":[\"null\",\"string\"],\"doc\":\"Command argument\", \"default\": null},\n        {\"name\":\"ftp_cmdarg_seq\", \"type\":[\"null\",\"int\"],\"doc\":\"Sequence\", \"default\": null},\n        {\"name\":\"ftp_pending_commands\", \"type\":[\"null\",\"string\"],\"doc\":\"Pending commands\", \"default\": null},\n        {\"name\":\"ftp_is_passive\", \"type\":[\"null\",\"boolean\"],\"doc\":\"Passive mode enabled\", \"default\": null},\n        {\"name\":\"ftp_fuid\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ftp_last_auth_requested\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_version\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_community\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_get_requests\", \"type\":[\"null\",\"int\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_get_bulk_requests\", \"type\":[\"null\",\"int\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_get_responses\", \"type\":[\"null\",\"int\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_set_requests\", \"type\":[\"null\",\"int\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_display_string\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"snmp_up_since\", \"type\":[\"null\",\"float\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_version\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_cipher\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_curve\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_server_name\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_resumed\", \"type\":[\"null\",\"boolean\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_next_protocol\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_established\", \"type\":[\"null\",\"boolean\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_cert_chain_fuids\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"tls_client_cert_chain_fuids\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_version\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_auth_success\", \"type\":[\"null\",\"boolean\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_client\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_server\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_cipher_algorithm\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_mac_algorithm\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_compression_algorithm\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_key_exchange_algorithm\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"ssh_host_key_algorithm\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"dhcp_assigned_ip4\", \"type\":[\"null\",\"long\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"dhcp_mac\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"dhcp_lease_time\", \"type\":[\"null\",\"double\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"irc_user\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"irc_nickname\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"irc_command\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"irc_value\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"irc_additional_data\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_in_packets\", \"type\":[\"null\",\"int\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_out_packets\", \"type\":[\"null\",\"int\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_conn_state\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_history\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_src_dscp\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_dst_dscp\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_input\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"flow_output\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"vuln_id\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"vuln_title\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"vuln_type\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"vuln_status\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null},\n        {\"name\":\"vuln_severity\", \"type\":[\"null\",\"string\"],\"doc\":\"TBD\", \"default\": null}\n     ],\n     \"doc\": \"A view schema for storing Apache Spot Event data.\"\n  }"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.registerSchema",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.schemaRegistryUrlsForRegistration",
+        "value" : [ ]
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.schemaRegistryUrls",
+        "value" : [ ]
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.schemaLookupMode",
+        "value" : "SUBJECT"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.subject",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.subjectToRegister",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.schemaId",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.avroCompression",
+        "value" : "NULL"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.binaryFieldPath",
+        "value" : "/"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.protoDescriptorFile",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.messageType",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.fileNameEL",
+        "value" : null
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.wholeFileExistsAction",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.includeChecksumInTheEvents",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.checksumAlgorithm",
+        "value" : "MD5"
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.xmlPrettyPrint",
+        "value" : true
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.xmlValidateSchema",
+        "value" : false
+      }, {
+        "name" : "hdfsTargetConfigBean.dataGeneratorFormatConfig.xmlSchema",
+        "value" : null
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Hadoop FS 1",
+        "xPos" : 720,
+        "yPos" : 50,
+        "stageType" : "TARGET"
+      },
+      "inputLanes" : [ "FieldRemover_01OutputLane15059461007910" ],
+      "outputLanes" : [ ],
+      "eventLanes" : [ "HadoopFS_01_EventLane" ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "ExpressionEvaluator_02",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_expression_ExpressionDProcessor",
+      "stageVersion" : "2",
+      "configuration" : [ {
+        "name" : "expressionProcessorConfigs",
+        "value" : [ ]
+      }, {
+        "name" : "headerAttributeConfigs",
+        "value" : [ {
+          "attributeToSet" : "p_dvc_vendor",
+          "headerAttributeExpression" : "${str:regExCapture(file:pathElement(record:value(\"/filepath\"), -4), \".*=(.*)\", 1)}"
+        }, {
+          "attributeToSet" : "p_dvc_type",
+          "headerAttributeExpression" : "${str:regExCapture(file:pathElement(record:value(\"/filepath\"), -3), \".*=(.*)\", 1)}"
+        }, {
+          "attributeToSet" : "p_dt",
+          "headerAttributeExpression" : "${str:regExCapture(file:pathElement(record:value(\"/filepath\"), -2), \".*=(.*)\", 1)}"
+        } ]
+      }, {
+        "name" : "fieldAttributeConfigs",
+        "value" : [ {
+          "fieldToSet" : "/"
+        } ]
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Extract Partition Values",
+        "xPos" : 940,
+        "yPos" : 200,
+        "stageType" : "PROCESSOR"
+      },
+      "inputLanes" : [ "HadoopFS_01_EventLane" ],
+      "outputLanes" : [ "ExpressionEvaluator_02OutputLane15059713441990" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "HiveQuery_01",
+      "library" : "streamsets-datacollector-cdh_5_11-lib",
+      "stageName" : "com_streamsets_pipeline_stage_destination_hive_queryexecutor_HiveQueryDExecutor",
+      "stageVersion" : "2",
+      "configuration" : [ {
+        "name" : "config.hiveConfigBean.hiveJDBCUrl",
+        "value" : "${HIVE_URL}"
+      }, {
+        "name" : "config.hiveConfigBean.hiveJDBCDriver",
+        "value" : "org.apache.hive.jdbc.HiveDriver"
+      }, {
+        "name" : "config.hiveConfigBean.confDir",
+        "value" : "hive-conf"
+      }, {
+        "name" : "config.hiveConfigBean.additionalConfigProperties",
+        "value" : [ ]
+      }, {
+        "name" : "config.queries",
+        "value" : [ "ALTER TABLE ${ODM_EVENTS_TABLE_NAME} ADD IF NOT EXISTS PARTITION (p_dvc_type='${record:attribute(\"p_dvc_type\")}', p_dvc_vendor='${record:attribute(\"p_dvc_vendor\")}', p_dt='${record:attribute(\"p_dt\")}')" ]
+      }, {
+        "name" : "config.stopOnQueryFailure",
+        "value" : true
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      }, {
+        "name" : "config.hiveConfigBean.driverProperties",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Add Partition to Avro Table",
+        "xPos" : 1160,
+        "yPos" : 200,
+        "stageType" : "EXECUTOR"
+      },
+      "inputLanes" : [ "ExpressionEvaluator_02OutputLane15059713441990" ],
+      "outputLanes" : [ ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    } ],
+    "errorStage" : {
+      "instanceName" : "Discard_ErrorStage",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_destination_devnull_ToErrorNullDTarget",
+      "stageVersion" : "1",
+      "configuration" : [ ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Error Records - Discard",
+        "xPos" : 280,
+        "yPos" : 50,
+        "stageType" : "TARGET"
+      },
+      "inputLanes" : [ ],
+      "outputLanes" : [ ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    },
+    "info" : {
+      "pipelineId" : "ODMWindowsEventLogs9fae6da4-eb7f-4aca-820a-1f561a40e7cc",
+      "title" : "ODMWindowsEventLogs",
+      "description" : "",
+      "created" : 1505971638546,
+      "lastModified" : 1516141132063,
+      "creator" : "natty@dpmfield",
+      "lastModifier" : "natty@dpmfield",
+      "lastRev" : "0",
+      "uuid" : "3c91ae21-f045-413a-b316-c46298982991",
+      "valid" : true,
+      "metadata" : {
+        "labels" : [ "Spot/WindowsLogs" ]
+      },
+      "name" : "ODMWindowsEventLogs9fae6da4-eb7f-4aca-820a-1f561a40e7cc",
+      "sdcVersion" : "3.0.0.0",
+      "sdcId" : "f0ff6a12-61b1-44a6-bc5f-0d7e67d7d482"
+    },
+    "metadata" : {
+      "labels" : [ "Spot/WindowsLogs" ]
+    },
+    "statsAggregatorStage" : {
+      "instanceName" : "WritetoDPMdirectly_StatsAggregatorStage",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_destination_devnull_StatsDpmDirectlyDTarget",
+      "stageVersion" : "1",
+      "configuration" : [ ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Stats Aggregator - Write to DPM directly",
+        "xPos" : 280,
+        "yPos" : 50,
+        "stageType" : "TARGET"
+      },
+      "inputLanes" : [ ],
+      "outputLanes" : [ ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    },
+    "startEventStages" : [ {
+      "instanceName" : "Discard_StartEventStage",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_destination_devnull_ToErrorNullDTarget",
+      "stageVersion" : "1",
+      "configuration" : [ ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Start Event - Discard",
+        "xPos" : 280,
+        "yPos" : 50,
+        "stageType" : "TARGET"
+      },
+      "inputLanes" : [ ],
+      "outputLanes" : [ ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    } ],
+    "stopEventStages" : [ {
+      "instanceName" : "Discard_StopEventStage",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_destination_devnull_ToErrorNullDTarget",
+      "stageVersion" : "1",
+      "configuration" : [ ],
+      "uiInfo" : {
+        "description" : "",
+        "label" : "Stop Event - Discard",
+        "xPos" : 280,
+        "yPos" : 50,
+        "stageType" : "TARGET"
+      },
+      "inputLanes" : [ ],
+      "outputLanes" : [ ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    } ],
+    "valid" : true,
+    "issues" : {
+      "issueCount" : 0,
+      "stageIssues" : { },
+      "pipelineIssues" : [ ]
+    },
+    "previewable" : true
+  },
+  "pipelineRules" : {
+    "schemaVersion" : 3,
+    "version" : 2,
+    "metricsRuleDefinitions" : [ {
+      "id" : "badRecordsAlertID",
+      "alertText" : "High incidence of Error Records",
+      "metricId" : "pipeline.batchErrorRecords.counter",
+      "metricType" : "COUNTER",
+      "metricElement" : "COUNTER_COUNT",
+      "condition" : "${value() > 100}",
+      "sendEmail" : false,
+      "enabled" : false,
+      "timestamp" : 1505945061638,
+      "valid" : true
+    }, {
+      "id" : "stageErrorAlertID",
+      "alertText" : "High incidence of Stage Errors",
+      "metricId" : "pipeline.batchErrorMessages.counter",
+      "metricType" : "COUNTER",
+      "metricElement" : "COUNTER_COUNT",
+      "condition" : "${value() > 100}",
+      "sendEmail" : false,
+      "enabled" : false,
+      "timestamp" : 1505945061638,
+      "valid" : true
+    }, {
+      "id" : "idleGaugeID",
+      "alertText" : "Pipeline is Idle",
+      "metricId" : "RuntimeStatsGauge.gauge",
+      "metricType" : "GAUGE",
+      "metricElement" : "TIME_OF_LAST_RECEIVED_RECORD",
+      "condition" : "${time:now() - value() > 120000}",
+      "sendEmail" : false,
+      "enabled" : false,
+      "timestamp" : 1505945061638,
+      "valid" : true
+    }, {
+      "id" : "batchTimeAlertID",
+      "alertText" : "Batch taking more time to process",
+      "metricId" : "RuntimeStatsGauge.gauge",
+      "metricType" : "GAUGE",
+      "metricElement" : "CURRENT_BATCH_AGE",
+      "condition" : "${value() > 200}",
+      "sendEmail" : false,
+      "enabled" : false,
+      "timestamp" : 1505945061638,
+      "valid" : true
+    }, {
+      "id" : "memoryLimitAlertID",
+      "alertText" : "Memory limit for pipeline exceeded",
+      "metricId" : "pipeline.memoryConsumed.counter",
+      "metricType" : "COUNTER",
+      "metricElement" : "COUNTER_COUNT",
+      "condition" : "${value() > (jvm:maxMemoryMB() * 0.65)}",
+      "sendEmail" : false,
+      "enabled" : false,
+      "timestamp" : 1505945061638,
+      "valid" : true
+    } ],
+    "dataRuleDefinitions" : [ ],
+    "driftRuleDefinitions" : [ ],
+    "uuid" : "dba0fd9a-f3b6-40fd-ada9-a87b8110ea65",
+    "configuration" : [ {
+      "name" : "emailIDs",
+      "value" : [ ]
+    }, {
+      "name" : "webhookConfigs",
+      "value" : [ ]
+    } ],
+    "ruleIssues" : [ ],
+    "configIssues" : [ ]
+  },
+  "libraryDefinitions" : null
+}
