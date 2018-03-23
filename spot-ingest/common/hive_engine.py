@@ -15,30 +15,36 @@
 # limitations under the License.
 #
 from impala.dbapi import connect
-import api.resources.configurator as config
+import common.configurator as config
 
 
 def create_connection():
 
-    impala_host, impala_port = config.impala()
+    host, port = config.hive()
     conf = {}
 
     # TODO: if using hive, kerberos service name must be changed, impyla sets 'impala' as default
-    service_name = {'kerberos_service_name': 'impala'}
+    conf.update({'kerberos_service_name': 'hive'})
 
     if config.kerberos_enabled():
         principal, keytab, sasl_mech, security_proto = config.kerberos()
         conf.update({'auth_mechanism': 'GSSAPI',
                      })
+    else:
+        conf.update({'auth_mechanism': 'PLAIN',
+                     })
 
     if config.ssl_enabled():
         ssl_verify, ca_location, cert, key = config.ssl()
-        conf.update({'ca_cert': cert,
-                     'use_ssl': ssl_verify
-                     })
+        if ssl_verify.lower() == 'false':
+            conf.update({'use_ssl': ssl_verify})
+        else:
+            conf.update({'ca_cert': cert,
+                         'use_ssl': ssl_verify
+                         })
 
     db = config.db()
-    conn = connect(host=impala_host, port=int(impala_port), database=db, **conf)
+    conn = connect(host=host, port=int(port), database=db, **conf)
     return conn.cursor()
 
 

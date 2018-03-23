@@ -24,13 +24,14 @@ import sys
 import datetime
 from common.utils import Util
 from common.kerberos import Kerberos
-from common.kafka_client import KafkaTopic
-
+import common.configurator as Config
+from common.kafka_client import KafkaProducer
 
 # get master configuration.
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 CONF_FILE = "{0}/ingest_conf.json".format(SCRIPT_PATH)
 MASTER_CONF = json.loads(open(CONF_FILE).read())
+
 
 def main():
 
@@ -48,6 +49,7 @@ def main():
 
     # start collector based on data source type.
     start_collector(args.type, args.workers_num, args.ingest_id)
+
 
 def start_collector(type, workers_num, id=None):
 
@@ -68,7 +70,7 @@ def start_collector(type, workers_num, id=None):
         sys.exit(1)
 
     # validate if kerberos authentication is required.
-    if os.getenv('KRB_AUTH'):
+    if Config.kerberos_enabled():
         kb = Kerberos()
         kb.authenticate()
 
@@ -80,17 +82,20 @@ def start_collector(type, workers_num, id=None):
     # required zookeeper info.
     zk_server = MASTER_CONF["kafka"]['zookeper_server']
     zk_port = MASTER_CONF["kafka"]['zookeper_port']
-
-    topic = "SPOT-INGEST-{0}_{1}".format(type, ingest_id) if not id else id
-    kafka = KafkaTopic(topic, k_server, k_port, zk_server, zk_port, workers_num)
+         
+    topic = "{0}".format(type,ingest_id) if not id else id
+    producer = KafkaProducer(topic, k_server, k_port, zk_server, zk_port, workers_num)
 
     # create a collector instance based on data source type.
     logger.info("Starting {0} ingest instance".format(topic))
-    module = __import__("pipelines.{0}.collector".format(MASTER_CONF["pipelines"][type]["type"]), fromlist=['Collector'])
+    module = __import__("pipelines.{0}.collector".
+                        format(MASTER_CONF["pipelines"][type]["type"]),
+                        fromlist=['Collector'])
 
     # start collector.
-    ingest_collector = module.Collector(MASTER_CONF['hdfs_app_path'], kafka, type)
+    ingest_collector = module.Collector(MASTER_CONF['hdfs_app_path'], producer, type)
     ingest_collector.start()
+
 
 if __name__ == '__main__':
     main()

@@ -43,6 +43,11 @@ def impala():
     return conf.get('conf', 'IMPALA_DEM'), conf.get('conf', 'IMPALA_PORT')
 
 
+def hive():
+    conf = configuration()
+    return conf.get('conf', 'HS2_HOST'), conf.get('conf', 'HS2_PORT')
+
+
 def hdfs():
     conf = configuration()
     name_node = conf.get('conf',"NAME_NODE")

@@ -20,6 +20,12 @@ Ingest data is captured or transferred into the Hadoop cluster, where they are t
 ### Install
 1. Install Python dependencies `pip install -r requirements.txt` 
 
+Optional:
+2. the sasl python package requires the following:
+   * Centos: `yum install cyrus-sasl-devel`
+   * Debian/Ubuntu: `apt-get install libsasl2-dev`
+3. install Python dependencies for Kerberos `pip install -r kerberos-requirements.txt`
+
 ### Configure Kafka
 **Adding Kafka Service:**
 

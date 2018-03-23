@@ -24,6 +24,7 @@ class Engine(object):
         self._pipeline = pipeline
 
     def query(self,query,output_file=None, delimiter=','):
+        # TODO: fix kerberos compatibility, use impyla
         hive_config = "set mapred.max.split.size=1073741824;set hive.exec.reducers.max=10;set hive.cli.print.header=true;"
         
         del_format = "| sed 's/[\t]/{0}/g'".format(delimiter)

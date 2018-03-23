@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 
+from hdfs import InsecureClient
 from hdfs.util import HdfsError
 from hdfs import Client
 from hdfs.ext.kerberos import KerberosClient
@@ -88,7 +89,9 @@ def get_client(user=None):
 
     logger = logging.getLogger('SPOT.INGEST.HDFS.get_client')
     hdfs_nm, hdfs_port, hdfs_user = Config.hdfs()
-    conf = {'url': '{0}:{1}'.format(hdfs_nm, hdfs_port)}
+    conf = {'url': '{0}:{1}'.format(hdfs_nm, hdfs_port),
+            'mutual_auth': 'OPTIONAL'
+            }
 
     if Config.ssl_enabled():
         ssl_verify, ca_location, cert, key = Config.ssl()
@@ -97,6 +100,7 @@ def get_client(user=None):
             conf.update({'cert': cert})
 
     if Config.kerberos_enabled():
+        # TODO: handle other conditions
         krb_conf = {'mutual_auth': 'OPTIONAL'}
         conf.update(krb_conf)
 
@@ -142,7 +146,7 @@ def download_file(hdfs_path, local_path, overwrite=False, client=None):
 
 
 def mkdir(hdfs_path, client=None):
-    if client is not None:
+    if not client:
         client = get_client()
 
     try:
@@ -222,7 +226,7 @@ def file_exists(hdfs_path, file_name, client=None):
     if not client:
         client = get_client()
 
-    files = list_dir(client, hdfs_path)
+    files = list_dir(hdfs_path, client)
     if str(file_name) in files:
         return True
     else:
