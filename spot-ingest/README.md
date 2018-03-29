@@ -128,18 +128,21 @@ This "id" is required to attach the worker with the kafka partition.
     python worker.py -t "pipeline_configuration" -i "id of the worker (starts with 0)" --topic "my_topic"
 
 
-#### Ingestion using Spark Streaming
+## Ingestion using Spark Streaming
 A new functionality is now available where the Distributed Collector sends to Kafka cluster already processed files in a comma-separated output (CSV) format. Each CSV row corresponds to a table row in the Hive database, so the Streaming Listener consumes batches of CSV messages from the Kafka cluster and registers them in Hive database.
 
 **Distributed Collector**
+<br />
 The role of the Distributed Collector is the same, but instead of processing the data after transmission, it processes it before. Distributed Collector tracks a directory backwards for newly created files. When a file is detected, it converts it into a comma-separated output (CSV) format and stores the output in the local staging area. Then, it reads the CSV file line-by-line and creates smaller chunks of bytes. The size of each chunk depends on the maximum request size allowed by Kafka. Finally, it serializes each chunk into an Avro-encoded format and publishes them to Kafka cluster.
 Due to its architecture, Distributed Collector can run on an edge node of the Big Data infrastructure as well as on a remote host (proxy server, vNSF, etc). Additionally, option `--skip-conversion` has been added. If this is enabled, Distributed Collector expects already processed files in the form of CSV. So, when it detects one, it does not apply any transformation to it, just splits it into chunks and sends to the Kafka cluster.
 Distributed Collector publishes to Apache Kafka only the CSV-converted file, and not the original one. The binary file remains to the local filesystem of the current host.
 
 **Streaming Listener**
+<br />
 On the other hand, the Streaming Listener can only run on the central infrastructure. It listens to a specific Kafka topic and consumes incoming messages. Streaming data is divided into batches (according to a time interval). These batches are deserialized by the Listener, according to the supported Avro schema, parsed and registered in the corresponding table of Hive.
 
-##### Configuration
+
+### Configuration
 Both Distributed Collector and Streaming Listener use the same configuration file as the original Spot Ingest flavor. The only addition is unnder the `kafka` section:
 
     "kafka":{
@@ -153,21 +156,23 @@ Both Distributed Collector and Streaming Listener use the same configuration fil
 
 The `max_request_size` defines the maximum size of the chunks that are sent to Kafka cluster. If it is not set, then the default value is used (1MB).
 
-Furthermore, the list of supported files must be given as regular expressions. For example, to support a filename like `nfcapd.20171103140000`, you have to set:
+Furthermore, the list of supported files must be given as regular expressions. For example, to support a filename like `nfcapd.20171103140000`, you have to set:<br />
     "supported_files" :["nfcapd.*"],
-or
+or<br />
     "supported_files": ["nfcapd.[0-9]{14}"],
 
-##### Installation
+
+### Installation
 Installation requires a user with `sudo` privileges. Enter `spot-ingest` directory and run:
 <br />`./install_DC.sh`
 
 If you wish to install the Distributed Directory on a remote host, just copy `spot-ingest` folder to the remote host and run the above installation file. It should be mentioned again that the remote host should have access to the Kafka cluster, in order to work properly.
 
-##### Getting Started
 
-**Start Distributed Collector**
-After the installation, enable the virtual environment:
+### Getting Started
+
+**Start Distributed Collector**<br />
+Enable the virtual environment:
 <br />`source env/bin/activate`
 
 and check the usage message of the distributed collector.
@@ -198,15 +203,13 @@ Distributed Collector do not create a new topic, so you have to pass an existing
 To start Distributed collector:<br />
 `python collector.py -t "pipeline_configuration" --topic "my_topic"`
 
-Some examples are given below:
-<br />`python collector.py -t flow --topic SPOT-INGEST-TEST-TOPIC`
-<br />
-<br />`python collector.py -t flow --topic SPOT-INGEST-TEST-TOPIC --config-file /tmp/another_ingest_conf.json`
-<br />
-<br />`python collector.py -t proxy --topic SPOT-PROXY-TOPIC --log-level DEBUG`
+Some examples are given below:<br />
+1. `python collector.py -t flow --topic SPOT-INGEST-TEST-TOPIC`<br />
+2. `python collector.py -t flow --topic SPOT-INGEST-TEST-TOPIC --config-file /tmp/another_ingest_conf.json`<br />
+3. `python collector.py -t proxy --topic SPOT-PROXY-TOPIC --log-level DEBUG`<br />
 
-**Start Streaming Listener**
-After the installation, try to print the usage message.
+**Start Streaming Listener**<br />
+Print usage message and check available options.
 
     python start_listener.py --help
     usage: Start Spark Job for Streaming Listener Daemon [-h] [-c] [-d] [-g] [-m]
@@ -257,9 +260,7 @@ Moreover, you can isolate the logs from Spark using the option `-r , --redirect-
 To start Distributed collector:<br />
 `python start_listener.py -t "pipeline_configuration" --topic "my_topic" -p "number of partitions to consume"`
 
-Some examples are given below:Some examples are given below:
-<br />`python start_listener.py -t flow --topic SPOT-INGEST-TOPIC -p 3 -g CUSTOM-GROUP-ID -n myApplication`
-<br />
-<br />`python start_listener.py -t flow --topic SPOT-INGEST-TOPIC -p 1 --master yarn --deploy-mode cluster`
-<br />
-<br />`python start_listener.py -t dns --topic SPOT-INGEST-DNS-TEST-TOPIC -p 4 --redirect-spark-logs /tmp/StreamingListener_Spark.log`
+Some examples are given below:Some examples are given below:<br />
+1. `python start_listener.py -t flow --topic SPOT-INGEST-TOPIC -p 3 -g CUSTOM-GROUP-ID -n myApplication`<br />
+2. `python start_listener.py -t flow --topic SPOT-INGEST-TOPIC -p 1 --master yarn --deploy-mode cluster`<br />
+3. `python start_listener.py -t dns --topic SPOT-INGEST-DNS-TEST-TOPIC -p 4 --redirect-spark-logs /tmp/StreamingListener_Spark.log`<br />
