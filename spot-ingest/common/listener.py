@@ -127,7 +127,7 @@ def parse_args():
 
     return parser.parse_args()
 
-def store(rdd, hsc, dbtable, topic, schema=None, segtype='segment'):
+def store(rdd, hsc, dbtable, topic, schema=None, segtype='segments'):
     '''
         Interface for saving the content of the streaming :class:`DataFrame` out into
     Hive storage.
