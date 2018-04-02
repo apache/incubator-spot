@@ -101,7 +101,7 @@ class StreamPipeline:
         '''
             Return the type of the received segments.
         '''
-        return 'netflow segment'
+        return 'netflow segments'
 
     @staticmethod
     def parse(fields):
@@ -115,7 +115,7 @@ class StreamPipeline:
         unix_tstamp = datetime.datetime.strptime(fields[0], '%Y-%m-%d %H:%M:%S')\
                         .strftime('%s')
         return [
-            str(fields[0]),
+            fields[0],
             long(unix_tstamp),
             int(fields[1]),
             int(fields[2]),
@@ -124,12 +124,12 @@ class StreamPipeline:
             int(fields[5]),
             int(fields[6]),
             float(fields[7]),
-            str(fields[8]),
-            str(fields[9]),
+            fields[8],
+            fields[9],
             int(fields[10]),
             int(fields[11]),
-            str(fields[12]),
-            str(fields[13]),
+            fields[12],
+            fields[13],
             int(fields[14]),
             int(fields[15]),
             long(fields[16]),
@@ -142,7 +142,7 @@ class StreamPipeline:
             int(fields[23]),
             int(fields[24]),
             int(fields[25]),
-            str(fields[26]),
+            fields[26],
             int(fields[1]),
             int(fields[2]),
             int(fields[3]),

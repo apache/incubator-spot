@@ -49,8 +49,8 @@ def convert(netflow, tmpdir, opts='', prefix=None):
     with tempfile.NamedTemporaryFile(prefix=prefix, dir=tmpdir, delete=False) as fp:
         command = COMMAND.format(netflow, opts, fp.name)
 
-        Util.popen(command, raises=True)
         logger.debug('Execute command: {0}'.format(command))
+        Util.popen(command, raises=True)
 
         return fp.name
 

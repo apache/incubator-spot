@@ -65,8 +65,8 @@ def prepare(csvfile, max_req_size):
 
     :param csvfile     : Path of CSV-converted file; result of `convert` method.
     :param max_req_size: The maximum size of a request.
-    :returns           : A generator which yields a pair of: (timestamp; in milliseconds,
-                         list of lines from the CSV-converted file)
+    :returns           : A generator which yields the timestamp (in milliseconds) and a
+                         list of lines from the CSV-converted file.
     :rtype             : :class:`types.GeneratorType`
     :raises IOError    : If the given file has no any valid line.
     '''

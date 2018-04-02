@@ -150,14 +150,24 @@ class DistributedCollector:
                     .format(conf['kafka']['kafka_server'], conf['kafka']['kafka_port'])]
             }
 
-            if 'max_request_size' in conf['kafka'].keys():
-                conf['producer']['max_request_size'] = conf['kafka']['max_request_size']
-
             conf['file_watcher'] = {
                 'path': conf['pipelines'][args.type]['collector_path'],
                 'supported_files': conf['pipelines'][args.type]['supported_files'],
                 'recursive': True
             }
+
+            # .........................migrate configs
+            if not 'local_staging' in conf['pipelines'][args.type].keys():
+                conf['pipelines'][args.type]['local_staging'] = '/tmp'
+
+            if 'max_request_size' in conf['kafka'].keys():
+                conf['producer']['max_request_size'] = conf['kafka']['max_request_size']
+
+            if not 'process_opt' in conf['pipelines'][args.type].keys():
+                conf['pipelines'][args.type]['process_opt'] = ''
+
+            if 'recursive' in conf['pipelines'][args.type].keys():
+                conf['file_watcher']['recursive'] = conf['pipelines'][args.type]['recursive']
 
             collector = cls(args.type, args.topic, args.skip_conversion, **conf)
             collector.start()
@@ -202,7 +212,7 @@ def publish(rawfile, tmpdir, opts, datatype, topic, partition, skip_conv, **kwar
     logger.info('Processing raw file "{0}"...'.format(filename))
 
     proc_dir  = os.path.join(tmpdir, proc_name)
-    status    = True
+    allpassed = True
 
     try:
         module      = getattr(pipelines, datatype)
@@ -221,20 +231,25 @@ def publish(rawfile, tmpdir, opts, datatype, topic, partition, skip_conv, **kwar
         logger.info('Group lines of text-converted file and prepare to publish them.')
 
         for segmentid, datatuple in enumerate(partitioner):
-            status &= send_async(segmentid, *datatuple)
+            try: send_async(segmentid, *datatuple)
+            except RuntimeError: allpassed = False
 
         os.remove(staging)
         logger.info('Remove CSV-converted file "{0}" from local staging area.'
             .format(staging))
 
+    except IOError as ioe:
+        logger.warning(ioe.message)
+        return
+
     except Exception as exc:
-        logger.error('[{0}] {1}'.format(exc.__class__.__name__, str(exc).strip()))
+        logger.error('[{0}] {1}'.format(exc.__class__.__name__, exc.message))
         return
 
     finally:
         if producer: producer.close()
 
-    if status:
+    if allpassed:
         logger.info('All segments of "{0}" published successfully to Kafka cluster.'
             .format(filename))
         return

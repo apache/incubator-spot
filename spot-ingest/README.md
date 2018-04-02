@@ -159,8 +159,10 @@ The `max_request_size` defines the maximum size of the chunks that are sent to K
 
 Furthermore, the list of the supported files must be given as regular expressions.
 For example, to support a filename like `nfcapd.20171103140000`, you have to set:<br />
+
     "supported_files" :["nfcapd.*"],
 <br />or<br />
+
     "supported_files": ["nfcapd.[0-9]{14}"],
 
 
@@ -227,6 +229,7 @@ Print usage message and check available options.
                             cluster ("cluster")
       -g , --group-id       name of the consumer group to join for dynamic
                             partition assignment
+      -l , --log-level      determine the level of the logger
       -m , --master         spark://host:port, mesos://host:port, yarn, or local
       -n , --app-name       name of the Spark Job to display on the cluster web UI
       -r , --redirect-spark-logs 
@@ -242,7 +245,7 @@ Print usage message and check available options.
 
     END
 
-By default, it loads `ingest_conf.json` file, but using `-c , --config-file` option you can ovveride it and use another.
+By default, it loads `ingest_conf.json` file, but using `-c , --config-file` option you can overide it and use another.
 
 Streaming Listener uses `spark-streaming` parameters from the configuration file:
 

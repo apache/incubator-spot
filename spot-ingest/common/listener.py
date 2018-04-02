@@ -35,7 +35,7 @@ def streaming_listener(**kwargs):
     '''
         Initialize the Spark job.
     '''
-    Util.get_logger('SPOT.INGEST')
+    Util.get_logger('SPOT.INGEST', kwargs.pop('log_level'))
 
     logger  = logging.getLogger('SPOT.INGEST.COMMON.LISTENER')
     logger.info('Initializing Spark Streaming Listener...')
@@ -97,6 +97,11 @@ def parse_args():
 
     parser.add_argument('-g', '--group-id',
         help='name of the consumer group to join for dynamic partition assignment',
+        metavar='')
+
+    parser.add_argument('-l', '--log-level',
+        default='INFO',
+        help='determine the level of the logger',
         metavar='')
 
     parser.add_argument('-n', '--app-name',
