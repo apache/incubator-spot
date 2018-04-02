@@ -129,22 +129,23 @@ This "id" is required to attach the worker with the kafka partition.
 
 
 ## Ingestion using Spark Streaming
-A new functionality is now available where the Distributed Collector sends to Kafka cluster already processed files in a comma-separated output (CSV) format. Each row of the CSV, corresponds to a table row in the Hive database, so the Streaming Listener consumes batches of CSV messages from the Kafka cluster and registers them in Hive database.
+A new functionality is now available where the Distributed Collector transmits to Kafka cluster already processed files in a comma-separated (CSV) output format. Each row of the CSV corresponds to a table row in the Hive database. As a result, the Streaming Listener consumes batches of CSV messages from the Kafka cluster and registers them in Hive database.
 
 **Distributed Collector**
 <br />
-The role of the Distributed Collector is the same, but instead of processing the data after transmission, it processes it before. Distributed Collector tracks a directory backwards for newly created files. When a file is detected, it converts it into a comma-separated output (CSV) format and stores the output in the local staging area. Then, it reads the CSV file line-by-line and creates smaller chunks of bytes. The size of each chunk depends on the maximum request size allowed by Kafka. Finally, it serializes each chunk into an Avro-encoded format and publishes them to Kafka cluster.<br />
+The role of the Distributed Collector is similar, as it processes the data before transmission. Distributed Collector tracks a directory backwards for newly created files. When a file is detected, it converts it into CSV format and stores the output in the local staging area. Following to that, reads the CSV file line-by-line and creates smaller chunks of bytes. The size of each chunk depends on the maximum request size allowed by Kafka. Finally, it serializes each chunk into an Avro-encoded format and publishes them to Kafka cluster.<br />
 Due to its architecture, Distributed Collector can run **on an edge node** of the Big Data infrastructure as well as **on a remote host** (proxy server, vNSF, etc).<br />
-Additionally, option `--skip-conversion` has been added. If this is enabled, Distributed Collector expects already processed files in the form of CSV. So, when it detects one, it does not apply any transformation to it, just splits it into chunks and sends to the Kafka cluster.<br />
+In addition, option `--skip-conversion` has been added. When this option is enabled, Distributed Collector expects already processed files in the CSV format. Hence, when it detects one, it does not apply any transformation; just splits it into chunks and transmits to the Kafka cluster.<br />
+This option is also useful, when a segment failed to transmit to the Kafka cluster. By default, Distributed Collector stores the failed segment in CSV format under the local staging area. Then, using `--skip-conversion` option could be reloaded and sent to the Kafka cluster.<br />
 Distributed Collector publishes to Apache Kafka only the CSV-converted file, and not the original one. The binary file remains to the local filesystem of the current host.
 
 **Streaming Listener**
 <br />
-On the other hand, Streaming Listener can only run on the central infrastructure. It listens to a specific Kafka topic and consumes incoming messages. Streaming data is divided into batches (according to a time interval). These batches are deserialized by the Listener, according to the supported Avro schema, parsed and registered in the corresponding table of Hive.
+In contrary, Streaming Listener can only run on the central infrastructure. Its ability is to listen to a specific Kafka topic and consumes incoming messages. Streaming data is divided into batches (according to a time interval). These batches are deserialized by the Listener, according to the supported Avro schema, parsed and registered in the corresponding table of Hive.
 
 
 ### Configuration
-Both Distributed Collector and Streaming Listener use the same configuration file as the original Spot Ingest flavor. The only addition is under `kafka` section:
+Both Distributed Collector and Streaming Listener use the same configuration file as the original Spot Ingest flavour. The only addition is under `kafka` section:
 
     "kafka":{
         "kafka_server":"kafka ip",
@@ -155,13 +156,12 @@ Both Distributed Collector and Streaming Listener use the same configuration fil
         "max_request_size": 1048576
     },
 
-The `max_request_size` defines the maximum size of the chunks that are sent to Kafka cluster. If it is not set, then the default value is used [1MB].
+The `max_request_size` defines the maximum size of the chunks that are sent to Kafka cluster. If it is not set, then the default value that will be used is 1MB.
 
-Furthermore, the list of the supported files must be given as regular expressions.
-For example, to support a filename like `nfcapd.20171103140000`, you have to set:<br />
+Moreover, the list of the supported files must be provided as regular expressions. For instance, to support a filename like `nfcapd.20171103140000`, you have to set:
 
     "supported_files" :["nfcapd.*"],
-<br />or<br />
+or
 
     "supported_files": ["nfcapd.[0-9]{14}"],
 
@@ -170,14 +170,14 @@ For example, to support a filename like `nfcapd.20171103140000`, you have to set
 Installation requires a user with `sudo` privileges. Enter `spot-ingest` directory and run:
 <br />`./install_DC.sh`
 
-If you wish to install the Distributed Collector on a remote host, just copy `spot-ingest` folder to the remote host and run the above installation file. It should be mentioned again that the remote host should have access to the Kafka cluster, in order to work properly.
+If you prefer to install the Distributed Collector on a remote host, just copy `spot-ingest` folder to the remote host and run the above installation file. It is important to mention that the remote host should have access to the Kafka cluster to work properly.
 
 
 ### Getting Started
 
 **Start Distributed Collector**<br />
 Enable the virtual environment
-<br />`source env/bin/activate`
+<br />`source venv/bin/activate`
 
 and check the usage message of the Distributed Collector.
 
@@ -200,7 +200,7 @@ and check the usage message of the Distributed Collector.
 
     END
 
-By default, it loads `ingest_conf.json` file, but using `-c , --config-file` option you can ovveride it and use another.
+By default, it loads `ingest_conf.json` file. Using `-c , --config-file` option you can override it and use another.
 
 Distributed Collector does not create a new topic, so you have to pass an existing one.
 
@@ -213,7 +213,7 @@ Some examples are given below:<br />
 3. `python collector.py -t proxy --topic SPOT-PROXY-TOPIC --log-level DEBUG`<br />
 
 **Start Streaming Listener**<br />
-Print usage message and check available options.
+Print usage message and check the available options.
 
     python start_listener.py --help
     usage: Start Spark Job for Streaming Listener Daemon [-h] [-c] [-d] [-g] [-m]
@@ -245,7 +245,7 @@ Print usage message and check available options.
 
     END
 
-By default, it loads `ingest_conf.json` file, but using `-c , --config-file` option you can overide it and use another.
+By default, it loads `ingest_conf.json` file. Using `-c , --config-file` option you can override it and use another.
 
 Streaming Listener uses `spark-streaming` parameters from the configuration file:
 
@@ -258,9 +258,9 @@ Streaming Listener uses `spark-streaming` parameters from the configuration file
 
 The `spark_batch_size` is the time interval (in seconds) at which streaming data will be divided into batches. The default value is 30 seconds.
 
-You can apply a Spark job on local, client or cluster mode (using `-m , --master` and `-d , --deploy-mode` options).
+You can apply a Spark job on local, client or in cluster mode (using `-m , --master` and `-d , --deploy-mode` options).
 
-Moreover, you can isolate the logs from Spark, using the option `-r , --redirect-spark-logs`. This is usefull in case of debugging.
+Additionaly, you can isolate the logs from Spark, using the option `-r , --redirect-spark-logs`. This is usefull in case of debugging.
 
 To start Streaming Listener:<br />
 `python start_listener.py -t "pipeline_configuration" --topic "my_topic" -p "number of partitions to consume"`

@@ -202,7 +202,7 @@ def publish(rawfile, tmpdir, opts, datatype, topic, partition, skip_conv, **kwar
         except RuntimeError:
             logger.error('Failed to publish segment-{0} to Kafka cluster.'.format(segid))
             logger.info('Store segment-{0} to local staging area as "{1}".'
-                .format(segid, _store_segment(segid, items, filename, tmpdir)))
+                .format(segid, _store_failed_segment(segid, items, filename, tmpdir)))
 
             return False
 

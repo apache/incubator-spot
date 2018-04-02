@@ -72,7 +72,7 @@ class StreamPipeline:
         '''
             Return the data type that represents a row from the received data list.
         '''
-        from pyspark.sql.types import IntegerType, StringType, StructField, StructType
+        from pyspark.sql.types import IntegerType, LongType, StringType, StructField, StructType
 
         return StructType(
             [
@@ -83,7 +83,7 @@ class StreamPipeline:
                 StructField('reqmethod', StringType(), True),
                 StructField('useragent', StringType(), True),
                 StructField('resconttype', StringType(), True),
-                StructField('duration', IntegerType(), True),
+                StructField('duration', LongType(), True),
                 StructField('username', StringType(), True),
                 StructField('authgroup', StringType(), True),
                 StructField('exceptionid', StringType(), True),
@@ -142,7 +142,7 @@ class StreamPipeline:
             fields[12],
             fields[20],
             fields[13],
-            int(fields[2]),
+            long(fields[2]),
             fields[4],
             fields[5],
             fields[6],

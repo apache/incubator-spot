@@ -48,11 +48,11 @@ else
 fi
 
 printf "\n  |- Create virtual environment without any dependencies...\n"
-virtualenv --no-site-packages env
+virtualenv --no-site-packages venv
 [ ! $? -eq 0 ] && abort
 
 printf "  |-- Enable virtual environment."
-source env/bin/activate
+source venv/bin/activate
 [ ! $? -eq 0 ] && abort
 
 printf "\n  |-- Install Python packages...\n"
@@ -66,7 +66,7 @@ python setup.py bdist_egg
 rm -r build/ pipelines.egg-info/
 printf "\n  |-- Make avro.zip file.\n"
 
-cd env/lib/python2.7/site-packages/
+cd venv/lib/python2.7/site-packages/
 zip ${HOME_DIR}/dist/avro.zip avro -r
 [ ! $? -eq 0 ] && abort
 
