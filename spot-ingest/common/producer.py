@@ -71,7 +71,7 @@ class Producer(KafkaProducer):
 
         try:
             rawbytes = serialize(value)
-            if not rawbytes: return
+            if not rawbytes: raise RuntimeError
 
             _future  = self.send(topic, rawbytes.getvalue(), key, partition, timestamp_ms)
             meta     = _future.get(timeout=10)

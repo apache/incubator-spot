@@ -16,7 +16,7 @@
 #
 
 '''
-    Methods that will be used to process and prepare netflow data, before being sent to
+    Methods that will be used to process and prepare dns data, before being sent to
 Kafka cluster.
 '''
 
@@ -28,26 +28,26 @@ import tempfile
 from common.utils import Util
 from datetime     import datetime
 
-COMMAND = 'nfdump -r {0} -o csv {1} > {2}'
+COMMAND = 'tshark -r {0} {1} > {2}'
 EPOCH   = datetime(1970, 1, 1)
 
-def convert(netflow, tmpdir, opts='', prefix=None):
+def convert(pcap, tmpdir, opts='', prefix=None):
     '''
-        Convert `nfcapd` file to a comma-separated output format.
+        Convert `pcap` file to a comma-separated output format.
 
-    :param netflow : Path of binary file.
+    :param pcap    : Path of binary file.
     :param tmpdir  : Path of local staging area.
-    :param opts    : A set of options for `nfdump` command.
+    :param opts    : A set of options for `tshark` command.
     :param prefix  : If `prefix` is specified, the file name will begin with that;
                      otherwise, a default `prefix` is used.
     :returns       : Path of CSV-converted file.
     :rtype         : ``str``
-    :raises OSError: If an error occurs while executing the `nfdump` command.
+    :raises OSError: If an error occurs while executing the `tshark` command.
     '''
-    logger = logging.getLogger('SPOT.INGEST.FLOW.PROCESS')
+    logger = logging.getLogger('SPOT.INGEST.DNS.PROCESS')
 
     with tempfile.NamedTemporaryFile(prefix=prefix, dir=tmpdir, delete=False) as fp:
-        command = COMMAND.format(netflow, opts, fp.name)
+        command = COMMAND.format(pcap, opts, fp.name)
 
         logger.debug('Execute command: {0}'.format(command))
         Util.popen(command, raises=True)
@@ -72,22 +72,22 @@ def prepare(csvfile, max_req_size):
     '''
     msg_list  = []
     msg_size  = segmentid = 0
-    logger    = logging.getLogger('SPOT.INGEST.FLOW.PROCESS')
+    logger    = logging.getLogger('SPOT.INGEST.DNS.PROCESS')
     partition = timestamp = None
-    pattern   = re.compile('[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}')
+    pattern   = re.compile('[0-9]{10}.[0-9]{9}')
 
     with open(csvfile, 'r') as fp:
         for line in fp:
             value = line.strip()
             if not value: continue
 
-            match = pattern.search(value.split(',')[0])
+            match = pattern.search(value.split(',')[2])
             if not match: continue
 
             size  = sys.getsizeof(value)
-            # .........................assume the first 13 characters of the `search`
-            # result as the `partition`, e.g. '2018-03-20 09'
-            if match.group()[:13] == partition and (msg_size + size) < max_req_size:
+            # .........................assume the first 15 characters of the line, as
+            # the `partition` - and not the result of `search` - e.g. 'Sep  8, 2017 11'
+            if value[:15] == partition and (msg_size + size) < max_req_size:
                 msg_list.append(value)
                 msg_size += size
                 continue
@@ -103,11 +103,11 @@ def prepare(csvfile, max_req_size):
 
             msg_list  = [value]
             msg_size  = size
-            partition = match.group()[:13]
-            timestamp = datetime.strptime(match.group(), '%Y-%m-%d %H:%M:%S') - EPOCH
+            partition = value[:15]
+            timestamp = datetime.fromtimestamp(float(match.group())) - EPOCH
 
     # .................................send the last lines from the file. The check of
-    # `timestamp` is in case the file is empty and `timestamp` is still ``None``
+    # `timestamp` is in case the file is empty and `timestamp` is still ``None``.
     if not timestamp:
         raise IOError('CSV-converted file has no valid lines.')
 

@@ -32,7 +32,7 @@ from logging.handlers   import RotatingFileHandler
 
 class Util(object):
     '''
-
+        Utility methods.
     '''
 
     @classmethod

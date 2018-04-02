@@ -35,7 +35,7 @@ def streaming_listener(**kwargs):
     '''
         Initialize the Spark job.
     '''
-    Util.get_logger('SPOT.INGEST')
+    Util.get_logger('SPOT.INGEST', kwargs.pop('log_level'))
 
     logger  = logging.getLogger('SPOT.INGEST.COMMON.LISTENER')
     logger.info('Initializing Spark Streaming Listener...')
@@ -99,6 +99,11 @@ def parse_args():
         help='name of the consumer group to join for dynamic partition assignment',
         metavar='')
 
+    parser.add_argument('-l', '--log-level',
+        default='INFO',
+        help='determine the level of the logger',
+        metavar='')
+
     parser.add_argument('-n', '--app-name',
         help='name of the Spark Job to display on the cluster web UI',
         metavar='')
@@ -127,7 +132,7 @@ def parse_args():
 
     return parser.parse_args()
 
-def store(rdd, hsc, dbtable, topic, schema=None, segtype='segment'):
+def store(rdd, hsc, dbtable, topic, schema=None, segtype='segments'):
     '''
         Interface for saving the content of the streaming :class:`DataFrame` out into
     Hive storage.

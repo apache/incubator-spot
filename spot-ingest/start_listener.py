@@ -60,6 +60,8 @@ def spark_job(script_file, **kwargs):
     if kwargs['group_id'] is not None:
         spark_job += ' -g {0}'.format(kwargs.pop('group_id'))
 
+    spark_job += ' -l {0}'.format(kwargs.pop('log_level'))
+
     if kwargs['app_name'] is not None:
         spark_job += ' -n {0}'.format(kwargs.pop('app_name'))
 
@@ -148,6 +150,11 @@ def parse_args():
 
     parser.add_argument('-g', '--group-id',
         help='name of the consumer group to join for dynamic partition assignment',
+        metavar='')
+
+    parser.add_argument('-l', '--log-level',
+        default='INFO',
+        help='determine the level of the logger',
         metavar='')
 
     parser.add_argument('-m', '--master',
