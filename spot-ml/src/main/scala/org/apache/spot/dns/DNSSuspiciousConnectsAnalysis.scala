@@ -168,6 +168,7 @@ object DNSSuspiciousConnectsAnalysis {
   }
 
   /**
+    * Get all DNS records which score below the given threshold.
     *
     * @param scoredDNSRecords scored DNS records.
     * @param threshold        score tolerance.
