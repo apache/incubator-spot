@@ -31,7 +31,7 @@ import org.apache.spot.utilities.data.validation.{InputSchema, InvalidDataHandle
 
 /**
   * The suspicious connections analysis of DNS log data develops a probabilistic model the DNS queries
-  * made by each client IP and flags those assigned a low probability as "suspicious"
+  * made by each client IP and flags those assigned a low probability as "suspicious".
   */
 
 object DNSSuspiciousConnectsAnalysis {
