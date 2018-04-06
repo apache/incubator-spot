@@ -106,9 +106,11 @@ object DNSSuspiciousConnectsAnalysis {
 
 
   /**
-    *
+    * Return all DNS records with valid values.
+    * 
     * @param inputDNSRecords raw DNS records.
     * @return
+    * @see filterInvalidRecords(DataFrame)
     */
   def filterRecords(inputDNSRecords: DataFrame): DataFrame = {
 
@@ -135,9 +137,11 @@ object DNSSuspiciousConnectsAnalysis {
   }
 
   /**
+    * Return all DNS records with invalid values.
     *
     * @param inputDNSRecords raw DNS records.
     * @return
+    * @see filterRecords(DataFrame)
     */
   def filterInvalidRecords(inputDNSRecords: DataFrame): DataFrame = {
 
