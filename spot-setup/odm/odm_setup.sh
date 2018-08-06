@@ -92,7 +92,7 @@ done
 
 # Check the format argument and make sure its supported
 if [ "$format" != "pqt" ] && [ "$format" != "avro" ] ; then
-    log "Format argument '$format' is not supported. Only Parquet and Avro are supported data storage formats. Use 'pqt' or 'avro'  instead (i.e. ./odm_setup pqt)."
+    log "Format argument '$format' is not supported. Only Parquet and Avro are supported data storage formats. Use 'pqt' or 'avro'  instead (i.e. ./odm_setup -f pqt)."
     exit 1
 fi
 
