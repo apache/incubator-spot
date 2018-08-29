@@ -1182,20 +1182,6 @@ request_headers[‘ACCEPT’]</td>
   </tr>
   <tr>
     <td></td>
-    <td>http_response_info_code </td>
-    <td>int</td>
-    <td>HTTP response info code</td>
-    <td>100</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>http_response_info_msg</td>
-    <td>string</td>
-    <td>HTTP response info message</td>
-    <td>“somestring”</td>
-  </tr>
-  <tr>
-    <td></td>
     <td>http_response_resp_fuids</td>
     <td>string</td>
     <td>Response FUIDS</td>
