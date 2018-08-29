@@ -619,7 +619,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>dvc_ip4/dvc_ip6</td>
-    <td>long</td>
+    <td>int/int128</td>
     <td>IP address of device</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -668,7 +668,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>dvc_fwd_ip4/fwd_ip6</td>
-    <td>long</td>
+    <td>int/int128</td>
     <td>Forwarded from device</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -682,7 +682,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td>Network</td>
     <td>src_ip4/src_ip6</td>
-    <td>bigint</td>
+    <td>int/int128</td>
     <td>Source ip address of event</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -752,7 +752,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>dst_ip4/dst_ip6</td>
-    <td>bigint</td>
+    <td>int/int128</td>
     <td>Destination ip address of event</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -1297,7 +1297,7 @@ response_headers[‘DATE’]</td>
   <tr>
     <td></td>
     <td>smtp_headers_x_originating_ip4</td>
-    <td>bigint</td>
+    <td>int</td>
     <td>Originating IP address</td>
     <td>1203743731</td>
   </tr>
@@ -1682,7 +1682,7 @@ response_headers[‘DATE’]</td>
   <tr>
     <td>DHCP</td>
     <td>dhcp_assigned_ip4</td>
-    <td>bigint</td>
+    <td>int</td>
     <td>Coming soon</td>
     <td>Coming soon</td>
   </tr>
@@ -2248,13 +2248,13 @@ The data model for endpoint context information is as follows:
   </tr>
   <tr>
     <td>end_ip4</td>
-    <td>bigint</td>
+    <td>int</td>
     <td>IP address of endpoint </td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
   <tr>
     <td>end_ip6</td>
-    <td>bigint</td>
+    <td>int128</td>
     <td>IP address of endpoint </td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -2800,7 +2800,7 @@ The data model for threat intelligence context information is as follows:
   </tr>
   <tr>
     <td>ti_indicator_ip6</td>
-    <td>array<bigINT></td>
+    <td>array<int128></td>
     <td>IPv6 Address Indicated by Threat Intelligence</td>
   </tr>
   <tr>
@@ -3082,13 +3082,13 @@ Schema
 
 {"name":"event_time", "type":"long", "doc":"Stop time of event""},
 
-{"name":"net_src_ip4", "type":"long", "doc":"Source IP Address"},
+{"name":"net_src_ip4", "type":"int", "doc":"Source IP Address"},
 
 {"name":"net_src_host", "type":"string","doc”:”Source hostname},
 
 {"name":"net_src_port", "type":"int","doc”:”Source port”},
 
-{"name":"net_dst_ip4", "type":"long", "doc"::"Destination IP Address"},
+{"name":"net_dst_ip4", "type":"int", "doc"::"Destination IP Address"},
 
 {"name":"net_dst_host", "type":"string", "doc":"Destination IP Address"},
 
