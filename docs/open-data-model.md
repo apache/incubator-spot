@@ -864,7 +864,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>file_atime</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp (UTC) of file access</td>
     <td>1472653952</td>
   </tr>
@@ -1696,9 +1696,9 @@ response_headers[‘DATE’]</td>
   <tr>
     <td></td>
     <td>dhcp_lease_time</td>
-    <td>double</td>
-    <td>Coming soon</td>
-    <td>Coming soon</td>
+    <td>int</td>
+    <td>mechanism through which a DHCP server knows when a host will stop using an IP address</td>
+    <td>2592000</td>
   </tr>
   <tr>
     <td>IRC</td>
@@ -1822,7 +1822,7 @@ response_headers[‘DATE’]</td>
   <tr>
     <td></td>
     <td>created</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp of vulnerability identification</td>
     <td></td>
   </tr>
@@ -2054,25 +2054,25 @@ The data model for user context information is as follows:
   </tr>
   <tr>
     <td>dvc_time</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when the user context information is obtained</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_created</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user was created</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_changed</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user was updated</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_last_logon</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user last logged on</td>
     <td>1472653952</td>
   </tr>
@@ -2084,13 +2084,13 @@ The data model for user context information is as follows:
   </tr>
   <tr>
     <td>user_last_reset</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user last reset password</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_expiration</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Date/time when user expires</td>
     <td>1472653952</td>
   </tr>
@@ -2242,7 +2242,7 @@ The data model for endpoint context information is as follows:
   </tr>
   <tr>
     <td>dvc_time</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when the endpoint context information is obtained</td>
     <td>1472653952</td>
   </tr>
@@ -2508,13 +2508,13 @@ The data model for vulnerability context information is as follows:
   </tr>
   <tr>
     <td>vuln_created</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Vulnerability creation timestamp</td>
     <td>timestamp</td>
   </tr>
   <tr>
     <td>vuln_updated</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Vulnerability updated timestamp</td>
     <td>timestamp</td>
   </tr>
@@ -2564,7 +2564,7 @@ The data model for network context information is based on "whois" information a
   </tr>
   <tr>
     <td>net_update_date</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>UTC timestamp</td>
     <td></td>
   </tr>
