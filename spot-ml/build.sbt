@@ -23,9 +23,7 @@ scalaVersion := "2.11.8"
 
 val sparkVersion = "2.1.0"
 
-import sbtassembly.Plugin.AssemblyKeys._
-
-assemblySettings
+baseAssemblySettings
 
 libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "provided"
 libraryDependencies += "org.apache.spark" %% "spark-mllib" % sparkVersion
@@ -37,7 +35,7 @@ resolvers += Resolver.sonatypeRepo("public")
 
 val meta = """META.INF(.)*""".r
 
-mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
+assemblyMergeStrategy in assembly := {
   case PathList("org", "apache", "commons", xs@_*) => MergeStrategy.last
   case PathList("com", "esotericsoftware", "minlog", xs@_*) => MergeStrategy.last
   case PathList("com", "google", xs@_*) => MergeStrategy.last
@@ -49,7 +47,6 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
   case "about.html" => MergeStrategy.rename
   case meta(_) => MergeStrategy.discard
   case x => MergeStrategy.first
-}
 }
 
 // super important with multiple tests running spark Contexts
@@ -69,4 +66,4 @@ getTop1MFileFromAlexa := {
   }
 }
 
-resourceGenerators in Compile <+= getTop1MFileFromAlexa
+resourceGenerators in Compile += getTop1MFileFromAlexa

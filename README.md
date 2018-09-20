@@ -71,8 +71,8 @@ Apache Spot functionality is divided into different modules, go to each module f
 
 Our Central repository for our Apache Spot solution is found here. If you find a bug, have question or something to discuss please contact us:
 
-* [Create an Issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT). 
-* [Go to our Slack channel](https://apachespot.slack.com/messages/general/). 
+* [Create an Issue](https://issues.apache.org/jira/browse/SPOT-20?jql=project%20%3D%20SPOT)
+* [Join the Dev List](mailto:issues-subscribe@spot.incubator.apache.org) and then [send us a message](mailto:dev@spot.incubator.apache.org)
 
 ## **Contributing to Apache Spot**
 
@@ -86,7 +86,7 @@ and join our community.
 * Fork the repo of the module that you wish to commit to.
 * Create a Branch, we use [topic branches](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches) for our commits. 
 * Push your commit(s) to your repository.
-* Create a pull request to the original repo in Apache Spot organization.
+* Create a pull request to the original repo in Apache Spot organization. *(See Below for Merging details)*
 
 ### **Commit Guidelines**
 
@@ -94,10 +94,17 @@ and join our community.
 * Please be clear with the commit messages about what you are fixing or adding to the code base. If you code is addressing an open issue please add the reference to the issue in the comments with: Fix: Issue's URL. 
 
 
-### **Merge approval**
+### **Merge Process**
 
-Apache Spot maintainers use +1 in a comment on the code review to indicate acceptance, 
-at least 3 "+1" from maintainers are required to approve the merge. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
+Thanks for considering to contribute to the Spot Project. In order to help make the process a little eaiser for everyone, please follow these steps.
+1) In order to start the merge process please open a ticket in the [Spot Jira](https://issues.apache.org/jira/projects/SPOT/issues) and take note of the Issue key *(SPOT-###)*. 
+2) Next, open a Pull-Request (PR) and reference the Issue key in the title of the PR. If you have any question or concern please feel free to add a comment in your pull request or branch and tag any of the maintainers.
+3) Now, it's time for the community to provide feedback on your commit. Getting community feedback can be hard, but start by sending a message to the Dev list; and make sure you're [subscribed](mailto:issues-subscribe@spot.incubator.apache.org) to the Dev List.
+4) At the same time, maintainers will be taking a look at your PR. The more community input you can get, in the form of comments rather than +1s, the more attention maintainers will give. 
+There are is a manual and an automatic merge process
+   * **Manual:** When a Project maintainer has given a '+1' in the comments, then you're PR has been accepted. However, it must be manually merged by a maintainer at this point. 
+   * **Automatic:** This process initiates when 3 maintainers provide a '+1'
+   * **Note:** if there are any merge conflicts you will have to come back and fix them before the process can continue.
 
 
 ## **Licensing**
