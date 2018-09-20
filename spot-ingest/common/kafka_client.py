@@ -19,23 +19,23 @@
 
 import logging
 import os
+import sys
 from common.utils import Util
-from kafka import KafkaProducer
-from kafka import KafkaConsumer as KC
-from kafka.partitioner.roundrobin import RoundRobinPartitioner
-from kafka.common import TopicPartition
-
-class KafkaTopic(object):
+from confluent_kafka import Producer
+from confluent_kafka import Consumer
+import common.configurator as config
 
 
-    def __init__(self,topic,server,port,zk_server,zk_port,partitions):
+class KafkaProducer(object):
 
-        self._initialize_members(topic,server,port,zk_server,zk_port,partitions)
+    def __init__(self, topic, server, port, zk_server, zk_port, partitions):
 
-    def _initialize_members(self,topic,server,port,zk_server,zk_port,partitions):
+        self._initialize_members(topic, server, port, zk_server, zk_port, partitions)
+
+    def _initialize_members(self, topic, server, port, zk_server, zk_port, partitions):
 
         # get logger isinstance
-        self._logger = logging.getLogger("SPOT.INGEST.KAFKA")
+        self._logger = logging.getLogger("SPOT.INGEST.KafkaProducer")
 
         # kafka requirements
         self._server = server
@@ -46,42 +46,93 @@ class KafkaTopic(object):
         self._num_of_partitions = partitions
         self._partitions = []
         self._partitioner = None
+        self._kafka_brokers = '{0}:{1}'.format(self._server, self._port)
 
         # create topic with partitions
         self._create_topic()
 
+        self._kafka_conf = self._producer_config(self._kafka_brokers)
+
+        self._p = Producer(**self._kafka_conf)
+
+    def _producer_config(self, server):
+        # type: (str) -> dict
+        """Returns a configuration dictionary containing optional values"""
+
+        connection_conf = {
+            'bootstrap.servers': server,
+        }
+
+        if os.environ.get('KAFKA_DEBUG'):
+            connection_conf.update({'debug': 'all'})
+
+        if config.kerberos_enabled():
+            self._logger.info('Kerberos enabled')
+            principal, keytab, sasl_mech, security_proto = config.kerberos()
+            connection_conf.update({
+                'sasl.mechanisms': sasl_mech,
+                'security.protocol': security_proto,
+                'sasl.kerberos.principal': principal,
+                'sasl.kerberos.keytab': keytab,
+                'sasl.kerberos.min.time.before.relogin': 6000
+            })
+
+            sn = os.environ.get('KAFKA_SERVICE_NAME')
+            if sn:
+                self._logger.info('Setting Kerberos service name: ' + sn)
+                connection_conf.update({'sasl.kerberos.service.name': sn})
+
+            kinit_cmd = os.environ.get('KAFKA_KINIT')
+            if kinit_cmd:
+                self._logger.info('using kinit command: ' + kinit_cmd)
+                connection_conf.update({'sasl.kerberos.kinit.cmd': kinit_cmd})
+            else:
+                # Using -S %{sasl.kerberos.service.name}/%{broker.name} causes the ticket cache to refresh
+                # resulting in authentication errors for other services
+                connection_conf.update({
+                    'sasl.kerberos.kinit.cmd': 'kinit -S "%{sasl.kerberos.service.name}/%{broker.name}" -k -t "%{sasl.kerberos.keytab}" %{sasl.kerberos.principal}'
+                })
+
+        if config.ssl_enabled():
+            self._logger.info('Using SSL connection settings')
+            ssl_verify, ca_location, cert, key = config.ssl()
+            connection_conf.update({
+                'ssl.certificate.location': cert,
+                'ssl.ca.location': ca_location,
+                'ssl.key.location': key
+            })
+
+        return connection_conf
+
     def _create_topic(self):
 
-        self._logger.info("Creating topic: {0} with {1} parititions".format(self._topic,self._num_of_partitions))     
-
-        # Create partitions for the workers.
-        self._partitions = [ TopicPartition(self._topic,p) for p in range(int(self._num_of_partitions))]        
-
-        # create partitioner
-        self._partitioner = RoundRobinPartitioner(self._partitions)
+        self._logger.info("Creating topic: {0} with {1} parititions".format(self._topic, self._num_of_partitions))
         
         # get script path 
-        zk_conf = "{0}:{1}".format(self._zk_server,self._zk_port)
-        create_topic_cmd = "{0}/kafka_topic.sh create {1} {2} {3}".format(os.path.dirname(os.path.abspath(__file__)),self._topic,zk_conf,self._num_of_partitions)
+        zk_conf = "{0}:{1}".format(self._zk_server, self._zk_port)
+        create_topic_cmd = "{0}/kafka_topic.sh create {1} {2} {3}".format(
+            os.path.dirname(os.path.abspath(__file__)),
+            self._topic,
+            zk_conf,
+            self._num_of_partitions
+        )
 
         # execute create topic cmd
-        Util.execute_cmd(create_topic_cmd,self._logger)
+        Util.execute_cmd(create_topic_cmd, self._logger)
 
-    def send_message(self,message,topic_partition):
+    def SendMessage(self, message, topic):
+        p = self._p
+        p.produce(topic, message.encode('utf-8'), callback=self._delivery_callback)
+        p.poll(0)
+        p.flush(timeout=3600000)
 
-        self._logger.info("Sending message to: Topic: {0} Partition:{1}".format(self._topic,topic_partition))
-        kafka_brokers = '{0}:{1}'.format(self._server,self._port)             
-        producer = KafkaProducer(bootstrap_servers=[kafka_brokers],api_version_auto_timeout_ms=3600000)
-        future = producer.send(self._topic,message,partition=topic_partition)
-        producer.flush(timeout=3600000)
-        producer.close()
-    
     @classmethod
-    def SendMessage(cls,message,kafka_servers,topic,partition=0):
-        producer = KafkaProducer(bootstrap_servers=kafka_servers,api_version_auto_timeout_ms=3600000)
-        future = producer.send(topic,message,partition=partition)
-        producer.flush(timeout=3600000)
-        producer.close()  
+    def _delivery_callback(cls, err, msg):
+        if err:
+            sys.stderr.write('%% Message failed delivery: %s\n' % err)
+        else:
+            sys.stderr.write('%% Message delivered to %s [%d]\n' %
+                             (msg.topic(), msg.partition()))
 
     @property
     def Topic(self):
@@ -93,22 +144,24 @@ class KafkaTopic(object):
 
     @property
     def Zookeeper(self):
-        zk = "{0}:{1}".format(self._zk_server,self._zk_port)
+        zk = "{0}:{1}".format(self._zk_server, self._zk_port)
         return zk
 
     @property
     def BootstrapServers(self):
-        servers = "{0}:{1}".format(self._server,self._port) 
+        servers = "{0}:{1}".format(self._server, self._port)
         return servers
 
 
 class KafkaConsumer(object):
     
-    def __init__(self,topic,server,port,zk_server,zk_port,partition):
+    def __init__(self, topic, server, port, zk_server, zk_port, partition):
 
-        self._initialize_members(topic,server,port,zk_server,zk_port,partition)
+        self._initialize_members(topic, server, port, zk_server, zk_port, partition)
 
-    def _initialize_members(self,topic,server,port,zk_server,zk_port,partition):
+    def _initialize_members(self, topic, server, port, zk_server, zk_port, partition):
+
+        self._logger = logging.getLogger("SPOT.INGEST.KafkaConsumer")
 
         self._topic = topic
         self._server = server
@@ -116,14 +169,64 @@ class KafkaConsumer(object):
         self._zk_server = zk_server
         self._zk_port = zk_port
         self._id = partition
+        self._kafka_brokers = '{0}:{1}'.format(self._server, self._port)
+        self._kafka_conf = self._consumer_config(self._id, self._kafka_brokers)
+
+    def _consumer_config(self, groupid, server):
+        # type: (dict) -> dict
+        """Returns a configuration dictionary containing optional values"""
+
+        connection_conf = {
+            'bootstrap.servers': server,
+            'group.id': groupid,
+        }
+
+        if config.kerberos_enabled():
+            self._logger.info('Kerberos enabled')
+            principal, keytab, sasl_mech, security_proto = config.kerberos()
+            connection_conf.update({
+                'sasl.mechanisms': sasl_mech,
+                'security.protocol': security_proto,
+                'sasl.kerberos.principal': principal,
+                'sasl.kerberos.keytab': keytab,
+                'sasl.kerberos.min.time.before.relogin': 6000,
+                'default.topic.config': {
+                    'auto.commit.enable': 'true',
+                    'auto.commit.interval.ms': '60000',
+                    'auto.offset.reset': 'smallest'}
+            })
+
+            sn = os.environ.get('KAFKA_SERVICE_NAME')
+            if sn:
+                self._logger.info('Setting Kerberos service name: ' + sn)
+                connection_conf.update({'sasl.kerberos.service.name': sn})
+
+            kinit_cmd = os.environ.get('KAFKA_KINIT')
+            if kinit_cmd:
+                self._logger.info('using kinit command: ' + kinit_cmd)
+                connection_conf.update({'sasl.kerberos.kinit.cmd': kinit_cmd})
+            else:
+                # Using -S %{sasl.kerberos.service.name}/%{broker.name} causes the ticket cache to refresh
+                # resulting in authentication errors for other services
+                connection_conf.update({
+                    'sasl.kerberos.kinit.cmd': 'kinit -k -t "%{sasl.kerberos.keytab}" %{sasl.kerberos.principal}'
+                })
+
+        if config.ssl_enabled():
+            self._logger.info('Using SSL connection settings')
+            ssl_verify, ca_location, cert, key = config.ssl()
+            connection_conf.update({
+                'ssl.certificate.location': cert,
+                'ssl.ca.location': ca_location,
+                'ssl.key.location': key
+            })
+
+        return connection_conf
 
     def start(self):
-        
-        kafka_brokers = '{0}:{1}'.format(self._server,self._port)
-        consumer =  KC(bootstrap_servers=[kafka_brokers],group_id=self._topic)
-        partition = [TopicPartition(self._topic,int(self._id))]
-        consumer.assign(partitions=partition)
-        consumer.poll()
+
+        consumer = Consumer(**self._kafka_conf)
+        consumer.subscribe([self._topic])
         return consumer
 
     @property
@@ -132,6 +235,4 @@ class KafkaConsumer(object):
 
     @property
     def ZookeperServer(self):
-        return "{0}:{1}".format(self._zk_server,self._zk_port)
-
-    
+        return "{0}:{1}".format(self._zk_server, self._zk_port)

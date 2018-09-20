@@ -14,8 +14,10 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
+SET hiveconf:huser;
+SET hiveconf:dbname;
 
-CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.proxy (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.proxy (
 p_date STRING,
 p_time STRING,
 clientip STRING,
@@ -52,10 +54,10 @@ d STRING,
 h STRING
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/proxy/hive';
+LOCATION '${hiveconf:huser}/proxy/hive';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_edge ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.proxy_edge (
 tdate STRING,
 time STRING, 
 clientip STRING, 
@@ -80,10 +82,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/proxy/hive/oa/edge';
+LOCATION '${hiveconf:huser}/proxy/hive/oa/edge';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_ingest_summary ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.proxy_ingest_summary (
 tdate STRING,
 total BIGINT 
 )
@@ -93,10 +95,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/proxy/hive/oa/summary';
+LOCATION '${hiveconf:huser}/proxy/hive/oa/summary';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_scores ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.proxy_scores (
 tdate STRING,
 time STRING, 
 clientip STRING, 
@@ -128,10 +130,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/proxy/hive/oa/suspicious';
+LOCATION '${hiveconf:huser}/proxy/hive/oa/suspicious';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_storyboard ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.proxy_storyboard (
 p_threat STRING, 
 title STRING,
 text STRING
@@ -142,10 +144,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/proxy/hive/oa/storyboard';
+LOCATION '${hiveconf:huser}/proxy/hive/oa/storyboard';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_threat_investigation ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.proxy_threat_investigation (
 tdate STRING,
 fulluri STRING,
 uri_sev INT
@@ -156,10 +158,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/proxy/hive/oa/threat_investigation';
+LOCATION '${hiveconf:huser}/proxy/hive/oa/threat_investigation';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.proxy_timeline ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.proxy_timeline (
 p_threat STRING, 
 tstart STRING, 
 tend STRING, 
@@ -174,4 +176,4 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/proxy/hive/oa/timeline';
+LOCATION '${hiveconf:huser}/proxy/hive/oa/timeline';

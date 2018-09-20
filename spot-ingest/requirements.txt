@@ -1,2 +1,5 @@
 watchdog
-kafka-python
+confluent-kafka
+impyla
+hdfs
+six >= 1.5

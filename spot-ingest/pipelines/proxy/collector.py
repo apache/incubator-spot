@@ -23,7 +23,7 @@ import os
 import sys
 import copy
 from common.utils import Util, NewFileEvent
-from common.kafka_client import KafkaTopic
+from common.kafka_client import KafkaProducer
 from multiprocessing import Pool
 from common.file_collector import FileWatcher
 import time
@@ -106,10 +106,10 @@ def ingest_file(file,message_size,topic,kafka_servers):
             for line in f:
                 message += line
                 if len(message) > message_size:
-                    KafkaTopic.SendMessage(message,kafka_servers,topic,0)
+                    KafkaProducer.SendMessage(message, kafka_servers, topic, 0)
                     message = ""
             #send the last package.        
-            KafkaTopic.SendMessage(message,kafka_servers,topic,0)            
+            KafkaProducer.SendMessage(message, kafka_servers, topic, 0)
         rm_file = "rm {0}".format(file)
         Util.execute_cmd(rm_file,logger)
         logger.info("File {0} has been successfully sent to Kafka Topic: {1}".format(file,topic))

@@ -58,7 +58,7 @@ fi
 
 INGEST_DATE=`date +"%H_%M_%S"`
 
-screen -d -m -S SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}  -s /bin/bash
+screen -d -m -S SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}  -s `which bash`
 screen -S SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE} -X setenv TZ ${TIME_ZONE}
 screen -dr  SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE} -X screen -t Master sh -c "python master_collector.py -t ${INGEST_CONF} -w ${WORKERS_NUM} -id SPOT-INGEST-${INGEST_CONF}-${INGEST_DATE}; echo 'Closing Master...'; sleep 432000"
 

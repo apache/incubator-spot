@@ -14,8 +14,10 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
+SET hiveconf:huser;
+SET hiveconf:dbname;
 
-CREATE EXTERNAL TABLE IF NOT EXISTS ${var:dbname}.flow (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow (
 treceived STRING,
 unix_tstamp BIGINT,
 tryear INT,
@@ -52,10 +54,10 @@ d TINYINT,
 h TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/flow/hive';
+LOCATION '${hiveconf:huser}/flow/hive';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.flow_chords (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_chords (
 ip_threat STRING,
 srcip STRING,
 dstip STRING,
@@ -68,10 +70,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/flow/hive/oa/chords';
+LOCATION '${hiveconf:huser}/flow/hive/oa/chords';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.flow_edge (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_edge (
 tstart STRING, 
 srcip STRING,
 dstip STRING,
@@ -96,10 +98,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/flow/hive/oa/edge';
+LOCATION '${hiveconf:huser}/flow/hive/oa/edge';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.flow_ingest_summary (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_ingest_summary (
 tdate STRING,
 total BIGINT 
 )
@@ -109,10 +111,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/flow/hive/oa/summary';
+LOCATION '${hiveconf:huser}/flow/hive/oa/summary';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.flow_scores (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_scores (
 tstart STRING, 
 srcip STRING,
 dstip STRING,
@@ -140,10 +142,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/flow/hive/oa/suspicious';
+LOCATION '${hiveconf:huser}/flow/hive/oa/suspicious';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.flow_storyboard (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_storyboard (
 ip_threat STRING,
 title STRING,
 text STRING
@@ -154,10 +156,10 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/flow/hive/oa/storyboard';
+LOCATION '${hiveconf:huser}/flow/hive/oa/storyboard';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.flow_threat_investigation ( 
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_threat_investigation (
 tstart STRING,
 srcip STRING, 
 dstip STRING, 
@@ -171,10 +173,10 @@ m TINYINT,
 d TINYINT
 ) 
 STORED AS PARQUET 
-LOCATION '${var:huser}/flow/hive/oa/threat_investigation';
+LOCATION '${hiveconf:huser}/flow/hive/oa/threat_investigation';
 
 
-CREATE EXTERNAL TABLE ${var:dbname}.flow_timeline (
+CREATE EXTERNAL TABLE IF NOT EXISTS ${hiveconf:dbname}.flow_timeline (
 ip_threat STRING,
 tstart STRING, 
 tend STRING, 
@@ -192,4 +194,4 @@ m TINYINT,
 d TINYINT
 )
 STORED AS PARQUET
-LOCATION '${var:huser}/flow/hive/oa/timeline';
+LOCATION '${hiveconf:huser}/flow/hive/oa/timeline';

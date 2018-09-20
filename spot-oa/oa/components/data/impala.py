@@ -16,6 +16,8 @@
 #
 
 from subprocess import check_output
+from common import configurator
+
 
 class Engine(object):
 
@@ -24,17 +26,32 @@ class Engine(object):
         self._daemon_node = conf['impala_daemon']
         self._db = db
         self._pipeline = pipeline
-        impala_cmd = "impala-shell -i {0} --quiet -q 'INVALIDATE METADATA {1}.{2}'".format(self._daemon_node,self._db, self._pipeline)
+
+        if configurator.kerberos_enabled():
+            self._impala_shell = "impala-shell -k -i {0} --quiet".format(self._daemon_node)
+        else:
+            self._impala_shell = "impala-shell -i {0} --quiet".format(self._daemon_node)
+
+        impala_cmd = "{0} -q 'INVALIDATE METADATA {1}.{2}'".format(self._impala_shell, self._db, self._pipeline)
         check_output(impala_cmd,shell=True)
     
-        impala_cmd = "impala-shell -i {0} --quiet -q 'REFRESH {1}.{2}'".format(self._daemon_node,self._db, self._pipeline)
+        impala_cmd = "{0} -q 'REFRESH {1}.{2}'".format(self._impala_shell, self._db, self._pipeline)
         check_output(impala_cmd,shell=True)
 
     def query(self,query,output_file=None,delimiter=","):
 
         if output_file:
-            impala_cmd = "impala-shell -i {0} --quiet --print_header -B --output_delimiter='{1}' -q \"{2}\" -o {3}".format(self._daemon_node,delimiter,query,output_file)
+            impala_cmd = "{0} --print_header -B --output_delimiter='{1}' -q \"{2}\" -o {3}".format(
+                self._impala_shell,
+                delimiter,
+                query,
+                output_file
+            )
         else:
-            impala_cmd = "impala-shell -i {0} --quiet --print_header -B --output_delimiter='{1}' -q \"{2}\"".format(self._daemon_node,delimiter,query)
+            impala_cmd = "{0} --print_header -B --output_delimiter='{1}' -q \"{2}\"".format(
+                self._impala_shell,
+                delimiter,
+                query
+            )
 
         check_output(impala_cmd,shell=True)
