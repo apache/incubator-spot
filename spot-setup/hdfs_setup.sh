@@ -19,8 +19,21 @@
 
 set -e
 
+help() {
+    echo -n "
+   Initialize folders and databases for Spot in Hadoop.
+
+ Options:
+  --no-sudo         Do not use sudo with hdfs commands.
+  -c                Specify config file (default = /etc/spot.conf)
+  -d                Override databases
+  -h, --help        Display this help and exit
+" 
+exit 0
+}
+
 function log() {
-printf "hdfs_setup.sh:\n $1\n"
+printf "hdfs_setup.sh:\\n %s\\n\\n" "$1"
 }
 
 function safe_mkdir() {
@@ -29,11 +42,11 @@ function safe_mkdir() {
         # keeps the script from existing on existing folders
         local hdfs_cmd=$1
         local dir=$2
-        if $(hdfs dfs -test -d ${dir}); then
+        if hdfs dfs -test -d "${dir}"; then
             log "${dir} already exists"
         else
             log "running mkdir on ${dir}"
-            ${hdfs_cmd} dfs -mkdir ${dir}
+            ${hdfs_cmd} dfs -mkdir "${dir}"
         fi
 }
 
@@ -74,12 +87,15 @@ for arg in "$@"; do
             db_override=$1
             shift
             ;;
+        "-h"|"--help")
+            help
+            ;;
     esac
 done
 
 # Sourcing spot configuration variables
-log "Sourcing ${SPOTCONF}\n"
-source $SPOTCONF
+log "Sourcing ${SPOTCONF}"
+source "$SPOTCONF"
 
 if [[ ${no_sudo} == "true" ]]; then
     hdfs_cmd="hdfs"
@@ -95,10 +111,10 @@ else
 fi
 
 if [[ -z "${db_override}" ]]; then
-        DBENGINE=$(echo ${DBENGINE} | tr '[:upper:]' '[:lower:]')
+        DBENGINE=$(echo "${DBENGINE}" | tr '[:upper:]' '[:lower:]')
         log "setting database engine to ${DBENGINE}"
 else
-        DBENGINE=$(echo ${db_override} | tr '[:upper:]' '[:lower:]')
+        DBENGINE=$(echo "${db_override}" | tr '[:upper:]' '[:lower:]')
         log "setting database engine to $db_override"
 fi
 
@@ -112,7 +128,11 @@ case ${DBENGINE} in
         db_script="${db_shell} --var=huser=${HUSER} --var=dbname=${DBNAME} -c -f"
         ;;
     hive)
-        db_shell="hive"
+        if [[ ${no_sudo} == "true" ]]; then
+            db_shell="hive"
+        else
+            db_shell="sudo -u hive hive"
+        fi
         db_query="${db_shell} -e"
         db_script="${db_shell} -hiveconf huser=${HUSER} -hiveconf dbname=${DBNAME} -f"
         ;;
@@ -128,33 +148,35 @@ case ${DBENGINE} in
 esac
 
 # Creating HDFS user's folder
-safe_mkdir ${hdfs_cmd} ${HUSER}
-${hdfs_cmd} dfs -chown ${USER}:supergroup ${HUSER}
-${hdfs_cmd} dfs -chmod 775 ${HUSER}
+safe_mkdir "${hdfs_cmd}" "${HUSER}"
+${hdfs_cmd} dfs -chown "${USER}":supergroup "${HUSER}"
+${hdfs_cmd} dfs -chmod 775 "${HUSER}"
 
 # Creating HDFS paths for each use case
 for d in "${DSOURCES[@]}" 
 do
 	echo "creating /$d"
-	safe_mkdir hdfs ${HUSER}/$d
+	safe_mkdir "${hdfs_cmd}" "${HUSER}/$d"
 	for f in "${DFOLDERS[@]}" 
 	do 
 		echo "creating $d/$f"
-		safe_mkdir ${hdfs_cmd} ${HUSER}/$d/$f
+		safe_mkdir "${hdfs_cmd}" "${HUSER}/$d/$f"
 	done
 
 	# Modifying permission on HDFS folders to allow Impala to read/write
-	hdfs dfs -chmod -R 775 ${HUSER}/$d
-	${hdfs_cmd} dfs -setfacl -R -m user:${db_override}:rwx ${HUSER}/$d
-	${hdfs_cmd} dfs -setfacl -R -m user:${USER}:rwx ${HUSER}/$d
+	${hdfs_cmd} dfs -chmod -R 775 "${HUSER}"/"$d"
+	${hdfs_cmd} dfs -setfacl -R -m user:"${db_override}":rwx "${HUSER}"/"$d"
+	${hdfs_cmd} dfs -setfacl -R -m user:"${USER}":rwx "${HUSER}"/"$d"
 done
 
 
 # Creating Spot Database
- ${db_query} "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
+log "Creating Spot Database"
+${db_query} "CREATE DATABASE IF NOT EXISTS ${DBNAME}";
 
 
 # Creating tables
+log "Creating Database tables"
 for d in "${DSOURCES[@]}" 
 do
 	${db_script} "./${DBENGINE}/create_${d}_parquet.hql"
