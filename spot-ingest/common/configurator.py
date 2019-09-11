@@ -34,37 +34,23 @@ def configuration():
 
 
 def db():
-    conf = configuration()
-    return conf.get('conf', 'DBNAME').replace("'", "").replace('"', '')
+    return get_conf('DBNAME')
 
 
 def impala():
-    conf = configuration()
-    return conf.get('conf', 'IMPALA_DEM'), conf.get('conf', 'IMPALA_PORT')
-
-
-def hive():
-    conf = configuration()
-    return conf.get('conf', 'HS2_HOST'), conf.get('conf', 'HS2_PORT')
+    return get_conf('IMPALA_DEM'), get_conf('IMPALA_PORT')
 
 
 def hdfs():
-    conf = configuration()
-    name_node = conf.get('conf',"NAME_NODE")
-    web_port = conf.get('conf',"WEB_PORT")
-    hdfs_user = conf.get('conf',"HUSER")
-    hdfs_user = hdfs_user.split("/")[-1].replace("'", "").replace('"', '')
-    return name_node,web_port,hdfs_user
+    return get_conf('NAME_NODE'), get_conf('WEB_PORT'), get_conf('HUSER').split("/")[-1]
 
 
 def spot():
-    conf = configuration()
-    return conf.get('conf',"HUSER").replace("'", "").replace('"', '')
+    return get_conf('HUSER')
 
 
 def kerberos_enabled():
-    conf = configuration()
-    enabled = conf.get('conf', 'KERBEROS').replace("'", "").replace('"', '')
+    enabled = get_conf('KERBEROS')
     if enabled.lower() == 'true':
         return True
     else:
@@ -72,20 +58,14 @@ def kerberos_enabled():
 
 
 def kerberos():
-    conf = configuration()
     if kerberos_enabled():
-        principal = conf.get('conf', 'PRINCIPAL')
-        keytab = conf.get('conf', 'KEYTAB')
-        sasl_mech = conf.get('conf', 'SASL_MECH')
-        security_proto = conf.get('conf', 'SECURITY_PROTO')
-        return principal, keytab, sasl_mech, security_proto
+        return get_conf('PRINCIPAL'), get_conf('KEYTAB'), get_conf('SASL_MECH'), get_conf('SECURITY_PROTO')
     else:
         raise KeyError
 
 
 def ssl_enabled():
-    conf = configuration()
-    enabled = conf.get('conf', 'SSL')
+    enabled = get_conf('SSL')
     if enabled.lower() == 'true':
         return True
     else:
@@ -93,15 +73,17 @@ def ssl_enabled():
 
 
 def ssl():
-    conf = configuration()
     if ssl_enabled():
-        ssl_verify = conf.get('conf', 'SSL_VERIFY')
-        ca_location = conf.get('conf', 'CA_LOCATION')
-        cert = conf.get('conf', 'CERT')
-        key = conf.get('conf', 'KEY')
-        return ssl_verify, ca_location, cert, key
+        return get_conf('SSL_VERIFY'), get_conf('CA_LOCATION'), get_conf('CERT'), get_conf('KEY')
     else:
         raise KeyError
+
+
+def get_conf(key):
+    conf = configuration()
+    header = 'conf'
+    result = conf.get(header, key)
+    return result.replace("'", "").replace('"', '').encode('ascii', 'ignore')
 
 
 class SecHead(object):
