@@ -68,7 +68,7 @@ class Worker(object):
                         "--num-executors {1} "
                         "--conf spark.executor.memory={2} "
                         "--conf spark.executor.cores={3} "
-                        "--jars {4}/common/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar "
+                        "--jars {4}/common/spark-streaming-kafka-0-8-assembly_2.11.jar "
                         "{5}/{6} "
                         "-zk {7} "
                         "-t {8} "
