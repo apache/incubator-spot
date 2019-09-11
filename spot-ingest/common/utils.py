@@ -1,5 +1,3 @@
-#!/bin/env python
-
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,15 +15,108 @@
 # limitations under the License.
 #
 
-import os
-import sys
-import subprocess
+'''
+    Internal subroutines for e.g. executing commands and initializing
+:class:`logging.Logger` objects.
+'''
+
 import logging
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import os
+import subprocess
+import sys
+
+from logging.handlers   import RotatingFileHandler
+#from watchdog.observers import Observer
+#from watchdog.events    import FileSystemEventHandler
+
 
 class Util(object):
-    
+    '''
+        Utility methods.
+    '''
+
+    @classmethod
+    def call(cls, cmd, shell=False):
+        '''
+            Run command with arguments, wait to complete and return ``True`` on success.
+
+        :param cls: The class as implicit first argument.
+        :param cmd: Command string to be executed.
+        :returns  : ``True`` on success, otherwise ``None``.
+        :rtype    : ``bool``
+        '''
+        logger = logging.getLogger('SPOT.INGEST.COMMON.UTIL')
+        logger.debug('Execute command: {0}'.format(cmd))
+
+        try:
+            subprocess.call(cmd, shell=shell)
+            return True
+
+        except Exception as exc:
+            logger.error('[{0}] {1}'.format(exc.__class__.__name__, exc.message))
+
+    @classmethod
+    def get_logger(cls, name, level='INFO', filepath=None, fmt=None):
+        '''
+            Return a new logger or an existing one, if any.
+
+        :param cls     : The class as implicit first argument.
+        :param name    : Return a logger with the specified name.
+        :param filepath: Path of the file, where logs will be saved. If it is not set,
+                         redirects the log stream to `sys.stdout`.
+        :param fmt     : A format string for the message as a whole, as well as a format
+                         string for the date/time portion of the message.
+                         Default: '%(asctime)s %(levelname)-8s %(name)-34s %(message)s'
+        :rtype         : :class:`logging.Logger`
+        '''
+        logger = logging.getLogger(name)
+        # .............................if logger already exists, return it
+        if logger.handlers: return logger
+
+        if filepath:
+            # .........................rotate log file (1 rotation per 512KB
+            handler  = RotatingFileHandler(filepath, maxBytes=524288, backupCount=8)
+        else:
+            handler  = logging.StreamHandler(sys.stdout)
+
+        fmt = fmt or '%(asctime)s %(levelname)-8s %(name)-34s %(message)s'
+        handler.setFormatter(logging.Formatter(fmt))
+
+        try:
+            logger.setLevel(getattr(logging, level.upper() if level else 'INFO'))
+        except: logger.setLevel(logging.INFO)
+
+        logger.addHandler(handler)
+        return logger
+
+    @classmethod
+    def popen(cls, cmd, cwd=None, raises=False):
+        '''
+            Execute the given command string in a new process. Send data to stdin and
+        read data from stdout and stderr, until end-of-file is reached.
+
+        :param cls     : The class as implicit first argument.
+        :param cwd     : If it is set, then the child's current directory will be change
+                         to `cwd` before it is executed.
+        :param raises  : If ``True`` and stderr has data, it raises an ``OSError`` exception.
+        :returns       : The output of the given command; pair of (stdout, stderr).
+        :rtype         : ``tuple``
+        :raises OSError: If `raises` and stderr has data.
+        '''
+        parser   = lambda x: [] if x == '' else [y.strip() for y in x.strip().split('\n')]
+        process  = subprocess.Popen(cmd, shell=True, universal_newlines=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+
+        # .............................trim lines and remove the empty ones
+        _stdout  = [x for x in parser(out) if bool(x)]
+        _stderr  = [x for x in parser(err) if bool(x)]
+
+        if _stderr and raises:
+            raise OSError('\n'.join(_stderr))
+
+        return _stdout, _stderr
+
     @classmethod
     def remove_kafka_topic(cls,zk,topic,logger):
         rm_kafka_topic = "kafka-topics --delete --zookeeper {0} --topic {1}".format(zk,topic)
@@ -57,35 +148,8 @@ class Util(object):
         subprocess.call(load_to_hadoop_script,shell=True)
 
     @classmethod
-    def get_logger(cls,logger_name,create_file=False):
-
-		# create logger for prd_ci
-		log = logging.getLogger(logger_name)
-		log.setLevel(level=logging.INFO)
-
-		# create formatter and add it to the handlers
-		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-		if create_file:
-				# create file handler for logger.
-				fh = logging.FileHandler('SPOT.log')
-				fh.setLevel(level=logging.DEBUG)
-				fh.setFormatter(formatter)
-		# reate console handler for logger.
-		ch = logging.StreamHandler()
-		ch.setLevel(level=logging.DEBUG)
-		ch.setFormatter(formatter)
-
-		# add handlers to logger.
-		if create_file:
-			log.addHandler(fh)
-
-		log.addHandler(ch)
-		return  log
-
-    @classmethod
     def create_watcher(cls,collector_path,new_file,logger):
-
+        from watchdog.observers import Observer
         logger.info("Creating collector watcher")
         event_handler = new_file
         observer = Observer()
@@ -111,16 +175,16 @@ class Util(object):
         return is_type_ok
 
 
-class NewFileEvent(FileSystemEventHandler):
-
-    pipeline_instance = None
-    def __init__(self,pipeline_instance):
-        self.pipeline_instance = pipeline_instance
-
-    def on_moved(self,event):
-        if not event.is_directory:
-            self.pipeline_instance.new_file_detected(event.dest_path)
-
-    def on_created(self,event):
-        if not event.is_directory:
-            self.pipeline_instance.new_file_detected(event.src_path)
+#class NewFileEvent(FileSystemEventHandler):
+#
+#    pipeline_instance = None
+#    def __init__(self,pipeline_instance):
+#        self.pipeline_instance = pipeline_instance
+#
+#    def on_moved(self,event):
+#        if not event.is_directory:
+#            self.pipeline_instance.new_file_detected(event.dest_path)
+#
+#    def on_created(self,event):
+#        if not event.is_directory:
+#            self.pipeline_instance.new_file_detected(event.src_path)

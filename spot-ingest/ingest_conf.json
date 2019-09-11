@@ -15,7 +15,8 @@
             "kafka_port":"kafka port",
             "zookeper_server":"zk ip",
             "zookeper_port":"zk port",
-            "message_size":900000
+            "message_size":900000,
+            "max_request_size": 1048576
         },
     "pipelines":{
         "flow":{

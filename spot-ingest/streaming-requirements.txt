@@ -1,0 +1,8 @@
+PyYAML==3.12
+argh==0.26.2
+argparse==1.2.1
+avro==1.8.2
+kafka-python==1.4.2
+pathtools==0.1.2
+watchdog==0.8.3
+wsgiref==0.1.2

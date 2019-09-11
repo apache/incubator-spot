@@ -15,8 +15,16 @@
 # limitations under the License.
 #
 
-import dns
-import flow
-import proxy
+'''
 
-__all__ = ['dns', 'flow', 'proxy']
+'''
+
+from setuptools import setup, find_packages
+
+setup(
+    description = 'Pipelines',
+    install_requires = open('requirements.txt').read().strip().split('\n'),
+    name='pipelines',
+    packages = find_packages(),
+    version = '0.1'
+)
