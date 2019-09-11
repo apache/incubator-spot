@@ -619,7 +619,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>dvc_ip4/dvc_ip6</td>
-    <td>long</td>
+    <td>int/int128</td>
     <td>IP address of device</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -668,7 +668,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>dvc_fwd_ip4/fwd_ip6</td>
-    <td>long</td>
+    <td>int/int128</td>
     <td>Forwarded from device</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -682,7 +682,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td>Network</td>
     <td>src_ip4/src_ip6</td>
-    <td>bigint</td>
+    <td>int/int128</td>
     <td>Source ip address of event</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -752,7 +752,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>dst_ip4/dst_ip6</td>
-    <td>bigint</td>
+    <td>int/int128</td>
     <td>Destination ip address of event</td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -864,7 +864,7 @@ Note: The model will evolve to include reserved attributes for additional device
   <tr>
     <td></td>
     <td>file_atime</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp (UTC) of file access</td>
     <td>1472653952</td>
   </tr>
@@ -1182,20 +1182,6 @@ request_headers[‘ACCEPT’]</td>
   </tr>
   <tr>
     <td></td>
-    <td>http_response_info_code </td>
-    <td>int</td>
-    <td>HTTP response info code</td>
-    <td>100</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>http_response_info_msg</td>
-    <td>string</td>
-    <td>HTTP response info message</td>
-    <td>“somestring”</td>
-  </tr>
-  <tr>
-    <td></td>
     <td>http_response_resp_fuids</td>
     <td>string</td>
     <td>Response FUIDS</td>
@@ -1297,7 +1283,7 @@ response_headers[‘DATE’]</td>
   <tr>
     <td></td>
     <td>smtp_headers_x_originating_ip4</td>
-    <td>bigint</td>
+    <td>int</td>
     <td>Originating IP address</td>
     <td>1203743731</td>
   </tr>
@@ -1682,7 +1668,7 @@ response_headers[‘DATE’]</td>
   <tr>
     <td>DHCP</td>
     <td>dhcp_assigned_ip4</td>
-    <td>bigint</td>
+    <td>int</td>
     <td>Coming soon</td>
     <td>Coming soon</td>
   </tr>
@@ -1696,9 +1682,9 @@ response_headers[‘DATE’]</td>
   <tr>
     <td></td>
     <td>dhcp_lease_time</td>
-    <td>double</td>
-    <td>Coming soon</td>
-    <td>Coming soon</td>
+    <td>int</td>
+    <td>mechanism through which a DHCP server knows when a host will stop using an IP address</td>
+    <td>2592000</td>
   </tr>
   <tr>
     <td>IRC</td>
@@ -1822,7 +1808,7 @@ response_headers[‘DATE’]</td>
   <tr>
     <td></td>
     <td>created</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp of vulnerability identification</td>
     <td></td>
   </tr>
@@ -2054,25 +2040,25 @@ The data model for user context information is as follows:
   </tr>
   <tr>
     <td>dvc_time</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when the user context information is obtained</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_created</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user was created</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_changed</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user was updated</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_last_logon</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user last logged on</td>
     <td>1472653952</td>
   </tr>
@@ -2084,13 +2070,13 @@ The data model for user context information is as follows:
   </tr>
   <tr>
     <td>user_last_reset</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when user last reset password</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>user_expiration</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Date/time when user expires</td>
     <td>1472653952</td>
   </tr>
@@ -2242,19 +2228,19 @@ The data model for endpoint context information is as follows:
   </tr>
   <tr>
     <td>dvc_time</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Timestamp from when the endpoint context information is obtained</td>
     <td>1472653952</td>
   </tr>
   <tr>
     <td>end_ip4</td>
-    <td>bigint</td>
+    <td>int</td>
     <td>IP address of endpoint </td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
   <tr>
     <td>end_ip6</td>
-    <td>bigint</td>
+    <td>int128</td>
     <td>IP address of endpoint </td>
     <td>Integer representation of 10.1.1.1</td>
   </tr>
@@ -2508,13 +2494,13 @@ The data model for vulnerability context information is as follows:
   </tr>
   <tr>
     <td>vuln_created</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Vulnerability creation timestamp</td>
     <td>timestamp</td>
   </tr>
   <tr>
     <td>vuln_updated</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>Vulnerability updated timestamp</td>
     <td>timestamp</td>
   </tr>
@@ -2564,7 +2550,7 @@ The data model for network context information is based on "whois" information a
   </tr>
   <tr>
     <td>net_update_date</td>
-    <td>bigint</td>
+    <td>long</td>
     <td>UTC timestamp</td>
     <td></td>
   </tr>
@@ -2800,7 +2786,7 @@ The data model for threat intelligence context information is as follows:
   </tr>
   <tr>
     <td>ti_indicator_ip6</td>
-    <td>array<bigINT></td>
+    <td>array<int128></td>
     <td>IPv6 Address Indicated by Threat Intelligence</td>
   </tr>
   <tr>
@@ -3082,13 +3068,13 @@ Schema
 
 {"name":"event_time", "type":"long", "doc":"Stop time of event""},
 
-{"name":"net_src_ip4", "type":"long", "doc":"Source IP Address"},
+{"name":"net_src_ip4", "type":"int", "doc":"Source IP Address"},
 
 {"name":"net_src_host", "type":"string","doc”:”Source hostname},
 
 {"name":"net_src_port", "type":"int","doc”:”Source port”},
 
-{"name":"net_dst_ip4", "type":"long", "doc"::"Destination IP Address"},
+{"name":"net_dst_ip4", "type":"int", "doc"::"Destination IP Address"},
 
 {"name":"net_dst_host", "type":"string", "doc":"Destination IP Address"},
 
