@@ -145,7 +145,7 @@ code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
 pre { white-space: pre-wrap; }
 
 /** Set consistent quote types. */
-q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+q { quotes: "\201C" "\201D" "\2018" "\2019" "\2020"; }
 
 /** Address inconsistent and variable font size in all browsers. */
 q:before, q:after { content: ''; content: none; }
@@ -1182,7 +1182,8 @@ you can add resource intensive styles.
   #use-case .table:last-of-type { padding-bottom: 0; }
   #use-case .left img { margin-bottom: 0; padding-right: 25px; }
   #use-case h3 {margin: 0 0 15px;text-align:left;}
-  .quotes .table-cell {display:table-cell;text-align:left;}  .table-cell.quote-man {padding-right:35px;text-align:center;}
+  .quotes .table-cell {display:table-cell;text-align:left;}
+  .table-cell.quote-man {padding-right:35px;text-align:center;}
   .table-cell.quote-man img {text-align:center;}
   .arrow { height: 80px; }
   .arrow p { margin: 20px 85px 20px 25px; }
