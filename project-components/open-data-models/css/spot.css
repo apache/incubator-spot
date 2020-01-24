@@ -1,0 +1,11 @@
+/* Customized to match style.css in the doc section of the website */
+p.terminal 
+{
+    border-radius: 25px;
+    border: 2px solid #4b4547;
+    background: #4b4547;
+    color: #FFFFFF;
+    padding: 20px;
+    margin-left: 0px;
+    margin-right: 0px; 
+}
