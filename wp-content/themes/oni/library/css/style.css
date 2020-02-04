@@ -118,7 +118,7 @@ code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
 pre { white-space: pre-wrap; }
 
 /** Set consistent quote types. */
-q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+q { quotes: "\201C" "\201D" "\2018" "\2019" "\2020"; }
 
 /** Address inconsistent and variable font size in all browsers. */
 q:before, q:after { content: ''; content: none; }
