@@ -474,8 +474,8 @@
                   <p class="short-mrg">tshark - DNS dissector tool. For tshark, follow the steps on the web site to install it. Tshark must be downloaded and built from <a href="https://www.wireshark.org/download.html"> Wireshark page</a></p>
                   <p class="short-mrg">Full instructions for compiling Wireshark can be found <a href="https://www.wireshark.org/docs/wsug_html_chunked/ChBuildInstallUnixBuild.html">here</a> instructions for compiling</p>
                   <p class="terminal">
-                    sudo yum -y install gtk2-devel gtk+-devel bison qt-devel qt5-qtbase-devel sudo yum -y groupinstall "Development Tools"<br> sudo yum -y install libpcap-devel<br> #compile Wireshark<br> wget https://1.na.dl.wireshark.org/src/wireshark-2.2.3.tar.bz2
-                    tar xvf wireshark-2.0.1.tar.bz2<br> cd wireshark-2.0.1<br> ./configure --with-gtk2 --disable-wireshark<br> make
+                    sudo yum -y install gtk2-devel gtk+-devel bison qt-devel qt5-qtbase-devel sudo yum -y groupinstall "Development Tools"<br> sudo yum -y install libpcap-devel<br> #compile Wireshark<br> wget https://1.na.dl.wireshark.org/src/wireshark-2.2.3.tar.bz2<br>
+                    tar xjvf wireshark-2.0.1.tar.bz2<br> cd wireshark-2.0.1<br> ./configure --with-gtk2 --disable-wireshark<br> make
                     <br> sudo make install<br> cd ..<br>
                   </p><br>
                 </li>
