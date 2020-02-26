@@ -188,7 +188,7 @@ class Worker(object):
                            "      ,  {{\"name\": \"fwd\",                   \"type\":[\"int\",   \"null\"]}}\n"
                            "      ,  {{\"name\": \"stos\",                  \"type\":[\"int\",   \"null\"]}}\n"
                            "      ,  {{\"name\": \"ipkt\",               \"type\":[\"bigint\",   \"null\"]}}\n"
-                           "      ,  {{\"name\": \"ibytt\",              \"type\":[\"bigint\",   \"null\"]}}\n"
+                           "      ,  {{\"name\": \"ibyt\",              \"type\":[\"bigint\",   \"null\"]}}\n"
                            "      ,  {{\"name\": \"opkt\",               \"type\":[\"bigint\",   \"null\"]}}\n"
                            "      ,  {{\"name\": \"obyt\",               \"type\":[\"bigint\",   \"null\"]}}\n"
                            "      ,  {{\"name\": \"input\",                 \"type\":[\"int\",   \"null\"]}}\n"
