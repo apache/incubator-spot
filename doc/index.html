@@ -464,10 +464,20 @@
                   </p><br>
                 </li>
                 <li>
-                  <p class="short-mrg">spot-nfdump - netflow dissector tool. This version is a custom version developed for apache spot (incubating) that has special features required for spot-ml.</p>
+                  <p class="short-mrg">spot-nfdump - netflow dissector tool. This version is a custom version developed for apache spot (incubating) that has special features required for spot-ml. Before installing nfdump, you also need to update automake to the correct version.</p>
                   <p class="terminal">
-                    sudo yum -y groupinstall "Development Tools"<br> git clone https://github.com/Open-Network-Insight/spot-nfdump.git <br> cd spot-nfdump<br> ./install_nfdump.sh
-                    <br> cd ..
+                    wget http://ftp.gnu.org/gnu/automake/automake-1.14.tar.gz<br>
+                    tar xvzf automake-1.14.tar.gz<br>
+                    cd automake-1.14<br>
+                    ./configure<br>
+                    make<br>
+                    sudo make install<br>
+                    <br>
+                    sudo yum -y groupinstall "Development Tools"<br>
+                    git clone https://github.com/Open-Network-Insight/spot-nfdump.git<br>
+                    cd spot-nfdump<br>
+                    ./install_nfdump.sh<br>
+                    cd ..<br>
                   </p><br>
                 </li>
                 <li>
