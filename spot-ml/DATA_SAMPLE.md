@@ -45,7 +45,7 @@ Within Apache Spot (incubating), only responses from DNS servers are ingested si
 
 | File   | Description | Location  | Size  |
 |-------------------|:------|:---------:|------:|
-| 20170509_parquet.tar.gz | Tarball of directory (parquet files) simulated May 9, 2017 | https://s3-us-west-2.amazonaws.com/apachespot/public_data_sets/syed/syed_syn_dns.tgz | 146MB |
+| syed_syn_dns.tgz | Tarball of directory (parquet files) simulated May 9, 2017 | https://s3-us-west-2.amazonaws.com/apachespot/public_data_sets/syed/syed_syn_dns.tgz | 146MB |
 
 ## Number of Rows associated to each Value of dns_id in the Data File
 
