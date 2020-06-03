@@ -79,7 +79,7 @@ class ProxySuspiciousConnectsModel(topicCount: Int,
       scoreFunction.score(precisionUtility)(documentTopicMix, word))
 
     wordedDataFrame
-      .join(org.apache.spark.sql.functions.broadcast(ipToTopicMIx), dataFrame(ClientIP) === ipToTopicMIx(DocumentName), "left_outer")
+      .join(ipToTopicMIx, dataFrame(ClientIP) === ipToTopicMIx(DocumentName), "left_outer")
       .selectExpr(wordedDataFrame.schema.fieldNames :+ TopicProbabilityMix: _*)
       .withColumn(Score, udfScoreFunction(col(TopicProbabilityMix), col(Word)))
       .drop(TopicProbabilityMix)

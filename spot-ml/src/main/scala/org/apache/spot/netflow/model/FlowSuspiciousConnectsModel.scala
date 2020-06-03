@@ -64,13 +64,13 @@ class FlowSuspiciousConnectsModel(topicCount: Int,
       */
     val dataWithSrcTopicMix = {
 
-      val recordsWithSrcIPTopicMixes = flowRecords.join(org.apache.spark.sql.functions.broadcast(ipToTopicMix),
+      val recordsWithSrcIPTopicMixes = flowRecords.join(ipToTopicMix,
         flowRecords(SourceIP) === ipToTopicMix(DocumentName), "left_outer")
       val schemaWithSrcTopicMix = flowRecords.schema.fieldNames :+ TopicProbabilityMix
       val dataWithSrcIpProb: DataFrame = recordsWithSrcIPTopicMixes.selectExpr(schemaWithSrcTopicMix: _*)
         .withColumnRenamed(TopicProbabilityMix, SrcIpTopicMix)
 
-      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(org.apache.spark.sql.functions.broadcast(ipToTopicMix),
+      val recordsWithIPTopicMixes = dataWithSrcIpProb.join(ipToTopicMix,
         dataWithSrcIpProb(DestinationIP) === ipToTopicMix(DocumentName), "left_outer")
       val schema = dataWithSrcIpProb.schema.fieldNames :+ TopicProbabilityMix
       recordsWithIPTopicMixes.selectExpr(schema: _*).withColumnRenamed(TopicProbabilityMix, DstIpTopicMix)

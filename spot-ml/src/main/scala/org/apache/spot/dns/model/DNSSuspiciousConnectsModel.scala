@@ -100,7 +100,7 @@ class DNSSuspiciousConnectsModel(inTopicCount: Int,
         documentTopicMix))
 
     inDF
-      .join(org.apache.spark.sql.functions.broadcast(ipToTopicMix), inDF(ClientIP) === ipToTopicMix(DocumentName),
+      .join(ipToTopicMix, inDF(ClientIP) === ipToTopicMix(DocumentName),
         "left_outer")
       .selectExpr(inDF.schema.fieldNames :+ TopicProbabilityMix: _*)
       .withColumn(Score, scoringUDF(DNSSuspiciousConnectsModel.modelColumns :+ col(TopicProbabilityMix): _*))
