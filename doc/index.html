@@ -474,10 +474,17 @@
                   <p class="short-mrg">tshark - DNS dissector tool. For tshark, follow the steps on the web site to install it. Tshark must be downloaded and built from <a href="https://www.wireshark.org/download.html"> Wireshark page</a></p>
                   <p class="short-mrg">Full instructions for compiling Wireshark can be found <a href="https://www.wireshark.org/docs/wsug_html_chunked/ChBuildInstallUnixBuild.html">here</a> instructions for compiling</p>
                   <p class="terminal">
-                    sudo yum -y install gtk2-devel gtk+-devel bison qt-devel qt5-qtbase-devel<br>
-                    sudo yum -y groupinstall "Development Tools"<br> sudo yum -y install libpcap-devel<br> #compile Wireshark<br> wget https://1.na.dl.wireshark.org/src/all-versions/wireshark-2.2.3.tar.bz2<br>
-                    tar xjvf wireshark-2.2.3.tar.bz2<br> cd wireshark-2.2.3<br> ./configure --with-gtk2 --disable-wireshark<br> make
-                    <br> sudo make install<br> cd ..<br>
+                    sudo yum -y install gtk2-devel gtk+-devel bison qt-devel qt5-qtbase-devel
+                    <br>sudo yum -y groupinstall "Development Tools"
+                    <br>sudo yum -y install libpcap-devel
+                    <br>#compile Wireshark
+                    <br>wget https://1.na.dl.wireshark.org/src/all-versions/wireshark-2.2.3.tar.bz2
+                    <br>tar xjvf wireshark-2.2.3.tar.bz2
+                    <br>cd wireshark-2.2.3
+                    <br>./configure --with-gtk2 --disable-wireshark
+                    <br>make
+                    <br>sudo make install
+                    <br> cd ..<br>
                   </p><br>
                 </li>
                 <li>
@@ -495,7 +502,7 @@
                   <p class="short-mrg">Spark-Streaming – Download the following jar file: spark-streaming-kafka-0-8-assembly_2.11. This jar adds support for Spark Streaming + Kafka and needs to be downloaded on the following path: spot-ingest/common (with the same name).
                     <strong>Currently spark streaming is only enabled for proxy pipeline, if you are not planning to ingest proxy data you can skip this step.</strong></p>
                   <p class="terminal">
-                    cd spot-ingest/common<br> wget https://repo1.maven.org/maven2/org/apache/spark/spark-streaming-kafka- 0-8-assembly_2.11/2.0.0/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar
+                    cd spot-ingest/common<br> wget https://repo1.maven.org/maven2/org/apache/spark/spark-streaming-kafka-0-8-assembly_2.11/2.0.0/spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar
                   </p><br>
                 </li>
               </ul>

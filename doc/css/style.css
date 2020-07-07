@@ -138,7 +138,7 @@ code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
 pre { white-space: pre-wrap; }
 
 /** Set consistent quote types. */
-q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+q { quotes: "\201C" "\201D" "\2018" "\2019" "\2020"; }
 
 /** Address inconsistent and variable font size in all browsers. */
 q:before, q:after { content: ''; content: none; }
@@ -301,7 +301,8 @@ img { max-width: 100%; height: auto; }
 
 .desktop {display:none;}
 
-.orange-bold {color:#c97644;font-weight:bold;font-style:italic;}#configuration .orange-bold {margin-bottom:10px;}
+.orange-bold {color:#c97644;font-weight:bold;font-style:italic;}
+#configuration .orange-bold {margin-bottom:10px;}
 .short-mrg {margin-bottom:10px;}
 
 .slack {
@@ -340,7 +341,7 @@ margin-bottom:25px;
 PUSH MENU
 *********************/
 
-.cbp-spmenu button{position:absolute;top:5px;right:2px;margin:15px 5px 0 0;border:none;background-color:transparent;font-size:2em;color:#fff;text-indent:-999999px;background:url('../images/open.png')no-repeat;width:29px;height:30px;padding:0;}
+.cbp-spmenu button{position:absolute;top:5px;right:2px;margin:15px 5px 0 0;border:none;background-color:transparent;font-size:2em;color:#fff;text-indent:-999999px;background:url('../images/open.png')no-repeat;width:29px;height:30px;padding:0;}
 .cbp-spmenu.cbp-spmenu-open button {background:url('../images/close.png') no-repeat;}
 .cbp-spmenu{background:#d0cbc5;position:absolute;}
 .cbp-spmenu h3{color:#ffffff;font-size:1.9em;padding:20px 0 20px 20px;margin:0 0 15px;font-size:16pt;font-weight:500;text-transform:uppercase;font-family:'Open Sans',sans-serif;letter-spacing:0;}

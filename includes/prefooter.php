@@ -16,7 +16,7 @@
                     </p>
 
                     <p class="disclaimer">
-                        The contents of this website are © 2016 Apache Software Foundation under the terms of the Apache License v2. Apache Spot and its logo are trademarks of the Apache Software Foundation.
+                        The contents of this website are © 2020 Apache Software Foundation under the terms of the Apache License v2. Apache Spot and its logo are trademarks of the Apache Software Foundation.
                     </p>
                 </div>
             </div>
