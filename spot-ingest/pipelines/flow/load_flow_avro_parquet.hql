@@ -79,7 +79,7 @@ TBLPROPERTIES ('avro.schema.literal'='{
      ,  {"name": "fwd",                 "type":["int",   "null"]}
      ,  {"name": "stos",                 "type":["int",   "null"]}
      ,  {"name": "ipkt",                 "type":["bigint",   "null"]}
-     ,  {"name": "ibytt",                 "type":["bigint",   "null"]}
+     ,  {"name": "ibyt",                 "type":["bigint",   "null"]}
      ,  {"name": "opkt",                 "type":["bigint",   "null"]}
      ,  {"name": "obyt",                 "type":["bigint",   "null"]}
      ,  {"name": "input",                 "type":["int",   "null"]}
