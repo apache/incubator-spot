@@ -11,7 +11,7 @@ tornado
 mistune
 pygments
 terminado
-ipython == 3.2.1
+ipython == 8.10.0
 
 # GraphQL API dependencies
 flask
