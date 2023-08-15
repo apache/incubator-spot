@@ -124,6 +124,9 @@ case ${DBENGINE} in
         if [[ ${KERBEROS} == "true" ]]; then
             db_shell="${db_shell} -k"
         fi
+        if [[ ${SSL} == "true" ]]; then
+            db_shell="${db_shell} --ssl"
+        fi
         db_query="${db_shell} -q"
         db_script="${db_shell} --var=huser=${HUSER} --var=dbname=${DBNAME} -c -f"
         ;;
